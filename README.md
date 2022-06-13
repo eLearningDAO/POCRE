@@ -12,3 +12,6 @@ By connecting various parties through [Cardano](https://cardano.org) blockchain,
 - Co-Creator: Invited to authorship acknowledgement
 - Claimer: Claim authorship acknowledgement
 - Litigator: Resolving disputes
+
+### Use case workflow
+[![POCRE](https://github.com/e-Learning-DAO/POCRE/blob/3cef66d4ca4fb73580c63ddf3d63a753a05cb51e/POCRE%20-%20use%20case%20workflow.png)]([https://](https://github.com/e-Learning-DAO/POCRE))
