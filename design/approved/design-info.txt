@@ -1,3 +1,0 @@
-Upload in this directory the approved design image.
-Add the link here where the resource is located (like figma url): https://www.figma.com/file/l7iyNR8Fd10YVBfqyAdiJL/Web3-e-learning?node-id=0%3A1
-
