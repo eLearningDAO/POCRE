@@ -1,0 +1,3 @@
+Upload in this directory the approved design image.
+Add the link here where the resource is located (like figma url):
+
