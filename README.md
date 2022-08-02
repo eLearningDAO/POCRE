@@ -1,5 +1,7 @@
-# POCRE
+[![POCRE](https://github.com/e-Learning-DAO/POCRE/blob/main/design/approved/POCRE-logo.png)]([https://](https://github.com/e-Learning-DAO/POCRE))
+
 Proof Of co-CREation
+#
 
 For remixes, [mashups](https://en.wikipedia.org/wiki/Mashup_(culture)) & collaborative work, copyright is impossible. Authors/publishers don't recognize co-creations and new artists risk legal action.
 Managing copyright is a challenge in the digital world, as there is not a perfect solution for emerging artists who rely on existing works and therefore can never claim the opera as original and get rewards.
