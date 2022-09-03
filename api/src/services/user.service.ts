@@ -1,6 +1,6 @@
 import httpStatus from 'http-status';
-import { User } from '../entities/User';
 import ApiError from '../utils/ApiError';
+import * as db from '../db/pool';
 
 interface IUser {
   name: string;
@@ -18,10 +18,8 @@ interface IUserDoc {
  * @returns {Promise<IUserDoc>}
  */
 export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
-  const user = new User();
-  user.name = userBody.name;
-  user.age = userBody.age;
-  await user.save();
+  const result = await db.query(`INSERT INTO users (name,age) values ($1,$2) RETURNING *;`, [userBody.name, userBody.age]);
+  const user = result.rows[0];
   return user;
 };
 
@@ -30,7 +28,8 @@ export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
  * @returns {Promise<Array<IUser>}
  */
 export const queryUsers = async (): Promise<Array<IUserDoc>> => {
-  const users = await User.find(); // TODO: pagination
+  const result = await db.query(`SELECT * FROM users;`, []); // TODO: pagination
+  const users = result.rows;
   return users;
 };
 
@@ -40,7 +39,8 @@ export const queryUsers = async (): Promise<Array<IUserDoc>> => {
  * @returns {Promise<IUserDoc|null>}
  */
 export const getUserById = async (id: number): Promise<IUserDoc | null> => {
-  const user = await User.findOneBy({ id });
+  const result = await db.query(`SELECT * FROM users WHERE id = $1;`, [id]);
+  const user = result.rows[0];
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
@@ -54,12 +54,29 @@ export const getUserById = async (id: number): Promise<IUserDoc | null> => {
  * @returns {Promise<IUserDoc|null>}
  */
 export const updateUserById = async (id: number, updateBody: Partial<IUser>): Promise<IUserDoc | null> => {
-  const user = await User.findOneBy({ id });
-  if (!user) {
+  // check if user exists
+  const findQry = await db.query(`SELECT id FROM users WHERE id = $1;`, [id]);
+  const userExists = findQry.rows[0];
+  if (!userExists) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
-  Object.assign(user, updateBody);
-  await user.save();
+
+  // build sql conditions and values
+  const conditions = [updateBody.name ? 'name = $2' : '', updateBody.age ? 'age = $3' : ''];
+  const values = [];
+  if (updateBody.name != null) values.push(updateBody.name);
+  if (updateBody.age && updateBody.age >= 0) values.push(updateBody.age);
+
+  // update user
+  const updateQry = await db.query(
+    `
+      UPDATE users SET 
+      ${conditions.filter(Boolean).join(',')} 
+      WHERE id = $1 RETURNING *;
+    `,
+    [id, ...values]
+  );
+  const user = updateQry.rows[0];
   return user;
 };
 
@@ -69,10 +86,11 @@ export const updateUserById = async (id: number, updateBody: Partial<IUser>): Pr
  * @returns {Promise<IUserDoc|null>}
  */
 export const deleteUserById = async (id: number): Promise<IUserDoc | null> => {
-  const user = await User.findOneBy({ id });
+  const result = await db.query(`SELECT id FROM users WHERE id = $1;`, [id]);
+  const user = result.rows[0];
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
-  await user.remove();
+  await db.query(`DELETE FROM users WHERE id = $1;`, [id]);
   return user;
 };

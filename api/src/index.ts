@@ -1,34 +1,20 @@
 import 'reflect-metadata';
-import { DataSource } from 'typeorm';
 import * as http from 'http';
 import app from './app';
 import config from './config/config';
 import logger from './config/logger';
-import { User } from './entities/User';
-
-const database = 'postgres';
-const AppDataSource = new DataSource({
-  type: database,
-  host: config.database.host,
-  port: config.database.port,
-  username: config.database.username,
-  password: config.database.password,
-  database: config.database.name,
-  entities: [User], // add more entities here
-  synchronize: true,
-  logging: false,
-});
+import * as db from './db/pool';
 
 let server: http.Server | undefined;
 
-AppDataSource.initialize()
+db.init()
   .then(() => {
-    logger.info(`Connected to ${database}!`);
+    logger.info('Connected to database');
     server = app.listen(config.port, () => {
       logger.info(`Listening to port ${config.port}`);
     });
   })
-  .catch((error) => logger.error(error));
+  .catch(logger.error);
 
 const exitHandler = () => {
   if (server) {
