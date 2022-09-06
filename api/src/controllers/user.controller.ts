@@ -6,8 +6,8 @@ export const getUsers = catchAsync(async (req, res): Promise<void> => {
   res.send(users);
 });
 
-export const getUserByID = catchAsync(async (req, res): Promise<void> => {
-  const user = await userService.getUserById(req.params.userId as any);
+export const getUserById = catchAsync(async (req, res): Promise<void> => {
+  const user = await userService.getUserById(req.params.user_id);
   res.send(user);
 });
 
@@ -16,12 +16,12 @@ export const createUser = catchAsync(async (req, res): Promise<void> => {
   res.send(newUser);
 });
 
-export const deleteUserByID = catchAsync(async (req, res): Promise<void> => {
-  await userService.deleteUserById(req.params.userId as any);
+export const deleteUserById = catchAsync(async (req, res): Promise<void> => {
+  await userService.deleteUserById(req.params.user_id);
   res.send();
 });
 
-export const updateUserByID = catchAsync(async (req, res): Promise<void> => {
-  const user = await userService.updateUserById(req.params.userId as any, req.body as any);
+export const updateUserById = catchAsync(async (req, res): Promise<void> => {
+  const user = await userService.updateUserById(req.params.user_id, req.body);
   res.send(user);
 });

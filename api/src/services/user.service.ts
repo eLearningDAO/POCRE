@@ -21,13 +21,17 @@ interface IUserDoc {
  * @returns {Promise<IUserDoc>}
  */
 export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
-  const result = await db.query(`INSERT INTO users (user_name,wallet_address,user_bio) values ($1,$2,$3) RETURNING *;`, [
-    userBody.user_name,
-    userBody.wallet_address,
-    userBody.user_bio,
-  ]);
-  const user = result.rows[0];
-  return user;
+  try {
+    const result = await db.query(`INSERT INTO users (user_name,wallet_address,user_bio) values ($1,$2,$3) RETURNING *;`, [
+      userBody.user_name,
+      userBody.wallet_address,
+      userBody.user_bio,
+    ]);
+    const user = result.rows[0];
+    return user;
+  } catch {
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
+  }
 };
 
 /**
@@ -35,9 +39,13 @@ export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
  * @returns {Promise<Array<IUser>}
  */
 export const queryUsers = async (): Promise<Array<IUserDoc>> => {
-  const result = await db.query(`SELECT * FROM users;`, []); // TODO: pagination
-  const users = result.rows;
-  return users;
+  try {
+    const result = await db.query(`SELECT * FROM users;`, []); // TODO: pagination
+    const users = result.rows;
+    return users;
+  } catch {
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
+  }
 };
 
 /**
@@ -46,11 +54,17 @@ export const queryUsers = async (): Promise<Array<IUserDoc>> => {
  * @returns {Promise<IUserDoc|null>}
  */
 export const getUserById = async (id: string): Promise<IUserDoc | null> => {
-  const result = await db.query(`SELECT * FROM users WHERE user_id = $1;`, [id]);
-  const user = result.rows[0];
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-  }
+  const user = await (async () => {
+    try {
+      const result = await db.query(`SELECT * FROM users WHERE user_id = $1;`, [id]);
+      return result.rows[0];
+    } catch {
+      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
+    }
+  })();
+
+  if (!user) throw new ApiError(httpStatus.NOT_FOUND, 'user not found');
+
   return user;
 };
 
@@ -61,35 +75,32 @@ export const getUserById = async (id: string): Promise<IUserDoc | null> => {
  * @returns {Promise<IUserDoc|null>}
  */
 export const updateUserById = async (id: string, updateBody: Partial<IUser>): Promise<IUserDoc | null> => {
-  // check if user exists
-  const findQry = await db.query(`SELECT user_id FROM users WHERE user_id = $1;`, [id]);
-  const foundUser = findQry.rows[0];
-  if (!foundUser) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-  }
+  await getUserById(id); // check if user exists, throws error if not found
 
   // build sql conditions and values
-  const conditions = [
-    updateBody.user_name ? 'user_name = $2' : '',
-    updateBody.wallet_address ? 'wallet_address = $3' : '',
-    updateBody.user_bio ? 'user_bio = $4' : '',
-  ];
-  const values = [];
-  if (updateBody.user_name != null) values.push(updateBody.user_name);
-  if (updateBody.wallet_address != null) values.push(updateBody.wallet_address);
-  if (updateBody.user_bio != null) values.push(updateBody.user_bio);
+  const conditions: string[] = [];
+  const values: (string | null)[] = [];
+  Object.entries(updateBody).map(([k, v], index) => {
+    conditions.push(`${k} = $${index + 2}`);
+    values.push(v);
+    return null;
+  });
 
   // update user
-  const updateQry = await db.query(
-    `
-      UPDATE users SET
-      ${conditions.filter(Boolean).join(',')}
-      WHERE user_id = $1 RETURNING *;
-    `,
-    [id, ...values]
-  );
-  const user = updateQry.rows[0];
-  return user;
+  try {
+    const updateQry = await db.query(
+      `
+        UPDATE users SET
+        ${conditions.filter(Boolean).join(',')}
+        WHERE user_id = $1 RETURNING *;
+      `,
+      [id, ...values]
+    );
+    const user = updateQry.rows[0];
+    return user;
+  } catch {
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
+  }
 };
 
 /**
@@ -98,11 +109,12 @@ export const updateUserById = async (id: string, updateBody: Partial<IUser>): Pr
  * @returns {Promise<IUserDoc|null>}
  */
 export const deleteUserById = async (id: string): Promise<IUserDoc | null> => {
-  const result = await db.query(`SELECT user_id FROM users WHERE user_id = $1;`, [id]);
-  const user = result.rows[0];
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  const user = await getUserById(id); // check if user exists, throws error if not found
+
+  try {
+    await db.query(`DELETE FROM users WHERE user_id = $1;`, [id]);
+    return user;
+  } catch {
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
   }
-  await db.query(`DELETE FROM users WHERE user_id = $1;`, [id]);
-  return user;
 };

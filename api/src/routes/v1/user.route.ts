@@ -11,9 +11,9 @@ router
   .get(validate(userValidation.getUsers), userController.getUsers);
 
 router
-  .route('/:userId')
-  .get(validate(userValidation.getUser), userController.getUserByID)
-  .patch(validate(userValidation.updateUser), userController.updateUserByID)
-  .delete(validate(userValidation.deleteUser), userController.deleteUserByID);
+  .route('/:user_id')
+  .get(validate(userValidation.getUser), userController.getUserById)
+  .patch(validate(userValidation.updateUser), userController.updateUserById)
+  .delete(validate(userValidation.deleteUser), userController.deleteUserById);
 
 export default router;

@@ -2,35 +2,37 @@ import Joi from 'joi';
 
 export const createUser = {
   body: Joi.object().keys({
-    name: Joi.string().required(),
-    age: Joi.number().required(),
+    user_name: Joi.string().required(),
+    wallet_address: Joi.string().optional().allow('').allow(null),
+    user_bio: Joi.string().optional().allow('').allow(null),
   }),
 };
 
 export const getUsers = {
-  query: Joi.object().keys({}),
+  query: Joi.object().keys({}), // TODO: add pagination params
 };
 
 export const getUser = {
   params: Joi.object().keys({
-    userId: Joi.string().required(),
+    user_id: Joi.string().uuid().required(),
   }),
 };
 
 export const updateUser = {
   params: Joi.object().keys({
-    userId: Joi.string().required(),
+    user_id: Joi.string().uuid().required(),
   }),
   body: Joi.object()
     .keys({
-      age: Joi.number(),
-      name: Joi.string(),
+      user_name: Joi.string().optional(),
+      wallet_address: Joi.string().optional().allow('').allow(null),
+      user_bio: Joi.string().optional().allow('').allow(null),
     })
     .min(1),
 };
 
 export const deleteUser = {
   params: Joi.object().keys({
-    userId: Joi.string().required(),
+    user_id: Joi.string().uuid().required(),
   }),
 };
