@@ -79,7 +79,7 @@ export default router;
  *             schema:
  *                $ref: '#/components/schemas/Status'
  *       "404":
- *         $ref: '#/components/responses/NotFound'
+ *         $ref: '#/components/responses/StatusNotFound'
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *
@@ -119,7 +119,7 @@ export default router;
  *             schema:
  *                $ref: '#/components/schemas/Status'
  *       "404":
- *         $ref: '#/components/responses/NotFound'
+ *         $ref: '#/components/responses/StatusNotFound'
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *
@@ -138,7 +138,7 @@ export default router;
  *       "200":
  *         description: OK
  *       "404":
- *         $ref: '#/components/responses/NotFound'
+ *         $ref: '#/components/responses/StatusNotFound'
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  */

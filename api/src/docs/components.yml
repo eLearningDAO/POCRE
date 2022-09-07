@@ -154,6 +154,15 @@ components:
           example:
             code: 404
             message: user not found
+    StatusNotFound:
+      description: Status not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: status not found
     DecisionNotFound:
       description: Decision not found
       content:
