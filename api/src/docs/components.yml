@@ -21,6 +21,25 @@ components:
         wallet_address: 28y9gd27g2g237g80hnibhi
         user_bio: ready to explore
         date_joined: 2022-09-05T19:00:00.000Z
+    
+    Status:
+      type: object
+      properties:
+        status_id:
+          type: string
+          format: uuid
+        status_name:
+          type: string
+        status_description:
+          type: string
+        action_made:
+          type: string
+          format: date-time
+      example:
+        status_id: 2cc874d2-9f7d-48a8-a416-ec19e9462da9
+        status_name: invitation_created
+        status_description: invitaion to john
+        action_made: 2022-09-05T19:00:00.000Z   
 
     Error:
       type: object
