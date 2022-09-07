@@ -69,19 +69,19 @@ const init = async (): Promise<QueryResult<any>> => {
       source_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       source_title character varying NOT NULL,
       source_description text,
-      site_url varchar(250)
+      site_url character varying
     );
 
     CREATE TABLE IF NOT EXISTS tag (
       tag_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      tag_name character varying,
+      tag_name character varying NOT NULL,
       tag_description text,
       tag_created DATE NOT NULL DEFAULT CURRENT_DATE
     );
 
     CREATE TABLE IF NOT EXISTS material_type (
       type_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      type_name character varying,
+      type_name character varying NOT NULL,
       type_description text
     );
 
@@ -110,7 +110,7 @@ const init = async (): Promise<QueryResult<any>> => {
 
     CREATE TABLE IF NOT EXISTS creation (
       creation_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      creation_title character varying,
+      creation_title character varying NOT NULL,
       creation_description text,
       source_id UUID UNIQUE NOT NULL,
       author_id UUID UNIQUE NOT NULL,
@@ -148,7 +148,7 @@ const init = async (): Promise<QueryResult<any>> => {
 
     CREATE TABLE IF NOT EXISTS litigation (
       litigation_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      litigation_title character varying,
+      litigation_title character varying NOT NULL,
       litigation_description text,
       material_id UUID UNIQUE NOT NULL,
       issuer_id UUID UNIQUE NOT NULL,
