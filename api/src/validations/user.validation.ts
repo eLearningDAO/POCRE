@@ -8,7 +8,7 @@ export const createUser = {
   }),
 };
 
-export const getUsers = {
+export const queryUsers = {
   query: Joi.object().keys({}), // TODO: add pagination params
 };
 

@@ -8,7 +8,7 @@ const router = express.Router();
 router
   .route('/')
   .post(validate(userValidation.createUser), userController.createUser)
-  .get(validate(userValidation.getUsers), userController.getUsers);
+  .get(validate(userValidation.queryUsers), userController.queryUsers);
 
 router
   .route('/:user_id')
@@ -101,7 +101,7 @@ export default router;
  *             schema:
  *                $ref: '#/components/schemas/User'
  *       "404":
- *         $ref: '#/components/responses/NotFound'
+ *         $ref: '#/components/responses/UserNotFound'
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *
@@ -122,8 +122,6 @@ export default router;
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - user_name
  *             properties:
  *               user_name:
  *                 type: string
@@ -145,7 +143,7 @@ export default router;
  *             schema:
  *                $ref: '#/components/schemas/User'
  *       "404":
- *         $ref: '#/components/responses/NotFound'
+ *         $ref: '#/components/responses/UserNotFound'
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *
@@ -163,12 +161,8 @@ export default router;
  *     responses:
  *       "200":
  *         description: OK
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/User'
  *       "404":
- *         $ref: '#/components/responses/NotFound'
+ *         $ref: '#/components/responses/UserNotFound'
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  */
