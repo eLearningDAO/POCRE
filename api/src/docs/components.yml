@@ -40,6 +40,74 @@ components:
         status_name: invitation_created
         status_description: invitaion to john
         action_made: 2022-09-05T19:00:00.000Z   
+    
+    Decision:
+      type: object
+      properties:
+        decision_id:
+          type: string
+          format: uuid
+        decision_status:
+          type: bool
+        maker_id:
+          type: string
+          format: uuid
+      example:
+        decision_id: db71f5fa-4ee6-4d6d-893b-af08a4e2d575
+        decision_status: true
+        maker_id: c83a8680-e5db-4a79-8646-c6e3d010ec6b
+
+    Source:
+      type: object
+      properties:
+        source_id:
+          type: string
+          format: uuid
+        source_title:
+          type: string
+        source_description:
+          type: string
+        site_url:
+          type: string
+      example:
+        source_id: 04588cf9-09c3-446c-828c-609390c66b29
+        source_title: turtle
+        source_description: turtle walks
+        site_url: https://google.com
+
+    MaterialType:
+      type: object
+      properties:
+        type_id:
+          type: string
+          format: uuid
+        type_name:
+          type: string
+        type_description:
+          type: string
+      example:
+        type_id: 670be025-7c46-4890-8348-b5ad620ad9a7
+        type_name: plastic
+        type_description: dangerous to environment
+
+    Tag:
+      type: object
+      properties:
+        tag_id:
+          type: string
+          format: uuid
+        tag_name:
+          type: string
+        tag_description:
+          type: string
+        tag_created:
+          type: string
+          format: date-time
+      example:
+        tag_id: fb018e05-5792-48a4-bee3-4518453443d3
+        tag_name: enhancement
+        tag_description: improvement tag
+        tag_created: 2022-09-06T19:00:00.000Z
 
     Error:
       type: object
@@ -77,3 +145,30 @@ components:
           example:
             code: 500
             message: internal server error
+    UserNotFound:
+      description: User not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: user not found
+    DecisionNotFound:
+      description: Decision not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: decision not found
+    DecisionAlreadyMadeByUser:
+      description: User already made a decision
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: user already made a decision
