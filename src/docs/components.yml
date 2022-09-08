@@ -55,7 +55,35 @@ components:
       example:
         decision_id: db71f5fa-4ee6-4d6d-893b-af08a4e2d575
         decision_status: true
-        maker_id: c83a8680-e5db-4a79-8646-c6e3d010ec6b
+        maker_id: c83a8680-e5db-4a79-8646-c6e3d010ec6b    
+
+    Invitation:
+      type: object
+      properties:
+        invite_id:
+          type: string
+          format: uuid
+        invite_from:
+          type: string
+          format: uuid
+        invite_to:
+          type: string
+          format: uuid
+        invite_description:
+          type: string
+        invite_issued:
+          type: string
+          format: date-time
+        status_id:
+          type: string
+          format: uuid
+      example:
+        invite_id: 8d098580-1e4c-40c8-95f3-9c78de09a121
+        invite_from: d5cef9e4-d497-45ea-bd68-609aba268886
+        invite_to: d5cef9e4-d497-45ea-bd68-609aba268886
+        invite_description: invitation to john
+        invite_issued: 2022-09-07T19:00:00.000Z
+        status_id: 865b3cff-d24e-4ec7-8873-f9634c5f2245
 
     Source:
       type: object
@@ -154,6 +182,24 @@ components:
           example:
             code: 404
             message: user not found
+    UserAlreadySentInvitation:
+      description: User already sent an invitation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: user already sent an invitation
+    UserAlreadyInvitedToInvitation:
+      description: User already invited to an invitation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: user already invited to an invitation
     StatusNotFound:
       description: Status not found
       content:
@@ -163,6 +209,15 @@ components:
           example:
             code: 404
             message: status not found
+    StatusAlreadyAssignedToInvitation:
+      description: Status already assigned to an invitation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: status already assigned to an invitation
     DecisionNotFound:
       description: Decision not found
       content:
@@ -181,3 +236,12 @@ components:
           example:
             code: 409
             message: user already made a decision
+    InvitationNotFound:
+      description: Invitation not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: invitation not found
