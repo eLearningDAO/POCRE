@@ -9,7 +9,7 @@ const swaggerDef = {
   },
   servers: [
     {
-      url: `http://localhost:${config.port}/v1`,
+      url: config.docs_server_url,
     },
   ],
 };
