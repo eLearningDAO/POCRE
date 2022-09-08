@@ -67,14 +67,45 @@ export default router;
  *     summary: Get all users
  *     description: Returns a list of users.
  *     tags: [Users]
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         default: 10
+ *         description: Maximum number of users
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
  *     responses:
  *       "200":
  *         description: OK
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               $ref: '#/components/schemas/User'
+ *               type: object
+ *               properties:
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/User'
+ *                 page:
+ *                   type: integer
+ *                   example: 1
+ *                 limit:
+ *                   type: integer
+ *                   example: 10
+ *                 total_pages:
+ *                   type: integer
+ *                   example: 1
+ *                 total_results:
+ *                   type: integer
+ *                   example: 1
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  */
