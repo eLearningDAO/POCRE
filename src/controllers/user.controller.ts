@@ -2,7 +2,7 @@ import catchAsync from '../utils/catchAsync';
 import * as userService from '../services/user.service';
 
 export const queryUsers = catchAsync(async (req, res): Promise<void> => {
-  const users = await userService.queryUsers(); // TODO: add pagination params
+  const users = await userService.queryUsers(req.query as any);
   res.send(users);
 });
 

@@ -9,7 +9,10 @@ export const createUser = {
 };
 
 export const queryUsers = {
-  query: Joi.object().keys({}), // TODO: add pagination params
+  query: Joi.object().keys({
+    limit: Joi.number().integer().default(10),
+    page: Joi.number().integer().default(1).greater(0),
+  }),
 };
 
 export const getUser = {
