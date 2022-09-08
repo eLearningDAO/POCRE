@@ -2,6 +2,7 @@ import express from 'express';
 import userRoute from './user.route';
 import statusRoute from './status.route';
 import decisionRoute from './decision.route';
+import invitationRoute from './invitation.route';
 import docsRoute from './docs.route';
 import config from '../../config/config';
 
@@ -19,6 +20,10 @@ const defaultRoutes = [
   {
     path: '/decision',
     route: decisionRoute,
+  },
+  {
+    path: '/invitation',
+    route: invitationRoute,
   },
 ];
 
