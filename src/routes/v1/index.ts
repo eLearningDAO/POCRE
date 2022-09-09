@@ -3,6 +3,7 @@ import userRoute from './user.route';
 import statusRoute from './status.route';
 import decisionRoute from './decision.route';
 import invitationRoute from './invitation.route';
+import sourceRoute from './source.route';
 import docsRoute from './docs.route';
 import config from '../../config/config';
 
@@ -24,6 +25,10 @@ const defaultRoutes = [
   {
     path: '/invitation',
     route: invitationRoute,
+  },
+  {
+    path: '/source',
+    route: sourceRoute,
   },
 ];
 
