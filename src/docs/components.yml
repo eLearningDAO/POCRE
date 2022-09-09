@@ -254,3 +254,12 @@ components:
           example:
             code: 404
             message: source not found
+    MaterialTypeNotFound:
+      description: Material Type not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: material type not found
