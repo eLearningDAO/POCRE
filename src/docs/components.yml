@@ -245,3 +245,12 @@ components:
           example:
             code: 404
             message: invitation not found
+    SourceNotFound:
+      description: Source not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: source not found
