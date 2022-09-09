@@ -4,6 +4,7 @@ import statusRoute from './status.route';
 import decisionRoute from './decision.route';
 import invitationRoute from './invitation.route';
 import sourceRoute from './source.route';
+import materialTypeRoute from './materialType.route';
 import docsRoute from './docs.route';
 import config from '../../config/config';
 
@@ -29,6 +30,10 @@ const defaultRoutes = [
   {
     path: '/source',
     route: sourceRoute,
+  },
+  {
+    path: '/material-type',
+    route: materialTypeRoute,
   },
 ];
 
