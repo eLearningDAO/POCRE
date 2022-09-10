@@ -1,7 +1,5 @@
+import { Button, Grid, Typography } from '@mui/material';
 import React from 'react';
-import { Button, Grid, TextField, Typography } from '@mui/material';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import UserCard1 from '../Creations/UserCard1';
 import UserCard2 from '../Creations/UserCard2';
 

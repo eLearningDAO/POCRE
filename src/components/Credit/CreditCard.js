@@ -1,10 +1,10 @@
 import { Typography } from '@mui/material';
 import React from 'react';
 import FacebookIcon from '../../assets/facebook.png';
-import TwitterIcon from '../../assets/twitter.png';
-import LinkedinIcon from '../../assets/linkedin.png';
 import InstagramIcon from '../../assets/instagram.png';
-import UserImage1 from '../../assets/user-image-3.png'
+import LinkedinIcon from '../../assets/linkedin.png';
+import TwitterIcon from '../../assets/twitter.png';
+import UserImage1 from '../../assets/user-image-3.png';
 
 export default function CreditCard() {
   return (
@@ -27,10 +27,10 @@ export default function CreditCard() {
             </Typography>
 
             <div className='creditCardIcons'>
-                <img src={FacebookIcon} />
-                <img src={TwitterIcon} />
-                <img src={LinkedinIcon} />
-                <img src={InstagramIcon} />
+                <img src={FacebookIcon} alt="" />
+                <img src={TwitterIcon} alt="" />
+                <img src={LinkedinIcon} alt="" />
+                <img src={InstagramIcon} alt="" />
             </div>
         </div>
     </div>

@@ -1,14 +1,14 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React from 'react';
-import RightIcon from '../../assets/right.png';
 import LeftIcon from '../../assets/left.png';
+import RightIcon from '../../assets/right.png';
 
+import { Button } from 'react-materialize';
 import SliderImage1 from '../../assets/slider/slider-01.jpg';
 import SliderImage2 from '../../assets/slider/slider-02.jpg';
 import SliderImage3 from '../../assets/slider/slider-03.jpg';
 import SliderImage4 from '../../assets/slider/slider-04.jpg';
 import SliderImage5 from '../../assets/slider/slider-05.jpg';
-import { Button } from 'react-materialize';
 
 import M from "materialize-css";
 import "./materialize.css";
@@ -54,19 +54,19 @@ export default function Slider() {
             }}
             className="carousel"
             >
-                <a className="carousel-item">
+                <a className="carousel-item" href='#/'>
                     {slides[0]}
                 </a>
-                <a className="carousel-item">
+                <a className="carousel-item" href='#/'>
                     {slides[1]}
                 </a>
-                <a className="carousel-item">
+                <a className="carousel-item" href='#/'>
                     {slides[2]}
                 </a>
-                <a className="carousel-item">
+                <a className="carousel-item" href='#/'>
                     {slides[3]}
                 </a>
-                <a className="carousel-item">
+                <a className="carousel-item" href='#/'>
                     {slides[4]}
                 </a>
 

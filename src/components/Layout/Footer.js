@@ -13,11 +13,11 @@ function Footer() {
       </Grid>
       <Grid item md={6} xs={12} sm={12} className="socialIcons">
         <div className='creditCardIcons'>
-          <img src={FacebookIcon} />
-          <img src={TwitterIcon} />
-          <img src={LinkedinIcon} />
-          <img src={InstagramIcon} />
-          <img src={YoutubeIcon} />
+          <img src={FacebookIcon} alt="" />
+          <img src={TwitterIcon} alt="" />
+          <img src={LinkedinIcon} alt="" />
+          <img src={InstagramIcon} alt="" />
+          <img src={YoutubeIcon} alt="" />
         </div>
       </Grid>
     </Grid>

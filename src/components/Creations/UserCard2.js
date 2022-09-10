@@ -6,7 +6,7 @@ export default function UserCard() {
   return (
     <div className='userCard userCard2'>
         <div className='userCardImage'>
-            <img width={70} alt='user-image' src={TopLearnerImg1} />
+            <img width={70} alt='' src={TopLearnerImg1} />
         </div>
 
         <div className='userCardDetails'>

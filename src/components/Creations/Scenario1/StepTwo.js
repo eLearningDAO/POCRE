@@ -1,5 +1,5 @@
-import React from 'react';
 import { Button, Grid, TextField, Typography } from '@mui/material';
+import React from 'react';
 import InviteIcon from '../../../assets/invite-icon.png';
 
 export default function StepTwo() {

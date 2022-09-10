@@ -1,5 +1,5 @@
+import { Grid, Typography } from '@mui/material';
 import React from 'react';
-import { Button, Grid, Typography } from '@mui/material';
 import CreditCard from './CreditCard';
 import OtherContributerCard from './OtherContributerCard';
 

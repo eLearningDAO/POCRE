@@ -39,7 +39,7 @@ const Litigation = () => {
             <td className='responsive'>
                 <div className='litigationUser'>
                     <div className='litigationUserImage'>
-                        <img src={UserImage} alt='user-image' />
+                        <img src={UserImage} alt='' />
                     </div>
                     <div className='litigationUserText'>
                         <h6>Bobi</h6>
@@ -50,7 +50,7 @@ const Litigation = () => {
             <td className='responsive'>
                 <div className='litigationUser'>
                     <div className='litigationUserImage'>
-                        <img src={UserImage2} alt='user-image' />
+                        <img src={UserImage2} alt='' />
                     </div>
                     <div className='litigationUserText'>
                         <h6>Bobi</h6>
@@ -68,7 +68,7 @@ const Litigation = () => {
             <td className='responsive'>
                 <div className='litigationUser'>
                     <div className='litigationUserImage'>
-                        <img src={UserImage} alt='user-image' />
+                        <img src={UserImage} alt='' />
                     </div>
                     <div className='litigationUserText'>
                         <h6>Bobi</h6>
@@ -79,7 +79,7 @@ const Litigation = () => {
             <td className='responsive'>
                 <div className='litigationUser'>
                     <div className='litigationUserImage'>
-                        <img src={UserImage2} alt='user-image' />
+                        <img src={UserImage2} alt='' />
                     </div>
                     <div className='litigationUserText'>
                         <h6>Bobi</h6>
@@ -113,7 +113,7 @@ const Litigation = () => {
             <td className='responsive'>
                 <div className='litigationUser'>
                     <div className='litigationUserImage'>
-                        <img src={UserImage} alt='user-image' />
+                        <img src={UserImage} alt='' />
                     </div>
                     <div className='litigationUserText'>
                         <h6>Bobi</h6>
@@ -124,7 +124,7 @@ const Litigation = () => {
             <td className='responsive'>
                 <div className='litigationUser'>
                     <div className='litigationUserImage'>
-                        <img src={UserImage2} alt='user-image' />
+                        <img src={UserImage2} alt='' />
                     </div>
                     <div className='litigationUserText'>
                         <h6>Bobi</h6>
@@ -146,7 +146,7 @@ const Litigation = () => {
             <td className='responsive'>
                 <div className='litigationUser'>
                     <div className='litigationUserImage'>
-                        <img src={UserImage} alt='user-image' />
+                        <img src={UserImage} alt='' />
                     </div>
                     <div className='litigationUserText'>
                         <h6>Bobi</h6>
@@ -157,7 +157,7 @@ const Litigation = () => {
             <td className='responsive'>
                 <div className='litigationUser'>
                     <div className='litigationUserImage'>
-                        <img src={UserImage2} alt='user-image' />
+                        <img src={UserImage2} alt='' />
                     </div>
                     <div className='litigationUserText'>
                         <h6>Bobi</h6>
@@ -194,7 +194,7 @@ const Litigation = () => {
             <td className='responsive'>
                 <div className='litigationUser'>
                     <div className='litigationUserImage'>
-                        <img src={UserImage} alt='user-image' />
+                        <img src={UserImage} alt='' />
                     </div>
                     <div className='litigationUserText'>
                         <h6>Bobi</h6>
@@ -205,7 +205,7 @@ const Litigation = () => {
             <td className='responsive'>
                 <div className='litigationUser'>
                     <div className='litigationUserImage'>
-                        <img src={UserImage2} alt='user-image' />
+                        <img src={UserImage2} alt='' />
                     </div>
                     <div className='litigationUserText'>
                         <h6>Bobi</h6>
@@ -223,7 +223,7 @@ const Litigation = () => {
             <td className='responsive'>
                 <div className='litigationUser'>
                     <div className='litigationUserImage'>
-                        <img src={UserImage} alt='user-image' />
+                        <img src={UserImage} alt='' />
                     </div>
                     <div className='litigationUserText'>
                         <h6>Bobi</h6>
@@ -234,7 +234,7 @@ const Litigation = () => {
             <td className='responsive'>
                 <div className='litigationUser'>
                     <div className='litigationUserImage'>
-                        <img src={UserImage2} alt='user-image' />
+                        <img src={UserImage2} alt='' />
                     </div>
                     <div className='litigationUserText'>
                         <h6>Bobi</h6>

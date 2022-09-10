@@ -1,17 +1,15 @@
 import { Link, useLocation } from "react-router-dom";
-import MenuIcon1 from "../../assets/brick-icon.png";
-import MenuIcon2 from "../../assets/book-icon.png";
-import MenuIcon3 from "../../assets/envelope-icon.png";
 import MenuIcon4 from "../../assets/bank-icon.png";
-import MenuIcon5 from "../../assets/wallet-icon.png";
+import MenuIcon2 from "../../assets/book-icon.png";
 import MenuIcon6 from "../../assets/credit.png";
+import MenuIcon3 from "../../assets/envelope-icon.png";
+import MenuIcon5 from "../../assets/wallet-icon.png";
 
-import MenuIcon1Active from "../../assets/brick-icon-2.png";
-import MenuIcon2Active from "../../assets/book-icon-2.png";
-import MenuIcon3Active from "../../assets/envelope-icon-2.png";
 import MenuIcon4Active from "../../assets/bank-icon-2.png";
-import MenuIcon5Active from "../../assets/wallet-icon-2.png";
+import MenuIcon2Active from "../../assets/book-icon-2.png";
 import MenuIcon6Active from "../../assets/credit-icon-2.png";
+import MenuIcon3Active from "../../assets/envelope-icon-2.png";
+import MenuIcon5Active from "../../assets/wallet-icon-2.png";
 
 function SideBar() {
   const location = useLocation();

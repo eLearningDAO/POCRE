@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Footer from './Footer';
-import SideBar from './Sidebar';
 import Header from './Header';
+import SideBar from './Sidebar';
 
-import './Layout.css';
 import { Grid } from '@mui/material';
 import TrandingNews from '../TrandingNews/index';
+import './Layout.css';
 
 function MainLayout({ children }) {
   return (

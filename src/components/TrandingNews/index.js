@@ -24,9 +24,9 @@ function TrandingNews() {
 
 
                 <div className="invitationCardRightButton collectionRightButton trendingNewsRightButton responsive">
-                  <img src={PencilIcon} />
-                  <img src={DownloadIcon} />
-                  <img src={ShareIcon} />
+                  <img src={PencilIcon} alt="" />
+                  <img src={DownloadIcon} alt="" />
+                  <img src={ShareIcon} alt="" />
                 </div>
               </div>
 
@@ -39,9 +39,9 @@ function TrandingNews() {
               </p>
             </div>
             <div className="invitationCardRightButton collectionRightButton trendingNewsRightButton non-responsive">
-              <img src={PencilIcon} />
-              <img src={DownloadIcon} />
-              <img src={ShareIcon} />
+              <img src={PencilIcon} alt="" />
+              <img src={DownloadIcon} alt="" />
+              <img src={ShareIcon} alt="" />
             </div>
           </div>
         </div>

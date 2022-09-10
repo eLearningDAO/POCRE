@@ -8,7 +8,7 @@ function InvitationCard() {
       <Grid item md={6.5} xs={12}>
         <div className="invitationCardLeft">
           <div className="invitationCardLeftImage">
-            <img src={InvitationCardImg} />
+            <img src={InvitationCardImg} alt=""/>
           </div>
           <div className="invitationCardLeftText">
             <Typography variant='h6'>
@@ -33,7 +33,7 @@ function InvitationCard() {
         <div className="invitationCardRight">
           <div className="invitationCardRightUser">
             <div className="postedImage">
-              <img src={UserImage1} />
+              <img src={UserImage1} alt=""/>
 
               <Typography variant='h6'>
                 Posted By jack 58

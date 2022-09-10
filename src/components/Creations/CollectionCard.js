@@ -1,13 +1,13 @@
-import { Chip, Grid, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
+import CommentIcon from '../../assets/comment.png';
 import CreationCardImg from '../../assets/creation-card.png';
+import DislikeIcon from '../../assets/dislike.png';
+import DownloadIcon from '../../assets/download.png';
+import LikeIcon from '../../assets/like.png';
+import PencilIcon from '../../assets/pencil.png';
+import ShareIcon from '../../assets/share.png';
 import UserImage1 from '../../assets/top-learner-user.png';
 import UserImage2 from '../../assets/user-image-2.jpeg';
-import LikeIcon from '../../assets/like.png';
-import DislikeIcon from '../../assets/dislike.png';
-import CommentIcon from '../../assets/comment.png';
-import PencilIcon from '../../assets/pencil.png';
-import DownloadIcon from '../../assets/download.png';
-import ShareIcon from '../../assets/share.png';
 
 function CollectionCard(props) {
   const { interactionBtns } = props;
@@ -38,22 +38,22 @@ function CollectionCard(props) {
         <div className="invitationCardLeft collectionCardLeft">
           <div className="invitationCardLeftButton collectionFollowerImages">
             <div className="collectionFollowerImages">
-              <img src={UserImage1} />
-              <img src={UserImage2} />
-              <img src={UserImage1} />
-              <img src={UserImage2} />
-              <img src={UserImage1} />
-              <img src={UserImage2} />
+              <img src={UserImage1} alt=""/>
+              <img src={UserImage2} alt=""/>
+              <img src={UserImage1} alt=""/>
+              <img src={UserImage2} alt=""/>
+              <img src={UserImage1} alt=""/>
+              <img src={UserImage2} alt=""/>
             </div>
             <div className="socialIcons">
               <div className="socialIcon active">
-                <img src={LikeIcon} /> <span>100K</span>
+                <img src={LikeIcon} alt=""/> <span>100K</span>
               </div>
               <div className="socialIcon">
-                <img src={DislikeIcon} /> <span>30K</span>
+                <img src={DislikeIcon} alt=""/> <span>30K</span>
               </div>
               <div className="socialIcon">
-                <img src={CommentIcon} /> <span>5K</span>
+                <img src={CommentIcon} alt=""/> <span>5K</span>
               </div>
             </div>
           </div>
@@ -77,9 +77,9 @@ function CollectionCard(props) {
         <div className="invitationCardRight">
           {interactionBtns && (
             <div className="invitationCardRightButton collectionRightButton">
-              <img src={PencilIcon} />
-              <img src={DownloadIcon} />
-              <img src={ShareIcon} />
+              <img src={PencilIcon} alt=""/>
+              <img src={DownloadIcon} alt=""/>
+              <img src={ShareIcon} alt=""/>
             </div>
           )}
         </div>

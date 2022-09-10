@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Footer from './Footer';
 import HomeHeader from './HomeHeader';
 
-import './Layout.css';
 import { Grid } from '@mui/material';
+import './Layout.css';
 
 function HomeLayout({ children }) {
   return (

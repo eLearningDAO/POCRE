@@ -1,8 +1,8 @@
-import { Box, Button, Grid, TextField, Typography } from '@mui/material';
+import { Button, Grid, TextField, Typography } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import CollectionCard from './CollectionCard';
 import LearnHowToImage from '../../assets/learnhowto.png';
+import CollectionCard from './CollectionCard';
 
 const Creations = () => {
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ const Creations = () => {
         <Typography className='inviationHeaderTitle invitationSentSection' variant='h6'>Learn How To</Typography>
 
         <div className='learnHowToImage'>
-          <img src={LearnHowToImage} />
+          <img src={LearnHowToImage} alt=""/>
         </div>
       </Grid>
     </Grid>
