@@ -7,6 +7,7 @@ import sourceRoute from './source.route';
 import materialTypeRoute from './materialType.route';
 import materialRoute from './material.route';
 import tagRoute from './tag.route';
+import creationRoute from './creation.route';
 import docsRoute from './docs.route';
 import config from '../../config/config';
 
@@ -44,6 +45,10 @@ const defaultRoutes = [
   {
     path: '/tags',
     route: tagRoute,
+  },
+  {
+    path: '/creation',
+    route: creationRoute,
   },
 ];
 

@@ -124,28 +124,6 @@ const init = async (): Promise<QueryResult<any>> => {
           REFERENCES users(user_id)
     );
 
-    CREATE TABLE IF NOT EXISTS creation_tags (
-      creation_id UUID NOT NULL,
-      tag_id UUID UNIQUE NOT NULL,
-      CONSTRAINT creation_id
-          FOREIGN KEY(creation_id) 
-          REFERENCES creation(creation_id),
-      CONSTRAINT tag_id
-          FOREIGN KEY(tag_id) 
-          REFERENCES tag(tag_id)
-    );
-
-    CREATE TABLE IF NOT EXISTS creation_materials (
-      creation_id UUID NOT NULL,
-      material_id UUID UNIQUE NOT NULL,
-      CONSTRAINT creation_id
-          FOREIGN KEY(creation_id) 
-          REFERENCES creation(creation_id),
-      CONSTRAINT material_id
-          FOREIGN KEY(material_id) 
-          REFERENCES material(material_id)
-    );
-
     CREATE TABLE IF NOT EXISTS litigation (
       litigation_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       litigation_title character varying NOT NULL,
@@ -165,27 +143,17 @@ const init = async (): Promise<QueryResult<any>> => {
           REFERENCES users(user_id)
     );
 
-    CREATE TABLE IF NOT EXISTS litigation_invitations (
-      litigation_id UUID NOT NULL,
-      invite_id UUID UNIQUE NOT NULL,
-      CONSTRAINT litigation_id
-          FOREIGN KEY(litigation_id) 
-          REFERENCES litigation(litigation_id),
-      CONSTRAINT invite_id
-          FOREIGN KEY(invite_id) 
-          REFERENCES invitation(invite_id)
-    );
+    CREATE OR REPLACE PROCEDURE remove_tag_references(tag_id UUID)
+    LANGUAGE SQL
+    BEGIN ATOMIC
+      UPDATE creation SET tags = array_remove(tags, tag_id);
+    END;
 
-    CREATE TABLE IF NOT EXISTS litigation_decisions (
-      litigation_id UUID NOT NULL,
-      decision_id UUID UNIQUE NOT NULL,
-      CONSTRAINT litigation_id
-          FOREIGN KEY(litigation_id) 
-          REFERENCES litigation(litigation_id),
-      CONSTRAINT decision_id
-          FOREIGN KEY(decision_id) 
-          REFERENCES decision(decision_id)
-    );
+    CREATE OR REPLACE PROCEDURE remove_material_references(material_id UUID)
+    LANGUAGE SQL
+    BEGIN ATOMIC
+      UPDATE creation SET materials = array_remove(materials, material_id);
+    END;
   `
   );
 };

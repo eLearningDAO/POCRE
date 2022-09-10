@@ -133,6 +133,7 @@ export const deleteTagById = async (id: string): Promise<ITagDoc | null> => {
 
   try {
     await db.query(`DELETE FROM tag WHERE tag_id = $1;`, [id]);
+    await db.query(`CALL remove_tag_references($1);`, [id]); // remove this tag from everywhere it is used
     return tag;
   } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');

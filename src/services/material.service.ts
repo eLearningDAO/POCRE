@@ -155,6 +155,7 @@ export const deleteMaterialById = async (id: string): Promise<IMaterialDoc | nul
 
   try {
     await db.query(`DELETE FROM material WHERE material_id = $1;`, [id]);
+    await db.query(`CALL remove_material_references($1);`, [id]); // remove this material from everywhere it is used
     return material;
   } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
