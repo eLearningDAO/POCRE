@@ -145,15 +145,15 @@ const init = async (): Promise<QueryResult<any>> => {
 
     CREATE OR REPLACE PROCEDURE remove_tag_references(tag_id UUID)
     LANGUAGE SQL
-    BEGIN ATOMIC
+    AS $$
       UPDATE creation SET tags = array_remove(tags, tag_id);
-    END;
+    $$;
 
     CREATE OR REPLACE PROCEDURE remove_material_references(material_id UUID)
     LANGUAGE SQL
-    BEGIN ATOMIC
+    AS $$
       UPDATE creation SET materials = array_remove(materials, material_id);
-    END;
+    $$;
   `
   );
 };
