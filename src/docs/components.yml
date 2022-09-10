@@ -171,6 +171,41 @@ components:
         tag_description: improvement tag
         tag_created: 2022-09-06T19:00:00.000Z
 
+    Creation:
+      type: object
+      properties:
+        creation_id:
+          type: string
+          format: uuid
+        creation_title:
+          type: string
+        creation_description:
+          type: string
+        source_id:
+          type: string
+          format: uuid
+        author_id:
+          type: string
+          format: uuid
+        tags:
+          type: array
+          items: 
+            type: string
+            format: uuid
+        materials:
+          type: array
+          items: 
+            type: string
+            format: uuid
+      example:
+        creation_id: b1171878-797e-4f8a-a726-961f761bb8fc
+        creation_title: my first creation
+        creation_description: an example creation
+        source_id: d91f005d-2037-41b9-b706-0e70c651e4e2
+        author_id: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
+        tags: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
+        materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
+
     Error:
       type: object
       properties:
@@ -243,6 +278,15 @@ components:
           example:
             code: 409
             message: author already assigned to a material
+    AuthorAlreadyAssignedToCreation:
+      description: Author already assigned to a creation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: author already assigned to a creation
     StatusNotFound:
       description: Status not found
       content:
@@ -315,6 +359,15 @@ components:
           example:
             code: 409
             message: source already assigned to a material
+    SourceAlreadyAssignedToCreation:
+      description: Source already assigned to a creation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: source already assigned to a creation
     MaterialTypeNotFound:
       description: Material Type not found
       content:
@@ -341,7 +394,16 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 404
-            message: material not found    
+            message: material not found
+    MaterialAlreadyAssignedToCreation:
+      description: Material already assigned to a creation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: material already assigned to a creation    
     TagNotFound:
       description: Tag not found
       content:
@@ -351,3 +413,21 @@ components:
           example:
             code: 404
             message: tag not found
+    TagAlreadyAssignedToCreation:
+      description: Tag already assigned to a creation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: tag already assigned to a creation      
+    CreationNotFound:
+      description: Creation not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: creation not found
