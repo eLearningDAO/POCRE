@@ -6,6 +6,7 @@ import invitationRoute from './invitation.route';
 import sourceRoute from './source.route';
 import materialTypeRoute from './materialType.route';
 import materialRoute from './material.route';
+import tagRoute from './tag.route';
 import docsRoute from './docs.route';
 import config from '../../config/config';
 
@@ -39,6 +40,10 @@ const defaultRoutes = [
   {
     path: '/material',
     route: materialRoute,
+  },
+  {
+    path: '/tags',
+    route: tagRoute,
   },
 ];
 
