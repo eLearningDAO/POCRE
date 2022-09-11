@@ -40,7 +40,7 @@ const defaultRoutes = [
     route: materialTypeRoute,
   },
   {
-    path: '/material',
+    path: '/materials',
     route: materialRoute,
   },
   {

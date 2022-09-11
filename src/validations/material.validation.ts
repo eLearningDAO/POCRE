@@ -12,6 +12,13 @@ export const createMaterial = {
   }),
 };
 
+export const queryMaterials = {
+  query: Joi.object().keys({
+    limit: Joi.number().integer().default(10),
+    page: Joi.number().integer().default(1).greater(0),
+  }),
+};
+
 export const getMaterial = {
   params: Joi.object().keys({
     material_id: Joi.string().uuid().required(),

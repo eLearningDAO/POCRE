@@ -5,6 +5,11 @@ import { getUserById } from '../services/user.service';
 import { getInvitationById } from '../services/invitation.service';
 import { getMaterialTypeById } from '../services/materialType.service';
 
+export const queryMaterials = catchAsync(async (req, res): Promise<void> => {
+  const creation = await materialService.queryMaterials(req.query as any);
+  res.send(creation);
+});
+
 export const getMaterialById = catchAsync(async (req, res): Promise<void> => {
   const material = await materialService.getMaterialById(req.params.material_id);
   res.send(material);

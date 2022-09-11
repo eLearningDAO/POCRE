@@ -12,6 +12,17 @@ interface IMaterial {
   invite_id?: string;
   author_id: string;
 }
+interface IMaterialQuery {
+  limit: number;
+  page: number;
+}
+interface IMaterialQueryResult {
+  results: Array<IMaterialDoc>;
+  total_pages: number;
+  total_results: number;
+  limit: number;
+  page: number;
+}
 interface IMaterialDoc {
   material_id: string;
   material_title: string;
@@ -76,6 +87,32 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
     }
 
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
+  }
+};
+
+/**
+ * Query for materials
+ * @returns {Promise<Array<IMaterial>}
+ */
+export const queryMaterials = async (options: IMaterialQuery = { limit: 10, page: 1 }): Promise<IMaterialQueryResult> => {
+  try {
+    const result = await db.query(`SELECT * FROM material OFFSET $1 LIMIT $2;`, [
+      options.page === 1 ? '0' : (options.page - 1) * options.limit,
+      options.limit,
+    ]);
+    const materials = result.rows;
+
+    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM material;`, [])).rows[0];
+
+    return {
+      results: materials,
+      limit: options.limit,
+      page: options.page,
+      total_results: count.total_results,
+      total_pages: Math.ceil(count.total_results / options.limit),
+    };
+  } catch {
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
   }
 };
 

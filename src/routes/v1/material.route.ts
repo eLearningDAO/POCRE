@@ -5,7 +5,10 @@ import * as materialController from '../../controllers/material.controller';
 
 const router = express.Router();
 
-router.route('/').post(validate(materialValidation.createMaterial), materialController.createMaterial);
+router
+  .route('/')
+  .post(validate(materialValidation.createMaterial), materialController.createMaterial)
+  .get(validate(materialValidation.queryMaterials), materialController.queryMaterials);
 
 router
   .route('/:material_id')
