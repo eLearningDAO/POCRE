@@ -106,6 +106,7 @@ export const deleteDecisionById = async (id: string): Promise<IDecisionDoc | nul
 
   try {
     await db.query(`DELETE FROM decision WHERE decision_id = $1;`, [id]);
+    await db.query(`CALL remove_decision_references($1);`, [id]); // remove this decision from everywhere it is used
     return decision;
   } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');

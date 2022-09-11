@@ -154,6 +154,18 @@ const init = async (): Promise<QueryResult<any>> => {
     AS $$
       UPDATE creation SET materials = array_remove(materials, material_id);
     $$;
+
+    CREATE OR REPLACE PROCEDURE remove_invitation_references(invite_id UUID)
+    LANGUAGE SQL
+    AS $$
+      UPDATE litigation SET invitations = array_remove(invitations, invite_id);
+    $$;
+
+    CREATE OR REPLACE PROCEDURE remove_decision_references(decision_id UUID)
+    LANGUAGE SQL
+    AS $$
+      UPDATE litigation SET decisions = array_remove(decisions, decision_id);
+    $$;
   `
   );
 };

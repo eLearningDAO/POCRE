@@ -119,6 +119,7 @@ export const deleteInvitationById = async (id: string): Promise<IInvitationDoc |
 
   try {
     await db.query(`DELETE FROM invitation WHERE invite_id = $1;`, [id]);
+    await db.query(`CALL remove_invitation_references($1);`, [id]); // remove this invitation from everywhere it is used
     return invitation;
   } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
