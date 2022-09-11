@@ -27,7 +27,7 @@ export default router;
 
 /**
  * @swagger
- * /invitation:
+ * /invitations:
  *   post:
  *     summary: Create an invitation
  *     description: Creates a new invitation.
@@ -108,11 +108,57 @@ export default router;
  *                   message: user already sent an invitation
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
+ *
+ *   get:
+ *     summary: Get all invitations
+ *     description: Returns a list of invitations.
+ *     tags: [Invitation]
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         default: 10
+ *         description: Maximum number of invitations
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *     responses:
+ *       "200":
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Invitation'
+ *                 page:
+ *                   type: integer
+ *                   example: 1
+ *                 limit:
+ *                   type: integer
+ *                   example: 10
+ *                 total_pages:
+ *                   type: integer
+ *                   example: 1
+ *                 total_results:
+ *                   type: integer
+ *                   example: 1
+ *       "500":
+ *         $ref: '#/components/responses/InternalServerError'
  */
 
 /**
  * @swagger
- * /invitation/{invite_id}:
+ * /invitations/{invite_id}:
  *   get:
  *     summary: Get an invitation by id
  *     description: Get details about an invitation by its id
