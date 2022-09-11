@@ -11,6 +11,13 @@ export const createCreation = {
   }),
 };
 
+export const queryCreations = {
+  query: Joi.object().keys({
+    limit: Joi.number().integer().default(10),
+    page: Joi.number().integer().default(1).greater(0),
+  }),
+};
+
 export const getCreation = {
   params: Joi.object().keys({
     creation_id: Joi.string().uuid().required(),

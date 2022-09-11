@@ -48,7 +48,7 @@ const defaultRoutes = [
     route: tagRoute,
   },
   {
-    path: '/creation',
+    path: '/creations',
     route: creationRoute,
   },
   {

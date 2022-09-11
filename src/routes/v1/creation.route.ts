@@ -5,7 +5,10 @@ import * as creationController from '../../controllers/creation.controller';
 
 const router = express.Router();
 
-router.route('/').post(validate(creationValidation.createCreation), creationController.createCreation);
+router
+  .route('/')
+  .post(validate(creationValidation.createCreation), creationController.createCreation)
+  .get(validate(creationValidation.queryCreations), creationController.queryCreations);
 
 router
   .route('/:creation_id')

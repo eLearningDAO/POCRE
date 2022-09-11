@@ -11,6 +11,17 @@ interface ICreation {
   tags: string[];
   materials: string[];
 }
+interface ICreationQuery {
+  limit: number;
+  page: number;
+}
+interface ICreationQueryResult {
+  results: Array<ICreationDoc>;
+  total_pages: number;
+  total_results: number;
+  limit: number;
+  page: number;
+}
 interface ICreationDoc {
   creation_id: string;
   creation_title: string;
@@ -24,6 +35,7 @@ interface ICreationDoc {
 /**
  * Check if a creation has duplicate tags
  * @param {string[]} tags
+ * @param {string} exclude_creation
  * @returns {Promise<void>}
  */
 export const verifyCreationTagDuplicates = async (tags: string[], exclude_creation?: string): Promise<void> => {
@@ -54,6 +66,7 @@ export const verifyCreationTagDuplicates = async (tags: string[], exclude_creati
 /**
  * Check if a creation has duplicate materials
  * @param {string[]} materials
+ * @param {string} exclude_creation
  * @returns {Promise<void>}
  */
 export const verifyCreationMaterialDuplicates = async (materials: string[], exclude_creation?: string): Promise<void> => {
@@ -122,6 +135,32 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
     }
 
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
+  }
+};
+
+/**
+ * Query for creation
+ * @returns {Promise<Array<ICreation>}
+ */
+export const queryCreations = async (options: ICreationQuery = { limit: 10, page: 1 }): Promise<ICreationQueryResult> => {
+  try {
+    const result = await db.query(`SELECT * FROM creation OFFSET $1 LIMIT $2;`, [
+      options.page === 1 ? '0' : (options.page - 1) * options.limit,
+      options.limit,
+    ]);
+    const creations = result.rows;
+
+    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM creation;`, [])).rows[0];
+
+    return {
+      results: creations,
+      limit: options.limit,
+      page: options.page,
+      total_results: count.total_results,
+      total_pages: Math.ceil(count.total_results / options.limit),
+    };
+  } catch {
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
   }
 };
 

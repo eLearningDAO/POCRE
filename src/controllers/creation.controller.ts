@@ -5,6 +5,11 @@ import { getUserById } from '../services/user.service';
 import { getTagById } from '../services/tag.service';
 import { getMaterialById } from '../services/material.service';
 
+export const queryCreations = catchAsync(async (req, res): Promise<void> => {
+  const creation = await creationService.queryCreations(req.query as any);
+  res.send(creation);
+});
+
 export const getCreationById = catchAsync(async (req, res): Promise<void> => {
   const creation = await creationService.getCreationById(req.params.creation_id);
   res.send(creation);
