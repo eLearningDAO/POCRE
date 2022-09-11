@@ -206,6 +206,52 @@ components:
         tags: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
         materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
 
+    Litigation:
+      type: object
+      properties:
+        litigation_id:
+          type: string
+          format: uuid
+        litigation_title:
+          type: string
+        litigation_description:
+          type: string
+        material_id:
+          type: string
+          format: uuid
+        issuer_id:
+          type: string
+          format: uuid
+        invitations:
+          type: array
+          items: 
+            type: string
+            format: uuid
+        decisions:
+          type: array
+          items: 
+            type: string
+            format: uuid
+        litigation_start:
+          type: string
+          format: date-time
+        litigation_end:
+          type: string
+          format: date-time
+        reconcilate:
+          type: bool
+      example:
+        litigation_id: b1171878-797e-4f8a-a726-961f761bb8fc
+        litigation_title: my first creation
+        litigation_description: an example creation
+        material_id: d91f005d-2037-41b9-b706-0e70c651e4e2
+        issuer_id: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
+        invitations: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
+        decisions: [7b3439c6-a691-4a60-9e09-8235804c33fe]
+        litigation_start: 2022-09-06T19:00:00.000Z
+        litigation_end: 2022-09-06T19:00:00.000Z
+        reconcilate: false
+
     Error:
       type: object
       properties:
@@ -287,6 +333,15 @@ components:
           example:
             code: 409
             message: author already assigned to a creation
+    IssuerAlreadyAssignedToLitigation:
+      description: Issuer already assigned to a litigation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: issuer already assigned to a litigation
     StatusNotFound:
       description: Status not found
       content:
@@ -323,6 +378,15 @@ components:
           example:
             code: 409
             message: user already made a decision
+    DecisionAlreadyAssignedToLitigation:
+      description: Decision already assigned to a litigation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: decision already assigned to a litigation
     InvitationNotFound:
       description: Invitation not found
       content:
@@ -341,6 +405,15 @@ components:
           example:
             code: 409
             message: invitation already assigned to a material
+    InvitationAlreadyAssignedToLitigation:
+      description: Invitation already assigned to a litigation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: invitation already assigned to a litigation
     SourceNotFound:
       description: Source not found
       content:
@@ -403,7 +476,16 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: material already assigned to a creation    
+            message: material already assigned to a creation   
+    MaterialAlreadyAssignedToLitigation:
+      description: Material already assigned to a litigation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: material already assigned to a litigation    
     TagNotFound:
       description: Tag not found
       content:
@@ -421,7 +503,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: tag already assigned to a creation      
+            message: tag already assigned to a creation
     CreationNotFound:
       description: Creation not found
       content:
@@ -431,3 +513,12 @@ components:
           example:
             code: 404
             message: creation not found
+    LitigationNotFound:
+      description: Litigation not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: litigation not found
