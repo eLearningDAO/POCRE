@@ -22,12 +22,12 @@ export default router;
  * @swagger
  * tags:
  *   name: Creation
- *   description: Creation management and retrieval
+ *   description: Creations management and retrieval
  */
 
 /**
  * @swagger
- * /creation:
+ * /creations:
  *   post:
  *     summary: Create a creation
  *     description: Creates a new creation.
@@ -47,7 +47,7 @@ export default router;
  *             properties:
  *               creation_title:
  *                 type: string
- *               creation_Description:
+ *               creation_description:
  *                 type: string
  *                 description: can be null
  *               source_id:
@@ -142,14 +142,60 @@ export default router;
  *                   message: material already assigned to a creation
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
+ *
+ *   get:
+ *     summary: Get all creations
+ *     description: Returns a list of creations.
+ *     tags: [Creation]
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         default: 10
+ *         description: Maximum number of creations
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *     responses:
+ *       "200":
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Creation'
+ *                 page:
+ *                   type: integer
+ *                   example: 1
+ *                 limit:
+ *                   type: integer
+ *                   example: 10
+ *                 total_pages:
+ *                   type: integer
+ *                   example: 1
+ *                 total_results:
+ *                   type: integer
+ *                   example: 1
+ *       "500":
+ *         $ref: '#/components/responses/InternalServerError'
  */
 
 /**
  * @swagger
- * /creation/{creation_id}:
+ * /creations/{creation_id}:
  *   get:
  *     summary: Get a creation by id
- *     description: Get details about a creation by their id
+ *     description: Get details about a creation by its id
  *     tags: [Creation]
  *     parameters:
  *       - in: path
@@ -172,7 +218,7 @@ export default router;
  *
  *   patch:
  *     summary: Update a creation by id
- *     description: Update creation details by their id
+ *     description: Update creation details by its id
  *     tags: [Creation]
  *     parameters:
  *       - in: path
@@ -189,7 +235,7 @@ export default router;
  *             properties:
  *               creation_title:
  *                 type: string
- *               creation_Description:
+ *               creation_description:
  *                 type: string
  *                 description: can be null
  *               source_id:
@@ -293,7 +339,7 @@ export default router;
  *
  *   delete:
  *     summary: Delete a creation by id
- *     description: Deletes a creation by their id
+ *     description: Deletes a creation by its id
  *     tags: [Creation]
  *     parameters:
  *       - in: path
