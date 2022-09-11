@@ -27,7 +27,7 @@ export default router;
 
 /**
  * @swagger
- * /material:
+ * /materials:
  *   post:
  *     summary: Create a material
  *     description: Creates a new material.
@@ -142,11 +142,57 @@ export default router;
  *                   message: invitation already assigned to a material
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
+ *
+ *   get:
+ *     summary: Get all materials
+ *     description: Returns a list of materials.
+ *     tags: [Material]
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         default: 10
+ *         description: Maximum number of materials
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *     responses:
+ *       "200":
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Material'
+ *                 page:
+ *                   type: integer
+ *                   example: 1
+ *                 limit:
+ *                   type: integer
+ *                   example: 10
+ *                 total_pages:
+ *                   type: integer
+ *                   example: 1
+ *                 total_results:
+ *                   type: integer
+ *                   example: 1
+ *       "500":
+ *         $ref: '#/components/responses/InternalServerError'
  */
 
 /**
  * @swagger
- * /material/{material_id}:
+ * /materials/{material_id}:
  *   get:
  *     summary: Get a material by id
  *     description: Get details about a material by its id
