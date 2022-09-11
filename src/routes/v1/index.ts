@@ -28,7 +28,7 @@ const defaultRoutes = [
     route: decisionRoute,
   },
   {
-    path: '/invitation',
+    path: '/invitations',
     route: invitationRoute,
   },
   {

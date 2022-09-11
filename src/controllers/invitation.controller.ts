@@ -3,6 +3,11 @@ import * as invitationService from '../services/invitation.service';
 import { getUserById } from '../services/user.service';
 import { getStatusById } from '../services/status.service';
 
+export const queryInvitations = catchAsync(async (req, res): Promise<void> => {
+  const creation = await invitationService.queryInvitations(req.query as any);
+  res.send(creation);
+});
+
 export const getInvitationById = catchAsync(async (req, res): Promise<void> => {
   const invitation = await invitationService.getInvitationById(req.params.invite_id);
   res.send(invitation);

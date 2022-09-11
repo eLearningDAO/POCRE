@@ -5,7 +5,10 @@ import * as invitationController from '../../controllers/invitation.controller';
 
 const router = express.Router();
 
-router.route('/').post(validate(invitationValidation.createInvitation), invitationController.createInvitation);
+router
+  .route('/')
+  .post(validate(invitationValidation.createInvitation), invitationController.createInvitation)
+  .get(validate(invitationValidation.queryInvitations), invitationController.queryInvitations);
 
 router
   .route('/:invite_id')

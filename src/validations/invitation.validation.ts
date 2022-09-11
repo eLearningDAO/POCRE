@@ -9,6 +9,13 @@ export const createInvitation = {
   }),
 };
 
+export const queryInvitations = {
+  query: Joi.object().keys({
+    limit: Joi.number().integer().default(10),
+    page: Joi.number().integer().default(1).greater(0),
+  }),
+};
+
 export const getInvitation = {
   params: Joi.object().keys({
     invite_id: Joi.string().uuid().required(),

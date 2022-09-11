@@ -9,6 +9,17 @@ interface IInvitation {
   invite_description?: string;
   status_id: string;
 }
+interface IInvitationQuery {
+  limit: number;
+  page: number;
+}
+interface IInvitationQueryResult {
+  results: Array<IInvitationDoc>;
+  total_pages: number;
+  total_results: number;
+  limit: number;
+  page: number;
+}
 interface IInvitationDoc {
   invite_id: string;
   invite_from: string;
@@ -42,6 +53,34 @@ export const createInvitation = async (invitationBody: IInvitation): Promise<IIn
     }
 
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
+  }
+};
+
+/**
+ * Query for invitations
+ * @returns {Promise<Array<IInvitation>}
+ */
+export const queryInvitations = async (
+  options: IInvitationQuery = { limit: 10, page: 1 }
+): Promise<IInvitationQueryResult> => {
+  try {
+    const result = await db.query(`SELECT * FROM invitation OFFSET $1 LIMIT $2;`, [
+      options.page === 1 ? '0' : (options.page - 1) * options.limit,
+      options.limit,
+    ]);
+    const invitations = result.rows;
+
+    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM invitation;`, [])).rows[0];
+
+    return {
+      results: invitations,
+      limit: options.limit,
+      page: options.page,
+      total_results: count.total_results,
+      total_pages: Math.ceil(count.total_results / options.limit),
+    };
+  } catch {
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
   }
 };
 
