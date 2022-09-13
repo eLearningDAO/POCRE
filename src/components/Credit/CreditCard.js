@@ -1,7 +1,5 @@
 import { Typography } from '@mui/material';
 import React from 'react';
-import FacebookIcon from '../../assets/facebook.png';
-import InstagramIcon from '../../assets/instagram.png';
 import LinkedinIcon from '../../assets/linkedin.png';
 import TwitterIcon from '../../assets/twitter.png';
 import UserImage1 from '../../assets/user-image-3.png';
