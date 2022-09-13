@@ -45,8 +45,13 @@ body {
   Layout Design
 */
 .layout {
-  padding: 10px 120px;
-  min-height: 1020px;
+  padding-left: 64px;
+  padding-right: 64px;
+  /* padding: 10px 120px; */
+  /* min-height: 1020px; */
+  max-width: 1920px;
+  width: 100%;
+  margin: auto;
 }
 
 
@@ -55,7 +60,7 @@ body {
 /* 
   Header Design
 */
-.header {
+/* .header {
   height: 130px;
   margin-bottom: 40px;
 }
@@ -63,7 +68,7 @@ body {
 .header .logoContainer img {
   width: 210px;
   margin: 39px 0px;
-}
+} */
 
 .searchBar {
   margin-top: 50px !important;
@@ -118,7 +123,7 @@ body {
 /* 
   Header Menu Design
 */
-.menu ul {
+/* .menu ul {
   list-style-type: none;
   margin: 45px 5px;
   padding: 0px;
@@ -138,7 +143,7 @@ body {
   font-size: 17px;
   line-height: 150%;
   font-weight: 400;
-}
+} */
 
 
 
@@ -1292,7 +1297,7 @@ body {
     display: none;
   }
 
-  .header {
+  /* .header {
     height: 95px;
     margin-bottom: 70px;
   }
@@ -1305,11 +1310,13 @@ body {
   }
 
   .headerMenu ul li {
-  } 
+  }  */
 
   .layout {
-    padding: 10px 20px;
-    min-height: 1020px;
+    padding-left: 32px;
+    padding-right: 32px;
+    /* padding: 10px 20px; */
+    /* min-height: 1020px; */
   }
 
   .collectionTitleBox {
@@ -1684,7 +1691,7 @@ body {
     right: 1%;
   }
 
-  header {
+  /* header {
     padding: 0 20px;
     z-index: 99999999;
   }
@@ -1720,7 +1727,7 @@ body {
     padding: 10px 80px;
     margin-left: 41px;
     width: 150px;
-  }
+  } */
   
   .activeSidebarMenu {
     background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
@@ -1732,7 +1739,7 @@ body {
     color: #fff!important;
   }
 
-  header ul li a {
+  /* header ul li a {
     text-decoration: none;
     color: #32363C;
   }
@@ -1747,7 +1754,7 @@ body {
   header ul li a span {
     top: -3px;
     position: relative;
-  }
+  } */
 
   .non-responsive .searchBar {
       margin-top: 24px!important;    
@@ -1798,7 +1805,7 @@ body {
     display: none;
   }
 
-  .header {
+  /* .header {
     height: 95px;
     margin-bottom: 70px;
   }
@@ -1808,11 +1815,13 @@ body {
     overflow: initial;
     margin-top: 20px!important;
     gap: 0px;
-  }
+  } */
 
   .layout {
-    padding: 10px 20px;
-    min-height: 1020px;
+    padding-left: 16px;
+    padding-right: 16px;
+    /* padding: 10px 20px; */
+    /* min-height: 1020px; */
   }
 
   .collectionTitleBox {
@@ -2145,7 +2154,7 @@ body {
     padding: 0px 15px!important;
   }
 
-  header {
+  /* header {
     padding: 0 20px;
     z-index: 99999999;
   }
@@ -2181,7 +2190,7 @@ body {
     padding: 10px 80px;
     margin-left: 41px;
     width: 150px;
-  }
+  } */
   
   .activeSidebarMenu {
     background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
@@ -2193,7 +2202,7 @@ body {
     color: #fff!important;
   }
 
-  header ul li a {
+  /* header ul li a {
     text-decoration: none;
     color: #32363C;
   }
@@ -2208,7 +2217,7 @@ body {
   header ul li a span {
     top: -3px;
     position: relative;
-  }
+  } */
 
   .non-responsive .searchBar {
       margin-top: 24px!important;    

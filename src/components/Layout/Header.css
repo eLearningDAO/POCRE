@@ -1,0 +1,31 @@
+.header {
+  min-height: 112px;
+  max-height: 112px;
+}
+
+.site-logo {
+  height: auto;
+  width: 200px;
+}
+
+.site-nav ul {
+  list-style-type: none;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding: 0px;
+}
+
+.site-nav ul li {
+  padding: 12px 0px;
+}
+
+.site-nav ul li a {
+  text-decoration: none;
+  color: #32363C;
+  font-size: 17px;
+  font-weight: 400;
+}
