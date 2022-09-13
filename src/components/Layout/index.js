@@ -2,7 +2,7 @@ import './Layout.css';
 import { Grid } from '@mui/material';
 import React from 'react';
 import TrandingNews from '../TrandingNews/index';
-import Footer from './Footer';
+import Footer from './Footer/Footer';
 import Header from './Header/Header';
 import SideBar from './Sidebar';
 

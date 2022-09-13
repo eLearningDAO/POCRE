@@ -1,7 +1,7 @@
 import './Layout.css';
 import { Grid } from '@mui/material';
 import React from 'react';
-import Footer from './Footer';
+import Footer from './Footer/Footer';
 import Header from './Header/Header';
 
 function HomeLayout({ children }) {
