@@ -1,20 +1,20 @@
-import React from 'react';
-import Footer from './Footer';
-import Header from './Header';
-import SideBar from './Sidebar';
-
-import { Grid } from '@mui/material';
-import TrandingNews from '../TrandingNews/index';
 import './Layout.css';
+import { Grid } from '@mui/material';
+import React from 'react';
+import TrandingNews from '../TrandingNews/index';
+import Footer from './Footer';
+import Header from './Header/Header';
+import SideBar from './Sidebar';
 
 function MainLayout({ children }) {
   return (
     <>
-      <Grid className='layout'>
+      <Grid className="layout">
         <Header />
+
         <Grid container spacing={4}>
-          <Grid item md={2.5} className='sidebarResponsive'>
-            <SideBar /> 
+          <Grid item md={2.5} className="sidebarResponsive">
+            <SideBar />
           </Grid>
           <Grid item md={9.5} xs={12} sm={12}>
             <Grid container>
@@ -27,8 +27,8 @@ function MainLayout({ children }) {
             </Grid>
           </Grid>
         </Grid>
+        <Footer />
       </Grid>
-      <Footer />
     </>
   );
 }
