@@ -13,7 +13,7 @@ const Credit = () => {
             </Grid>
 
             <Grid item md={12} className='topContributorSection'>
-                {[1, 2, 3, 4, 5, 6, 7, 8, ].map((singleCredit) => {
+                {[1, 2, 3, 4, 5, 6, ].map((singleCredit) => {
                     return (
                         <CreditCard />
                     );
@@ -27,7 +27,7 @@ const Credit = () => {
             </Grid>
 
             <Grid item md={12}  className='otherContributorSection'>
-                {[1, 2, 3, 4, 5, 6, 7, 8, ].map((singleCredit) => {
+                {[1, 2, 3, 4, ].map((singleCredit) => {
                     return (
                         <OtherContributerCard />
                     );

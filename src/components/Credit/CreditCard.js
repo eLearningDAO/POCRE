@@ -27,10 +27,8 @@ export default function CreditCard() {
             </Typography>
 
             <div className='creditCardIcons'>
-                <img src={FacebookIcon} alt="" />
                 <img src={TwitterIcon} alt="" />
                 <img src={LinkedinIcon} alt="" />
-                <img src={InstagramIcon} alt="" />
             </div>
         </div>
     </div>
