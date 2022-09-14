@@ -26,7 +26,7 @@ import logo from "../../../assets/logo-1.png";
 // import MenuIcon5 from "../../../assets/wallet-icon.png";
 // import MenuIcon5Active from "../../../assets/wallet-icon-2.png";
 import "./Header.css";
-import SideBar from '../Sidebar';
+import SideBar from '../Sidebar/Sidebar';
 
 const duration = 200000;
 

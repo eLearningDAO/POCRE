@@ -4,7 +4,7 @@ import React from 'react';
 import TrandingNews from '../TrandingNews/index';
 import Footer from './Footer/Footer';
 import Header from './Header/Header';
-import SideBar from './Sidebar';
+import SideBar from './Sidebar/Sidebar';
 
 function MainLayout({ children }) {
   return (

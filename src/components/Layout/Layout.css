@@ -45,13 +45,36 @@ body {
   Layout Design
 */
 .layout {
-  padding-left: 64px;
-  padding-right: 64px;
   /* padding: 10px 120px; */
   /* min-height: 1020px; */
   max-width: 1920px;
   width: 100%;
   margin: auto;
+}
+
+
+/* PHONES */
+@media (max-width: 599px) {
+  .layout {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+/* TABLETS */
+@media (min-width: 600px) {
+  .layout {
+    padding-left: 36px;
+    padding-right: 36px;
+  }  
+}
+
+/* DESKTOPS */
+@media (min-width: 1200px) {
+  .layout {
+    padding-left: 64px;
+    padding-right: 64px;
+  }  
 }
 
 
@@ -150,14 +173,13 @@ body {
 /* 
   Sidebar Design
 */
-.sidebar {
+/* .sidebar {
   padding: 20px;
   display: flex;
   background: #FAFBFC;
   min-height: 300px;
   border-radius: 25px;
   width: 85%;
-  /* margin-top: 47px; */
 }
 
 .sidebar ul {
@@ -201,7 +223,7 @@ body {
 
 .activeSidebarMenu a {
   color: #fff!important;
-}
+} */
 
 
 
@@ -1328,8 +1350,8 @@ body {
   }  */
 
   .layout {
-    padding-left: 32px;
-    padding-right: 32px;
+    /* padding-left: 32px;
+    padding-right: 32px; */
     /* padding: 10px 20px; */
     /* min-height: 1020px; */
   }
@@ -1744,7 +1766,7 @@ body {
     width: 150px;
   } */
   
-  .activeSidebarMenu {
+  /* .activeSidebarMenu {
     background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
     border-radius: 100px;
     box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
@@ -1752,7 +1774,7 @@ body {
 
   .activeSidebarMenu a {
     color: #fff!important;
-  }
+  } */
 
   /* header ul li a {
     text-decoration: none;
@@ -1833,8 +1855,8 @@ body {
   } */
 
   .layout {
-    padding-left: 16px;
-    padding-right: 16px;
+    /* padding-left: 16px;
+    padding-right: 16px; */
     /* padding: 10px 20px; */
     /* min-height: 1020px; */
   }
@@ -2207,7 +2229,7 @@ body {
     width: 150px;
   } */
   
-  .activeSidebarMenu {
+  /* .activeSidebarMenu {
     background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
     border-radius: 100px;
     box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
@@ -2215,7 +2237,7 @@ body {
 
   .activeSidebarMenu a {
     color: #fff!important;
-  }
+  } */
 
   /* header ul li a {
     text-decoration: none;
