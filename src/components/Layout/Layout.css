@@ -157,7 +157,7 @@ body {
   min-height: 300px;
   border-radius: 25px;
   width: 85%;
-  margin-top: 47px;
+  /* margin-top: 47px; */
 }
 
 .sidebar ul {
@@ -193,6 +193,10 @@ body {
 .sidebar ul li a span {
   top: -3px;
   position: relative;
+}
+
+.activeSidebarMenu {
+  max-width: 400px;
 }
 
 .activeSidebarMenu a {
@@ -1276,6 +1280,17 @@ body {
   width: 50%;
   height: 35px;
 }
+.responsiveClearIcon {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.responsiveClearIcon button {
+  height: 40px;
+  color: #071011;
+  min-width: 40px!important;
+}
 
 
 
@@ -1785,7 +1800,7 @@ body {
 
   .responsiveClearIcon {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
   }
 
@@ -2248,7 +2263,7 @@ body {
 
   .responsiveClearIcon {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
   }
 

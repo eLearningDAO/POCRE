@@ -1,52 +1,56 @@
-// import './responsive-menu-transition.css';
-// import ClearIcon from '@mui/icons-material/Clear';
-// import MenuIcon from '@mui/icons-material/Menu';
+import '../responsive-menu-transition.css';
+import ClearIcon from '@mui/icons-material/Clear';
+import MenuIcon from '@mui/icons-material/Menu';
 import {
   // Button,
   Grid,
+  // Fade,
+  Button,
+  Box
   // TextField
 } from '@mui/material';
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-// import { CSSTransition } from 'react-transition-group';
-// import MenuIcon4 from "../../assets/bank-icon.png";
-// import MenuIcon4Active from "../../assets/bank-icon-2.png";
-// import MenuIcon2 from "../../assets/book-icon.png";
-// import MenuIcon2Active from "../../assets/book-icon-2.png";
-// import MenuIcon6 from "../../assets/credit.png";
-// import MenuIcon6Active from "../../assets/credit-icon-2.png";
-// import MenuIcon3 from "../../assets/envelope-icon.png";
-// import MenuIcon3Active from "../../assets/envelope-icon-2.png";
-// import icon1 from "../../assets/icon-1.png";
-// import icon2 from "../../assets/icon-2.png";
+import { CSSTransition } from 'react-transition-group';
+// import MenuIcon4 from "../../../assets/bank-icon.png";
+// import MenuIcon4Active from "../../../assets/bank-icon-2.png";
+// import MenuIcon2 from "../../../assets/book-icon.png";
+// import MenuIcon2Active from "../../../assets/book-icon-2.png";
+// import MenuIcon6 from "../../../assets/credit.png";
+// import MenuIcon6Active from "../../../assets/credit-icon-2.png";
+// import MenuIcon3 from "../../../assets/envelope-icon.png";
+// import MenuIcon3Active from "../../../assets/envelope-icon-2.png";
+// import icon1 from "../../../assets/icon-1.png";
+// import icon2 from "../../../assets/icon-2.png";
 import logo from "../../../assets/logo-1.png";
-// import MenuIcon5 from "../../assets/wallet-icon.png";
-// import MenuIcon5Active from "../../assets/wallet-icon-2.png";
+// import MenuIcon5 from "../../../assets/wallet-icon.png";
+// import MenuIcon5Active from "../../../assets/wallet-icon-2.png";
 import "./Header.css";
+import SideBar from '../Sidebar';
 
-// const duration = 200000;
+const duration = 200000;
 
-// const Fade = (props) => {
-//   return (
-//     <CSSTransition classNames="alert" in={props.inProp} timeout={duration} unmountOnExit>
-//       {props.children}
-//     </CSSTransition>
-//   );
-// };
+const Fade = (props) => {
+  return (
+    <CSSTransition classNames="alert" in={props.inProp} timeout={duration} unmountOnExit onExit={props.onExit}>
+      {props.children}
+    </CSSTransition>
+  );
+};
 
 function HomeHeader({ displayNav = false }) {
   const location = useLocation();
 
-  // const [displayResponsiveMenu, setDisplayResponsiveMenu] = React.useState(false);
+  const [displayResponsiveMenu, setDisplayResponsiveMenu] = React.useState(false);
 
   return (
     <Grid container className="header" alignItems='center'>
       <Grid
         item
         md={3}
-        display='flex'
         justifyContent='flex-start'
         alignItems='center'
+        display={{ xs: 'none', sm: 'none', md: 'flex' }}
       >
         <Link to="/"><img alt='logo' src={logo} className='site-logo' /></Link>
       </Grid>
@@ -60,19 +64,15 @@ function HomeHeader({ displayNav = false }) {
           className='searchBar' fullWidth placeholder="Search for online course" id="fullWidth" />
       </Grid> */}
 
-      <Grid item md={6} alignItems='center'>
+      <Grid
+        item
+        md={6}
+        alignItems='center'
+        justifyContent="center"
+        flexWrap='wrap'
+        display={{ xs: 'none', sm: 'none', md: 'flex' }}
+      >
         {displayNav && <nav className='site-nav'>
-        <ul>
-            <li className={location.pathname === '/creations' ? 'activeSidebarMenu' : ''}><Link to='/creations'>Creations</Link></li>
-            <li className={location.pathname === '/invitation' ? 'activeSidebarMenu' : ''} ><Link to='/invitation'>Invitation</Link></li>
-            <li className={location.pathname === '/litigation' ? 'activeSidebarMenu' : ''} ><Link to='/litigation'>Litigation</Link></li>
-            <li className={location.pathname === '/wallet' ? 'activeSidebarMenu' : ''} ><Link to='/wallet'>Wallet</Link></li>
-            <li className={location.pathname === '/credit' ? 'activeSidebarMenu' : ''} ><Link to='/credit'>Credit</Link></li>
-          </ul>
-        </nav>}
-        {/* {displayNav && <nav
-         className="site-nav"
-        >
           <ul>
             <li className={location.pathname === '/creations' ? 'activeSidebarMenu' : ''}><Link to='/creations'>Creations</Link></li>
             <li className={location.pathname === '/invitation' ? 'activeSidebarMenu' : ''} ><Link to='/invitation'>Invitation</Link></li>
@@ -80,16 +80,21 @@ function HomeHeader({ displayNav = false }) {
             <li className={location.pathname === '/wallet' ? 'activeSidebarMenu' : ''} ><Link to='/wallet'>Wallet</Link></li>
             <li className={location.pathname === '/credit' ? 'activeSidebarMenu' : ''} ><Link to='/credit'>Credit</Link></li>
           </ul>
-        </nav>} */}
+        </nav>}
       </Grid>
 
-      {/* <Grid item xs={6} className='non-responsive responsiveMenuBar'>
-        <Button onClick={(e) => setDisplayResponsiveMenu(true)}><MenuIcon /></Button>
-      </Grid> */}
+      <Grid item xs={3}
+        marginRight='auto'
+        justifyContent='flex-start'
+        alignItems='flex-start'
+        display={{ xs: 'flex', sm: 'flex', md: 'none' }}>
+        <Button style={{ minWidth: 'initial', padding: '24', backgroundColor: '#ffffff', borderRadius: '4px' }} onClick={() => setDisplayResponsiveMenu(!displayResponsiveMenu)}><MenuIcon color='black' /></Button>
+      </Grid>
 
       <Grid
         item
         md={3}
+        marginLeft='auto'
         display='flex'
         justifyContent='flex-end'
         alignItems='center'
@@ -113,49 +118,53 @@ function HomeHeader({ displayNav = false }) {
           className='searchBar' fullWidth placeholder="Search for online course" id="fullWidth" />
       </Grid> */}
 
-      {/* <Fade inProp={displayResponsiveMenu}>
-        <header>
-          <nav>
-            <Grid container>
-              <Grid item xs={10} className='logoContainer'>
-                <Link onClick={() => setDisplayResponsiveMenu(false)} to="/"><img alt='logo' src={logo} /></Link>
-              </Grid>
-
-              <Grid item xs={2} className='responsiveClearIcon'>
-                <Button onClick={() => setDisplayResponsiveMenu(false)}><ClearIcon /></Button>
-              </Grid>
+      {/* <Fade
+        inProp={displayResponsiveMenu}
+        onExit={() => setDisplayResponsiveMenu(false)}
+      > */}
+      {displayResponsiveMenu && <Box component="header" className="site-popup-menu" padding="2" display={{ md: 'none' }}>
+        <nav>
+          <Grid container className='site-popup-header' alignItems='center' justifyContent='space-between'>
+            <Grid item xs={8} paddingTop="12" paddingLeft="12" alignItems='center'>
+              <Link onClick={() => setDisplayResponsiveMenu(false)} to="/"><img alt='logo' src={logo} className='site-logo' /></Link>
             </Grid>
 
-          <ul>
-            <li className={location.pathname === '/creations'? 'activeSidebarMenu' : ''}>
-              <Link onClick={() => setDisplayResponsiveMenu(false)} to='/creations'>
-                <img alt="menu-icon" src={location.pathname === '/creations' ? MenuIcon2Active : MenuIcon2} /> <span>Creations</span> 
-              </Link>
-            </li>
-            <li className={location.pathname === '/invitation'? 'activeSidebarMenu' : ''} >
-              <Link onClick={() => setDisplayResponsiveMenu(false)}  to='/invitation'>
-                <img alt="menu-icon" src={location.pathname === '/invitation' ? MenuIcon3Active : MenuIcon3} /><span>Invitation</span>
-              </Link>
-            </li>
-            <li className={location.pathname === '/litigation'? 'activeSidebarMenu' : ''} >
-              <Link onClick={() => setDisplayResponsiveMenu(false)}  to='/litigation'>
-                <img alt="menu-icon" src={location.pathname === '/litigation' ? MenuIcon4Active : MenuIcon4} /> <span>Litigation</span>
-              </Link>
-            </li>
-            <li className={location.pathname === '/wallet'? 'activeSidebarMenu' : ''} >
-              <Link onClick={() => setDisplayResponsiveMenu(false)}  to='/wallet'>
-                <img alt="menu-icon" src={location.pathname === '/wallet' ? MenuIcon5Active : MenuIcon5}  />  <span>Wallet</span> 
-              </Link>
-            </li>
-            <li className={location.pathname === '/credit'? 'activeSidebarMenu' : ''} >
-              <Link onClick={() => setDisplayResponsiveMenu(false)}  to='/credit'>
-                <img alt="menu-icon" src={location.pathname === '/credit' ? MenuIcon6Active : MenuIcon6}  />  <span>Credit</span> 
-              </Link>
-            </li>
-          </ul>
-          </nav>
-        </header>
-      </Fade> */}
+            <Grid item xs={4} className='responsiveClearIcon'>
+              <Button onClick={() => setDisplayResponsiveMenu(false)}><ClearIcon fontSize="large" /></Button>
+            </Grid>
+          </Grid>
+
+          <SideBar />
+          {/* <ul className="sidebar">
+              <li className={location.pathname === '/creations' ? 'activeSidebarMenu' : ''}>
+                <Link onClick={() => setDisplayResponsiveMenu(false)} to='/creations'>
+                  <img alt="menu-icon" src={location.pathname === '/creations' ? MenuIcon2Active : MenuIcon2} /> <span>Creations</span>
+                </Link>
+              </li>
+              <li className={location.pathname === '/invitation' ? 'activeSidebarMenu' : ''} >
+                <Link onClick={() => setDisplayResponsiveMenu(false)} to='/invitation'>
+                  <img alt="menu-icon" src={location.pathname === '/invitation' ? MenuIcon3Active : MenuIcon3} /><span>Invitation</span>
+                </Link>
+              </li>
+              <li className={location.pathname === '/litigation' ? 'activeSidebarMenu' : ''} >
+                <Link onClick={() => setDisplayResponsiveMenu(false)} to='/litigation'>
+                  <img alt="menu-icon" src={location.pathname === '/litigation' ? MenuIcon4Active : MenuIcon4} /> <span>Litigation</span>
+                </Link>
+              </li>
+              <li className={location.pathname === '/wallet' ? 'activeSidebarMenu' : ''} >
+                <Link onClick={() => setDisplayResponsiveMenu(false)} to='/wallet'>
+                  <img alt="menu-icon" src={location.pathname === '/wallet' ? MenuIcon5Active : MenuIcon5} />  <span>Wallet</span>
+                </Link>
+              </li>
+              <li className={location.pathname === '/credit' ? 'activeSidebarMenu' : ''} >
+                <Link onClick={() => setDisplayResponsiveMenu(false)} to='/credit'>
+                  <img alt="menu-icon" src={location.pathname === '/credit' ? MenuIcon6Active : MenuIcon6} />  <span>Credit</span>
+                </Link>
+              </li>
+            </ul> */}
+        </nav>
+      </Box>}
+      {/* </Fade> */}
     </Grid>
   );
 }
