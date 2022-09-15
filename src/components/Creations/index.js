@@ -1,7 +1,7 @@
 import { Button, Grid, TextField, Typography } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import LearnHowToImage from '../../assets/learnhowto.png';
+// import LearnHowToImage from '../../assets/learnhowto.png';
 import CollectionCard from './CollectionCard/CollectionCard';
 
 const Creations = () => {
@@ -35,7 +35,7 @@ const Creations = () => {
         );
       })}
 
-      <Grid item xs={12} sm={12} md={9}>
+      {/* <Grid item xs={12} sm={12} md={9}>
         <Typography className='inviationHeaderTitle invitationSentSection' variant='h6'>Trending Collections</Typography>
 
         {[1, 2, 3].map(i => {
@@ -53,7 +53,7 @@ const Creations = () => {
         <div className='learnHowToImage'>
           <img src={LearnHowToImage} alt=""/>
         </div>
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 }
