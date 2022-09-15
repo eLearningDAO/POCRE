@@ -1,18 +1,17 @@
 import { Grid, Typography } from "@mui/material";
-import CommentIcon from '../../assets/comment.png';
-import CreationCardImg from '../../assets/creation-card.png';
-import DislikeIcon from '../../assets/dislike.png';
-import DownloadIcon from '../../assets/download.png';
-import LikeIcon from '../../assets/like.png';
-import PencilIcon from '../../assets/pencil.png';
-import ShareIcon from '../../assets/share.png';
-import UserImage1 from '../../assets/top-learner-user.png';
-import UserImage2 from '../../assets/user-image-2.jpeg';
+import CommentIcon from '../../../assets/comment.png';
+import CreationCardImg from '../../../assets/creation-card.png';
+import DislikeIcon from '../../../assets/dislike.png';
+import DownloadIcon from '../../../assets/download.png';
+import LikeIcon from '../../../assets/like.png';
+import PencilIcon from '../../../assets/pencil.png';
+import ShareIcon from '../../../assets/share.png';
+import UserImage1 from '../../../assets/top-learner-user.png';
+import UserImage2 from '../../../assets/user-image-2.jpeg';
+import "./CollectionCard.css"
 
 function CollectionCard(props) {
   const { interactionBtns } = props;
-
-  console.log(interactionBtns);
 
   return (
     <Grid container className="invitationCard collectionCard">

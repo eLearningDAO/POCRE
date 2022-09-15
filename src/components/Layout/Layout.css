@@ -381,7 +381,7 @@ body {
   margin-top: 40px!important;
 }
 
-.invitationCard {
+/* .invitationCard {
   box-sizing: border-box;
   width: 995px;
   height: 131px;
@@ -417,7 +417,7 @@ body {
   border-radius: 10px;
   color: #00B2FF;
   margin-top: 10px;
-}
+} */
 
 .chipPending {
   margin-top: 10px;
@@ -427,7 +427,7 @@ body {
   border-radius: 10px !important;
   color: #fff!important;
 }
-
+/* 
 .invitationCardRight {
   display: flex;
   justify-content: space-between;
@@ -449,7 +449,7 @@ body {
   flex-direction: column;
   align-items: flex-end;
   justify-content: flex-end;
-}
+} */
 
 .postedImage {
   display: flex;
@@ -503,11 +503,11 @@ body {
 
 
 /* Collection */
-.collectionCardLeftText {
+/* .collectionCardLeftText {
   height: 80px;
   margin: 10px;
   border-right: 1.45649px solid #EEF0F3;
-}
+} */
 
 
 
@@ -1121,7 +1121,7 @@ body {
 
 
 /** Creations **/
-.collectionCard {
+/* .collectionCard {
   padding: 14px 7px;
 }
 
@@ -1132,7 +1132,7 @@ body {
 .collectionCardLeftImage {
   width: 135px!important;
   padding: 0px 10px;
-}
+} */
 
 .collectionTitleBox {
   display: flex;
@@ -1161,7 +1161,7 @@ body {
   color: #fff!important;
 }
 
-.collectionFollowerImages {
+/* .collectionFollowerImages {
   padding: 5px 10px;
   width: 200px;
 }
@@ -1186,7 +1186,7 @@ body {
   justify-content: space-around;
   align-items: center;
   padding: 0px 20px;
-}
+} */
 
 
 .socialIcons {
@@ -1216,7 +1216,7 @@ body {
   height: 25px;
 }
 
-.collectionRightButton {
+/* .collectionRightButton {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1232,7 +1232,7 @@ body {
   background: #F5F9FD;
   border-radius: 15px;
   padding: 10px;
-}
+} */
 
 .learnHowToImage {
   width: 100%;
@@ -1372,7 +1372,7 @@ body {
     width: 62%!important;
   }
 
-  .collectionCard {
+  /* .collectionCard {
     width: 76% !important;
     height: 100%!important;
     justify-content: flex-start;
@@ -1395,9 +1395,9 @@ body {
 
   .collectionCardLeftImage img {
     width: 100%!important;
-  }
+  } */
 
-  .collectionFollowerDateCreated {
+  /* .collectionFollowerDateCreated {
     width: 200px;
     margin: 10px;
     border-right: none;
@@ -1413,13 +1413,13 @@ body {
   .collectionRightButton {
     height: 40px;
     margin-top: 5px;
-  }
+  } */
 
   .collectionAddNew {
     width: 105px!important;
   }
 
-  .invitationCard {
+  /* .invitationCard {
     height: 100%;
   }
 
@@ -1444,13 +1444,13 @@ body {
     gap: 15px;
     align-items: center;
     justify-content: center;
-  }
+  } */
 
   .acceptButton span, .declineButton span {
     font-size: 15px;
   }
 
-  .invitationCardLeftButton {
+  /* .invitationCardLeftButton {
     gap: 15px;
   }
 
@@ -1473,7 +1473,7 @@ body {
 
   .invitationCardLeftButton .chipPreview span, .invitationCardLeftButton .chipPending span {
     font-size: 14px;
-  }
+  } */
 
   .courseCard {
     height: 29.5%;
@@ -1513,9 +1513,9 @@ body {
     height: 35px;
   }
 
-  .invitationCardRightButton {
+  /* .invitationCardRightButton {
     margin-bottom: 20px;
-  }
+  } */
 
   .trandingNewsCardTextParagraph {
     text-align: justify;
@@ -1877,7 +1877,7 @@ body {
     width: 62%!important;
   }
 
-  .collectionCard {
+  /* .collectionCard {
     width: 76% !important;
     height: 100%!important;
     justify-content: flex-start;
@@ -1900,9 +1900,9 @@ body {
 
   .collectionCardLeftImage img {
     width: 100%!important;
-  }
+  } */
 
-  .collectionFollowerDateCreated {
+  /* .collectionFollowerDateCreated {
     width: 200px;
     margin: 10px;
     border-right: none;
@@ -1918,13 +1918,13 @@ body {
   .collectionRightButton {
     height: 40px;
     margin-top: 5px;
-  }
+  } */
 
   .collectionAddNew {
     width: 105px!important;
   }
 
-  .invitationCard {
+  /* .invitationCard {
     height: 100%;
   }
 
@@ -1949,13 +1949,13 @@ body {
     gap: 15px;
     align-items: center;
     justify-content: center;
-  }
+  } */
 
   .acceptButton span, .declineButton span {
     font-size: 15px;
   }
 
-  .invitationCardLeftButton {
+  /* .invitationCardLeftButton {
     gap: 15px;
   }
 
@@ -1978,7 +1978,7 @@ body {
 
   .invitationCardLeftButton .chipPreview span, .invitationCardLeftButton .chipPending span {
     font-size: 14px;
-  }
+  } */
 
   .courseCard {
     height: 29.5%;
@@ -2018,9 +2018,9 @@ body {
     height: 35px;
   }
 
-  .invitationCardRightButton {
+  /* .invitationCardRightButton {
     margin-bottom: 20px;
-  }
+  } */
 
   .trandingNewsCardTextParagraph {
     text-align: justify;

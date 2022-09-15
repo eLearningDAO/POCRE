@@ -2,7 +2,7 @@ import { Button, Grid, TextField, Typography } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import LearnHowToImage from '../../assets/learnhowto.png';
-import CollectionCard from './CollectionCard';
+import CollectionCard from './CollectionCard/CollectionCard';
 
 const Creations = () => {
   const navigate = useNavigate();

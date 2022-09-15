@@ -1,0 +1,223 @@
+.collectionCardLeftText {
+  height: 80px;
+  margin: 10px;
+  border-right: 1.45649px solid #EEF0F3;
+}
+
+.collectionCard {
+  padding: 14px 7px;
+}
+
+.collectionCardLeft {
+  padding: 0px;
+}
+
+.collectionCardLeftImage {
+  width: 135px !important;
+  padding: 0px 10px;
+}
+
+.collectionFollowerImages {
+  padding: 5px 10px;
+  width: 200px;
+}
+
+.collectionFollowerImages img {
+  box-sizing: border-box;
+  width: 50px;
+  height: 50px;
+  border: 1.45649px solid #FFFFFF;
+  filter: drop-shadow(4.36946px 2.91297px 24.7603px rgba(200, 209, 216, 0.35));
+  border-radius: 32px;
+  margin-left: -17px;
+}
+
+.collectionFollowerDateCreated {
+  height: 80px;
+  width: 200px;
+  margin: 10px;
+  border-right: 1.45649px solid #EEF0F3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0px 20px;
+}
+
+.collectionRightButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 20px;
+  width: 100%;
+  height: 100px;
+}
+
+.collectionRightButton img {
+  width: 25px;
+  height: 25px;
+  background: #F5F9FD;
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.invitationCard {
+  box-sizing: border-box;
+  width: 995px;
+  height: 131px;
+  background: #FFFFFF;
+  border: 1px solid #EBEFF0;
+  box-shadow: 0px 10px 58px rgba(122, 97, 96, 0.31);
+  border-radius: 20px;
+  padding: 15px 20px;
+}
+
+.invitationCardLeft {
+  display: flex;
+  gap: 15px;
+}
+
+.invitationCardLeftText h6 {
+  font-size: 18px;
+  color: #272727;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
+.invitationCardLeftText span {
+  font-size: 16px;
+  color: #32363C;
+  font-weight: 300;
+}
+
+.invitationCardLeftButton .chipPreview {
+  width: 110px;
+  height: 35px;
+  background: rgba(0, 178, 255, 0.1);
+  border-radius: 10px;
+  color: #00B2FF;
+  margin-top: 10px;
+}
+
+
+.invitationCardRight {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.invitationCardRightUser {
+  margin-top: 6px;
+}
+
+.invitationCardRightUser h6 {
+  font-size: 16px;
+  line-height: 150%;
+  color: #272727;
+}
+
+.invitationCardRightButton {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+@media (max-width: 599px) {
+  .collectionCard {
+    width: 76% !important;
+    height: 100%!important;
+    justify-content: flex-start;
+    padding: 15px;
+  }
+
+  .collectionCardLeft {
+    display: block;
+    gap: 0px;
+  }
+
+  .collectionCardLeftText {
+    border: none!important;
+  }
+
+  .collectionCardLeftImage {
+    padding: 0px;
+    width: 100%!important;
+  }
+
+  .collectionCardLeftImage img {
+    width: 100%!important;
+  }
+
+  .collectionFollowerDateCreated {
+    width: 200px;
+    margin: 10px;
+    border-right: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: unset!important;
+    align-items: unset!important;
+    padding: 0px!important;
+    height: 50px;
+  }
+
+  .collectionRightButton {
+    height: 40px;
+    margin-top: 5px;
+  }
+
+
+  .invitationCard {
+    height: 100%;
+  }
+
+  .invitationCardRight {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 20px;
+  } 
+
+  .invitationCardLeft {
+    gap: 10px;
+  }
+
+  .invitationCardLeftText span {
+    font-size: 15px;
+    line-height: 23px;
+  }
+
+  .invitationCardRightButton {
+    flex-direction: row;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .invitationCardLeftButton {
+    gap: 15px;
+  }
+
+  .invitationCardLeftImage {
+    min-width: 63px;
+  }
+
+  .invitationCardLeftImage img {
+    height: 100%;
+    min-width: 90px;
+    max-width: 90px;
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .invitationCardLeftButton .chipPending, .invitationCardLeftButton .chipPreview {
+    width: 78px !important;
+    height: 35px !important;
+  }
+
+  .invitationCardLeftButton .chipPreview span, .invitationCardLeftButton .chipPending span {
+    font-size: 14px;
+  }
+}
