@@ -6,17 +6,20 @@ import Footer from './Footer/Footer';
 import Header from './Header/Header';
 import SideBar from './Sidebar/Sidebar';
 
-function MainLayout({ children }) {
+function Layout({ children, displayNav, displaySidebar }) {
   return (
     <>
       <Grid className="layout">
-        <Header />
+        <Header displayNav={displayNav} />
 
-        <Grid container spacing={4}>
-          <Grid item md={2.5} className="sidebarResponsive">
+        {displaySidebar ? <Grid container spacing={{ md: 2, lg: 4 }} marginTop="8px">
+          <Grid item md={3}
+            marginTop="52px"
+            display={{ xs: 'none', sm: 'none', md: 'inherit' }}
+          >
             <SideBar />
           </Grid>
-          <Grid item md={9.5} xs={12} sm={12}>
+          <Grid item xs={12} md={9}>
             <Grid container>
               <Grid item xs={12}>
                 {children}
@@ -26,11 +29,15 @@ function MainLayout({ children }) {
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
+        </Grid> : <Grid container>
+          <Grid item xs={12}>
+            {children}
+          </Grid>
+        </Grid>}
         <Footer />
       </Grid>
     </>
   );
 }
 
-export default MainLayout;
+export default Layout;

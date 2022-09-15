@@ -6,6 +6,7 @@
   min-height: 300px;
   border-radius: 25px;
   width: 100%;
+  height: fit-content;
 }
 
 .sidebar ul {
