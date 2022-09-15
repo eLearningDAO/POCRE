@@ -3,6 +3,7 @@ import React from 'react';
 import StepOne from './Steps/One';
 import StepTwo from './Steps/Two';
 import StepThree from './Steps/Three';
+import "./index.css"
 
 const CreateCollection = () => {
 
@@ -21,26 +22,18 @@ const CreateCollection = () => {
   }
 
   return ( 
-    <Grid container>
-      <Grid item xs={12}>
-        <Typography className='inviationHeaderTitle' variant='h6'>New Collection - Step 0{`${step}`}</Typography>
+    <Grid container spacing={2}>
+      <Grid item xs={12} padding={{ xs: '12px', md: '0' }}>
+        <Typography className='heading h4' variant='h4'>New Creation - Step 0{`${step}`}</Typography>
       </Grid>
 
-      {step === 1 && (
-        <StepOne />
-      )}
-
-      {step === 2 && (
-        <StepTwo />
-      )}
-
-      {step === 3 && (
-        <StepThree />
-      )}
+      {step === 1 && <StepOne />}
+      {step === 2 && <StepTwo />}
+      {step === 3 && <StepThree />}
 
       <Grid item xs={12} className='collectionButtons'>
-        <Button onClick={back} className='backCollectionButton'>Back</Button>
-        <Button onClick={next} className='nextCollectionButton'>Next</Button>
+        {step > 1 && <Button onClick={back} className='backCollectionButton'>Back</Button>}
+        {step < 3 && <Button onClick={next} className='nextCollectionButton'>Next</Button>}
       </Grid>
     </Grid>
   );
