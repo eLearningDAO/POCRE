@@ -17,6 +17,7 @@ function CollectionCard(props) {
     <Grid container className="collection-card"
       gap={{ xs: '24px', md: "32px" }}
       maxWidth={{ xs: '300px', sm: '400px', md: '100%' }}
+      minWidth={{ xs: '300px', sm: '400px', md: '100%' }}
       flexWrap={{md: "nowrap"}}
       >
 

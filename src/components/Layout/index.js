@@ -14,7 +14,7 @@ function Layout({ children, displayNav, displaySidebar }) {
 
         {displaySidebar ? <Grid container spacing={{ md: 2, lg: 4 }} marginTop="8px">
           <Grid item md={3}
-            marginTop="52px"
+            marginTop="56px"
             display={{ xs: 'none', sm: 'none', md: 'inherit' }}
           >
             <SideBar />

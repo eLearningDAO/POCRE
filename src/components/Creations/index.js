@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 // import LearnHowToImage from '../../assets/learnhowto.png';
 import CollectionCard from './CollectionCard/CollectionCard';
+import "./index.css"
 
 const Creations = () => {
   const navigate = useNavigate();
@@ -11,29 +12,43 @@ const Creations = () => {
     navigate('/scenario-1/create-collection');
   }
 
-  return ( 
+  return (
     <Grid container spacing={2}>
-      
-      <Grid item xs={12} className='collectionTitleBox'>
-        <Typography className='inviationHeaderTitle' variant='h6'>My Collection</Typography>
-        <div className='collectionTitleBoxButton'>
+
+      <Grid
+        item
+        xs={12}
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        height="fit-content"
+        padding={{ xs: '12px', md: '0' }}
+      >
+        <Typography className='heading h4' variant='h6'>My Collection</Typography>
+        <Grid gap={{ sm: "8px" }} display="flex" height="fit-content" flexDirection="row">
           <TextField variant="standard"
             InputProps={{
               disableUnderline: true,
-              style: { padding: '8px 17px', color: '#32363C' },
+              padding: 0
             }}
-            className='searchBarCollection' fullWidth placeholder="Search" id="fullWidth" />
-          <Button onClick={add} className='collectionAddNew'>+ Add New</Button>
-        </div>
+            fullWidth
+            className='input search-bar' placeholder="Search" id="fullWidth" />
+          <Button onClick={add} className='btn btn-primary'>+ Add New</Button>
+        </Grid>
       </Grid>
 
-      {[1, 2, 3].map(i => {
-        return (
-          <Grid item xs={12} style={{ paddingTop: '10px' }}>
-            <CollectionCard interactionBtns={true} />
-          </Grid>
-        );
-      })}
+      <Grid xs={12}
+        item
+        display="flex"
+        flexDirection={{ xs: 'row', md: 'column' }}
+        overflow={{ xs: 'scroll', md: "initial" }}
+        bgcolor="transparent"
+        gap={{ xs: '16px' }}
+        className="hidden-scrollbar"
+        padding={{ xs: '12px', md: '0' }}
+      >
+        {[1, 2, 3, 4, 5].map(() => <CollectionCard interactionBtns={true} />)}
+      </Grid>
 
       {/* <Grid item xs={12} sm={12} md={9}>
         <Typography className='inviationHeaderTitle invitationSentSection' variant='h6'>Trending Collections</Typography>
@@ -57,5 +72,5 @@ const Creations = () => {
     </Grid>
   );
 }
- 
+
 export default Creations;

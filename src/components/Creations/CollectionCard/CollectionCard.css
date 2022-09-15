@@ -98,9 +98,6 @@
 }
 
 @media(min-width: 1200px) {
-  .collection-card {
-    /* max-height: 240px; */
-  }
   .collection-card-image {
     width: 280px;
     max-width: 280px;
