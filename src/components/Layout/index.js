@@ -1,7 +1,7 @@
 import './Layout.css';
 import { Grid } from '@mui/material';
 import React from 'react';
-import TrandingNews from '../TrandingNews/index';
+// import TrandingNews from '../TrandingNews/index';
 import Footer from './Footer/Footer';
 import Header from './Header/Header';
 import SideBar from './Sidebar/Sidebar';
@@ -24,9 +24,9 @@ function Layout({ children, displayNav, displaySidebar }) {
               <Grid item xs={12}>
                 {children}
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <TrandingNews />
-              </Grid>
+              </Grid> */}
             </Grid>
           </Grid>
         </Grid> : <Grid container>
