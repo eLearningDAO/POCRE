@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { CSSTransition } from 'react-transition-group';
+// import { CSSTransition } from 'react-transition-group';
 // import MenuIcon4 from "../../../assets/bank-icon.png";
 // import MenuIcon4Active from "../../../assets/bank-icon-2.png";
 // import MenuIcon2 from "../../../assets/book-icon.png";
@@ -28,15 +28,15 @@ import logo from "../../../assets/logo-1.png";
 import "./Header.css";
 import SideBar from '../Sidebar/Sidebar';
 
-const duration = 200000;
+// const duration = 200000;
 
-const Fade = (props) => {
-  return (
-    <CSSTransition classNames="alert" in={props.inProp} timeout={duration} unmountOnExit onExit={props.onExit}>
-      {props.children}
-    </CSSTransition>
-  );
-};
+// const Fade = (props) => {
+//   return (
+//     <CSSTransition classNames="alert" in={props.inProp} timeout={duration} unmountOnExit onExit={props.onExit}>
+//       {props.children}
+//     </CSSTransition>
+//   );
+// };
 
 function HomeHeader({ displayNav = false }) {
   const location = useLocation();
