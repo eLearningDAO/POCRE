@@ -2,8 +2,8 @@ import React from 'react';
 import { Button, Grid, TextField, Typography } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import QrCode from '../../../assets/qr.png';
-import GreenRightIcon from '../../../assets/green-right.png';
+import QrCode from '../../../../assets/qr.png';
+import GreenRightIcon from '../../../../assets/green-right.png';
 
 export default function StepThree() {
  return (

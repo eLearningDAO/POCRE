@@ -1,8 +1,8 @@
 import { Button, Grid, Typography } from '@mui/material';
 import React from 'react';
-import StepOne from './StepOne';
-import StepThree from './StepThree';
-import StepTwo from './StepTwo';
+import StepOne from './Steps/One';
+import StepTwo from './Steps/Two';
+import StepThree from './Steps/Three';
 
 const CreateCollection = () => {
 

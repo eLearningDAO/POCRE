@@ -17,30 +17,30 @@ function SideBar() {
   return (
     <div className="sidebar">
       <ul>
-        {/* <li className={location.pathname === '/course'? 'activeSidebarMenu' : ''}><Link  to='/course'><img alt="menu-icon" src={MenuIcon1} /> Course </Link></li> */}
-        <li className={location.pathname === '/creations' ? 'activeSidebarMenu' : ''}>
+        {/* <li className={location.pathname.includes('/course')? 'activeSidebarMenu' : ''}><Link  to='/course'><img alt="menu-icon" src={MenuIcon1} /> Course </Link></li> */}
+        <li className={location.pathname.includes('/creations') ? 'activeSidebarMenu' : ''}>
           <Link to='/creations'>
-            <img alt="menu-icon" src={location.pathname === '/creations' ? MenuIcon2Active : MenuIcon2} /><span>Creations</span>
+            <img alt="menu-icon" src={location.pathname.includes('/creations') ? MenuIcon2Active : MenuIcon2} /><span>Creations</span>
           </Link>
         </li>
-        <li className={location.pathname === '/invitation' ? 'activeSidebarMenu' : ''} >
+        <li className={location.pathname.includes('/invitation') ? 'activeSidebarMenu' : ''} >
           <Link to='/invitation'>
-            <img alt="menu-icon" src={location.pathname === '/invitation' ? MenuIcon3Active : MenuIcon3} /><span>Invitation</span>
+            <img alt="menu-icon" src={location.pathname.includes('/invitation') ? MenuIcon3Active : MenuIcon3} /><span>Invitation</span>
           </Link>
         </li>
-        <li className={location.pathname === '/litigation' ? 'activeSidebarMenu' : ''} >
+        <li className={location.pathname.includes('/litigation') ? 'activeSidebarMenu' : ''} >
           <Link to='/litigation'>
-            <img alt="menu-icon" src={location.pathname === '/litigation' ? MenuIcon4Active : MenuIcon4} /><span>Litigation</span>
+            <img alt="menu-icon" src={location.pathname.includes('/litigation') ? MenuIcon4Active : MenuIcon4} /><span>Litigation</span>
           </Link>
         </li>
-        <li className={location.pathname === '/wallet' ? 'activeSidebarMenu' : ''} >
+        <li className={location.pathname.includes('/wallet') ? 'activeSidebarMenu' : ''} >
           <Link to='/wallet'>
-            <img alt="menu-icon" src={location.pathname === '/wallet' ? MenuIcon5Active : MenuIcon5} /><span>Wallet</span>
+            <img alt="menu-icon" src={location.pathname.includes('/wallet') ? MenuIcon5Active : MenuIcon5} /><span>Wallet</span>
           </Link>
         </li>
-        <li className={location.pathname === '/credit' ? 'activeSidebarMenu' : ''} >
+        <li className={location.pathname.includes('/credit') ? 'activeSidebarMenu' : ''} >
           <Link to='/credit'>
-            <img alt="menu-icon" src={location.pathname === '/credit' ? MenuIcon6Active : MenuIcon6} /><span>Credit</span>
+            <img alt="menu-icon" src={location.pathname.includes('/credit') ? MenuIcon6Active : MenuIcon6} /><span>Credit</span>
           </Link>
         </li>
       </ul>

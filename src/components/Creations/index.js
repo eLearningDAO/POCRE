@@ -9,7 +9,7 @@ const Creations = () => {
   const navigate = useNavigate();
 
   const add = () => {
-    navigate('/scenario-1/create-collection');
+    navigate('/creations/create');
   }
 
   return (
