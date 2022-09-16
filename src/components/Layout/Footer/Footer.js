@@ -10,7 +10,7 @@ function Footer() {
       </Grid>
       <Grid item md={6} xs={3} display="flex" justifyContent="flex-end" alignItems="center">
         <a href="https://twitter.com/eLearningDAO">
-          <img src={TwitterIcon} alt="" />
+          <img src={TwitterIcon} alt="@eLearningDAO" />
         </a>
       </Grid>
     </Grid>
