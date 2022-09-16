@@ -15,7 +15,7 @@ export default function OtherContributerCard() {
             </Typography>
 
             <Typography variant='h6'>
-                Ideator, Coordinator, Developer, e-Learning DAO member
+                Ideator, Coordinator, Developer
             </Typography>
         </div>
     </div>

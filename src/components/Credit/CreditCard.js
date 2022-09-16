@@ -17,11 +17,11 @@ export default function CreditCard() {
             </Typography>
 
             <Typography variant='h6'>
-                CEO & Founder
+                e-Learning DAO member
             </Typography>
 
             <Typography variant='span'>
-                Reference site about Lorem Ipsum, giving information
+                Short bio and role in Pocre
             </Typography>
 
             <div className='creditCardIcons'>
