@@ -24,7 +24,7 @@ const Creations = () => {
         height="fit-content"
         padding={{ xs: '12px', md: '0' }}
       >
-        <Typography className='heading h4' variant='h4'>My Collection</Typography>
+        <Typography className='heading h4' variant='h4'>My Creations</Typography>
         <Grid gap={{ sm: "8px" }} display="flex" height="fit-content" flexDirection="row">
           <TextField variant="standard"
             InputProps={{
@@ -51,7 +51,7 @@ const Creations = () => {
       </Grid>
 
       {/* <Grid item xs={12} sm={12} md={9}>
-        <Typography className='inviationHeaderTitle invitationSentSection' variant='h4'>Trending Collections</Typography>
+        <Typography className='inviationHeaderTitle invitationSentSection' variant='h4'>Trending Creations</Typography>
 
         {[1, 2, 3].map(i => {
           return (

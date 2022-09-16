@@ -26,14 +26,14 @@ const Wallet = () => {
               </div>
 
               <div className='userDetailsChip'>
-                <Chip className='chip' label='Author of 10 Collections' />
+                <Chip className='chip' label='Author of 10 Creations' />
                 <Chip className='chip' label='120 Followers' />
               </div>
             </Grid>
             <Grid container className='userDetails'>
               <Grid item md={12} spacing={5} className='userDetailsRight'>
                 <Button className='collectionButton' onClick={handleClickSeeCollection}>
-                  View My Collections
+                  View My Creations
                 </Button>
 
                 <Button className='collectionButton2' onClick={handleClickNewCollection}>

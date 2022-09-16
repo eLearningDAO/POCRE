@@ -14,7 +14,7 @@ const Home = () => {
       </Grid>
 
       <Grid item md={5} xs={12} sm={12}>
-        <Typography className='inviationHeaderTitle homepageTitle' variant='h6'>Trending Collections</Typography>
+        <Typography className='inviationHeaderTitle homepageTitle' variant='h6'>Trending Creations</Typography>
       
         {[1, 2, 3].map((card) => (
           <CourseCard />

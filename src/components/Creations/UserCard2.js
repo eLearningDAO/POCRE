@@ -14,7 +14,7 @@ export default function UserCard() {
             <Typography variant='span'>User experience designer</Typography>
 
             <div className='userCardChips'>
-                <Chip className='chip' label='10 Collections' />
+                <Chip className='chip' label='10 Creations' />
                 <Chip className='chip' label='120 Followers' />
             </div>
         </div>
