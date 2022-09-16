@@ -23,7 +23,7 @@ const CreateCollection = () => {
   return ( 
     <Grid container>
       <Grid item xs={12}>
-        <Typography className='inviationHeaderTitle' variant='h6'>New Collection - Step 0{`${step}`}</Typography>
+        <Typography className='inviationHeaderTitle' variant='h6'>New Creation - Step 0{`${step}`}</Typography>
       </Grid>
 
       {step === 1 && (

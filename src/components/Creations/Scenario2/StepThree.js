@@ -12,7 +12,7 @@ export default function StepThree() {
 
             <Grid container item md={7} xs={12}>
                 <Grid md={3} xs={12}>
-                    <Typography className='collectionFieldTitle'>Collection Data</Typography>
+                    <Typography className='collectionFieldTitle'>Creation Data</Typography>
                 </Grid>
                 <Grid md={9} xs={12}>
                     <Button className='transparentGreenButton'>

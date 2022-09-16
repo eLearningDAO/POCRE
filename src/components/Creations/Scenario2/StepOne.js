@@ -15,7 +15,7 @@ export default function StepOne() {
                     InputProps={{
                         disableUnderline: true,
                         style: { padding: '8px 20px' },
-                    }} className='collectionField' fullWidth placeholder="Collection title" />
+                    }} className='collectionField' fullWidth placeholder="Creation title" />
             </Grid>
 
             <Grid md={2} xs={12}>
@@ -27,7 +27,7 @@ export default function StepOne() {
                     InputProps={{
                         disableUnderline: true,
                         style: { padding: '8px 20px' },
-                    }} className='collectionField collectionDesc' fullWidth placeholder="Select Collection" />
+                    }} className='collectionField collectionDesc' fullWidth placeholder="Select Creation" />
             </Grid>
 
             <Grid md={2} xs={12}>
@@ -39,7 +39,7 @@ export default function StepOne() {
                     InputProps={{
                         disableUnderline: true,
                         style: { padding: '8px 20px' },
-                    }} className='collectionField' fullWidth placeholder="Select Collection" />
+                    }} className='collectionField' fullWidth placeholder="Select Creation" />
             </Grid>
 
             <Grid md={2} xs={12}>

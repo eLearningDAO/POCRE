@@ -12,7 +12,7 @@ export default function StepThree() {
 
                 <Grid container item md={7} xs={12}>
                     <Grid md={3} xs={12} paddingRight="12px">
-                        <Typography className='heading'>Collection Data</Typography>
+                        <Typography className='heading'>Creation Data</Typography>
                     </Grid>
                     <Grid md={9} xs={12} marginTop={{ xs: "12px", md: "0px" }}>
                         <Button className='transparentGreenButton'>

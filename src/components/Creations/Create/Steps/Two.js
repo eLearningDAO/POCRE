@@ -14,7 +14,7 @@ export default function StepTwo() {
                         variant="standard"
                         InputProps={{
                             disableUnderline: true,
-                        }} className='input input-dark' fullWidth placeholder="Collection title" />
+                        }} className='input input-dark' fullWidth placeholder="Creation title" />
                 </Grid>
 
                 <Grid md={2} xs={12} marginTop={{ xs: "12px", md: "0px" }} paddingLeft={{ md: "24px" }} display="flex" flexDirection="row" alignItems="center">
@@ -36,7 +36,7 @@ export default function StepTwo() {
                         variant="standard"
                         InputProps={{
                             disableUnderline: true,
-                        }} className='input input-dark' fullWidth placeholder="Collection source (Google drive, Youtube, etc)" />
+                        }} className='input input-dark' fullWidth placeholder="Creation link (Google drive, Youtube, etc)" />
                 </Grid>
 
                 <Grid xs={12} md={2} marginTop={{ xs: "12px", md: "18px" }} display="flex" flexDirection="row" alignItems="center">
