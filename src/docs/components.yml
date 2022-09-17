@@ -197,6 +197,9 @@ components:
           items: 
             type: string
             format: uuid
+        creation_date:
+          type: string
+          format: date-time
       example:
         creation_id: b1171878-797e-4f8a-a726-961f761bb8fc
         creation_title: my first creation
@@ -205,6 +208,7 @@ components:
         author_id: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
         tags: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
         materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
+        creation_date: 2022-09-16T19:00:00.000Z
 
     Litigation:
       type: object
@@ -495,15 +499,6 @@ components:
           example:
             code: 404
             message: tag not found
-    TagAlreadyAssignedToCreation:
-      description: Tag already assigned to a creation
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 409
-            message: tag already assigned to a creation
     CreationNotFound:
       description: Creation not found
       content:
