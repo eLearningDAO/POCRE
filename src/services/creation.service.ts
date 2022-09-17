@@ -100,9 +100,6 @@ export const verifyCreationMaterialDuplicates = async (materials: string[], excl
  * @returns {Promise<ICreationDoc>}
  */
 export const createCreation = async (creationBody: ICreation): Promise<ICreationDoc> => {
-  // verify if tag/s already exist for a creation, throw error if a tag is found
-  await verifyCreationTagDuplicates(creationBody.tags);
-
   // verify if material/s already exist for a creation, throw error if a material is found
   await verifyCreationMaterialDuplicates(creationBody.materials);
 
@@ -192,9 +189,6 @@ export const getCreationById = async (id: string): Promise<ICreationDoc | null> 
  */
 export const updateCreationById = async (id: string, updateBody: Partial<ICreation>): Promise<ICreationDoc | null> => {
   await getCreationById(id); // check if creation exists, throws error if not found
-
-  // verify if tag/s already exist for another creation, throw error if a tag is found
-  if (updateBody.tags) await verifyCreationTagDuplicates(updateBody.tags, id);
 
   // verify if material/s already exist for another creation, throw error if a material is found
   if (updateBody.materials) await verifyCreationMaterialDuplicates(updateBody.materials, id);
