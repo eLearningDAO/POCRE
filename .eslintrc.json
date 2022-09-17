@@ -1,0 +1,54 @@
+{
+    "parserOptions": {
+      "ecmaVersion": 2020,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "env": {
+      "browser": true,
+      "node": true,
+      "es6": true
+    },
+    "plugins": [
+      "security",
+      "simple-import-sort",
+      "sonarjs",
+      "unicorn"
+    ],
+    "extends": [
+      "airbnb",
+      "plugin:security/recommended",
+      "plugin:sonarjs/recommended",
+      "plugin:unicorn/recommended"
+    ],
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    },
+    "rules": {
+      "no-console": "error",
+      "sonarjs/cognitive-complexity": "error",
+      "sonarjs/no-identical-expressions": "error",
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
+      "react/jsx-props-no-spreading": "off",
+      "react/button-has-type": "off",
+      "unicorn/filename-case": "off",
+      "import/no-extraneous-dependencies": "off",
+      "sonarjs/no-nested-template-literals": "off",
+      "security/detect-object-injection": "off",
+      "unicorn/text-encoding-identifier-case": "off",
+      "sonarjs/cognitive-complexity": "off",
+      "react/jsx-filename-extension" : "off",
+      "unicorn/no-null": "off",
+      "import/export": "off",
+      "unicorn/prefer-query-selector":"off",
+      "unicorn/no-static-only-class":"off",
+      "import/prefer-default-export": "off",
+      "sonarjs/no-duplicate-string": "off",
+      "no-restricted-syntax": "off"
+    }
+  }

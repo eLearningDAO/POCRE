@@ -20,6 +20,20 @@
     "slick-carousel": "^1.8.1",
     "web-vitals": "^2.1.4"
   },
+  "devDependencies": {
+    "eslint": "8.11.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "eslint-plugin-security": "^1.4.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-sonarjs": "^0.12.0",
+    "eslint-plugin-unicorn": "^41.0.1",
+    "husky": "^8.0.1",
+    "lint-staged": "^12.3.7"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
