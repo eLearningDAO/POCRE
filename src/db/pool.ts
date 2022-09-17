@@ -116,6 +116,7 @@ const init = async (): Promise<QueryResult<any>> => {
       author_id UUID UNIQUE NOT NULL,
       tags UUID[],
       materials UUID[],
+      creation_date DATE NOT NULL DEFAULT CURRENT_DATE,
       CONSTRAINT source_id
           FOREIGN KEY(source_id) 
           REFERENCES source(source_id),
