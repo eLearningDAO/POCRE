@@ -20,7 +20,7 @@ export const createCreation = catchAsync(async (req, res): Promise<void> => {
   await getSourceById(req.body.source_id as string); // verify source, will throw an error if source not found
   await getUserById(req.body.author_id as string); // verify user, will throw an error if user not found
   await Promise.all(req.body.tags.map((id: string) => getTagById(id))); // verify tags, will throw an error if any tag is not found
-  await Promise.all(req.body.materials.map((id: string) => getMaterialById(id))); // verify materials, will throw an error if any material is not found
+  if (req.body.materials) await Promise.all(req.body.materials.map((id: string) => getMaterialById(id))); // verify materials, will throw an error if any material is not found
 
   const newCreation = await creationService.createCreation(req.body);
   res.send(newCreation);

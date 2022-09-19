@@ -9,7 +9,7 @@ interface ICreation {
   source_id: string;
   author_id: string;
   tags: string[];
-  materials: string[];
+  materials?: string[];
 }
 interface ICreationQuery {
   limit: number;
@@ -101,7 +101,7 @@ export const verifyCreationMaterialDuplicates = async (materials: string[], excl
  */
 export const createCreation = async (creationBody: ICreation): Promise<ICreationDoc> => {
   // verify if material/s already exist for a creation, throw error if a material is found
-  await verifyCreationMaterialDuplicates(creationBody.materials);
+  if (creationBody.materials) await verifyCreationMaterialDuplicates(creationBody.materials);
 
   try {
     const result = await db.query(
@@ -116,7 +116,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
         creationBody.source_id,
         creationBody.author_id,
         creationBody.tags,
-        creationBody.materials,
+        creationBody.materials || [],
       ]
     );
     const creation = result.rows[0];

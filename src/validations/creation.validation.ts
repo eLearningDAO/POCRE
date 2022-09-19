@@ -7,7 +7,7 @@ export const createCreation = {
     source_id: Joi.string().uuid().required(),
     author_id: Joi.string().uuid().required(),
     tags: Joi.array().items(Joi.string().uuid()).unique().required().min(1),
-    materials: Joi.array().items(Joi.string().uuid()).unique().required().min(1),
+    materials: Joi.array().items(Joi.string().uuid()).unique().optional().min(1),
   }),
 };
 
