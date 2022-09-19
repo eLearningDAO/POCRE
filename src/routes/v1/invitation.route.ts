@@ -89,7 +89,6 @@ export default router;
  *               oneOf:
  *                 - $ref: '#/components/responses/StatusAlreadyAssignedToInvitation'
  *                 - $ref: '#/components/responses/UserAlreadyInvitedToInvitation'
- *                 - $ref: '#/components/responses/UserAlreadySentInvitation'
  *             examples:
  *               StatusAlreadyAssignedToInvitation:
  *                 summary: status already assigned to an invitation
@@ -101,11 +100,6 @@ export default router;
  *                 value:
  *                   code: 409
  *                   message: user already invited to an invitation
- *               UserAlreadySentInvitation:
- *                 summary: user already sent an invitation
- *                 value:
- *                   code: 409
- *                   message: user already sent an invitation
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *
@@ -252,7 +246,6 @@ export default router;
  *               oneOf:
  *                 - $ref: '#/components/responses/StatusAlreadyAssignedToInvitation'
  *                 - $ref: '#/components/responses/UserAlreadyInvitedToInvitation'
- *                 - $ref: '#/components/responses/UserAlreadySentInvitation'
  *             examples:
  *               StatusAlreadyAssignedToInvitation:
  *                 summary: status already assigned to an invitation
@@ -264,11 +257,6 @@ export default router;
  *                 value:
  *                   code: 409
  *                   message: user already invited to an invitation
- *               UserAlreadySentInvitation:
- *                 summary: user already sent an invitation
- *                 value:
- *                   code: 409
- *                   message: user already sent an invitation
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *
