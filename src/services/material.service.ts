@@ -79,8 +79,6 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
     if (err.message && err.message.includes('duplicate key')) {
       if (err.message.includes('source_id'))
         throw new ApiError(httpStatus.CONFLICT, `source already assigned to a material`);
-      if (err.message.includes('author_id'))
-        throw new ApiError(httpStatus.CONFLICT, `author already assigned to a material`);
       if (err.message.includes('type_id')) throw new ApiError(httpStatus.CONFLICT, `type already assigned to a material`);
       if (err.message.includes('invite_id'))
         throw new ApiError(httpStatus.CONFLICT, `invitation already assigned to a material`);
@@ -171,8 +169,6 @@ export const updateMaterialById = async (id: string, updateBody: Partial<IMateri
     if (err.message && err.message.includes('duplicate key')) {
       if (err.message.includes('source_id'))
         throw new ApiError(httpStatus.CONFLICT, `source already assigned to a material`);
-      if (err.message.includes('author_id'))
-        throw new ApiError(httpStatus.CONFLICT, `author already assigned to a material`);
       if (err.message.includes('type_id')) throw new ApiError(httpStatus.CONFLICT, `type already assigned to a material`);
       if (err.message.includes('invite_id'))
         throw new ApiError(httpStatus.CONFLICT, `invitation already assigned to a material`);

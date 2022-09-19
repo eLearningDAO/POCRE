@@ -93,7 +93,7 @@ const init = async (): Promise<QueryResult<any>> => {
       source_id UUID UNIQUE NOT NULL,
       type_id UUID UNIQUE NOT NULL,
       invite_id UUID UNIQUE,
-      author_id UUID UNIQUE NOT NULL,
+      author_id UUID NOT NULL,
       CONSTRAINT source_id
           FOREIGN KEY(source_id) 
           REFERENCES source(source_id),
