@@ -49,7 +49,7 @@ const init = async (): Promise<QueryResult<any>> => {
 
     CREATE TABLE IF NOT EXISTS invitation (
       invite_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      invite_from UUID UNIQUE NOT NULL,
+      invite_from UUID NOT NULL,
       invite_to UUID UNIQUE NOT NULL,
       invite_description text,
       invite_issued DATE NOT NULL DEFAULT CURRENT_DATE,

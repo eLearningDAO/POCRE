@@ -47,7 +47,6 @@ export const createInvitation = async (invitationBody: IInvitation): Promise<IIn
     if (err.message && err.message.includes('duplicate key')) {
       if (err.message.includes('status_id'))
         throw new ApiError(httpStatus.CONFLICT, `status already assigned to an invitation`);
-      if (err.message.includes('invite_from')) throw new ApiError(httpStatus.CONFLICT, `user already sent an invitation`);
       if (err.message.includes('invite_to'))
         throw new ApiError(httpStatus.CONFLICT, `user already invited to an invitation`);
     }
@@ -139,7 +138,6 @@ export const updateInvitationById = async (id: string, updateBody: Partial<IInvi
     if (err.message && err.message.includes('duplicate key')) {
       if (err.message.includes('status_id'))
         throw new ApiError(httpStatus.CONFLICT, `status already assigned to an invitation`);
-      if (err.message.includes('invite_from')) throw new ApiError(httpStatus.CONFLICT, `user already sent an invitation`);
       if (err.message.includes('invite_to'))
         throw new ApiError(httpStatus.CONFLICT, `user already invited to an invitation`);
     }
