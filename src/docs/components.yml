@@ -301,15 +301,6 @@ components:
           example:
             code: 404
             message: user not found
-    AuthorAlreadyAssignedToMaterial:
-      description: Author already assigned to a material
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 409
-            message: author already assigned to a material
     IssuerAlreadyAssignedToLitigation:
       description: Issuer already assigned to a litigation
       content:

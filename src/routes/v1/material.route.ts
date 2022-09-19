@@ -116,7 +116,6 @@ export default router;
  *             schema:
  *               oneOf:
  *                 - $ref: '#/components/responses/SourceAlreadyAssignedToMaterial'
- *                 - $ref: '#/components/responses/AuthorAlreadyAssignedToMaterial'
  *                 - $ref: '#/components/responses/MaterialTypeAlreadyAssignedToMaterial'
  *                 - $ref: '#/components/responses/InvitationAlreadyAssignedToMaterial'
  *             examples:
@@ -125,11 +124,6 @@ export default router;
  *                 value:
  *                   code: 409
  *                   message: source already assigned to a material
- *               AuthorAlreadyAssignedToMaterial:
- *                 summary: author already assigned to a material
- *                 value:
- *                   code: 409
- *                   message: author already assigned to a material
  *               MaterialTypeAlreadyAssignedToMaterial:
  *                 summary: material type already assigned to a material
  *                 value:
@@ -311,7 +305,6 @@ export default router;
  *             schema:
  *               oneOf:
  *                 - $ref: '#/components/responses/SourceAlreadyAssignedToMaterial'
- *                 - $ref: '#/components/responses/AuthorAlreadyAssignedToMaterial'
  *                 - $ref: '#/components/responses/MaterialTypeAlreadyAssignedToMaterial'
  *                 - $ref: '#/components/responses/InvitationAlreadyAssignedToMaterial'
  *             examples:
@@ -320,11 +313,6 @@ export default router;
  *                 value:
  *                   code: 409
  *                   message: source already assigned to a material
- *               AuthorAlreadyAssignedToMaterial:
- *                 summary: author already assigned to a material
- *                 value:
- *                   code: 409
- *                   message: author already assigned to a material
  *               MaterialTypeAlreadyAssignedToMaterial:
  *                 summary: material type already assigned to a material
  *                 value:
