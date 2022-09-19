@@ -6,10 +6,10 @@ import {
   Grid,
   // Fade,
   Button,
-  Box
+  Box,
   // TextField
 } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 // import { CSSTransition } from 'react-transition-group';
 // import MenuIcon4 from "../../../assets/bank-icon.png";
@@ -22,17 +22,22 @@ import { Link, useLocation } from 'react-router-dom';
 // import MenuIcon3Active from "../../../assets/envelope-icon-2.png";
 // import icon1 from "../../../assets/icon-1.png";
 // import icon2 from "../../../assets/icon-2.png";
-import logo from "../../../assets/logo-1.png";
 // import MenuIcon5 from "../../../assets/wallet-icon.png";
 // import MenuIcon5Active from "../../../assets/wallet-icon-2.png";
-import "./Header.css";
+import './Header.css';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 import SideBar from '../Sidebar/Sidebar';
+import logo from '../../../assets/logo-1.png';
+import useHeader from './useHeader';
 
 // const duration = 200000;
 
 // const Fade = (props) => {
 //   return (
-//     <CSSTransition classNames="alert" in={props.inProp} timeout={duration} unmountOnExit onExit={props.onExit}>
+//     <CSSTransition
+// classNames="alert" in={props.inProp} timeout={duration} unmountOnExit onExit={props.onExit}>
 //       {props.children}
 //     </CSSTransition>
 //   );
@@ -40,19 +45,26 @@ import SideBar from '../Sidebar/Sidebar';
 
 function HomeHeader({ displayNav = false }) {
   const location = useLocation();
+  const {
+    fetchUserStatus, fetchUsers, users, activeUser, onUserSelect,
+  } = useHeader();
 
   const [displayResponsiveMenu, setDisplayResponsiveMenu] = React.useState(false);
 
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
   return (
-    <Grid container className="header" alignItems='center'>
+    <Grid container className="header" alignItems="center">
       <Grid
         item
         md={3}
-        justifyContent='flex-start'
-        alignItems='center'
+        justifyContent="flex-start"
+        alignItems="center"
         display={{ xs: 'none', sm: 'none', md: 'flex' }}
       >
-        <Link to="/"><img alt='logo' src={logo} className='site-logo' /></Link>
+        <Link to="/"><img alt="logo" src={logo} className="site-logo" /></Link>
       </Grid>
 
       {/* <Grid item md={4} className='responsive'>
@@ -67,44 +79,84 @@ function HomeHeader({ displayNav = false }) {
       <Grid
         item
         md={6}
-        alignItems='center'
+        alignItems="center"
         justifyContent="center"
-        flexWrap='wrap'
+        flexWrap="wrap"
         display={{ xs: 'none', sm: 'none', md: 'flex' }}
       >
-        {displayNav && <nav className='site-nav'>
+        {displayNav && (
+        <nav className="site-nav">
           <ul>
-            <li className={location.pathname === '/creations' ? 'activeSidebarMenu' : ''}><Link to='/creations'>Creations</Link></li>
-            <li className={location.pathname === '/invitation' ? 'activeSidebarMenu' : ''} ><Link to='/invitation'>Invitation</Link></li>
-            <li className={location.pathname === '/litigation' ? 'activeSidebarMenu' : ''} ><Link to='/litigation'>Litigation</Link></li>
-            <li className={location.pathname === '/wallet' ? 'activeSidebarMenu' : ''} ><Link to='/wallet'>Wallet</Link></li>
-            <li className={location.pathname === '/credit' ? 'activeSidebarMenu' : ''} ><Link to='/credit'>Credit</Link></li>
+            <li className={location.pathname === '/creations' ? 'activeSidebarMenu' : ''}><Link to="/creations">Creations</Link></li>
+            <li className={location.pathname === '/invitation' ? 'activeSidebarMenu' : ''}><Link to="/invitation">Invitation</Link></li>
+            <li className={location.pathname === '/litigation' ? 'activeSidebarMenu' : ''}><Link to="/litigation">Litigation</Link></li>
+            <li className={location.pathname === '/wallet' ? 'activeSidebarMenu' : ''}><Link to="/wallet">Wallet</Link></li>
+            <li className={location.pathname === '/credit' ? 'activeSidebarMenu' : ''}><Link to="/credit">Credit</Link></li>
           </ul>
-        </nav>}
+        </nav>
+        )}
       </Grid>
 
-      <Grid item xs={3}
-        marginRight='auto'
-        justifyContent='flex-start'
-        alignItems='flex-start'
-        display={{ xs: 'flex', sm: 'flex', md: 'none' }}>
-        <Button style={{ minWidth: 'initial', padding: '24', backgroundColor: '#ffffff', borderRadius: '4px' }} onClick={() => setDisplayResponsiveMenu(!displayResponsiveMenu)}><MenuIcon color='black' /></Button>
+      <Grid
+        item
+        xs={3}
+        marginRight="auto"
+        justifyContent="flex-start"
+        alignItems="flex-start"
+        display={{ xs: 'flex', sm: 'flex', md: 'none' }}
+      >
+        <Button
+          style={{
+            minWidth: 'initial', padding: '24', backgroundColor: '#ffffff', borderRadius: '4px',
+          }}
+          onClick={() => setDisplayResponsiveMenu(!displayResponsiveMenu)}
+        >
+          <MenuIcon color="black" />
+        </Button>
       </Grid>
 
       <Grid
         item
         md={3}
-        marginLeft='auto'
-        display='flex'
-        justifyContent='flex-end'
-        alignItems='center'
+        marginLeft="auto"
+        display="flex"
+        justifyContent="flex-end"
+        alignItems="center"
       >
-        <ul style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+        <ul style={{
+          display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center',
+        }}
+        >
           {/* <li className='menuBox'><img alt='icon-menu-1' src={icon1} /></li>
           <li className='menuBox'><img alt='icon-menu-1' src={icon2} /></li> */}
           <li style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <img alt='user-img' style={{ width: '40px', border: '1px solid #fff', borderRadius: '7px' }} src={'https://s3-us-west-2.amazonaws.com/s.cdpn.io/156905/profile/profile-512.jpg?1530296477'} />
-            <span className='responsive'>John Doe</span>
+            <img alt="user-img" style={{ width: '40px', border: '1px solid #fff', borderRadius: '7px' }} src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156905/profile/profile-512.jpg?1530296477" />
+            {fetchUserStatus.error && <span className="responsive">{fetchUserStatus.error}</span>}
+            {fetchUserStatus.success && activeUser && (
+            <FormControl fullWidth variant="standard" style={{ minWidth: '220px' }}>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={activeUser.user_id}
+                style={{ border: 'none' }}
+                // {... (activeUser.user_id && { value: activeUser?.user_id })}
+                onChange={onUserSelect}
+                SelectDisplayProps={{
+                  style: { border: 'none' },
+                }}
+              >
+                {
+                  users.map((x) => (
+                    <MenuItem value={x.user_id}>
+                      {x.user_name}
+                      {' '}
+                      (Test User)
+                    </MenuItem>
+                  ))
+                }
+              </Select>
+            </FormControl>
+            )}
           </li>
         </ul>
       </Grid>
@@ -122,14 +174,15 @@ function HomeHeader({ displayNav = false }) {
         inProp={displayResponsiveMenu}
         onExit={() => setDisplayResponsiveMenu(false)}
       > */}
-      {displayResponsiveMenu && <Box component="header" className="site-popup-menu" padding="2" display={{ md: 'none' }}>
+      {displayResponsiveMenu && (
+      <Box component="header" className="site-popup-menu" padding="2" display={{ md: 'none' }}>
         <nav>
-          <Grid container className='site-popup-header' alignItems='center' justifyContent='space-between'>
-            <Grid item xs={8} paddingTop="12" paddingLeft="12" alignItems='center'>
-              <Link onClick={() => setDisplayResponsiveMenu(false)} to="/"><img alt='logo' src={logo} className='site-logo' /></Link>
+          <Grid container className="site-popup-header" alignItems="center" justifyContent="space-between">
+            <Grid item xs={8} paddingTop="12" paddingLeft="12" alignItems="center">
+              <Link onClick={() => setDisplayResponsiveMenu(false)} to="/"><img alt="logo" src={logo} className="site-logo" /></Link>
             </Grid>
 
-            <Grid item xs={4} className='responsiveClearIcon'>
+            <Grid item xs={4} className="responsiveClearIcon">
               <Button onClick={() => setDisplayResponsiveMenu(false)}><ClearIcon fontSize="large" /></Button>
             </Grid>
           </Grid>
@@ -138,32 +191,48 @@ function HomeHeader({ displayNav = false }) {
           {/* <ul className="sidebar">
               <li className={location.pathname === '/creations' ? 'activeSidebarMenu' : ''}>
                 <Link onClick={() => setDisplayResponsiveMenu(false)} to='/creations'>
-                  <img alt="menu-icon" src={location.pathname === '/creations' ? MenuIcon2Active : MenuIcon2} /> <span>Creations</span>
+                  <img
+                  alt="menu-icon"
+                  src={location.pathname === '/creations' ? MenuIcon2Active : MenuIcon2} />
+                  <span>Creations</span>
                 </Link>
               </li>
               <li className={location.pathname === '/invitation' ? 'activeSidebarMenu' : ''} >
                 <Link onClick={() => setDisplayResponsiveMenu(false)} to='/invitation'>
-                  <img alt="menu-icon" src={location.pathname === '/invitation' ? MenuIcon3Active : MenuIcon3} /><span>Invitation</span>
+                  <img
+                  alt="menu-icon"
+                   src={location.pathname === '/invitation' ? MenuIcon3Active : MenuIcon3} />
+                   <span>Invitation</span>
                 </Link>
               </li>
               <li className={location.pathname === '/litigation' ? 'activeSidebarMenu' : ''} >
                 <Link onClick={() => setDisplayResponsiveMenu(false)} to='/litigation'>
-                  <img alt="menu-icon" src={location.pathname === '/litigation' ? MenuIcon4Active : MenuIcon4} /> <span>Litigation</span>
+                  <img
+                  alt="menu-icon"
+                   src={location.pathname === '/litigation' ? MenuIcon4Active : MenuIcon4} />
+                   <span>Litigation</span>
                 </Link>
               </li>
               <li className={location.pathname === '/wallet' ? 'activeSidebarMenu' : ''} >
                 <Link onClick={() => setDisplayResponsiveMenu(false)} to='/wallet'>
-                  <img alt="menu-icon" src={location.pathname === '/wallet' ? MenuIcon5Active : MenuIcon5} />  <span>Wallet</span>
+                  <img
+                  alt="menu-icon"
+                   src={location.pathname === '/wallet' ? MenuIcon5Active : MenuIcon5} />
+                   <span>Wallet</span>
                 </Link>
               </li>
               <li className={location.pathname === '/credit' ? 'activeSidebarMenu' : ''} >
                 <Link onClick={() => setDisplayResponsiveMenu(false)} to='/credit'>
-                  <img alt="menu-icon" src={location.pathname === '/credit' ? MenuIcon6Active : MenuIcon6} />  <span>Credit</span>
+                  <img
+                  alt="menu-icon"
+                   src={location.pathname === '/credit' ? MenuIcon6Active : MenuIcon6} />
+                   <span>Credit</span>
                 </Link>
               </li>
             </ul> */}
         </nav>
-      </Box>}
+      </Box>
+      )}
       {/* </Fade> */}
     </Grid>
   );
