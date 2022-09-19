@@ -310,15 +310,6 @@ components:
           example:
             code: 409
             message: author already assigned to a material
-    AuthorAlreadyAssignedToCreation:
-      description: Author already assigned to a creation
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 409
-            message: author already assigned to a creation
     IssuerAlreadyAssignedToLitigation:
       description: Issuer already assigned to a litigation
       content:

@@ -115,7 +115,6 @@ export default router;
  *             schema:
  *               oneOf:
  *                 - $ref: '#/components/responses/SourceAlreadyAssignedToCreation'
- *                 - $ref: '#/components/responses/AuthorAlreadyAssignedToCreation'
  *                 - $ref: '#/components/responses/MaterialAlreadyAssignedToCreation'
  *             examples:
  *               SourceAlreadyAssignedToCreation:
@@ -123,11 +122,6 @@ export default router;
  *                 value:
  *                   code: 409
  *                   message: source already assigned to a creation
- *               AuthorAlreadyAssignedToCreation:
- *                 summary: author already assigned to a creation
- *                 value:
- *                   code: 409
- *                   message: author already assigned to a creation
  *               MaterialAlreadyAssignedToCreation:
  *                 summary: material already assigned to a creation
  *                 value:
@@ -303,7 +297,6 @@ export default router;
  *             schema:
  *               oneOf:
  *                 - $ref: '#/components/responses/SourceAlreadyAssignedToCreation'
- *                 - $ref: '#/components/responses/AuthorAlreadyAssignedToCreation'
  *                 - $ref: '#/components/responses/MaterialAlreadyAssignedToCreation'
  *             examples:
  *               SourceAlreadyAssignedToCreation:
@@ -311,11 +304,6 @@ export default router;
  *                 value:
  *                   code: 409
  *                   message: source already assigned to a creation
- *               AuthorAlreadyAssignedToCreation:
- *                 summary: author already assigned to a creation
- *                 value:
- *                   code: 409
- *                   message: author already assigned to a creation
  *               MaterialAlreadyAssignedToCreation:
  *                 summary: material already assigned to a creation
  *                 value:
