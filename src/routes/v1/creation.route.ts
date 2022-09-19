@@ -43,7 +43,6 @@ export default router;
  *               - source_id
  *               - author_id
  *               - tags
- *               - materials
  *             properties:
  *               creation_title:
  *                 type: string
