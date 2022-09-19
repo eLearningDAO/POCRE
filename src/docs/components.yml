@@ -301,15 +301,6 @@ components:
           example:
             code: 404
             message: user not found
-    UserAlreadyInvitedToInvitation:
-      description: User already invited to an invitation
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 409
-            message: user already invited to an invitation
     AuthorAlreadyAssignedToMaterial:
       description: Author already assigned to a material
       content:
