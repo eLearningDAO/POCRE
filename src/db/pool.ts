@@ -113,7 +113,7 @@ const init = async (): Promise<QueryResult<any>> => {
       creation_title character varying NOT NULL,
       creation_description text,
       source_id UUID UNIQUE NOT NULL,
-      author_id UUID UNIQUE NOT NULL,
+      author_id UUID NOT NULL,
       tags UUID[],
       materials UUID[],
       creation_date DATE NOT NULL DEFAULT CURRENT_DATE,

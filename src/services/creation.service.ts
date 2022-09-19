@@ -127,8 +127,6 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
     if (err.message && err.message.includes('duplicate key')) {
       if (err.message.includes('source_id'))
         throw new ApiError(httpStatus.CONFLICT, `source already assigned to a creation`);
-      if (err.message.includes('author_id'))
-        throw new ApiError(httpStatus.CONFLICT, `author already assigned to a creation`);
     }
 
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
@@ -219,8 +217,6 @@ export const updateCreationById = async (id: string, updateBody: Partial<ICreati
     if (err.message && err.message.includes('duplicate key')) {
       if (err.message.includes('source_id'))
         throw new ApiError(httpStatus.CONFLICT, `source already assigned to a creation`);
-      if (err.message.includes('author_id'))
-        throw new ApiError(httpStatus.CONFLICT, `author already assigned to a creation`);
     }
 
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
