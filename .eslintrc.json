@@ -30,7 +30,6 @@
     },
     "rules": {
       "no-console": "error",
-      "sonarjs/cognitive-complexity": "error",
       "sonarjs/no-identical-expressions": "error",
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
