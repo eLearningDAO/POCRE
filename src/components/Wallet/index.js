@@ -37,7 +37,7 @@ const Wallet = () => {
                 </Button>
 
                 <Button className='collectionButton2' onClick={handleClickNewCollection}>
-                    Create a New Collection
+                    Create a New Creation
                 </Button>
               </Grid>
             </Grid>
