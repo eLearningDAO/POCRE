@@ -9,7 +9,7 @@ import {
   Box,
   // TextField
 } from '@mui/material';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 // import { CSSTransition } from 'react-transition-group';
 // import MenuIcon4 from "../../../assets/bank-icon.png";
@@ -22,38 +22,18 @@ import { Link, useLocation } from 'react-router-dom';
 // import MenuIcon3Active from "../../../assets/envelope-icon-2.png";
 // import icon1 from "../../../assets/icon-1.png";
 // import icon2 from "../../../assets/icon-2.png";
+import logo from '../../../assets/logo-1.png';
 // import MenuIcon5 from "../../../assets/wallet-icon.png";
 // import MenuIcon5Active from "../../../assets/wallet-icon-2.png";
 import './Header.css';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import SideBar from '../Sidebar/Sidebar';
-import logo from '../../../assets/logo-1.png';
-import useHeader from './useHeader';
 
 // const duration = 200000;
 
-// const Fade = (props) => {
-//   return (
-//     <CSSTransition
-// classNames="alert" in={props.inProp} timeout={duration} unmountOnExit onExit={props.onExit}>
-//       {props.children}
-//     </CSSTransition>
-//   );
-// };
-
 function HomeHeader({ displayNav = false }) {
   const location = useLocation();
-  const {
-    fetchUserStatus, fetchUsers, users, activeUser, onUserSelect,
-  } = useHeader();
 
   const [displayResponsiveMenu, setDisplayResponsiveMenu] = React.useState(false);
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
 
   return (
     <Grid container className="header" alignItems="center">
@@ -131,32 +111,7 @@ function HomeHeader({ displayNav = false }) {
           <li className='menuBox'><img alt='icon-menu-1' src={icon2} /></li> */}
           <li style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
             <img alt="user-img" style={{ width: '40px', border: '1px solid #fff', borderRadius: '7px' }} src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156905/profile/profile-512.jpg?1530296477" />
-            {fetchUserStatus.error && <span className="responsive">{fetchUserStatus.error}</span>}
-            {fetchUserStatus.success && activeUser && (
-            <FormControl fullWidth variant="standard" style={{ minWidth: '220px' }}>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={activeUser.user_id}
-                style={{ border: 'none' }}
-                // {... (activeUser.user_id && { value: activeUser?.user_id })}
-                onChange={onUserSelect}
-                SelectDisplayProps={{
-                  style: { border: 'none' },
-                }}
-              >
-                {
-                  users.map((x) => (
-                    <MenuItem value={x.user_id}>
-                      {x.user_name}
-                      {' '}
-                      (Test User)
-                    </MenuItem>
-                  ))
-                }
-              </Select>
-            </FormControl>
-            )}
+            <span className="responsive">John Doe</span>
           </li>
         </ul>
       </Grid>
@@ -191,42 +146,22 @@ function HomeHeader({ displayNav = false }) {
           {/* <ul className="sidebar">
               <li className={location.pathname === '/creations' ? 'activeSidebarMenu' : ''}>
                 <Link onClick={() => setDisplayResponsiveMenu(false)} to='/creations'>
-                  <img
-                  alt="menu-icon"
-                  src={location.pathname === '/creations' ? MenuIcon2Active : MenuIcon2} />
-                  <span>Creations</span>
                 </Link>
               </li>
               <li className={location.pathname === '/invitation' ? 'activeSidebarMenu' : ''} >
                 <Link onClick={() => setDisplayResponsiveMenu(false)} to='/invitation'>
-                  <img
-                  alt="menu-icon"
-                   src={location.pathname === '/invitation' ? MenuIcon3Active : MenuIcon3} />
-                   <span>Invitation</span>
                 </Link>
               </li>
               <li className={location.pathname === '/litigation' ? 'activeSidebarMenu' : ''} >
                 <Link onClick={() => setDisplayResponsiveMenu(false)} to='/litigation'>
-                  <img
-                  alt="menu-icon"
-                   src={location.pathname === '/litigation' ? MenuIcon4Active : MenuIcon4} />
-                   <span>Litigation</span>
                 </Link>
               </li>
               <li className={location.pathname === '/wallet' ? 'activeSidebarMenu' : ''} >
                 <Link onClick={() => setDisplayResponsiveMenu(false)} to='/wallet'>
-                  <img
-                  alt="menu-icon"
-                   src={location.pathname === '/wallet' ? MenuIcon5Active : MenuIcon5} />
-                   <span>Wallet</span>
                 </Link>
               </li>
               <li className={location.pathname === '/credit' ? 'activeSidebarMenu' : ''} >
                 <Link onClick={() => setDisplayResponsiveMenu(false)} to='/credit'>
-                  <img
-                  alt="menu-icon"
-                   src={location.pathname === '/credit' ? MenuIcon6Active : MenuIcon6} />
-                   <span>Credit</span>
                 </Link>
               </li>
             </ul> */}
