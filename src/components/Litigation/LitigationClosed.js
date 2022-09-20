@@ -26,7 +26,7 @@ export default function LitigationClosed() {
         </Grid>
 
         <Grid item xs={12} style={{ marginTop: '40px' }}>
-            <Typography className='litigationCloseTitle' variant='h6'>New Creation - Step 02</Typography>
+            <Typography className='litigationCloseTitle' variant='h6'>Jury components</Typography>
         </Grid>
 
         <Grid justifyContent="center" container className='createCollectionBox collectionBoxStep2 createCollectionBoxScenario2Step2 userClaimAuthorBox2'>
