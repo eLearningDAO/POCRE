@@ -1,0 +1,24 @@
+.inner-div{
+    position: relative;
+
+    bottom: 25px;    
+}
+
+.inner-heading{
+    display: flex;
+    justify-content: space-between;
+}
+
+.switchwallet{
+   background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
+    display: flex;
+    align-items: flex-end;
+    padding:8px;
+    border: none;
+    color: white;
+    font-weight: 550;
+    border-radius: 25px;
+    position: relative;
+    bottom: 3px;
+}
+
