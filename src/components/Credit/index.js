@@ -13,11 +13,10 @@ const Credit = () => {
             </Grid>
 
             <Grid item md={12} className='topContributorSection'>
-                {[1, 2, 3, 4, 5, 6, ].map((singleCredit) => {
-                    return (
-                        <CreditCard />
-                    );
-                })}
+                <CreditCard name='John' role='e-learner Developer' bio='A junior web developer' />
+                <CreditCard name='Jacob' role='e-learner Developer' bio='A junior web developer' />
+                <CreditCard name='Peter' role='e-learner Developer' bio='A junior researcher developer' />
+                <CreditCard name='Eddy' role='e-learner Researcher' bio='A senior researcher' />
             </Grid>
         </Grid>
 
@@ -27,11 +26,10 @@ const Credit = () => {
             </Grid>
 
             <Grid item md={12}  className='otherContributorSection'>
-                {[1, 2, 3, 4, ].map((singleCredit) => {
-                    return (
-                        <OtherContributerCard />
-                    );
-                })}
+            <OtherContributerCard name='John Wick' roles='Programmer, Architect, Developer'/>
+            <OtherContributerCard name='James Bond' roles='Writer, Architect, Developer'/>
+            <OtherContributerCard name='Adi Nate' roles='UI Designer, Architect, Developer'/>
+            <OtherContributerCard name='Peter Parker' roles='Photographer, Architect, Developer'/>
             </Grid>
         </Grid>
     </Grid>
