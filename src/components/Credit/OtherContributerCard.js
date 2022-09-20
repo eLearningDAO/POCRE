@@ -1,22 +1,21 @@
 import { Typography } from '@mui/material';
 import React from 'react';
-import UserImage1 from '../../assets/top-learner-user.png'
+import UserImage1 from '../../assets/top-learner-user.png';
 
-export default function OtherContributerCard() {
+export default function OtherContributerCard( props ) {
   return (
     <div className='otherContributorCard'>
-        <div className='otherContributorCardImage'>
-            <img alt='credit-user' src={UserImage1} />
-        </div>
+      <div className='otherContributorCardImage'>
+        <img alt='credit-user' src={UserImage1} />
+    </div>
 
         <div className='otherContributorCardDetials'>
-            <Typography variant='h5'>
-                John Smith
-            </Typography>
-
-            <Typography variant='h6'>
-                Ideator, Coordinator, Developer
-            </Typography>
+        <Typography variant='h5'>
+            {props.name}
+        </Typography>
+          <Typography variant='h6'>
+            {props.roles}
+          </Typography>
         </div>
     </div>
   )
