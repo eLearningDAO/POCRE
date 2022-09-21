@@ -1,10 +1,10 @@
 import { Button, Grid, Typography } from '@mui/material';
 import React from 'react';
-import UserCard from '../cards/UserCard';
-import LitigationCard from '../cards/LitigationCard';
-import LikeIcon from '../../assets/svgs/like.svg';
-import DislikeIcon from '../../assets/svgs/dislike.svg';
-import ThumbPinIcon from '../../assets/svgs/thumb-pin.svg';
+import UserCard from '../../cards/UserCard';
+import LitigationCard from '../../cards/LitigationCard';
+import LikeIcon from '../../../assets/svgs/like.svg';
+import DislikeIcon from '../../../assets/svgs/dislike.svg';
+import ThumbPinIcon from '../../../assets/svgs/thumb-pin.svg';
 
 export default function LitigationClosed() {
   return (
