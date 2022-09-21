@@ -24,16 +24,46 @@
   border-radius: 24px;
   object-fit: cover;
 }
+
 .user-card-details {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
+
 .user-card-details h6 {
-  font-size: 22px!important;
+  font-size: 22px !important;
 }
 
 .user-card-details span {
-  font-size: 16px!important;
+  font-size: 16px !important;
+}
+
+.user-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.user-card-action-btn {
+  width: fit-content !important;
+  min-width: initial !important;
+}
+
+.user-card-action-btn>img {
+  height: 24px !important;
+  width: 24px !important;
+}
+
+.user-card-action-btn-primary {
+  background-color: rgba(245, 249, 253, 0.1) !important;
+  border: 1px solid rgba(245, 249, 253, 0.3) !important;
+}
+
+.user-card-action-btn-secondary {
+  background-color: var(--color-orange) !important;
+  border: 1px solid var(--color-orange-20) !important;
 }
 
 .user-card-labels {
@@ -58,7 +88,23 @@
   color: var(--color-orange);
 }
 
-.user-card2 .user-cardChips .chip {
-  background: rgba(247, 143, 138, 0.1)!important;
-  color: #F78F8A!important;
+@media (max-width: 599px) {
+  .user-card-action-btn {
+    padding: 5px !important;
+    border-radius: 5px !important;
+  }
+}
+
+@media(min-width: 600px) {
+  .user-card-action-btn {
+    padding: 8px !important;
+    border-radius: 8px !important;
+  }
+}
+
+@media(min-width: 900px) {
+  .user-card-action-btn {
+    padding: 12px !important;
+    border-radius: 12px !important;
+  }
 }
