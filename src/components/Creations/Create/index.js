@@ -25,7 +25,8 @@ function CreateCollection() {
       <Grid item xs={12} padding={{ xs: '12px', md: '0' }}>
         <Typography className="heading h4" variant="h4">
           New Creation - Step 
-          {`${step}`} of 3
+          {`${step}`} 
+          of 3
         </Typography>
       </Grid>
 
