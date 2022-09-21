@@ -1,11 +1,8 @@
 import {
   Box, Button, Grid, Typography,
 } from '@mui/material';
-import CommentIcon from '../../../assets/comment.png';
 import CreationCardImg from '../../../assets/creation-card.png';
-import DislikeIcon from '../../../assets/dislike.png';
 import DownloadIcon from '../../../assets/download.png';
-import LikeIcon from '../../../assets/like.png';
 import PencilIcon from '../../../assets/pencil.png';
 import ShareIcon from '../../../assets/share.png';
 import UserImage1 from '../../../assets/top-learner-user.png';
@@ -72,23 +69,6 @@ function CollectionCard(properties) {
           <img src={UserImage1} alt="" />
           <img src={UserImage2} alt="" />
         </div>
-        <Grid display="flex" justifyContent="space-between" maxWidth="200px" margin={{ xs: 'auto', sm: '0' }} alignItems="center" gap={{ xs: '10px', lg: '16px' }}>
-          <Box display="flex" alignItems="center" gap="5px" className="collection-social-icon active">
-            <img src={LikeIcon} alt="" />
-            {' '}
-            <span>100K</span>
-          </Box>
-          <Box display="flex" alignItems="center" gap="5px" className="collection-social-icon">
-            <img src={DislikeIcon} alt="" />
-            {' '}
-            <span>30K</span>
-          </Box>
-          <Box display="flex" alignItems="center" gap="5px" className="collection-social-icon">
-            <img src={CommentIcon} alt="" />
-            {' '}
-            <span>5K</span>
-          </Box>
-        </Grid>
         <Box alignItems="flex-start" display="flex" flexDirection="column" justifyContent="center">
           <Typography variant="h6" fontSize={{ xs: '16px', lg: '18px' }} marginBottom="5px">
             Date Created

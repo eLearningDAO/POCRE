@@ -3,7 +3,6 @@ import {
   Routes,
   Route,
 } from 'react-router-dom';
-import Home from './components/Home';
 import Creations from './components/Creations';
 import CreateCreation from './components/Creations/Create';
 import Invitation from './components/Invitation';
