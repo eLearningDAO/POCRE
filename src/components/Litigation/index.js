@@ -5,6 +5,7 @@ import WithdrawIcon from '../../assets/withdraw-icon.png';
 import ApproveIcon from '../../assets/approve-icon.png';
 import UserImage from '../../assets/user-image-2.jpeg';
 import UserImage2 from '../../assets/top-learner-user.png';
+import './Litigation.css';
 
 function Litigation() {
   const navigate = useNavigate();

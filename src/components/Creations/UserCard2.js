@@ -15,7 +15,6 @@ export default function UserCard() {
 
         <div className="userCardChips">
           <Chip className="chip" label="10 Creations" />
-          <Chip className="chip" label="120 Followers" />
         </div>
       </div>
     </div>

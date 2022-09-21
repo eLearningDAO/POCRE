@@ -21,7 +21,7 @@ function Wallet() {
       <div className="inner-div">
         <div className="inner-heading">
           <b>My Wallet</b>
-          <button>Add button</button>
+          <button>Switch wallet</button>
         </div>
         <div className="front">
           <div className="front__bkg-photo" />
@@ -33,7 +33,7 @@ function Wallet() {
             </div>
 
             <div className="userDetailsChip">
-              <Chip className="chip" label="120 Followers" />
+              <Chip className="chip" label="Author of 10 Creations" />
             </div>
           </Grid>
           <Grid container className="userDetails">
