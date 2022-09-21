@@ -86,6 +86,24 @@
     background-color: #F5F9FD !important;
 }
 
+.input-date, .input-date>* {
+    color: rgb(169, 169, 169) !important;
+}
+
+.select {
+    height: fit-content !important;
+    background-color: #ffffff !important;
+    color: #32363C !important;
+}
+
+.select>div {
+    color: rgb(169, 169, 169) !important;
+}
+
+.select-dark {
+    background-color: #F5F9FD !important;
+}
+
 /* PHONES */
 @media (max-width: 599px) {
     .btn {
@@ -95,6 +113,12 @@
     }
 
     .input {
+        padding: 8px 12px !important;
+        border-radius: 8px !important;
+        font-size: 14px !important;
+    }
+
+    .select {
         padding: 8px 12px !important;
         border-radius: 8px !important;
         font-size: 14px !important;
@@ -114,6 +138,12 @@
         border-radius: 8px !important;
         font-size: 16px !important;
     }
+
+    .select {
+        padding: 8px 14px !important;
+        border-radius: 8px !important;
+        font-size: 16px !important;
+    }
 }
 
 @media (min-width: 900px) {
@@ -123,6 +153,11 @@
     }
 
     .input {
+        padding: 12px 16px !important;
+        border-radius: 12px !important;
+    }
+
+    .select {
         padding: 12px 16px !important;
         border-radius: 12px !important;
     }
