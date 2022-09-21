@@ -24,12 +24,6 @@ function Invitation() {
         <Typography className="inviationSectionTitle" variant="h6">Sent</Typography>
       </Grid>
 
-      {[1].map(() => (
-        <Grid item xs={12} style={{ marginTop: '10px' }}>
-          <InvitationCard />
-        </Grid>
-      ))}
-
     </Grid>
   );
 }
