@@ -1,5 +1,5 @@
-import { Grid, Typography } from "@mui/material";
-import TrandingNewsImage from "../../assets/TrandingNewsImage.png";
+import { Grid, Typography } from '@mui/material';
+import TrandingNewsImage from '../../assets/TrandingNewsImage.png';
 import PencilIcon from '../../assets/pencil.png';
 import DownloadIcon from '../../assets/download.png';
 import ShareIcon from '../../assets/share.png';
@@ -7,8 +7,8 @@ import ShareIcon from '../../assets/share.png';
 function TrandingNews() {
   return (
     <Grid container>
-      <Grid item xs={12} className='trandingNewsHeader'>
-        <Typography variant="h5" >Trending News</Typography>
+      <Grid item xs={12} className="trandingNewsHeader">
+        <Typography variant="h5">Trending News</Typography>
       </Grid>
 
       <Grid item xs={12}>
@@ -22,7 +22,6 @@ function TrandingNews() {
               <div className="trandingNewsCardTextTitle">
                 <Typography variant="h6">The biggest misconceptions about bitcoin</Typography>
 
-
                 <div className="invitationCardRightButton collectionRightButton trendingNewsRightButton responsive">
                   <img src={PencilIcon} alt="" />
                   <img src={DownloadIcon} alt="" />
@@ -30,12 +29,19 @@ function TrandingNews() {
                 </div>
               </div>
 
-              <Typography className="trandingNewsCardTextTime"><span>Yahoo Finance </span>- 10 Hours ago</Typography>
+              <Typography className="trandingNewsCardTextTime">
+                <span>Yahoo Finance </span>
+                - 10 Hours ago
+              </Typography>
             </div>
 
             <div className="trandingNewsCardTextParagraph">
               <p>
-                Deliver real-time metrics for actionalble results. Amet minim mollit non deserunt ullamco est sit aliqu dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostru amet mollit non deserunt ullamco est sit. Read More
+                Deliver real-time metrics for actionalble results. Amet minim mollit non deserunt
+                ullamco est sit aliqu dolor do amet sint.
+                Velit officia consequat duis enim velit mollit.
+                Exercitation veniam consequat sunt nostru amet
+                mollit non deserunt ullamco est sit. Read More
               </p>
             </div>
             <div className="invitationCardRightButton collectionRightButton trendingNewsRightButton non-responsive">

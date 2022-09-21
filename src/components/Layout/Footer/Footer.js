@@ -1,6 +1,6 @@
-import { Grid, Typography } from "@mui/material";
+import { Grid, Typography } from '@mui/material';
 import TwitterIcon from '../../../assets/twitter2.png';
-import "./Footer.css"
+import './Footer.css';
 
 function Footer() {
   return (

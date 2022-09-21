@@ -1,0 +1,18 @@
+.inner-heading{
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;  
+}
+.inner-div{
+    position: relative;
+    bottom: 55px;
+}
+.inner-heading button{
+    border: none;
+    background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
+    padding: 5px;
+    color: white;
+    font-weight: 700;
+}
+
+
