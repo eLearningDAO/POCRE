@@ -1,3 +1,32 @@
+@font-face {
+    font-family: 'Gliroy';
+    src: local('Gliroy'), url(../assets/fonts/Gilroy-Bold.ttf) format('opentype');
+}
+
+@font-face {
+    font-family: 'Gliroy';
+    font-weight: 300;
+    src: local('Gliroy'), url(../assets/fonts/Gilroy-Light.ttf) format('opentype');
+}
+
+@font-face {
+    font-family: 'Gliroy';
+    font-weight: 500;
+    src: local('Gliroy'), url(../assets/fonts/Gilroy-Medium.ttf) format('opentype');
+}
+
+@font-face {
+    font-family: 'Gliroy';
+    font-weight: 400;
+    src: local('Gliroy'), url(../assets/fonts/Gilroy-Regular.ttf) format('opentype');
+}
+
+@font-face {
+    font-family: 'Gliroy';
+    font-weight: 700;
+    src: local('Gliroy'), url(../assets/fonts/Gilroy-Semibold.ttf) format('opentype');
+}
+
 .heading {
     color: #272727;
     font-weight: 700 !important;

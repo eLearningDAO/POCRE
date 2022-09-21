@@ -2,31 +2,31 @@
 
 @font-face {
   font-family: 'Gliroy';
-  src: local('Gliroy'), url(../../fonts/Gilroy-Bold.ttf) format('opentype');
+  src: local('Gliroy'), url(../../assets/fonts/Gilroy-Bold.ttf) format('opentype');
 }
 
 @font-face {
     font-family: 'Gliroy';
     font-weight: 300;
-    src: local('Gliroy'), url(../../fonts/Gilroy-Light.ttf) format('opentype');
+    src: local('Gliroy'), url(../../assets/fonts/Gilroy-Light.ttf) format('opentype');
 }
 
 @font-face {
     font-family: 'Gliroy';
     font-weight: 500;
-    src: local('Gliroy'), url(../../fonts/Gilroy-Medium.ttf) format('opentype');
+    src: local('Gliroy'), url(../../assets/fonts/Gilroy-Medium.ttf) format('opentype');
 }
 
 @font-face {
   font-family: 'Gliroy';
   font-weight: 400;
-  src: local('Gliroy'), url(../../fonts/Gilroy-Regular.ttf) format('opentype');
+  src: local('Gliroy'), url(../../assets/fonts/Gilroy-Regular.ttf) format('opentype');
 }
 
 @font-face {
   font-family: 'Gliroy';
   font-weight: 700;
-  src: local('Gliroy'), url(../../fonts/Gilroy-Semibold.ttf) format('opentype');
+  src: local('Gliroy'), url(../../assets/fonts/Gilroy-Semibold.ttf) format('opentype');
 }
 
 
