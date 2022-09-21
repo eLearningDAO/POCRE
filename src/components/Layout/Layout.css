@@ -931,15 +931,21 @@ body {
   color: #FFFFFF!important;
 }
 
-.approveButton {
+.approveButton, .pendingButton, .previewButton  {
   width: 150px;
   height: 50px;
   background: #6FCD4C!important;
   border-radius: 15px!important;
   color: #FFFFFF!important;
 }
+.pendingButton {
+  background-color: var(--color-yellow) !important;
+}
+.previewButton {
+  background-color: var(--color-blue) !important;
+}
 
-.withdrawButton img, .approveButton img { 
+.withdrawButton img, .approveButton img, .pendingButton img, .previewButton img { 
   padding-right: 10px!important;
 }
 

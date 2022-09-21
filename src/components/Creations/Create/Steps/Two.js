@@ -3,10 +3,11 @@ import {
 } from '@mui/material';
 import React from 'react';
 import InviteIcon from '../../../../assets/invite-icon.png';
+import MaterialCard from '../../../cards/MaterialCard';
 
 export default function StepTwo() {
   return (
-    <Grid item xs={12}>
+    <Grid item xs={12} display="flex" flexDirection="column" gap="24px">
       <Grid container className="create-collection" bgcolor="rgba(255, 255, 255, 0.28)" border="2px dashed #F78F8A">
         <Grid md={2} xs={12} display="flex" flexDirection="row" alignItems="center">
           <Typography className="heading">Title</Typography>
@@ -56,7 +57,7 @@ export default function StepTwo() {
         <Grid xs={12} md={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
           <Typography className="heading">Author</Typography>
         </Grid>
-        <Grid xs={12} md={8} marginTop={{ xs: '0px', md: '18px' }} display="flex" gap="8px" alignItems="center">
+        <Grid xs={12} md={10} marginTop={{ xs: '0px', md: '18px' }} display="flex" gap="8px" alignItems="center">
           <TextField
             variant="standard"
             InputProps={{
@@ -72,7 +73,22 @@ export default function StepTwo() {
             Invite
           </Button>
         </Grid>
+
+        <Grid xs={12} md={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center" />
+        <Grid xs={12} md={10} marginLeft="-20px" marginTop={{ xs: '0px', md: '18px' }} display="flex" alignItems="center">
+          <Button
+            className="inviteButton"
+            style={{
+              width: 'fit-content', paddingLeft: '48px', paddingRight: '48px',
+            }}
+          >
+            Add File
+          </Button>
+        </Grid>
       </Grid>
+
+      <MaterialCard interactionBtns />
+      <MaterialCard interactionBtns requestAccepted={false} />
     </Grid>
   );
 }
