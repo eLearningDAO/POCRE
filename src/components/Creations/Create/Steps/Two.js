@@ -19,12 +19,12 @@ export default function StepTwo() {
             }}
             className="input input-dark"
             fullWidth
-            placeholder="Creation title"
+            placeholder="Material title"
           />
         </Grid>
 
         <Grid md={2} xs={12} marginTop={{ xs: '12px', md: '0px' }} paddingLeft={{ md: '24px' }} display="flex" flexDirection="row" alignItems="center">
-          <Typography className="heading">Source</Typography>
+          <Typography className="heading">File type</Typography>
         </Grid>
         <Grid xs={12} md={4}>
           <TextField
@@ -49,7 +49,7 @@ export default function StepTwo() {
             }}
             className="input input-dark"
             fullWidth
-            placeholder="Creation link (Google drive, Youtube, etc)"
+            placeholder="The link where this material is published (Google drive, Youtube, etc)"
           />
         </Grid>
 

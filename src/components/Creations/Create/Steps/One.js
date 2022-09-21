@@ -16,7 +16,7 @@ export default function StepOne() {
             }}
             className="input input-dark"
             fullWidth
-            placeholder="Creation title"
+            placeholder="The title of your creation"
           />
         </Grid>
 
@@ -31,7 +31,7 @@ export default function StepOne() {
             }}
             className="input input-dark"
             fullWidth
-            placeholder="Creation description"
+            placeholder="The description of your creation"
           />
         </Grid>
 
@@ -46,7 +46,7 @@ export default function StepOne() {
             }}
             className="input input-dark"
             fullWidth
-            placeholder="Creation link (Google drive, Youtube, etc)"
+            placeholder="The link where your creation is published (Google drive, Youtube, etc)"
           />
         </Grid>
 
@@ -61,7 +61,7 @@ export default function StepOne() {
             }}
             className="input input-dark"
             fullWidth
-            placeholder="Creation tag (tag input)"
+            placeholder="The tags representing your creation"
           />
         </Grid>
       </Grid>
