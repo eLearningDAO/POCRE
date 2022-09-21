@@ -19,11 +19,13 @@ const useHeader = () => {
         method: 'GET',
       }).then((data) => data.json());
 
-      const temporaryUser = response.results?.[0];
+      // adding avatar temporarily (on frontend)
+      const usersWithAvatar = response.results.map((x) => ({ ...x, avatar: `https://i.pravatar.cc/50?img=${Math.random()}` }));
+      setUsers(usersWithAvatar);
+
+      const temporaryUser = usersWithAvatar?.[0];
       setActiveUser(temporaryUser);
       Cookies.set('activeUser', JSON.stringify(temporaryUser));
-
-      setUsers(response.results);
 
       setFetchUserStatus({
         success: true,
