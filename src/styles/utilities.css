@@ -1,0 +1,132 @@
+.hidden-scrollbar::-webkit-scrollbar {
+    visibility: hidden;
+    height: 0;
+    width: 0;
+}
+
+.hidden-scrollbar::-webkit-scrollbar-thumb {
+    visibility: hidden;
+    height: 0;
+    width: 0;
+}
+
+.hidden-scrollbar::-webkit-slider-thumb {
+    visibility: hidden;
+    height: 0;
+    width: 0;
+}
+
+/* backgrounds */
+.bg-yellow {
+    background-color: var(--color-yellow) !important;
+}
+
+.bg-red {
+    background-color: var(--color-red) !important;
+}
+
+.bg-red-20 {
+    background-color: var(--color-red-20) !important;
+}
+
+.bg-green {
+    background-color: var(--color-green) !important;
+}
+
+.bg-green-20 {
+    background-color: var(--color-green-20) !important;
+}
+
+.bg-black {
+    background-color: var(--color-black) !important;
+}
+
+.bg-blue {
+    background-color: var(--color-blue) !important;
+}
+
+.bg-purple {
+    background-color: var(--color-purple) !important;
+}
+
+.color-white {
+    color: var(--color-white) !important;
+}
+
+
+/* ui elements */
+.MuiInput-input {
+    padding: 0 !important;
+}
+
+.MuiButton-root {
+    line-height: 1.5 !important;
+}
+
+.btn {
+    height: fit-content !important;
+    min-height: fit-content !important;
+    width: fit-content !important;
+    min-width: fit-content !important;
+}
+
+.btn-primary {
+    color: #ffffff !important;
+    background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%) !important;
+    box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47) !important;
+}
+
+.input {
+    height: fit-content !important;
+    background-color: #ffffff !important;
+    color: #32363C !important;
+}
+
+.input-dark {
+    background-color: #F5F9FD !important;
+}
+
+/* PHONES */
+@media (max-width: 599px) {
+    .btn {
+        padding: 8px 12px !important;
+        border-radius: 8px !important;
+        font-size: 14px !important;
+    }
+
+    .input {
+        padding: 8px 12px !important;
+        border-radius: 8px !important;
+        font-size: 14px !important;
+    }
+}
+
+/* TABLETS */
+@media (min-width: 600px) {
+    .btn {
+        padding: 8px 14px !important;
+        border-radius: 8px !important;
+        font-size: 16px !important;
+    }
+
+    .input {
+        padding: 8px 14px !important;
+        border-radius: 8px !important;
+        font-size: 16px !important;
+    }
+}
+
+@media (min-width: 900px) {
+    .btn {
+        padding: 8px 16px !important;
+        border-radius: 12px !important;
+    }
+
+    .input {
+        padding: 12px 16px !important;
+        border-radius: 12px !important;
+    }
+}
+
+/* DESKTOPS */
+@media (min-width: 1200px) {}

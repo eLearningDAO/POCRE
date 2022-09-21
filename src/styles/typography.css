@@ -1,0 +1,25 @@
+.heading {
+    color: #272727;
+    font-weight: 700 !important;
+}
+
+/* PHONES */
+@media (max-width: 599px) {
+    .h4 {
+        font-size: 18px !important;
+    }
+}
+
+/* TABLETS */
+@media (min-width: 600px) {
+    .h4 {
+        font-size: 22px !important;
+    }
+}
+
+/* DESKTOPS */
+@media (min-width: 1200px) {
+    .h4 {
+        font-size: 24px !important;
+    }
+}
