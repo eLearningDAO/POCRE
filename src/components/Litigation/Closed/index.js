@@ -1,15 +1,27 @@
+/* eslint-disable sonarjs/no-all-duplicated-branches */
 import {
   Button, Grid, Typography, Box,
 } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import UserCard from '../../cards/UserCard';
 import LitigationCard from '../../cards/LitigationCard';
 import LikeIcon from '../../../assets/svgs/like.svg';
 import DislikeIcon from '../../../assets/svgs/dislike.svg';
 import ThumbPinIcon from '../../../assets/svgs/thumb-pin.svg';
 import './index.css';
+import LeftIcon from '../../../assets/left.png';
+import RightIcon from '../../../assets/right.png';
 
 export default function LitigationClosed() {
+  const [slideNumber, setSlideNumber] = useState(1);
+
+  const next = () => {
+    setSlideNumber((x) => x + 1);
+  };
+  const previous = () => {
+    setSlideNumber((x) => x - 1);
+  };
+
   return (
     <Grid item xs={12}>
       <Grid item xs={12}>
@@ -50,10 +62,26 @@ export default function LitigationClosed() {
       </Grid>
 
       <Grid display="flex" flexDirection="column" justifyContent="center" alignItem="center" gap="24px" padding="36px" className="secondary-section-container">
-        <Grid display="flex" alignItem="flex-top" gap="24px">
-          <UserCard />
-          <UserCard variant="secondary" totalCreationsAuthored={1} />
-        </Grid>
+        <div className="carousel-container">
+          {slideNumber % 2 === 0
+            ? (
+              <>
+                <UserCard username="Rick Smith" imageUrl={`https://i.pravatar.cc/50?img=${Math.random()}`} totalCreationsAuthored={10} />
+                <UserCard username="Kelton Price" imageUrl={`https://i.pravatar.cc/50?img=${Math.random()}`} totalCreationsAuthored={1} />
+              </>
+            )
+            : (
+              <>
+                <UserCard username="Leone Dach" imageUrl={`https://i.pravatar.cc/50?img=${Math.random()}`} totalCreationsAuthored={5} />
+                <UserCard username="Jewell Purdy" imageUrl={`https://i.pravatar.cc/50?img=${Math.random()}`} totalCreationsAuthored={8} />
+              </>
+            )}
+          <div className="carousel-slide-btns-container">
+            <Button onClick={previous}><img src={LeftIcon} alt="" /></Button>
+            <Button onClick={next}><img src={RightIcon} alt="" /></Button>
+          </div>
+        </div>
+
         <Button className="btn btn-primary-outlined" style={{ margin: 'auto' }}>See More</Button>
       </Grid>
     </Grid>
