@@ -1,10 +1,13 @@
-import { Button, Grid, Typography } from '@mui/material';
+import {
+  Button, Grid, Typography, Box,
+} from '@mui/material';
 import React from 'react';
 import UserCard from '../../cards/UserCard';
 import LitigationCard from '../../cards/LitigationCard';
 import LikeIcon from '../../../assets/svgs/like.svg';
 import DislikeIcon from '../../../assets/svgs/dislike.svg';
 import ThumbPinIcon from '../../../assets/svgs/thumb-pin.svg';
+import './index.css';
 
 export default function LitigationClosed() {
   return (
@@ -27,19 +30,19 @@ export default function LitigationClosed() {
       <Grid display="flex" marginTop="36px" width="100%">
         <LitigationCard />
       </Grid>
-      <Grid display="flex" gap="12px" marginTop="24px" alignItems="center" justifyContent="flex-end">
-        <Button className="btn bg-green color-white">
+      <Grid display="flex" gap="48px" marginTop="24px" alignItems="center" justifyContent="flex-end" className="litigation-vote-container">
+        <Box display="flex" gap="4px" alignItems="center">
           <img src={LikeIcon} alt="" style={{ marginRight: '8px' }} />
           Agree
-        </Button>
-        <Button className="btn bg-red color-white">
+        </Box>
+        <Box display="flex" gap="4px" alignItems="center">
           <img src={DislikeIcon} alt="" style={{ marginRight: '8px' }} />
           Opposition
-        </Button>
-        <Button className="btn bg-purple color-white">
+        </Box>
+        <Box display="flex" gap="4px" alignItems="center">
           <img src={ThumbPinIcon} alt="" style={{ marginRight: '8px' }} />
           Impartial
-        </Button>
+        </Box>
       </Grid>
 
       <Grid item xs={12} style={{ marginTop: '40px' }}>
