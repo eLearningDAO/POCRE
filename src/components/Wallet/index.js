@@ -1,6 +1,7 @@
 import {
   Grid, Button, Chip, Typography,
 } from '@mui/material';
+import './Wallet.css';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,6 +19,10 @@ function Wallet() {
   return (
     <div>
       <div className="inner-div">
+        <div className="inner-heading">
+          <b>My Wallet</b>
+          <button>Add button</button>
+        </div>
         <div className="front">
           <div className="front__bkg-photo" />
           <div className="front__face-photo" />
@@ -28,7 +33,6 @@ function Wallet() {
             </div>
 
             <div className="userDetailsChip">
-              <Chip className="chip" label="Author of 10 Creations" />
               <Chip className="chip" label="120 Followers" />
             </div>
           </Grid>
