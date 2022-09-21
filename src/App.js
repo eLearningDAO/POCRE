@@ -6,7 +6,7 @@ import {
 import Creations from './components/Creations';
 import CreateCreation from './components/Creations/Create';
 import Invitation from './components/Invitation';
-import LitigationDetails from './components/Litigation';
+import LitigationDashboard from './components/Litigation';
 import LitigationHome from './components/Litigation/LitigationHome';
 import LitigationCreate from './components/Litigation/Create';
 import LitigationClosed from './components/Litigation/LitigationClosed';
@@ -25,7 +25,7 @@ function App() {
         <Route path="/invitation" element={<Layout displaySidebar><Invitation /></Layout>} />
         <Route path="/litigation" element={<Layout displaySidebar><LitigationHome /></Layout>} />
         <Route path="/litigation/create" element={<Layout displaySidebar><LitigationCreate /></Layout>} />
-        <Route path="/litigation/details" element={<Layout displaySidebar><LitigationDetails /></Layout>} />
+        <Route path="/litigation/dashboard" element={<Layout displaySidebar><LitigationDashboard /></Layout>} />
         <Route path="/litigation/closed" element={<Layout displaySidebar><LitigationClosed /></Layout>} />
         <Route path="/wallet" element={<Layout displaySidebar><Wallet /></Layout>} />
         <Route path="/credit" element={<Layout displaySidebar><Credit /></Layout>} />
