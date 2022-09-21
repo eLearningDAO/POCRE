@@ -8,12 +8,14 @@ import SideBar from './Sidebar/Sidebar';
 
 function Layout({ children, displayNav, displaySidebar }) {
   return (
-    <>
-      <Grid className="layout">
-        <Header displayNav={displayNav} />
+    <Grid className="layout">
+      <Header displayNav={displayNav} />
 
-        {displaySidebar ? <Grid container spacing={{ md: 2, lg: 4 }} marginTop="8px">
-          <Grid item md={3}
+      {displaySidebar ? (
+        <Grid container spacing={{ md: 2, lg: 4 }} marginTop="8px">
+          <Grid
+            item
+            md={3}
             marginTop="56px"
             display={{ xs: 'none', sm: 'none', md: 'inherit' }}
           >
@@ -29,14 +31,16 @@ function Layout({ children, displayNav, displaySidebar }) {
               </Grid> */}
             </Grid>
           </Grid>
-        </Grid> : <Grid container>
+        </Grid>
+      ) : (
+        <Grid container>
           <Grid item xs={12}>
             {children}
           </Grid>
-        </Grid>}
-        <Footer />
-      </Grid>
-    </>
+        </Grid>
+      )}
+      <Footer />
+    </Grid>
   );
 }
 

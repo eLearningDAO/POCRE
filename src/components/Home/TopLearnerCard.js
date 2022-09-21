@@ -1,20 +1,19 @@
-import { Grid, Typography } from "@mui/material";
+import { Grid, Typography } from '@mui/material';
 import TopLearnerImg1 from '../../assets/top-learner-user.png';
 
-function TopLearnerCard(props) {
-
+function TopLearnerCard() {
   return (
     <Grid container className="invitationCard topLearnerCard">
       <Grid item xs={12}>
         <div className="invitationCardLeft topLearnerCardLeft">
           <div className="invitationCardLeftImage topLearnerCardLeftImage">
-            <img alt='course-card' width='50' src={TopLearnerImg1} />
+            <img alt="course-card" width="50" src={TopLearnerImg1} />
           </div>
           <div className="invitationCardLeftText topLearnerCardLeftText">
-            <Typography variant='h6'>
+            <Typography variant="h6">
               John Smith
             </Typography>
-            <Typography variant='span'>
+            <Typography variant="span">
               esther@gmail.com
             </Typography>
           </div>
