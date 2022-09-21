@@ -23,8 +23,8 @@ function CreateCollection() {
     <Grid container>
       <Grid item xs={12}>
         <Typography className="inviationHeaderTitle" variant="h6">
-          New Creation - Step 
-          {`${step}`} 
+          New Creation - Step
+          {`${step}`}
           of 3
         </Typography>
       </Grid>
