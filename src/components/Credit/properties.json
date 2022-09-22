@@ -1,4 +1,4 @@
-[{
+[[{
     "name":"Adi",
     "jobs":"Developer, Researcher, Architect",
     "bio":"A junior web Developer experienced in react",
@@ -55,5 +55,66 @@
     "bio":"A junior web Developer lorem 23 is thwre experienced in react",
     "avatar":"https://robohash.org/43431"
 
-}
+}],
+[
+    {
+        "name":"Adi",
+        "jobs":"Developer, Researcher, Architect",
+        "bio":"A junior web Developer experienced in react",
+        "avatar":"https://robohash.org/43431"
+    
+    },
+    {
+        "name":"Pedro",
+        "jobs":"Developer, Researcher, Architect",
+        "bio":"A junior UX/UI Developer experienced in react",
+        "avatar":"https://robohash.org/43431"
+    
+    },
+    {
+        "name":"Emily",
+        "jobs":"UI Designer, Researcher, Architect",
+        "bio":"A junior web Developer experienced in react",
+        "avatar":"https://robohash.org/43431"
+    
+    },
+    {
+        "name":"Emily",
+        "jobs":"UI Designer, Researcher, Architect",
+        "bio":"A junior web Developer experienced in react",
+        "avatar":"https://robohash.org/43431"
+    
+    },{
+        "name":"Emily",
+        "jobs":"UI Designer, Researcher, Architect",
+        "bio":"A junior web Developer experienced in react",
+        "avatar":"https://robohash.org/43431"
+    
+    },{
+        "name":"Emily",
+        "jobs":"UI Designer, Researcher, Architect",
+        "bio":"A junior web Developer lorem 23 is thwre experienced in react",
+        "avatar":"https://robohash.org/43431"
+    
+    },{
+        "name":"Emily",
+        "jobs":"UI Designer, Researcher, Architect",
+        "bio":"A junior web Developer lorem 23 is thwre experienced in react",
+        "avatar":"https://robohash.org/43431"
+    
+    },{
+        "name":"Emily",
+        "jobs":"UI Designer, Researcher, Architect",
+        "bio":"A junior web Developer lorem 23 is thwre experienced in react",
+        "avatar":"https://robohash.org/43431"
+    
+    },{
+        "name":"Emily",
+        "jobs":"UI Designer, Researcher, Architect",
+        "bio":"A junior web Developer lorem 23 is thwre experienced in react",
+        "avatar":"https://robohash.org/43431"
+    
+    }
+
+]
 ]
