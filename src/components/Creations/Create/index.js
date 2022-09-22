@@ -1,24 +1,30 @@
-import { Button, Grid, Typography } from '@mui/material';
-import React from 'react';
+import { Grid, Typography } from '@mui/material';
+import React, { useState } from 'react';
 import StepOne from './Steps/One';
-import StepTwo from './Steps/Two';
-import StepThree from './Steps/Three';
+// import StepTwo from './Steps/Two';
+// import StepThree from './Steps/Three';
 import './index.css';
+import useCreate from './useCreate';
 
 function CreateCollection() {
-  const [step, setStep] = React.useState(1);
+  const [step,
+    //  setStep
+  ] = useState(1);
+  const { makeNewCreation, newCreationStatus, loading } = useCreate();
 
-  const next = () => {
-    if (step !== 3) {
-      setStep(step + 1);
-    }
+  const handleValues = async (values) => {
+    // if (step === 1) {
+    await makeNewCreation(values);
+    // }
+
+    // if (step !== 3) {
+    //   setStep(step + 1);
+    // }
   };
 
-  const back = () => {
-    if (step !== 1) {
-      setStep(step - 1);
-    }
-  };
+  // const handleBack = () => {
+  //   setStep(step - 1);
+  // };
 
   return (
     <Grid container spacing={2}>
@@ -29,21 +35,20 @@ function CreateCollection() {
         </Typography>
       </Grid>
 
-      {step === 1 && <StepOne />}
-      {step === 2 && <StepTwo />}
-      {step === 3 && <StepThree />}
-
-      <Grid item xs={12} className="collectionButtons">
-        {step > 1 && <Button onClick={back} className="backCollectionButton">Back</Button>}
-        {step < 3 && <Button onClick={next} className="nextCollectionButton">Next</Button>}
-        {step === 3
-        && (
-        <Grid display="flex" alignItems="center" gap="12px">
-          <Button onClick={next} className="saveDraftButton">Save Draft</Button>
-          <Button onClick={next} className="nextCollectionButton">Finish</Button>
-        </Grid>
-        )}
-      </Grid>
+      {/* {step === 1 && ( */}
+      <StepOne
+        status={newCreationStatus}
+        loading={loading}
+        onComplete={handleValues}
+      />
+      {/* // )}
+      // {step === 2 && (
+      // <StepTwo
+      //   onBack={handleBack}
+      //   onComplete={handleValues}
+      // />
+      // )}
+      // {step === 3 && <StepThree />} */}
     </Grid>
   );
 }
