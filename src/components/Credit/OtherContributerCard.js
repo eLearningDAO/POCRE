@@ -2,7 +2,7 @@ import { Typography } from '@mui/material';
 import React from 'react';
 import UserImage1 from '../../assets/top-learner-user.png';
 
-export default function OtherContributerCard() {
+export default function OtherContributerCard({ name, jobs }) {
   return (
     <div className="otherContributorCard">
       <div className="otherContributorCardImage">
@@ -11,11 +11,11 @@ export default function OtherContributerCard() {
 
       <div className="otherContributorCardDetials">
         <Typography variant="h5">
-          John Smith
+          { name }
         </Typography>
 
         <Typography variant="h6">
-          Ideator, Coordinator, Developer
+          {jobs }
         </Typography>
       </div>
     </div>

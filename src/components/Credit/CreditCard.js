@@ -4,7 +4,7 @@ import LinkedinIcon from '../../assets/linkedin.png';
 import TwitterIcon from '../../assets/twitter.png';
 import UserImage1 from '../../assets/user-image-3.png';
 
-export default function CreditCard() {
+export default function CreditCard({ name, jobs, bio }) {
   return (
     <div className="creditCard">
       <div className="creditCardImage">
@@ -13,15 +13,15 @@ export default function CreditCard() {
 
       <div className="creditCardDetials">
         <Typography variant="h5">
-          John Smith
+          { name }
         </Typography>
 
         <Typography variant="h6">
-          e-Learning DAO member
+          {jobs}
         </Typography>
 
         <Typography variant="span">
-          Short bio and role in Pocre
+          {bio}
         </Typography>
 
         <div className="creditCardIcons">

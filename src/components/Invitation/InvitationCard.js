@@ -1,6 +1,9 @@
-import { Chip, Grid, Typography } from '@mui/material';
+import {
+  Chip, Grid, Typography, Avatar,
+} from '@mui/material';
 import InvitationCardImg from '../../assets/invitation-card.png';
 import UserImage1 from '../../assets/user-image-2.jpeg';
+import './InvitationCard.css';
 
 function InvitationCard() {
   return (
@@ -24,8 +27,8 @@ function InvitationCard() {
             </div>
           </div>
           <div className="invitationCardLeftButton responsive">
-            <Chip label="Preview" className="chipPreview" />
-            <Chip label="Pending" className="chipPending" />
+            <Chip label="Preview" size="medium" color="primary" className="chipPreviewButton" avatar={<Avatar src="../../assets/eye.webp" />} />
+            <Chip label="Pending" size="medium" className="chipPendingButton" />
           </div>
         </div>
       </Grid>
