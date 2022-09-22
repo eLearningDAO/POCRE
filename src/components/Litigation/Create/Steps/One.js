@@ -101,40 +101,6 @@ export default function StepOne() {
             </Select>
           </FormControl>
         </Grid>
-
-        <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
-          <Typography className="heading">Public Date</Typography>
-        </Grid>
-        <Grid xs={12} md={3} lg={4} marginTop={{ xs: '12px', md: '18px' }}>
-          <TextField
-            id="date"
-            type="date"
-            variant="standard"
-            InputProps={{
-              disableUnderline: true,
-            }}
-            fullWidth
-            defaultValue="2017-05-24"
-            className="input input-dark input-date"
-          />
-        </Grid>
-
-        <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center" justifyContent="center">
-          <Typography className="heading">End Date</Typography>
-        </Grid>
-        <Grid xs={12} md={3} lg={4} marginTop={{ xs: '12px', md: '18px' }}>
-          <TextField
-            id="date"
-            type="date"
-            variant="standard"
-            InputProps={{
-              disableUnderline: true,
-            }}
-            fullWidth
-            defaultValue="2017-05-24"
-            className="input input-dark input-date"
-          />
-        </Grid>
       </Grid>
     </Grid>
   );

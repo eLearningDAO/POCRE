@@ -3,6 +3,7 @@ import React from 'react';
 import LinkedinIcon from '../../assets/linkedin.png';
 import TwitterIcon from '../../assets/twitter.png';
 import UserImage1 from '../../assets/user-image-3.png';
+import './CreditCard.css';
 
 export default function CreditCard({ name, jobs, bio }) {
   return (
@@ -20,9 +21,11 @@ export default function CreditCard({ name, jobs, bio }) {
           {jobs}
         </Typography>
 
-        <Typography variant="span">
-          {bio}
-        </Typography>
+        <div className="bio">
+          <Typography variant="span">
+            {bio}
+          </Typography>
+        </div>
 
         <div className="creditCardIcons">
           <img src={TwitterIcon} alt="" />
