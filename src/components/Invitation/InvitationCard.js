@@ -51,8 +51,8 @@ function InvitationCard() {
 
           </div>
           <div className="invitationCardRightButton">
-            <Chip label="Accept" className="acceptButton" />
-            <Chip label="Decline" className="declineButton" />
+            <Chip label="Accept" size="large" color="success" styles={{ padding: 30 }} />
+            <Chip label="Decline" color="error" />
           </div>
         </div>
       </Grid>

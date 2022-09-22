@@ -2,6 +2,7 @@ import { Grid, Typography } from '@mui/material';
 import React from 'react';
 import CreditCard from './CreditCard';
 import OtherContributerCard from './OtherContributerCard';
+import Data from './properties.json';
 
 function Credit() {
   return (
@@ -13,8 +14,8 @@ function Credit() {
         </Grid>
 
         <Grid item md={12} className="topContributorSection">
-          {[1, 2, 3, 4, 5, 6].map(() => (
-            <CreditCard jobs="developer" bio="hello I am a dev" />
+          {Data.map((data) => (
+            <CreditCard jobs={data.jobs} name={data.name} bio={data.bio} />
           ))}
         </Grid>
       </Grid>
@@ -25,8 +26,8 @@ function Credit() {
         </Grid>
 
         <Grid item md={12} className="otherContributorSection">
-          {[1, 2, 3, 4].map(() => (
-            <OtherContributerCard name="Fizz" jobs="analyst, developer, tester" />
+          {Data.map((data2) => (
+            <OtherContributerCard name={data2.name} jobs={data2.jobs} />
           ))}
         </Grid>
       </Grid>
