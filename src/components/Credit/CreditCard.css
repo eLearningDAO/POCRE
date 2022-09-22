@@ -1,0 +1,26 @@
+.creditCard{
+
+width:50%;
+height: 33%;
+    
+}
+.creditCardImage{
+    height: 100%;
+    width: 120%;
+}
+.bio{
+    margin-top: 47px;
+   
+    transform: scale(0.9,0.9);
+    
+}
+.creditCardDetials{
+   
+    height: 230px;
+    position: relative;
+    right: 10px;
+}
+.creditCardIcons{
+    position: absolute;
+    bottom:-10px;
+}

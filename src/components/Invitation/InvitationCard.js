@@ -1,8 +1,13 @@
 import {
-  Chip, Grid, Typography, Avatar,
+  Chip,
+  Grid,
+  Typography,
 } from '@mui/material';
 import InvitationCardImg from '../../assets/invitation-card.png';
+import LinkedinIcon from '../../assets/linkedin.png';
+import EyeImage from '../../assets/eye.webp';
 import UserImage1 from '../../assets/user-image-2.jpeg';
+import LoadingImage from '../../assets/loading.png';
 import './InvitationCard.css';
 
 function InvitationCard() {
@@ -27,8 +32,8 @@ function InvitationCard() {
             </div>
           </div>
           <div className="invitationCardLeftButton responsive">
-            <Chip label="Preview" size="medium" color="primary" className="chipPreviewButton" avatar={<Avatar src="../../assets/eye.webp" />} />
-            <Chip label="Pending" size="medium" className="chipPendingButton" />
+            <Chip label="Preview" size="medium" className="Preview" avatar={<img alt="eye" src={EyeImage} />} style={{ paddingTop: 20, paddingBottom: 20, backgroundColor: 'lightblue' }} />
+            <Chip label="Pending" size="medium" color="warning" className="Pending" avatar={<img alt="eye" src={LoadingImage} style={{ width: 15, height: 15 }} width={5} height={5} />} style={{ padding: 15, height: 40 }} />
           </div>
         </div>
       </Grid>
@@ -42,17 +47,17 @@ function InvitationCard() {
                 Posted By jack 58
               </Typography>
             </div>
-
             <div className="postedImageRight">
               <Typography variant="span">
+                <img src={LinkedinIcon} alt="" />
                 New poem for jack at 2022-01-01  00:00:00
               </Typography>
             </div>
 
           </div>
           <div className="invitationCardRightButton">
-            <Chip label="Accept" size="large" color="success" styles={{ padding: 30 }} />
-            <Chip label="Decline" color="error" />
+            <Chip label="Accept" className="Accept" color="success" style={{ backgroundColor: 'lightgreen', padding: 20 }} />
+            <Chip label="Decline" className="Decline" color="error" style={{ padding: 20 }} />
           </div>
         </div>
       </Grid>

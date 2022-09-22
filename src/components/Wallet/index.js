@@ -3,6 +3,7 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Wallet.css';
 
 function Wallet() {
   const navigate = useNavigate();
