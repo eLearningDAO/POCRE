@@ -36,6 +36,13 @@ function CreateCollection() {
       <Grid item xs={12} className="collectionButtons">
         {step > 1 && <Button onClick={back} className="backCollectionButton">Back</Button>}
         {step < 3 && <Button onClick={next} className="nextCollectionButton">Next</Button>}
+        {step === 3
+        && (
+        <Grid display="flex" alignItems="center" gap="12px">
+          <Button onClick={next} className="saveDraftButton">Save Draft</Button>
+          <Button onClick={next} className="nextCollectionButton">Finish</Button>
+        </Grid>
+        )}
       </Grid>
     </Grid>
   );

@@ -5,8 +5,6 @@ import CreationCardImg from '../../../assets/creation-card.png';
 import DownloadIcon from '../../../assets/download.png';
 import PencilIcon from '../../../assets/pencil.png';
 import ShareIcon from '../../../assets/share.png';
-import UserImage1 from '../../../assets/top-learner-user.png';
-import UserImage2 from '../../../assets/user-image-2.jpeg';
 import './CollectionCard.css';
 
 function CollectionCard(properties) {
@@ -62,12 +60,9 @@ function CollectionCard(properties) {
         paddingRight={{ md: interactionBtns ? '12px' : '' }}
       >
         <div className="collection-member-images">
-          <img src={UserImage1} alt="" />
-          <img src={UserImage2} alt="" />
-          <img src={UserImage1} alt="" />
-          <img src={UserImage2} alt="" />
-          <img src={UserImage1} alt="" />
-          <img src={UserImage2} alt="" />
+          {Array.from({ length: 5 }).map(() => (
+            <img src={`https://i.pravatar.cc/50?img=${Math.random()}`} alt="" />
+          ))}
         </div>
         <Box alignItems="flex-start" display="flex" flexDirection="column" justifyContent="center">
           <Typography variant="h6" fontSize={{ xs: '16px', lg: '18px' }} marginBottom="5px">

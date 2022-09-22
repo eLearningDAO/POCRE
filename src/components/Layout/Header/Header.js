@@ -130,7 +130,7 @@ function HomeHeader({ displayNav = false }) {
           {/* <li className='menuBox'><img alt='icon-menu-1' src={icon1} /></li>
           <li className='menuBox'><img alt='icon-menu-1' src={icon2} /></li> */}
           <li style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <img alt="user-img" style={{ width: '40px', border: '1px solid #fff', borderRadius: '7px' }} src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156905/profile/profile-512.jpg?1530296477" />
+            {activeUser && <img alt="user-img" style={{ width: '40px', border: '1px solid #fff', borderRadius: '7px' }} src={activeUser.avatar} />}
             {fetchUserStatus.error && <span className="responsive">{fetchUserStatus.error}</span>}
             {fetchUserStatus.success && activeUser && (
             <FormControl fullWidth variant="standard" style={{ minWidth: '220px' }}>

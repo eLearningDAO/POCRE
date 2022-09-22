@@ -2,31 +2,31 @@
 
 @font-face {
   font-family: 'Gliroy';
-  src: local('Gliroy'), url(../../fonts/Gilroy-Bold.ttf) format('opentype');
+  src: local('Gliroy'), url(../../assets/fonts/Gilroy-Bold.ttf) format('opentype');
 }
 
 @font-face {
-    font-family: 'Gliroy';
-    font-weight: 300;
-    src: local('Gliroy'), url(../../fonts/Gilroy-Light.ttf) format('opentype');
+  font-family: 'Gliroy';
+  font-weight: 300;
+  src: local('Gliroy'), url(../../assets/fonts/Gilroy-Light.ttf) format('opentype');
 }
 
 @font-face {
-    font-family: 'Gliroy';
-    font-weight: 500;
-    src: local('Gliroy'), url(../../fonts/Gilroy-Medium.ttf) format('opentype');
+  font-family: 'Gliroy';
+  font-weight: 500;
+  src: local('Gliroy'), url(../../assets/fonts/Gilroy-Medium.ttf) format('opentype');
 }
 
 @font-face {
   font-family: 'Gliroy';
   font-weight: 400;
-  src: local('Gliroy'), url(../../fonts/Gilroy-Regular.ttf) format('opentype');
+  src: local('Gliroy'), url(../../assets/fonts/Gilroy-Regular.ttf) format('opentype');
 }
 
 @font-face {
   font-family: 'Gliroy';
   font-weight: 700;
-  src: local('Gliroy'), url(../../fonts/Gilroy-Semibold.ttf) format('opentype');
+  src: local('Gliroy'), url(../../assets/fonts/Gilroy-Semibold.ttf) format('opentype');
 }
 
 
@@ -36,7 +36,7 @@ body {
 }
 
 .non-responsive {
-  display: none!important
+  display: none !important
 }
 
 /** END: GLOBAL **/
@@ -66,7 +66,7 @@ body {
   .layout {
     padding-left: 36px;
     padding-right: 36px;
-  }  
+  }
 }
 
 /* DESKTOPS */
@@ -74,7 +74,7 @@ body {
   .layout {
     padding-left: 64px;
     padding-right: 64px;
-  }  
+  }
 }
 
 
@@ -95,7 +95,7 @@ body {
 
 .searchBar {
   margin-top: 50px !important;
-  width: 400px!important;
+  width: 400px !important;
   height: 40px;
   box-sizing: border-box;
   background: #F5F9FD;
@@ -106,7 +106,7 @@ body {
   color: #32363C;
 }
 
-.searchBar label {  
+.searchBar label {
   padding: 4px 12px;
   top: -15px;
 }
@@ -127,8 +127,8 @@ body {
 }
 
 .menuBox img {
-  background: #F5F9FD!important;
-  border-radius: 15px!important;
+  background: #F5F9FD !important;
+  border-radius: 15px !important;
   padding: 12px;
   width: 20px;
 }
@@ -141,6 +141,29 @@ body {
   width: 20px;
 }
 
+a {
+  color: #32363C;
+}
+
+.collectionButton,
+.collectionButton2 {
+  border-radius: 24px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.collectionButton2 {
+  background-color: rgba(247, 143, 138, 0.1) !important;
+}
+
+.secondary-section-container {
+  background: rgba(255, 255, 255, 0.28);
+  border: 2px dashed #F78F8A;
+  border-radius: 16px;
+}
 
 
 /* 
@@ -257,8 +280,7 @@ body {
 .front__bkg-photo {
   position: relative;
   height: 300px;
-  background: url("../../assets/wallet-banner.png")
-    no-repeat;
+  background: url("../../assets/wallet-banner.png") no-repeat;
   background-size: cover;
   backface-visibility: hidden;
   overflow: hidden;
@@ -271,10 +293,9 @@ body {
   margin: 0 auto;
   height: 120px;
   width: 120px;
-  border-radius: 15%;
+  border-radius: 24%;
   border: 5px solid #fff;
-  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/156905/profile/profile-512.jpg?1530296477")
-    no-repeat;
+  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/156905/profile/profile-512.jpg?1530296477") no-repeat;
   background-size: contain;
   overflow: hidden;
 }
@@ -306,7 +327,7 @@ body {
 .userDetailsLeftHeader h4 {
   font-size: 25px;
   line-height: 30px;
-  font-weight: 700!important;
+  font-weight: 700 !important;
 }
 
 .userDetailsLeftHeader span {
@@ -330,7 +351,7 @@ body {
   height: 45px;
   line-height: 24px;
   margin-top: 10px;
-  font-size: 16px!important;
+  font-size: 16px !important;
   color: #fff;
   line-height: 24px;
   border-bottom-left-radius: 0px;
@@ -349,12 +370,12 @@ body {
   margin-left: 50px !important;
 }
 
-.collectionButton2{
+.collectionButton2 {
   width: 328px;
   height: 195px;
   background: rgba(247, 143, 138, 0.08);
   border-radius: 20px;
-  border: 2px dashed #F78F8A!important;
+  border: 2px dashed #F78F8A !important;
   color: #F78F8A !important;
   margin-left: 40px !important;
 }
@@ -366,19 +387,19 @@ body {
 
 /* Inivation */
 .inviationHeaderTitle {
-  font-size: 22px!important;
+  font-size: 22px !important;
   color: #272727;
-  font-weight: 700!important;
+  font-weight: 700 !important;
 }
 
 .inviationSectionTitle {
-  font-size: 18px!important;
-  font-weight: 700!important;
-  color: #272727!important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #272727 !important;
 }
 
 .invitationSentSection {
-  margin-top: 40px!important;
+  margin-top: 40px !important;
 }
 
 /* .invitationCard {
@@ -425,8 +446,9 @@ body {
   height: 35px !important;
   background: #FDC369 !important;
   border-radius: 10px !important;
-  color: #fff!important;
+  color: #fff !important;
 }
+
 /* 
 .invitationCardRight {
   display: flex;
@@ -462,7 +484,7 @@ body {
   align-items: center;
   justify-content: center;
   margin-top: 5px;
-} 
+}
 
 .postedImageRight {
   margin-top: 15px;
@@ -477,22 +499,22 @@ body {
 }
 
 .acceptButton {
-  box-sizing: border-box!important;
-  width: 171px!important;
-  height: 45px!important;
-  background: #6FD14C!important;
-  border-radius: 12px!important;
-  color: #fff!important;
+  box-sizing: border-box !important;
+  width: 171px !important;
+  height: 45px !important;
+  background: #6FD14C !important;
+  border-radius: 12px !important;
+  color: #fff !important;
   font-size: 14px;
 }
 
 .declineButton {
-  box-sizing: border-box!important;
-  width: 171px!important;
-  height: 45px!important;
-  background: #FF3F3F!important;
-  border-radius: 12px!important;
-  color: #fff!important;
+  box-sizing: border-box !important;
+  width: 171px !important;
+  height: 45px !important;
+  background: #FF3F3F !important;
+  border-radius: 12px !important;
+  color: #fff !important;
   margin-top: 7px;
   font-size: 14px;
 }
@@ -515,7 +537,7 @@ body {
 
 /* Course */
 .homepageTitle {
-  font-size: 24px!important
+  font-size: 24px !important
 }
 
 .courseCard {
@@ -556,11 +578,11 @@ body {
   padding: 10px;
 }
 
-.topLearnerCardLeftText{
+.topLearnerCardLeftText {
   padding: 5px 0px;
 }
 
-.topLearnerCardLeftText h6{
+.topLearnerCardLeftText h6 {
   padding: 0px;
   line-height: 1.2;
   font-size: 17px;
@@ -667,17 +689,17 @@ body {
 }
 
 .collectionFieldTitle {
-  font-weight: 700!important;
-  font-size: 16px!important;
-  line-height: 21px!important;
-  color: #272727!important;
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  line-height: 21px !important;
+  color: #272727 !important;
   align-items: center;
   display: flex;
-  margin-top: 13px!important;
+  margin-top: 13px !important;
 }
 
 .leftCollectionTitle {
-  margin-left: 40px!important;
+  margin-left: 40px !important;
 }
 
 .collectionField {
@@ -697,20 +719,20 @@ body {
   background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
   box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
   border-radius: 15px;
-  color: #fff!important;
-  border-radius: 15px!important;
-  margin-left: 20px!important;
+  color: #fff !important;
+  border-radius: 15px !important;
+  margin-left: 20px !important;
 }
 
 .collectionStoreBoxFields {
-  margin-top: 20px!important;
+  margin-top: 20px !important;
 }
 
 .qrSectionDiv {
-  margin-left: 50px!important;
+  margin-left: 50px !important;
   justify-content: center;
   display: flex;
-  flex-direction: column!important;
+  flex-direction: column !important;
   align-items: center;
 }
 
@@ -726,14 +748,14 @@ body {
 .qrCodeTitle {
   width: 144px;
   height: 22px;
-  font-weight: 700!important;
-  font-size: 18px!important;
-  line-height: 21px!important;
-  color: #272727!important;
+  font-weight: 700 !important;
+  font-size: 18px !important;
+  line-height: 21px !important;
+  color: #272727 !important;
   display: flex;
   justify-content: center;
   width: 100%;
-  margin-bottom: 10px!important;
+  margin-bottom: 10px !important;
 }
 
 .qrSection img {
@@ -746,13 +768,13 @@ body {
   box-sizing: border-box;
   width: 150px;
   height: 50px;
-  background: #F5F9FD!important;
-  border: 1px solid #6FD14C!important;
-  border-radius: 15px!important;
+  background: #F5F9FD !important;
+  border: 1px solid #6FD14C !important;
+  border-radius: 15px !important;
 }
 
 .signInCollectionButton {
-  margin-right: 10px!important;
+  margin-right: 10px !important;
 }
 
 .transparentGreenVerificationButton {
@@ -760,7 +782,7 @@ body {
 }
 
 .transparentGreenVerificationButton span {
-  margin-left: 20px!important;
+  margin-left: 20px !important;
 }
 
 .transparentGreenButton img {
@@ -773,9 +795,9 @@ body {
   box-sizing: border-box;
   width: 200px;
   height: 80px;
-  background: #F5F9FD!important;
-  border: 1px solid rgba(39, 39, 39, 0.24)!important;
-  border-radius: 12px!important;
+  background: #F5F9FD !important;
+  border: 1px solid rgba(39, 39, 39, 0.24) !important;
+  border-radius: 12px !important;
   display: flex;
   justify-content: center;
 }
@@ -783,7 +805,7 @@ body {
 .collectionButtons {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px!important;
+  margin-top: 20px !important;
 }
 
 .nextCollectionButton {
@@ -791,17 +813,25 @@ body {
   height: 50px;
   background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
   box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
-  color: #fff!important;
-  border-radius: 15px!important;
+  color: #fff !important;
+  border-radius: 15px !important;
+}
+
+.saveDraftButton {
+  width: 150px;
+  height: 50px;
+  background-color: var(--color-black) !important;
+  color: #fff !important;
+  border-radius: 15px !important;
 }
 
 .backCollectionButton {
   box-sizing: border-box;
   width: 150px;
   height: 50px;
-  border: 2px solid #F78F8A!important;
-  color: #F78F8A!important;
-  border-radius: 15px!important;
+  border: 2px solid #F78F8A !important;
+  color: #F78F8A !important;
+  border-radius: 15px !important;
 }
 
 .createCollectionBoxScenario2 {
@@ -825,13 +855,13 @@ body {
 /* User Card */
 .userCard {
   width: 500px;
-  height: 120px;
+  /* height: 120px; */
   background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
   box-shadow: 0px 16.7655px 50.2966px rgba(247, 143, 138, 0.47);
   border-radius: 20px;
   display: flex;
   padding: 20px 30px;
-  color: #FFFEFE!important;
+  color: #FFFEFE !important;
 }
 
 .userCardImage img {
@@ -843,15 +873,15 @@ body {
 }
 
 .userCardDetails h6 {
-  font-size: 22px!important;
+  font-size: 22px !important;
 }
 
 .userCardDetails span {
-  font-size: 16px!important;
+  font-size: 16px !important;
 }
 
 .userCardChips {
-  margin-top: 10px!important;
+  margin-top: 10px !important;
   display: flex;
   gap: 15px;
 }
@@ -859,22 +889,22 @@ body {
 .userCardChips .chip {
   width: 155px;
   height: 45px;
-  background: #FFFEFE!important;
-  color: #F78F8A!important;
-  border-radius: 12px!important;
-  font-size: 8px!important;
+  background: #FFFEFE !important;
+  color: #F78F8A !important;
+  border-radius: 12px !important;
+  font-size: 8px !important;
   font-weight: 500;
 }
 
 .userCard2 {
-  color: #272727!important;
-  background: #FFFEFE!important;
-  margin-left: 10px!important;
+  color: #272727 !important;
+  background: #FFFEFE !important;
+  margin-left: 10px !important;
 }
 
 .userCard2 .userCardChips .chip {
-  background: rgba(247, 143, 138, 0.1)!important;
-  color: #F78F8A!important;
+  background: rgba(247, 143, 138, 0.1) !important;
+  color: #F78F8A !important;
 }
 
 
@@ -885,21 +915,21 @@ body {
 /* Litigation */
 
 .litigationBox {
-  box-sizing: border-box!important;
+  box-sizing: border-box !important;
   width: 100%;
-  height: 225px!important;
-  background: #FFFFFF!important;
-  border: 1px solid #EBEFF0!important;
-  border-radius: 20px!important;
-  border-spacing: 0px!important;
-  margin-top: 15px!important;
+  height: 225px !important;
+  background: #FFFFFF !important;
+  border: 1px solid #EBEFF0 !important;
+  border-radius: 20px !important;
+  border-spacing: 0px !important;
+  margin-top: 15px !important;
 }
 
 .litigationBoxHeader {
   box-sizing: border-box;
   height: 60px;
   background: #F5F9FD;
-  border-radius: 20px!important;
+  border-radius: 20px !important;
 }
 
 .litigationBoxHeader th {
@@ -907,11 +937,11 @@ body {
 }
 
 .litigationBoxHeader tr:first-child {
-  border-top-left-radius: 20px!important;
+  border-top-left-radius: 20px !important;
 }
 
 .litigationBoxHeader th:last-child {
-  border-top-right-radius: 20px!important;
+  border-top-right-radius: 20px !important;
 }
 
 .litigationBoxBody td {
@@ -920,27 +950,40 @@ body {
 }
 
 .litigationBoxBody td:first {
-  border-bottom: 1px solid #32363C!important;
+  border-bottom: 1px solid #32363C !important;
 }
 
 .withdrawButton {
   width: 150px;
   height: 50px;
-  background: #6C69FD!important;
-  border-radius: 15px!important;
-  color: #FFFFFF!important;
+  background: #6C69FD !important;
+  border-radius: 15px !important;
+  color: #FFFFFF !important;
 }
 
-.approveButton {
+.approveButton,
+.pendingButton,
+.previewButton {
   width: 150px;
   height: 50px;
-  background: #6FCD4C!important;
-  border-radius: 15px!important;
-  color: #FFFFFF!important;
+  background: #6FCD4C !important;
+  border-radius: 15px !important;
+  color: #FFFFFF !important;
 }
 
-.withdrawButton img, .approveButton img { 
-  padding-right: 10px!important;
+.pendingButton {
+  background-color: var(--color-yellow) !important;
+}
+
+.previewButton {
+  background-color: var(--color-blue) !important;
+}
+
+.withdrawButton img,
+.approveButton img,
+.pendingButton img,
+.previewButton img {
+  padding-right: 10px !important;
 }
 
 .litigationUser {
@@ -970,10 +1013,10 @@ body {
   box-sizing: border-box;
   width: 140px;
   height: 50px;
-  border: 2px solid #F78F8A!important;
-  color: #F78F8A!important;
-  border-radius: 15px!important;
-  margin-top: 80px!important;
+  border: 2px solid #F78F8A !important;
+  color: #F78F8A !important;
+  border-radius: 15px !important;
+  margin-top: 80px !important;
 }
 
 .userClaimAuthorBox2 {
@@ -981,9 +1024,9 @@ body {
 }
 
 .litigationCloseTitle {
-  font-size: 24px!important;
+  font-size: 24px !important;
   color: #272727;
-  font-weight: 700!important;
+  font-weight: 700 !important;
 }
 
 
@@ -1002,7 +1045,7 @@ body {
   border: 1px solid #EBEFF0;
   box-shadow: 0px 27px 58px rgba(84, 69, 68, 0.09);
   border-radius: 25px;
-  margin-top: 10px!important;
+  margin-top: 10px !important;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -1035,7 +1078,7 @@ body {
   border: 1px solid #EBEFF0;
   box-shadow: 0px 27px 58px rgba(84, 69, 68, 0.09);
   border-radius: 25px;
-  margin-top: 10px!important;
+  margin-top: 10px !important;
   padding-top: 20px;
 }
 
@@ -1068,7 +1111,7 @@ body {
   font-size: 14px;
   line-height: 137.8%;
   color: #32363C;
-  margin-bottom: 8px!important;
+  margin-bottom: 8px !important;
 }
 
 .creditCardDetials span {
@@ -1080,7 +1123,7 @@ body {
 }
 
 .creditCardIcons {
-  margin: 20px 0px!important;
+  margin: 20px 0px !important;
   display: flex;
   gap: 20px
 }
@@ -1115,7 +1158,7 @@ body {
   font-size: 14px;
   line-height: 137.8%;
   color: #32363C;
-  margin-bottom: 8px!important;
+  margin-bottom: 8px !important;
 }
 
 
@@ -1145,20 +1188,20 @@ body {
 
 .searchBarCollection {
   box-sizing: border-box;
-  width: 300px!important;
+  width: 300px !important;
   height: 40px;
   background: #F5F9FD;
   border-radius: 15px;
 }
 
 .collectionAddNew {
-  margin-left: 20px!important;
-  width: 130px!important;
-  height: 40px!important;
-  background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%)!important;
-  box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47)!important;
-  border-radius: 13px!important;
-  color: #fff!important;
+  margin-left: 20px !important;
+  width: 130px !important;
+  height: 40px !important;
+  background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%) !important;
+  box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47) !important;
+  border-radius: 13px !important;
+  color: #fff !important;
 }
 
 /* .collectionFollowerImages {
@@ -1241,7 +1284,7 @@ body {
 
 .learnHowToImage img {
   width: 100%;
-  }
+}
 
 
 
@@ -1249,11 +1292,11 @@ body {
 /* Tranding News */
 
 .trandingNewsHeader h5 {
-  font-size: 24px!important;
-  color: #272727!important;
-  padding-bottom: 10px!important;
-  margin-top: 30px!important;
-  font-weight: 700!important;
+  font-size: 24px !important;
+  color: #272727 !important;
+  padding-bottom: 10px !important;
+  margin-top: 30px !important;
+  font-weight: 700 !important;
 }
 
 .trandingNewsCard {
@@ -1263,7 +1306,7 @@ body {
   background: #FFFFFF;
   border: 1px solid #EBEFF0;
   border-radius: 25px;
-  padding: 20px!important;
+  padding: 20px !important;
 }
 
 .trandingNewsCardText {
@@ -1302,6 +1345,7 @@ body {
   width: 50%;
   height: 35px;
 }
+
 .responsiveClearIcon {
   display: flex;
   justify-content: flex-end;
@@ -1311,7 +1355,7 @@ body {
 .responsiveClearIcon button {
   height: 40px;
   color: #071011;
-  min-width: 40px!important;
+  min-width: 40px !important;
 }
 
 
@@ -1330,7 +1374,8 @@ body {
     display: flex !important;
   }
 
-  .sidebarResponsive, .responsive {
+  .sidebarResponsive,
+  .responsive {
     display: none;
   }
 
@@ -1369,7 +1414,7 @@ body {
   }
 
   .searchBarCollection {
-    width: 62%!important;
+    width: 62% !important;
   }
 
   /* .collectionCard {
@@ -1416,7 +1461,7 @@ body {
   } */
 
   .collectionAddNew {
-    width: 105px!important;
+    width: 105px !important;
   }
 
   /* .invitationCard {
@@ -1446,7 +1491,8 @@ body {
     justify-content: center;
   } */
 
-  .acceptButton span, .declineButton span {
+  .acceptButton span,
+  .declineButton span {
     font-size: 15px;
   }
 
@@ -1492,7 +1538,7 @@ body {
     height: 50px;
     width: 50px;
   }
-  
+
   .trandingNewsCard {
     flex-direction: column;
     gap: 0px;
@@ -1522,18 +1568,18 @@ body {
     line-height: 22px;
     margin-bottom: 20px;
   }
-  
+
   .createCollectionBox {
     padding: 10px;
     height: 460px;
   }
-  
+
   .responsiveCreateCollectionBox {
     height: 940px;
   }
 
   .leftCollectionTitle {
-    margin-left: 0px!important;
+    margin-left: 0px !important;
   }
 
   .createCollectionBoxScenario2 {
@@ -1550,7 +1596,7 @@ body {
     width: 55px;
     border-radius: 10px;
   }
-  
+
   .userCardDetails {
     margin-left: 10px;
   }
@@ -1571,7 +1617,7 @@ body {
   }
 
   .userCardChips .chip span {
-    font-size: 14px!important;
+    font-size: 14px !important;
   }
 
   /* .footerSection {
@@ -1585,11 +1631,11 @@ body {
   } */
 
   .qrSectionDiv {
-    margin-left: 0px!important;
+    margin-left: 0px !important;
   }
 
   .litigationBoxHeader th:first-child {
-    border-top-left-radius: 20px!important;
+    border-top-left-radius: 20px !important;
     border-top-right-radius: 20px;
   }
 
@@ -1602,12 +1648,12 @@ body {
 
   .userDetailsLeftHeader h4 {
     font-size: 22px;
-    font-weight: 760!important;
+    font-weight: 760 !important;
   }
 
   .userDetailsChip .chip {
-    min-width: 140px!important;
-    font-size: 14px!important;
+    min-width: 140px !important;
+    font-size: 14px !important;
     font-weight: 600;
   }
 
@@ -1631,12 +1677,12 @@ body {
     height: 195px;
     margin-left: 0px !important;
   }
-  
-  .collectionButton2{
+
+  .collectionButton2 {
     width: 90%;
     height: 195px;
     margin-left: 0px !important;
-    margin-top: 20px!important;
+    margin-top: 20px !important;
   }
 
   .signInCollectionButton {
@@ -1662,7 +1708,7 @@ body {
     width: 60%;
   }
 
-  .latestNewsCardLeftImage img{
+  .latestNewsCardLeftImage img {
     object-fit: contain;
     height: auto;
   }
@@ -1683,7 +1729,7 @@ body {
   }
 
   .latestNewsCardLeftText {
-    padding: 0px 15px!important;
+    padding: 0px 15px !important;
   }
 
   .slider-container {
@@ -1701,7 +1747,7 @@ body {
     min-width: 100%;
   }
 
-  .carousel .carousel-item > img {
+  .carousel .carousel-item>img {
     width: 63%;
     height: 83%;
   }
@@ -1713,10 +1759,11 @@ body {
     position: absolute;
     top: 0;
     left: 116px;
-    opacity: 1!important;
+    opacity: 1 !important;
   }
 
-  .rightIcon, .leftIcon {
+  .rightIcon,
+  .leftIcon {
     top: 32%;
   }
 
@@ -1765,7 +1812,7 @@ body {
     margin-left: 41px;
     width: 150px;
   } */
-  
+
   /* .activeSidebarMenu {
     background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
     border-radius: 100px;
@@ -1794,9 +1841,9 @@ body {
   } */
 
   .non-responsive .searchBar {
-      margin-top: 24px!important;    
-      width: 100%!important;
-      margin-left: 0px !important;
+    margin-top: 24px !important;
+    width: 100% !important;
+    margin-left: 0px !important;
   }
 
   .creditCard {
@@ -1817,7 +1864,7 @@ body {
     height: 40px;
     background: #fff;
     color: #071011;
-    min-width: 40px!important;
+    min-width: 40px !important;
   }
 
   .responsiveClearIcon {
@@ -1829,7 +1876,7 @@ body {
   .responsiveClearIcon button {
     height: 40px;
     color: #071011;
-    min-width: 40px!important;
+    min-width: 40px !important;
   }
 }
 
@@ -1838,7 +1885,8 @@ body {
     display: flex !important;
   }
 
-  .sidebarResponsive, .responsive {
+  .sidebarResponsive,
+  .responsive {
     display: none;
   }
 
@@ -1874,7 +1922,7 @@ body {
   }
 
   .searchBarCollection {
-    width: 62%!important;
+    width: 62% !important;
   }
 
   /* .collectionCard {
@@ -1921,7 +1969,7 @@ body {
   } */
 
   .collectionAddNew {
-    width: 105px!important;
+    width: 105px !important;
   }
 
   /* .invitationCard {
@@ -1951,7 +1999,8 @@ body {
     justify-content: center;
   } */
 
-  .acceptButton span, .declineButton span {
+  .acceptButton span,
+  .declineButton span {
     font-size: 15px;
   }
 
@@ -1997,7 +2046,7 @@ body {
     height: 50px;
     width: 50px;
   }
-  
+
   .trandingNewsCard {
     flex-direction: column;
     gap: 0px;
@@ -2027,18 +2076,18 @@ body {
     line-height: 22px;
     margin-bottom: 20px;
   }
-  
+
   .createCollectionBox {
     padding: 10px;
     height: 460px;
   }
-  
+
   .responsiveCreateCollectionBox {
     height: 940px;
   }
 
   .leftCollectionTitle {
-    margin-left: 0px!important;
+    margin-left: 0px !important;
   }
 
   .createCollectionBoxScenario2 {
@@ -2055,7 +2104,7 @@ body {
     width: 55px;
     border-radius: 10px;
   }
-  
+
   .userCardDetails {
     margin-left: 10px;
   }
@@ -2076,7 +2125,7 @@ body {
   }
 
   .userCardChips .chip span {
-    font-size: 14px!important;
+    font-size: 14px !important;
   }
 
   /* .footerSection {
@@ -2090,11 +2139,11 @@ body {
   } */
 
   .qrSectionDiv {
-    margin-left: 0px!important;
+    margin-left: 0px !important;
   }
 
   .litigationBoxHeader th:first-child {
-    border-top-left-radius: 20px!important;
+    border-top-left-radius: 20px !important;
     border-top-right-radius: 20px;
   }
 
@@ -2107,12 +2156,12 @@ body {
 
   .userDetailsLeftHeader h4 {
     font-size: 22px;
-    font-weight: 760!important;
+    font-weight: 760 !important;
   }
 
   .userDetailsChip .chip {
-    min-width: 140px!important;
-    font-size: 14px!important;
+    min-width: 140px !important;
+    font-size: 14px !important;
     font-weight: 600;
   }
 
@@ -2136,12 +2185,12 @@ body {
     height: 195px;
     margin-left: 0px !important;
   }
-  
-  .collectionButton2{
+
+  .collectionButton2 {
     width: 90%;
     height: 195px;
     margin-left: 0px !important;
-    margin-top: 20px!important;
+    margin-top: 20px !important;
   }
 
   .signInCollectionButton {
@@ -2167,7 +2216,7 @@ body {
     width: 60%;
   }
 
-  .latestNewsCardLeftImage img{
+  .latestNewsCardLeftImage img {
     object-fit: contain;
     height: auto;
   }
@@ -2188,7 +2237,7 @@ body {
   }
 
   .latestNewsCardLeftText {
-    padding: 0px 15px!important;
+    padding: 0px 15px !important;
   }
 
   /* header {
@@ -2228,7 +2277,7 @@ body {
     margin-left: 41px;
     width: 150px;
   } */
-  
+
   /* .activeSidebarMenu {
     background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
     border-radius: 100px;
@@ -2257,9 +2306,9 @@ body {
   } */
 
   .non-responsive .searchBar {
-      margin-top: 24px!important;    
-      width: 100%!important;
-      margin-left: 0px !important;
+    margin-top: 24px !important;
+    width: 100% !important;
+    margin-left: 0px !important;
   }
 
   .creditCard {
@@ -2280,7 +2329,7 @@ body {
     height: 40px;
     background: #fff;
     color: #071011;
-    min-width: 40px!important;
+    min-width: 40px !important;
   }
 
   .responsiveClearIcon {
@@ -2292,7 +2341,7 @@ body {
   .responsiveClearIcon button {
     height: 40px;
     color: #071011;
-    min-width: 40px!important;
+    min-width: 40px !important;
   }
 
   .slider-container {
@@ -2308,7 +2357,7 @@ body {
     left: -5%;
   }
 
-  .carousel .carousel-item > img {
+  .carousel .carousel-item>img {
     width: 60%;
     height: 83%;
   }
@@ -2320,10 +2369,11 @@ body {
     position: absolute;
     top: 0;
     left: 116px;
-    opacity: 1!important;
+    opacity: 1 !important;
   }
 
-  .rightIcon, .leftIcon {
+  .rightIcon,
+  .leftIcon {
     top: 32%;
   }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, TextField, Typography } from '@mui/material';
-import UserCard from '../UserCard1';
+import UserCard from '../../cards/UserCard';
 
 export default function StepOne() {
   return (
