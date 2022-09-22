@@ -17,7 +17,7 @@ function Footer() {
         <a href="https://github.com/e-Learning-DAO/POCRE">
           <img src={Github} alt="@eLearningDAO" width={30} height={30} />
         </a>
-        <a href="https://pocre.net/">
+        <a href="https://www.pocre.net/">
           <img src={Globe} alt="@eLearningDAO" width={30} height={30} />
         </a>
       </Grid>

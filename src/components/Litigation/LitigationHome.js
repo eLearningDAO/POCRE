@@ -52,7 +52,7 @@ export default function LitigationClosed() {
                   </defs>
                 </svg>
 
-                Create a new litigation
+                Claim authorship of your creation
               </Button>
             </Grid>
           </Grid>

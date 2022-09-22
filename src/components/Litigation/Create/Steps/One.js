@@ -18,7 +18,7 @@ export default function StepOne() {
             }}
             className="input input-dark"
             fullWidth
-            placeholder="Creation title"
+            placeholder="The title of the creation you are claiming"
           />
         </Grid>
 
@@ -35,7 +35,7 @@ export default function StepOne() {
             minRows={5}
             className="input input-dark"
             fullWidth
-            placeholder="Creation description"
+            placeholder="Describe the creation you are claiming"
           />
         </Grid>
 
@@ -57,7 +57,7 @@ export default function StepOne() {
               className="select select-dark"
             >
               <MenuItem value="">
-                Select a creation
+                Select the creation with authorship infringement
               </MenuItem>
               {
               ['How to do X', 'Creating your own Y', 'Working with Z'].map((x) => (
