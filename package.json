@@ -19,7 +19,10 @@
     "react-slick": "^0.29.0",
     "react-transition-group": "^4.4.5",
     "slick-carousel": "^1.8.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "@hookform/resolvers": "^2.9.8",
+    "joi": "^17.6.0",
+    "react-hook-form": "^7.35.0"
   },
   "devDependencies": {
     "eslint": "8.11.0",
