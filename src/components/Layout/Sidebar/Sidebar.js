@@ -26,7 +26,7 @@ function SideBar() {
         <li className={location.pathname.includes('/invitation') ? 'activeSidebarMenu' : ''}>
           <Link to="/invitation">
             <img alt="menu-icon" src={location.pathname.includes('/invitation') ? MenuIcon3Active : MenuIcon3} />
-            <span>Invitation</span>
+            <span>Recognition</span>
           </Link>
         </li>
         <li className={location.pathname.includes('/litigation') ? 'activeSidebarMenu' : ''}>
@@ -44,7 +44,7 @@ function SideBar() {
         <li className={location.pathname.includes('/credit') ? 'activeSidebarMenu' : ''}>
           <Link to="/credit">
             <img alt="menu-icon" src={location.pathname.includes('/credit') ? MenuIcon6Active : MenuIcon6} />
-            <span>Credit</span>
+            <span>Credits</span>
           </Link>
         </li>
       </ul>

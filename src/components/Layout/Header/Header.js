@@ -88,10 +88,10 @@ function HomeHeader({ displayNav = false }) {
         <nav className="site-nav">
           <ul>
             <li className={location.pathname === '/creations' ? 'activeSidebarMenu' : ''}><Link to="/creations">Creations</Link></li>
-            <li className={location.pathname === '/invitation' ? 'activeSidebarMenu' : ''}><Link to="/invitation">Invitation</Link></li>
+            <li className={location.pathname === '/invitation' ? 'activeSidebarMenu' : ''}><Link to="/invitation">Recognition</Link></li>
             <li className={location.pathname === '/litigation' ? 'activeSidebarMenu' : ''}><Link to="/litigation">Litigation</Link></li>
             <li className={location.pathname === '/wallet' ? 'activeSidebarMenu' : ''}><Link to="/wallet">Wallet</Link></li>
-            <li className={location.pathname === '/credit' ? 'activeSidebarMenu' : ''}><Link to="/credit">Credit</Link></li>
+            <li className={location.pathname === '/credit' ? 'activeSidebarMenu' : ''}><Link to="/credit">Credits</Link></li>
           </ul>
         </nav>
         )}
@@ -202,7 +202,7 @@ function HomeHeader({ displayNav = false }) {
                   <img
                   alt="menu-icon"
                    src={location.pathname === '/invitation' ? MenuIcon3Active : MenuIcon3} />
-                   <span>Invitation</span>
+                   <span>Recognition</span>
                 </Link>
               </li>
               <li className={location.pathname === '/litigation' ? 'activeSidebarMenu' : ''} >
@@ -226,7 +226,7 @@ function HomeHeader({ displayNav = false }) {
                   <img
                   alt="menu-icon"
                    src={location.pathname === '/credit' ? MenuIcon6Active : MenuIcon6} />
-                   <span>Credit</span>
+                   <span>Credits</span>
                 </Link>
               </li>
             </ul> */}
