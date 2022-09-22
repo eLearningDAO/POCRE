@@ -35,5 +35,21 @@ transition: .4s;
 
 /*------Buttons-------*/
 .chipPreviewButton{
+
+}
+
+
+/*-------Invitation card Right CSS------*/
+.invitationCardRight{
+    position: relative;
+    left: 30px;
+    display: flex;
     
+}
+.invitationCardRightButton{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 5px;
+    margin-top: 10px;
 }
