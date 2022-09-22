@@ -171,3 +171,41 @@
 
 /* DESKTOPS */
 @media (min-width: 1200px) {}
+
+
+/* loader */
+.loader {
+    position: relative;
+}
+
+.loader::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    transform: translate3d(-50%, -50%, 0);
+    transform-origin: left top;
+    border-top: 3px solid white;
+    border-right: 3px solid black;
+    border-bottom: 3px solid black;
+    border-left: 3px solid black;
+    border-radius: 50%;
+    content: "";
+    animation: rotate-loader 0.4s infinite linear;
+}
+
+@keyframes rotate-loader {
+    from {
+        transform: rotate(0deg) translate3d(-50%, -50%, 0);
+    }
+
+    to {
+        transform: rotate(359deg) translate3d(-50%, -50%, 0);
+    }
+}
+
+.loader {
+    flex-basis: 33.333%;
+    height: 200px;
+}
