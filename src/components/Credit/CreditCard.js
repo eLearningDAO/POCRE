@@ -5,7 +5,15 @@ import TwitterIcon from '../../assets/twitter.png';
 import UserImage1 from '../../assets/user-image-3.png';
 import './CreditCard.css';
 
-export default function CreditCard({ name, jobs, bio }) {
+export default function CreditCard(
+  {
+    name,
+    jobs,
+    bio,
+    linkedIn,
+    twitter,
+  },
+) {
   return (
     <div className="creditCard">
       <div className="creditCardImage">
@@ -17,19 +25,19 @@ export default function CreditCard({ name, jobs, bio }) {
           { name }
         </Typography>
 
-        <Typography variant="h6">
+        <Typography variant="h6" className="jobs">
           {jobs}
         </Typography>
-
-        <div className="bio">
-          <Typography variant="span">
-            {bio}
-          </Typography>
-        </div>
-
+        <Typography variant="span" className="bio">
+          {bio}
+        </Typography>
         <div className="creditCardIcons">
-          <img src={TwitterIcon} alt="" />
-          <img src={LinkedinIcon} alt="" />
+          <a href={linkedIn}>
+            <img src={TwitterIcon} alt="" href={linkedIn} />
+          </a>
+          <a href={twitter}>
+            <img src={LinkedinIcon} alt="" href={twitter} />
+          </a>
         </div>
       </div>
     </div>
