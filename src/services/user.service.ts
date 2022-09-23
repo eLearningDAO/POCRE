@@ -10,6 +10,8 @@ interface IUser {
 interface IUserQuery {
   limit: number;
   page: number;
+  query: string;
+  search_fields: string[];
 }
 interface IUserQueryResult {
   results: Array<IUserDoc>;
@@ -49,15 +51,19 @@ export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
  * Query for users
  * @returns {Promise<Array<IUser>}
  */
-export const queryUsers = async (options: IUserQuery = { limit: 10, page: 1 }): Promise<IUserQueryResult> => {
+export const queryUsers = async (options: IUserQuery): Promise<IUserQueryResult> => {
   try {
-    const result = await db.query(`SELECT * FROM users OFFSET $1 LIMIT $2;`, [
+    const search = options.search_fields
+      ? options.search_fields.map((field) => `WHERE ${field} LIKE '%${options.query}%'`).join(' OR ')
+      : '';
+
+    const result = await db.query(`SELECT * FROM users ${search} OFFSET $1 LIMIT $2;`, [
       options.page === 1 ? '0' : (options.page - 1) * options.limit,
       options.limit,
     ]);
     const users = result.rows;
 
-    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM users;`, [])).rows[0];
+    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM users ${search};`, [])).rows[0];
 
     return {
       results: users,
