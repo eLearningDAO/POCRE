@@ -13,10 +13,18 @@ function Credit() {
           <Typography className="inviationHeaderTitle" variant="h6">Top Contributors</Typography>
         </Grid>
 
-        <Grid item md={12} className="topContributorSection">
-          {Data.credits[0].topContributors.slice(0, 6).map((data) => (
-            <CreditCard jobs={data.jobs} name={data.name} bio={data.bio} />
-          ))}
+        <Grid container gap={0} className="topContributorSection">
+          <div className="InnerContainer">
+            {Data.credits[0].topContributors.slice(0, 6).map((data) => (
+              <CreditCard
+                jobs={data.job}
+                name={data.name}
+                bio={data.bio}
+                linkedIn={data.linkedinUrl}
+                twitter={data.twitterUrl}
+              />
+            ))}
+          </div>
         </Grid>
       </Grid>
 
@@ -27,7 +35,11 @@ function Credit() {
 
         <Grid item md={12} className="otherContributorSection">
           {Data.credits[1].otherContributors.map((data2) => (
-            <OtherContributerCard name={data2.name} jobs={data2.jobs} />
+            <OtherContributerCard
+              name={data2.name}
+              jobs={data2.job}
+              profileUrl={data2.profileUrl}
+            />
           ))}
         </Grid>
       </Grid>

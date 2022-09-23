@@ -4,7 +4,7 @@
             "topContributors": [
                 {
                     "name": "Mario Altimari",
-                    "jobs": "Ideator, Founder, Deus ex machina",
+                    "job": "Founder",
                     "bio": "Hands-on CTO",
                     "avatarUrl": "https://pbs.twimg.com/profile_images/1534602268724576256/sr747gQi_400x400.jpg",
                     "linkedinUrl": "https://www.linkedin.com/in/altimario/",
@@ -29,6 +29,8 @@
                     "twitterUrl": "https://twitter.com/emily",
                     "githubUrl": ""
                 }
+    
+
             ]
         },
         {
