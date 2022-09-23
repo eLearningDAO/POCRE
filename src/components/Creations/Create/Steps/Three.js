@@ -1,13 +1,15 @@
 import React from 'react';
 import {
-  Button, Grid, TextField, Typography,
+  Button, Grid, TextField, Typography, Box,
 } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import QrCode from '../../../../assets/qr.png';
 import GreenRightIcon from '../../../../assets/green-right.png';
 
-export default function StepThree() {
+export default function StepThree({
+  onBack = () => {}, onComplete = () => {}, status = {}, loading = false,
+}) {
   return (
     <Grid item xs={12}>
       <Grid container className="create-collection responsiveCreateCollectionBox">
@@ -76,6 +78,24 @@ export default function StepThree() {
           </div>
         </Grid>
 
+        <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center" />
+        <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
+          {(status.error || status.success)
+            && (
+            <Box width="100%" className={`${status.success ? 'bg-green' : 'bg-red'} color-white`} padding="16px" borderRadius="12px" fontSize="16px">
+              {status.success ? 'Success! A new creation was made' : status.error}
+            </Box>
+            )}
+        </Grid>
+
+      </Grid>
+
+      <Grid item xs={12} className="collectionButtons">
+        <Button className="backCollectionButton" onClick={onBack}>Back</Button>
+        <Button disabled={loading} type="submit" className="nextCollectionButton" style={{ marginLeft: 'auto' }} onClick={onComplete}>
+          {!loading ? 'Finish'
+            : <div className="loader" />}
+        </Button>
       </Grid>
     </Grid>
   );

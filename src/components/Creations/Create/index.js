@@ -1,30 +1,40 @@
 import { Grid, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import StepOne from './Steps/One';
-// import StepTwo from './Steps/Two';
-// import StepThree from './Steps/Three';
+import StepTwo from './Steps/Two';
+import StepThree from './Steps/Three';
 import './index.css';
 import useCreate from './useCreate';
 
 function CreateCollection() {
-  const [step,
-    //  setStep
-  ] = useState(1);
+  const [step, setStep] = useState(1);
+  const [creationDraft, setCreationDraft] = useState();
   const { makeNewCreation, newCreationStatus, loading } = useCreate();
 
   const handleValues = async (values) => {
-    // if (step === 1) {
-    await makeNewCreation(values);
-    // }
+    if (step === 1) {
+      setCreationDraft(values);
+    }
 
-    // if (step !== 3) {
-    //   setStep(step + 1);
-    // }
+    if (step === 2) {
+      setCreationDraft({
+        ...creationDraft,
+        materials: values,
+      });
+    }
+
+    if (step === 3) {
+      await makeNewCreation(creationDraft);
+    }
+
+    if (step !== 3) {
+      setStep(step + 1);
+    }
   };
 
-  // const handleBack = () => {
-  //   setStep(step - 1);
-  // };
+  const handleBack = () => {
+    setStep(step - 1);
+  };
 
   return (
     <Grid container spacing={2}>
@@ -35,20 +45,32 @@ function CreateCollection() {
         </Typography>
       </Grid>
 
-      {/* {step === 1 && ( */}
+      {step === 1 && (
       <StepOne
-        status={newCreationStatus}
-        loading={loading}
+        onComplete={handleValues}
+        initialValues={{
+          ...(creationDraft?.title && { title: creationDraft.title }),
+          ...(creationDraft?.description && { description: creationDraft.description }),
+          ...(creationDraft?.source && { source: creationDraft.source }),
+          ...(creationDraft?.tags && { tags: creationDraft.tags }),
+          ...(creationDraft?.date && { date: creationDraft.date }),
+        }}
+      />
+      )}
+      {step === 2 && (
+      <StepTwo
+        onBack={handleBack}
         onComplete={handleValues}
       />
-      {/* // )}
-      // {step === 2 && (
-      // <StepTwo
-      //   onBack={handleBack}
-      //   onComplete={handleValues}
-      // />
-      // )}
-      // {step === 3 && <StepThree />} */}
+      )}
+      {step === 3 && (
+      <StepThree
+        onBack={handleBack}
+        onComplete={handleValues}
+        status={newCreationStatus}
+        loading={loading}
+      />
+      )}
     </Grid>
   );
 }
