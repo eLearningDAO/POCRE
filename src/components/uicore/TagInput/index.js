@@ -5,7 +5,9 @@ import { Chip } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
 import './index.css';
 import PropTypes from 'prop-types';
-import { useEffect, useRef, useState } from 'react';
+import {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 
 const tagInputVariants = {
   LIGHT: 'light',
@@ -43,12 +45,25 @@ function TagInput(
   const inputReference = useRef();
   const [placeholderVisiable, setPlaceholderVisiable] = useState(true);
   const [tags, setTags] = useState([]);
+  const [internalTagSuggestions, setTagSuggestions] = useState([]);
   const [tagsSuggestionsToDisplay, setTagSuggestionsToDisplay] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const wrapperReference = useRef(null);
 
   useOutsideAlerter(wrapperReference, setShowSuggestions);
+
+  const updateTagSuggestions = useCallback((newTags = [], existingTags = []) => {
+    const newTagSuggestions = [];
+
+    newTags.map(
+      (x) => !existingTags.includes(x)
+      && x.includes(inputValue)
+      && newTagSuggestions.push(x),
+    );
+
+    setTagSuggestionsToDisplay(newTagSuggestions);
+  }, [setTagSuggestionsToDisplay]);
 
   useEffect(() => {
     if (hookToForm) {
@@ -61,15 +76,7 @@ function TagInput(
   }, []);
 
   useEffect(() => {
-    const newTagSuggestions = [];
-
-    tagSuggestions.map(
-      (x) => !tags.includes(x)
-      && x.includes(inputValue)
-      && newTagSuggestions.push(x),
-    );
-
-    setTagSuggestionsToDisplay(newTagSuggestions);
+    updateTagSuggestions(internalTagSuggestions, tags);
   }, [tags, inputValue]);
 
   useEffect(() => {
@@ -80,6 +87,12 @@ function TagInput(
     }
     formContext.trigger([name]);
   }, [tags]);
+
+  useEffect(() => {
+    updateTagSuggestions(tagSuggestions, tags);
+
+    setTagSuggestions(tagSuggestions);
+  }, [tagSuggestions]);
 
   const focusInput = (event) => {
     const { classList } = event.target;
@@ -129,7 +142,9 @@ function TagInput(
   const removeTag = (tag) => {
     const newTags = tags.filter((x) => x !== tag);
     setTags(newTags);
-    if (newTags.length === 0) setPlaceholderVisiable(true);
+    if (
+      newTags.length === 0 && inputReference.current.value.length === 0
+    ) setPlaceholderVisiable(true);
   };
 
   const addTagSuggestion = (tag) => {
@@ -173,7 +188,8 @@ function TagInput(
 
       {/* error hint */}
       {
-        hookToForm
+        !showSuggestions
+        && hookToForm
         && formContext?.formState?.errors?.[name]?.message
         && <p>{formContext?.formState?.errors?.[name]?.message}</p>
       }

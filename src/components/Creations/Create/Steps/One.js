@@ -10,7 +10,10 @@ import TagInput from '../../../uicore/TagInput';
 import { stepOneValidation } from './validation';
 
 export default function StepOne({
-  initialValues = {}, onComplete = () => {},
+  initialValues = {},
+  onComplete = () => {},
+  onTagInputChange = () => {},
+  tagSuggestions = [],
 }) {
   return (
     <Form
@@ -53,7 +56,7 @@ export default function StepOne({
             <Typography className="heading">Tag</Typography>
           </Grid>
           <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
-            <TagInput variant="dark" placeholder="The tags representing your creation" name="tags" hookToForm />
+            <TagInput tagSuggestions={tagSuggestions.map((tag) => tag.tag_name)} onInput={onTagInputChange} variant="dark" placeholder="The tags representing your creation" name="tags" hookToForm />
           </Grid>
         </Grid>
       </Grid>
