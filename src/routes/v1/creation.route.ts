@@ -43,6 +43,7 @@ export default router;
  *               - source_id
  *               - author_id
  *               - tags
+ *               - creation_date
  *             properties:
  *               creation_title:
  *                 type: string
@@ -65,6 +66,9 @@ export default router;
  *                 items:
  *                    type: string
  *                    format: uuid
+ *               creation_date:
+ *                 type: string
+ *                 format: date-time
  *             example:
  *                creation_title: my first creation
  *                creation_description: an example creation
@@ -72,6 +76,7 @@ export default router;
  *                author_id: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
  *                tags: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
  *                materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
+ *                creation_date: 2022-09-09T19:00:00.000Z
  *     responses:
  *       "201":
  *         description: Created
@@ -241,6 +246,9 @@ export default router;
  *                 items:
  *                    type: string
  *                    format: uuid
+ *               creation_date:
+ *                 type: string
+ *                 format: date-time
  *             example:
  *                creation_title: my first creation
  *                creation_description: an example creation
@@ -248,6 +256,7 @@ export default router;
  *                author_id: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
  *                tags: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
  *                materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
+ *                creation_date: 2022-09-09T19:00:00.000Z
  *     responses:
  *       "200":
  *         description: OK
