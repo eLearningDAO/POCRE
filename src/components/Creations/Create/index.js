@@ -6,10 +6,22 @@ import StepThree from './Steps/Three';
 import './index.css';
 import useCreate from './useCreate';
 
+const stepInfo = [
+  'What, when and where it is',
+  'What other materials you used and from who',
+  'Generate the proof of authorship',
+];
+
 function CreateCollection() {
   const [step, setStep] = useState(1);
   const [creationDraft, setCreationDraft] = useState();
-  const { makeNewCreation, newCreationStatus, loading } = useCreate();
+  const {
+    makeNewCreation,
+    newCreationStatus,
+    loading,
+    tagSuggestions,
+    handleTagInputChange,
+  } = useCreate();
 
   const handleValues = async (values) => {
     if (step === 1) {
@@ -40,14 +52,21 @@ function CreateCollection() {
     <Grid container spacing={2}>
       <Grid item xs={12} padding={{ xs: '12px', md: '0' }}>
         <Typography className="heading h4" variant="h4">
-          New Creation - Step 0
-          {`${step}`}
+          New Creation - Step
+          {' '}
+          {step}
+          {' '}
+          of 3
+          {' - '}
+          {stepInfo[step - 1]}
         </Typography>
       </Grid>
 
       {step === 1 && (
       <StepOne
         onComplete={handleValues}
+        onTagInputChange={handleTagInputChange}
+        tagSuggestions={tagSuggestions}
         initialValues={{
           ...(creationDraft?.title && { title: creationDraft.title }),
           ...(creationDraft?.description && { description: creationDraft.description }),

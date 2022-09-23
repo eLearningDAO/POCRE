@@ -1,35 +1,80 @@
-import React from 'react';
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import React, { useState } from 'react';
 import {
   Button, Grid, TextField, Typography, Box,
 } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import QrCode from '../../../../assets/qr.png';
-import GreenRightIcon from '../../../../assets/green-right.png';
+import SaveIcon from '../../../../assets/svgs/save.svg';
+import PreviewIcon from '../../../../assets/svgs/preview.svg';
+// import CloseIcon from '../../../../assets/svgs/close.svg';
+// import GreenRightIcon from '../../../../assets/green-right.png';
+
+function dec2hex(dec) {
+  return dec.toString(16).padStart(2, '0');
+}
+
+function generateId(length_) {
+  const array = new Uint8Array((length_ || 40) / 2);
+  window.crypto.getRandomValues(array);
+  return [...array].map((element) => dec2hex(element)).join('');
+}
 
 export default function StepThree({
   onBack = () => {}, onComplete = () => {}, status = {}, loading = false,
 }) {
-  return (
-    <Grid item xs={12}>
-      <Grid container className="create-collection responsiveCreateCollectionBox">
+  const [dummyURL, setDummyURL] = useState('');
+  // const [showPreview, setShowPreview] = useState(false);
 
-        <Grid container item md={7} xs={12}>
-          <Grid md={3} xs={12} paddingRight="12px">
-            <Typography className="heading">Creation Data</Typography>
-          </Grid>
-          <Grid md={9} xs={12} marginTop={{ xs: '12px', md: '0px' }}>
-            <Button className="transparentGreenButton">
+  const generateDummyURL = () => {
+    setDummyURL(`https://example.com/${generateId()}`);
+  };
+
+  return (
+    <>
+      {/* {showPreview && (
+      <div
+        className="creation-preview-container"
+        onClick={(event) => event.target === event.currentTarget && setShowPreview(false)}
+      >
+        <div className="creation-preview">
+          <div className="creation-preview-header">
+            <Typography className="heading h4">Preview</Typography>
+            <Button padding="0" minWidth="0" onClick={() => setShowPreview(false)}>
+              <img src={CloseIcon} height="24" width="24" alt="" />
+            </Button>
+          </div>
+          <div className="creation-preview-content">
+          </div>
+        </div>
+      </div>
+      )} */}
+      <Grid item xs={12}>
+        <Grid container className="create-collection" justifyContent="flex-start" height="fit-content">
+
+          <Grid container item md={7} xs={12}>
+            <Grid md={4} xs={12} paddingRight="12px" height="fit-content">
+              <span className="heading">Creation Date</span>
+            </Grid>
+            <Grid md={8} xs={12} height="fit-content">
+              <span>{new Date().toLocaleDateString()}</span>
+              {/* <Button className="transparentGreenButton">
               <img src={GreenRightIcon} alt="green-right" />
               {' '}
               Filled
-            </Button>
-          </Grid>
+            </Button> */}
+            </Grid>
 
-          <Grid md={3} xs={12} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
+            {/* <Grid md={3} xs={12}
+          marginTop={{ xs: '12px', md: '18px' }} display="flex"
+          flexDirection="row" alignItems="center">
             <Typography className="heading">Self Sign</Typography>
           </Grid>
-          <Grid md={9} xs={12} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
+          <Grid md={9} xs={12}
+          marginTop={{ xs: '12px', md: '18px' }} display="flex"
+          flexDirection="row" alignItems="center">
             <Button className="nextCollectionButton signInCollectionButton">
               Signin
             </Button>
@@ -38,23 +83,28 @@ export default function StepThree({
               {' '}
               <span> Verification </span>
             </Button>
-          </Grid>
+          </Grid> */}
 
-          <Grid md={3} xs={12} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="flex-start">
-            <Typography className="heading">Store</Typography>
-          </Grid>
-          <Grid md={9} xs={12} marginTop={{ xs: '12px', md: '18px' }}>
-            <TextField
-              variant="standard"
-              InputProps={{
-                disableUnderline: true,
-              }}
-              className="input input-dark"
-              fullWidth
-              placeholder="IPFS"
-            />
+            <Grid md={4} xs={12} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="flex-start">
+              <Typography className="heading">Store optionally on IPFS</Typography>
+            </Grid>
+            <Grid md={8} xs={12} marginTop={{ xs: '12px', md: '18px' }}>
+              <Grid display="flex" alignItems="flex-start" gap="12px">
+                <Button padding="0" minWidth="0" onClick={generateDummyURL}>
+                  <img src={SaveIcon} height="36" width="36" alt="" />
+                </Button>
+                <TextField
+                  value={dummyURL}
+                  variant="standard"
+                  InputProps={{
+                    disableUnderline: true,
+                  }}
+                  className="input input-dark"
+                  fullWidth
+                  placeholder="IPFS"
+                />
 
-            <TextField
+                {/* <TextField
               style={{ marginTop: '18px' }}
               variant="standard"
               InputProps={{
@@ -63,40 +113,61 @@ export default function StepThree({
               className="input input-dark"
               fullWidth
               placeholder="Youtube"
-            />
+            /> */}
 
-            <div className="create-collection-verify-box" style={{ marginTop: '18px' }}>
-              <FormControlLabel control={<Checkbox defaultChecked />} label="I’m human" />
+              </Grid>
+              <div className="create-collection-verify-box" style={{ marginTop: '18px' }}>
+                <FormControlLabel control={<Checkbox defaultChecked />} label="I’m human" />
+              </div>
+            </Grid>
+
+            <Grid md={4} xs={12} paddingRight="12px" height="fit-content">
+              <span className="heading">Preview</span>
+            </Grid>
+            <Grid md={8} xs={12} height="fit-content">
+              <Button
+                padding="0"
+                minWidth="0"
+              // onClick={() => setShowPreview(true)}
+              >
+                <img src={PreviewIcon} height="36" width="36" alt="" />
+              </Button>
+              {/* <Button className="transparentGreenButton">
+              <img src={GreenRightIcon} alt="green-right" />
+              {' '}
+              Filled
+            </Button> */}
+            </Grid>
+          </Grid>
+
+          <Grid item md={5} xs={12} padding={4} display="flex" flexDirection="column" gap="8px" alignItems="center">
+            <Typography variant="h4" className="heading h4">Current QR Code</Typography>
+            <div className="create-collection-qrcode">
+              <img alt="qr" src={QrCode} />
             </div>
           </Grid>
-        </Grid>
 
-        <Grid item md={5} xs={12} padding={4} display="flex" flexDirection="column" gap="8px" alignItems="center">
-          <Typography variant="h4" className="heading h4">Current QR Code</Typography>
-          <div className="create-collection-qrcode">
-            <img alt="qr" src={QrCode} />
-          </div>
-        </Grid>
-
-        <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center" />
-        <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
-          {(status.error || status.success)
+          <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center" />
+          <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
+            {(status.error || status.success)
             && (
             <Box width="100%" className={`${status.success ? 'bg-green' : 'bg-red'} color-white`} padding="16px" borderRadius="12px" fontSize="16px">
               {status.success ? 'Success! A new creation was made' : status.error}
             </Box>
             )}
+          </Grid>
+
         </Grid>
 
+        <Grid item xs={12} className="collectionButtons">
+          <Button className="backCollectionButton" onClick={onBack}>Back</Button>
+          <Button className="saveDraftButton" style={{ marginLeft: 'auto', marginRight: '12px' }}>Save Draft</Button>
+          <Button disabled={loading} type="submit" className="nextCollectionButton" onClick={onComplete}>
+            {!loading ? 'Finish'
+              : <div className="loader" />}
+          </Button>
+        </Grid>
       </Grid>
-
-      <Grid item xs={12} className="collectionButtons">
-        <Button className="backCollectionButton" onClick={onBack}>Back</Button>
-        <Button disabled={loading} type="submit" className="nextCollectionButton" style={{ marginLeft: 'auto' }} onClick={onComplete}>
-          {!loading ? 'Finish'
-            : <div className="loader" />}
-        </Button>
-      </Grid>
-    </Grid>
+    </>
   );
 }

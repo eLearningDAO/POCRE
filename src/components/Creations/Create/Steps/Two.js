@@ -9,7 +9,10 @@ import Select from '../../../uicore/Select';
 import Form from '../../../uicore/Form';
 import { stepTwoValidation } from './validation';
 
-export default function StepTwo({ onComplete = () => {}, onBack = () => {} }) {
+export default function StepTwo({
+  onComplete = () => {},
+  onBack = () => {},
+}) {
   const [materials, setMaterials] = useState([]);
 
   const handleValues = (values) => setMaterials([...materials, values]);
@@ -17,6 +20,14 @@ export default function StepTwo({ onComplete = () => {}, onBack = () => {} }) {
   const handleSkipClick = () => onComplete();
 
   const handleNextClick = () => materials.length > 0 && onComplete(materials);
+
+  const removeMaterial = (index) => {
+    const newMaterials = [...materials];
+
+    newMaterials.splice(index, 1);
+
+    setMaterials(newMaterials);
+  };
 
   return (
     <Form
@@ -29,7 +40,7 @@ export default function StepTwo({ onComplete = () => {}, onBack = () => {} }) {
             <Typography className="heading">Title</Typography>
           </Grid>
           <Grid xs={12} md={4}>
-            <Input variant="dark" placeholder="Material title" name="title" hookToForm />
+            <Input placeholder="Material title" name="title" hookToForm />
           </Grid>
 
           <Grid md={2} xs={12} marginTop={{ xs: '12px', md: '0px' }} paddingLeft={{ md: '24px' }} display="flex" flexDirection="row" alignItems="center">
@@ -37,7 +48,6 @@ export default function StepTwo({ onComplete = () => {}, onBack = () => {} }) {
           </Grid>
           <Grid xs={12} md={4}>
             <Select
-              variant="dark"
               placeholder="Select File Type"
               name="fileType"
               hookToForm
@@ -53,14 +63,14 @@ export default function StepTwo({ onComplete = () => {}, onBack = () => {} }) {
             <Typography className="heading">Link</Typography>
           </Grid>
           <Grid xs={12} md={10} marginTop={{ xs: '0px', md: '18px' }} display="flex" gap="8px" alignItems="center">
-            <Input variant="dark" placeholder="The link where this material is published (Google drive, Youtube, etc)" name="link" hookToForm />
+            <Input placeholder="The link where this material is published (Google drive, Youtube, etc)" name="link" hookToForm />
           </Grid>
 
           <Grid xs={12} md={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
             <Typography className="heading">Author</Typography>
           </Grid>
           <Grid xs={12} md={10} marginTop={{ xs: '0px', md: '18px' }} display="flex" gap="8px" alignItems="center">
-            <Input variant="dark" placeholder="Select an author or add a new author name" name="author" hookToForm />
+            <Input placeholder="Select an author or add a new author name" name="author" hookToForm />
             <Button className="inviteButton" style={{ width: 'fit-content', paddingLeft: '24px', paddingRight: '24px' }}>
               <img width={17} style={{ marginRight: '10px' }} alt="invite-icon" src={InviteIcon} />
               {' '}
@@ -82,13 +92,18 @@ export default function StepTwo({ onComplete = () => {}, onBack = () => {} }) {
           </Grid>
         </Grid>
 
-        {materials.map((material) => (
+        {materials.map((material, index) => (
           <MaterialCard
             key={material}
             title={material.title}
             link={material.link}
             username={material.author}
             interactionBtns
+            onDeleteClick={() => removeMaterial(index)}
+            canAccept={false}
+            canDecline={false}
+            canHide={false}
+            requestAccepted={false}
           />
         ))}
       </Grid>
