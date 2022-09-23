@@ -1,120 +1,51 @@
-[[{
-    "name":"Adi",
-    "jobs":"Developer, Researcher, Architect",
-    "bio":"A junior web Developer experienced in react",
-    "avatar":"https://robohash.org/43431"
-
-},
 {
-    "name":"Pedro",
-    "jobs":"Developer, Researcher, Architect",
-    "bio":"A junior UX/UI Developer experienced in react",
-    "avatar":"https://robohash.org/43431"
-
-},
-{
-    "name":"Emily",
-    "jobs":"UI Designer, Researcher, Architect",
-    "bio":"A junior web Developer experienced in react",
-    "avatar":"https://robohash.org/43431"
-
-},
-{
-    "name":"Emily",
-    "jobs":"UI Designer, Researcher, Architect",
-    "bio":"A junior web Developer experienced in react",
-    "avatar":"https://robohash.org/43431"
-
-},{
-    "name":"Emily",
-    "jobs":"UI Designer, Researcher, Architect",
-    "bio":"A junior web Developer experienced in react",
-    "avatar":"https://robohash.org/43431"
-
-},{
-    "name":"Emily",
-    "jobs":"UI Designer, Researcher, Architect",
-    "bio":"A junior web Developer lorem 23 is thwre experienced in react",
-    "avatar":"https://robohash.org/43431"
-
-},{
-    "name":"Emily",
-    "jobs":"UI Designer, Researcher, Architect",
-    "bio":"A junior web Developer lorem 23 is thwre experienced in react",
-    "avatar":"https://robohash.org/43431"
-
-},{
-    "name":"Emily",
-    "jobs":"UI Designer, Researcher, Architect",
-    "bio":"A junior web Developer lorem 23 is thwre experienced in react",
-    "avatar":"https://robohash.org/43431"
-
-},{
-    "name":"Emily",
-    "jobs":"UI Designer, Researcher, Architect",
-    "bio":"A junior web Developer lorem 23 is thwre experienced in react",
-    "avatar":"https://robohash.org/43431"
-
-}],
-[
-    {
-        "name":"Adi",
-        "jobs":"Developer, Researcher, Architect",
-        "bio":"A junior web Developer experienced in react",
-        "avatar":"https://robohash.org/43431"
-    
-    },
-    {
-        "name":"Pedro",
-        "jobs":"Developer, Researcher, Architect",
-        "bio":"A junior UX/UI Developer experienced in react",
-        "avatar":"https://robohash.org/43431"
-    
-    },
-    {
-        "name":"Emily",
-        "jobs":"UI Designer, Researcher, Architect",
-        "bio":"A junior web Developer experienced in react",
-        "avatar":"https://robohash.org/43431"
-    
-    },
-    {
-        "name":"Emily",
-        "jobs":"UI Designer, Researcher, Architect",
-        "bio":"A junior web Developer experienced in react",
-        "avatar":"https://robohash.org/43431"
-    
-    },{
-        "name":"Emily",
-        "jobs":"UI Designer, Researcher, Architect",
-        "bio":"A junior web Developer experienced in react",
-        "avatar":"https://robohash.org/43431"
-    
-    },{
-        "name":"Emily",
-        "jobs":"UI Designer, Researcher, Architect",
-        "bio":"A junior web Developer lorem 23 is thwre experienced in react",
-        "avatar":"https://robohash.org/43431"
-    
-    },{
-        "name":"Emily",
-        "jobs":"UI Designer, Researcher, Architect",
-        "bio":"A junior web Developer lorem 23 is thwre experienced in react",
-        "avatar":"https://robohash.org/43431"
-    
-    },{
-        "name":"Emily",
-        "jobs":"UI Designer, Researcher, Architect",
-        "bio":"A junior web Developer lorem 23 is thwre experienced in react",
-        "avatar":"https://robohash.org/43431"
-    
-    },{
-        "name":"Emily",
-        "jobs":"UI Designer, Researcher, Architect",
-        "bio":"A junior web Developer lorem 23 is thwre experienced in react",
-        "avatar":"https://robohash.org/43431"
-    
-    }
-
-]
-]
+    "credits": [
+        {
+            "topContributors": [
+                {
+                    "name": "Mario Altimari",
+                    "jobs": "Ideator, Founder, Deus ex machina",
+                    "bio": "Hands-on CTO",
+                    "avatarUrl": "https://pbs.twimg.com/profile_images/1534602268724576256/sr747gQi_400x400.jpg",
+                    "linkedinUrl": "https://www.linkedin.com/in/altimario/",
+                    "twitterUrl": "https://twitter.com/AltiMario",
+                    "githubUrl": "https://github.com/AltiMario"
+                },
+                {
+                    "name": "Huzaifa Rasheed",
+                    "job": "Developer",
+                    "bio": "Breathing Javascript, Dreaming in Binary",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/68777211?v=4",
+                    "linkedinUrl": "",
+                    "twitterUrl": "",
+                    "githubUrl": "https://github.com/huzaifa-99"
+                },
+                {
+                    "name": "Emily",
+                    "job": "Designer",
+                    "bio": "A junior UX/UI designer",
+                    "avatarUrl": "https://robohash.org/43432",
+                    "linkedinUrl": "",
+                    "twitterUrl": "https://twitter.com/emily",
+                    "githubUrl": ""
+                }
+            ]
+        },
+        {
+            "otherContributors": [
+                {
+                    "name": "Blazecode200",
+                    "job": "Developer",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/69413640?v=4",
+                    "profileUrl": "https://github.com/adisagar2003"
+                },
+                {
+                    "name": "You",
+                    "job": "bla bla",
+                    "avatarUrl": "https://robohash.org/43433",
+                    "profileUrl": "https://www.mypersonlablog.com"
+                }
+            ]
+        }
+    ]
+}
