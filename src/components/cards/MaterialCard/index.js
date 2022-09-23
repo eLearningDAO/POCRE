@@ -20,6 +20,12 @@ function MaterialCard({
   link = 'https://www.youtube.com/watch?v=2BjYPFBh4Zc',
   title = 'Mobile App Design',
   imageUrl = CreationCardImg,
+  onDeleteClick = () => {},
+  canHide = true,
+  canEdit = true,
+  canDelete = true,
+  canAccept = true,
+  canDecline = true,
 }) {
   return (
     <Grid
@@ -68,7 +74,7 @@ function MaterialCard({
       <Grid
         item
         xs={12}
-        md={interactionBtns ? 5 : 6}
+        md={interactionBtns && (canEdit || canDelete || canHide) ? 5 : 6}
         display="flex"
         flexDirection={{ xs: 'column', xl: 'row' }}
         justifyContent="center"
@@ -76,15 +82,15 @@ function MaterialCard({
         gap={{ xs: '12px', sm: '12px', md: '16px' }}
         borderLeft={{ md: '1px solid #EEF0F3' }}
         paddingLeft={{ md: '12px' }}
-        borderRight={{ md: interactionBtns ? '1px solid #EEF0F3' : '' }}
-        paddingRight={{ md: interactionBtns ? '12px' : '' }}
+        borderRight={{ md: interactionBtns && (canEdit || canDelete || canHide) ? '1px solid #EEF0F3' : '' }}
+        paddingRight={{ md: interactionBtns && (canEdit || canDelete || canHide) ? '12px' : '' }}
       >
 
         <Grid display="flex" gap="12px" alignItems="center">
           <img
             className="material-card-avatar"
             alt="avatar"
-            src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156905/profile/profile-512.jpg?1530296477"
+            src={`https://i.pravatar.cc/50?img=${Math.random()}`}
           />
           <span>
             By
@@ -100,30 +106,40 @@ function MaterialCard({
           </Button>
 
           <Grid display="flex" gap="12px" alignItems="center">
+            {canAccept && (
             <Button className={`material-card-action-btn ${requestAccepted ? 'bg-green' : 'bg-green-20'}`}>
               {requestAccepted ? <img src={RequestAcceptFilledIcon} alt="accept" />
                 : <img src={RequestAcceptOutlinedIcon} alt="accept" />}
             </Button>
+            )}
+            {canDecline && (
             <Button className={`material-card-action-btn ${!requestAccepted ? 'bg-red' : 'bg-red-20'}`}>
               {!requestAccepted ? <img src={RequestDeclineFilledIcon} alt="decline" />
                 : <img src={RequestDeclineOutlinedIcon} alt="decline" />}
             </Button>
+            )}
           </Grid>
         </Grid>
       </Grid>
 
-      {interactionBtns && (
+      {interactionBtns && (canEdit || canDelete || canHide) && (
       <Grid item md={1} xs={12} margin="auto" display="flex" justifyContent="center" alignItems="center">
         <Grid display="flex" flexDirection={{ xs: 'row', md: 'column' }} justifyContent="space-between" maxWidth="200px" margin={{ xs: 'auto', sm: '0' }} alignItems="center" gap={{ xs: '12px', md: '16px' }}>
+          {canHide && (
           <Button className="material-card-action-btn material-card-action-btn-gray">
             <img src={EyeOffIcon} alt="" />
           </Button>
+          )}
+          {canEdit && (
           <Button className="material-card-action-btn material-card-action-btn-gray">
             <img src={PencilIcon} alt="" />
           </Button>
-          <Button className="material-card-action-btn material-card-action-btn-gray">
+          )}
+          {canDelete && (
+          <Button className="material-card-action-btn material-card-action-btn-gray" onClick={onDeleteClick}>
             <img src={DeleteIcon} alt="" />
           </Button>
+          )}
         </Grid>
       </Grid>
       )}

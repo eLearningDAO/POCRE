@@ -1,5 +1,5 @@
 import {
-  Box, Button, Grid, Typography,
+  Box, Button, Grid, Typography, Chip,
 } from '@mui/material';
 import CreationCardImg from '../../../assets/creation-card.png';
 import DownloadIcon from '../../../assets/download.png';
@@ -7,9 +7,13 @@ import PencilIcon from '../../../assets/pencil.png';
 import ShareIcon from '../../../assets/share.png';
 import './CollectionCard.css';
 
-function CollectionCard(properties) {
-  const { interactionBtns } = properties;
-
+function CollectionCard({
+  interactionBtns,
+  creationDate = '2022-01-01 00:00:00',
+  materials = [1, 2, 3, 4],
+  title = 'Mobile App Design',
+  description = '1000+ free files you can duplicate, remix, and reuse 1000+ free files',
+}) {
   return (
     <Grid
       container
@@ -38,10 +42,10 @@ function CollectionCard(properties) {
           justifyContent="center"
         >
           <Typography variant="h6" fontSize={{ xs: '18px', lg: '24px' }} marginBottom="5px">
-            Mobile App Design
+            {title}
           </Typography>
           <Typography variant="p" component="p">
-            1000+ free files you can duplicate, remix, and reuse 1000+ free files
+            {description}
           </Typography>
         </Box>
       </Grid>
@@ -60,16 +64,19 @@ function CollectionCard(properties) {
         paddingRight={{ md: interactionBtns ? '12px' : '' }}
       >
         <div className="collection-member-images">
-          {Array.from({ length: 5 }).map(() => (
-            <img src={`https://i.pravatar.cc/50?img=${Math.random()}`} alt="" />
-          ))}
+          {materials.length === 0 ? (
+            <Chip style={{ backgroundColor: 'var(--color-orange)', color: 'var(--color-white)', fontSize: '14px' }} label="Unique Creation (no materials)" />
+          )
+            : materials.map(() => (
+              <img src={`https://i.pravatar.cc/50?img=${Math.random()}`} alt="" />
+            ))}
         </div>
         <Box alignItems="flex-start" display="flex" flexDirection="column" justifyContent="center">
           <Typography variant="h6" fontSize={{ xs: '16px', lg: '18px' }} marginBottom="5px">
             Date Created
           </Typography>
           <Typography variant="p" fontSize={{ xs: '14px', lg: '16px' }}>
-            2022-01-01 00:00:00
+            {creationDate}
           </Typography>
         </Box>
       </Grid>
