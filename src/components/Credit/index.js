@@ -14,7 +14,7 @@ function Credit() {
         </Grid>
 
         <Grid item md={12} className="topContributorSection">
-          {Data[0].slice(0, 6).map((data) => (
+          {Data.credits[0].topContributors.slice(0, 6).map((data) => (
             <CreditCard jobs={data.jobs} name={data.name} bio={data.bio} />
           ))}
         </Grid>
@@ -26,7 +26,7 @@ function Credit() {
         </Grid>
 
         <Grid item md={12} className="otherContributorSection">
-          {Data[1].map((data2) => (
+          {Data.credits[0].otherContributors.map((data2) => (
             <OtherContributerCard name={data2.name} jobs={data2.jobs} />
           ))}
         </Grid>
