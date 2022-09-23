@@ -26,7 +26,7 @@ function Credit() {
         </Grid>
 
         <Grid item md={12} className="otherContributorSection">
-          {Data.credits[0].otherContributors.map((data2) => (
+          {Data.credits[1].otherContributors.map((data2) => (
             <OtherContributerCard name={data2.name} jobs={data2.jobs} />
           ))}
         </Grid>
