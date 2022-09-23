@@ -11,6 +11,7 @@ const stepOneValidation = Joi.object({
       'any.required': 'At least 1 tag is required',
       'array.min': 'At least 1 tag is required',
     }),
+  date: Joi.string().required().messages({ 'string.empty': 'Date is required', 'string.required': 'Date is required' }),
 });
 
 export {

@@ -73,6 +73,7 @@ const useCreate = () => {
           source_id: source.source_id,
           tags: tags.map((tag) => tag.tag_id),
           author_id: user.user_id,
+          creation_date: new Date(creationBody.date).toISOString(),
         }),
       }).then((x) => x.json());
 
