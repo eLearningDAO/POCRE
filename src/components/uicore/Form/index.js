@@ -4,6 +4,23 @@ import PropTypes from 'prop-types';
 import { FormProvider, useForm } from 'react-hook-form';
 import { joiResolver } from '@hookform/resolvers/joi';
 
+// Define path of native element in firebox/safari/opera
+if (!('path' in Event.prototype)) {
+  Object.defineProperty(Event.prototype, 'path', {
+    get() {
+      const path = [];
+      let currentElement = this.target;
+      while (currentElement) {
+        path.push(currentElement);
+        currentElement = currentElement.parentElement;
+      }
+      if (!path.includes(window) && !path.includes(document)) path.push(document);
+      if (!path.includes(window)) path.push(window);
+      return path;
+    },
+  });
+}
+
 function Form({
   onSubmit,
   validationSchema,
