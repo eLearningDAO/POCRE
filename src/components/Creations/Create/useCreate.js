@@ -111,6 +111,12 @@ const useCreate = () => {
             user_name: x.author,
           });
 
+          // make a new source for material
+          const materialSource = await makeNewSource({
+            source_title: x.title,
+            site_url: creationBody.source,
+          });
+
           // make new material type
           const materialType = await makeNewMaterialType({
             type_name: x.fileType,
@@ -121,7 +127,7 @@ const useCreate = () => {
           return makeNewMaterial({
             material_title: x.title,
             material_link: x.link,
-            source_id: source.source_id,
+            source_id: materialSource.source_id,
             type_id: materialType.type_id,
             author_id: author.user_id,
           });
