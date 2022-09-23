@@ -27,6 +27,8 @@ function useOutsideAlerter(reference, setOpen) {
   }, [reference]);
 }
 
+let isFirstValidationSkipped = false;
+
 function TagInput(
   {
     name,
@@ -72,6 +74,11 @@ function TagInput(
 
   useEffect(() => {
     formContext.setValue(name, tags, { shouldDirty: true });
+    if (!isFirstValidationSkipped) {
+      isFirstValidationSkipped = true;
+      return;
+    }
+    formContext.trigger([name]);
   }, [tags]);
 
   const focusInput = (event) => {
@@ -145,7 +152,7 @@ function TagInput(
         {tags.length === 0 && placeholder && placeholderVisiable && <span className="tag-placeholder">{placeholder}</span>}
 
         {tags.map((tag) => (
-          <Chip className="tag" label={tag} onDelete={() => removeTag(tag)} />
+          <Chip key={tag} className="tag" label={tag} onDelete={() => removeTag(tag)} />
         ))}
 
         <input type="text" onChange={onInputChange} onKeyUp={onInputKeyUp} onFocus={onInputFocus} onBlur={onInputBlur} className="tag-input" ref={inputReference} />
