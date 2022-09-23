@@ -9,6 +9,8 @@ interface ITag {
 interface ITagQuery {
   limit: number;
   page: number;
+  query: string;
+  search_fields: string[];
 }
 interface ITagQueryResult {
   results: Array<ITag>;
@@ -46,15 +48,19 @@ export const createTag = async (tagBody: ITag): Promise<ITagDoc> => {
  * Query for tags
  * @returns {Promise<Array<ITag>}
  */
-export const queryTags = async (options: ITagQuery = { limit: 10, page: 1 }): Promise<ITagQueryResult> => {
+export const queryTags = async (options: ITagQuery): Promise<ITagQueryResult> => {
   try {
-    const result = await db.query(`SELECT * FROM tag OFFSET $1 LIMIT $2;`, [
+    const search = options.search_fields
+      ? options.search_fields.map((field) => `WHERE ${field} LIKE '%${options.query}%'`).join(' OR ')
+      : '';
+
+    const result = await db.query(`SELECT * FROM tag ${search} OFFSET $1 LIMIT $2;`, [
       options.page === 1 ? '0' : (options.page - 1) * options.limit,
       options.limit,
     ]);
     const tags = result.rows;
 
-    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM tag;`, [])).rows[0];
+    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM tag ${search};`, [])).rows[0];
 
     return {
       results: tags,
