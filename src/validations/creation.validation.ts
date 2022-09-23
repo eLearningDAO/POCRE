@@ -8,6 +8,7 @@ export const createCreation = {
     author_id: Joi.string().uuid().required(),
     tags: Joi.array().items(Joi.string().uuid()).unique().required().min(1),
     materials: Joi.array().items(Joi.string().uuid()).unique().optional().min(1),
+    creation_date: Joi.string().isoDate().required(),
   }),
 };
 
@@ -36,6 +37,7 @@ export const updateCreation = {
       author_id: Joi.string().uuid().optional(),
       tags: Joi.array().items(Joi.string().uuid()).unique().optional().min(1),
       materials: Joi.array().items(Joi.string().uuid()).unique().optional().min(1),
+      creation_date: Joi.string().isoDate().optional(),
     })
     .min(1),
 };

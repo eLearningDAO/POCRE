@@ -10,6 +10,7 @@ interface ICreation {
   author_id: string;
   tags: string[];
   materials?: string[];
+  creation_date: string;
 }
 interface ICreationQuery {
   limit: number;
@@ -106,9 +107,9 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
   try {
     const result = await db.query(
       `INSERT INTO creation 
-      (creation_title,creation_description,source_id,author_id,tags,materials) 
+      (creation_title,creation_description,source_id,author_id,tags,materials,creation_date) 
       values 
-      ($1,$2,$3,$4,$5,$6) 
+      ($1,$2,$3,$4,$5,$6,$7) 
       RETURNING *;`,
       [
         creationBody.creation_title,
@@ -117,6 +118,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
         creationBody.author_id,
         creationBody.tags,
         creationBody.materials || [],
+        creationBody.creation_date,
       ]
     );
     const creation = result.rows[0];
