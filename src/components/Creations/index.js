@@ -1,6 +1,7 @@
 import {
   Button, Grid, TextField, Typography,
 } from '@mui/material';
+import moment from 'moment';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CollectionCard from './CollectionCard/CollectionCard';
@@ -66,7 +67,7 @@ function Creations() {
               key={index}
               title={x?.creation_title}
               description={x?.creation_description}
-              creationDate={x?.creation_date}
+              creationDate={moment(x?.creation_date).format('Do MMMM YYYY')}
               interactionBtns
               mediaUrl={x?.source?.site_url}
               materials={x.materials}
