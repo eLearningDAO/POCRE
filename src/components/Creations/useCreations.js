@@ -1,5 +1,9 @@
 import { useState, useCallback } from 'react';
+import Cookies from 'js-cookie';
 import { API_BASE_URL } from '../../config';
+
+// get auth user
+const user = JSON.parse(Cookies.get('activeUser') || '{}');
 
 const useCreations = () => {
   const [loading, setLoading] = useState(false);
@@ -15,7 +19,7 @@ const useCreations = () => {
 
       // get creations
       let creationResponse = await fetch(
-        `${API_BASE_URL}/creations?page=${1}&limit=100&descend_fields[]=creation_date`,
+        `${API_BASE_URL}/creations?page=${1}&limit=100&descend_fields[]=creation_date&query=${user.user_id}&search_fields[]=author_id`,
       )
         .then((x) => x.json());
 
