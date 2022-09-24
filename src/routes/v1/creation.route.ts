@@ -69,6 +69,9 @@ export default router;
  *               creation_date:
  *                 type: string
  *                 format: date-time
+ *               is_draft:
+ *                 type: string
+ *                 format: date-time
  *             example:
  *                creation_title: my first creation
  *                creation_description: an example creation
@@ -77,6 +80,7 @@ export default router;
  *                tags: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
  *                materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
  *                creation_date: 2022-09-09T19:00:00.000Z
+ *                is_draft: false
  *     responses:
  *       "201":
  *         description: Created
@@ -249,6 +253,8 @@ export default router;
  *               creation_date:
  *                 type: string
  *                 format: date-time
+ *               is_draft:
+ *                 type: bool
  *             example:
  *                creation_title: my first creation
  *                creation_description: an example creation
@@ -257,6 +263,7 @@ export default router;
  *                tags: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
  *                materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
  *                creation_date: 2022-09-09T19:00:00.000Z
+ *                is_draft: false
  *     responses:
  *       "200":
  *         description: OK
