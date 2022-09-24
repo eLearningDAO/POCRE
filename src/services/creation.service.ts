@@ -16,6 +16,10 @@ interface ICreation {
 interface ICreationQuery {
   limit: number;
   page: number;
+  query: string;
+  search_fields: string[];
+  ascend_fields: string[];
+  descend_fields: string[];
 }
 interface ICreationQueryResult {
   results: Array<ICreationDoc>;
@@ -143,15 +147,37 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
  * Query for creation
  * @returns {Promise<Array<ICreation>}
  */
-export const queryCreations = async (options: ICreationQuery = { limit: 10, page: 1 }): Promise<ICreationQueryResult> => {
+export const queryCreations = async (options: ICreationQuery): Promise<ICreationQueryResult> => {
   try {
-    const result = await db.query(`SELECT * FROM creation OFFSET $1 LIMIT $2;`, [
+    // search
+    const search = options.search_fields
+      ? options.search_fields
+          .map(
+            (field) =>
+              `WHERE ${field} ${['author_id'].includes(field) ? `= '${options.query}'` : `LIKE '%${options.query}%'`}`
+          )
+          .join(' OR ')
+      : '';
+
+    // order
+    const ascendOrder =
+      (options.ascend_fields || []).length > 0 ? `${options.ascend_fields.map((x) => `${x} ASC`).join(', ')}` : '';
+    const descendOrder =
+      (options.descend_fields || []).length > 0 ? `${options.descend_fields.map((x) => `${x} DESC`).join(', ')}` : '';
+    const order =
+      (options.ascend_fields || options.descend_fields || []).length > 0
+        ? `ORDER BY ${ascendOrder} ${
+            (options.ascend_fields || []).length > 0 && (options.descend_fields || []).length > 0 ? ', ' : ''
+          } ${descendOrder}`
+        : '';
+
+    const result = await db.query(`SELECT * FROM creation ${search} ${order} OFFSET $1 LIMIT $2;`, [
       options.page === 1 ? '0' : (options.page - 1) * options.limit,
       options.limit,
     ]);
     const creations = result.rows;
 
-    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM creation;`, [])).rows[0];
+    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM creation ${search};`, [])).rows[0];
 
     return {
       results: creations,
