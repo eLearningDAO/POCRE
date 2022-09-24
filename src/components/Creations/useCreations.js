@@ -14,12 +14,32 @@ const useCreations = () => {
       setLoading(true);
 
       // get creations
-      const creationResponse = await fetch(
-        `${API_BASE_URL}/creations?page=${1}`,
+      let creationResponse = await fetch(
+        `${API_BASE_URL}/creations?page=${1}&limit=100`,
       )
         .then((x) => x.json());
 
       if (creationResponse.code === 400) throw new Error('Failed to fetch creations');
+
+      // get source for each creation
+      creationResponse = {
+        ...creationResponse,
+        results: await Promise.all(creationResponse?.results?.map(async (x) => {
+          const creation = { ...x };
+
+          const source = await fetch(
+            `${API_BASE_URL}/source/${x.source_id}`,
+          ).then((y) => y.json()).catch(() => null);
+
+          delete creation.source_id;
+
+          return {
+            ...creation,
+            title: creation.title + creation.creation_id,
+            source,
+          };
+        })),
+      };
 
       setFetchCreationStatus({
         success: true,

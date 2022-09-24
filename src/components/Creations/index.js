@@ -3,7 +3,6 @@ import {
 } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import LearnHowToImage from '../../assets/learnhowto.png';
 import CollectionCard from './CollectionCard/CollectionCard';
 import './index.css';
 import useCreations from './useCreations';
@@ -62,12 +61,14 @@ function Creations() {
           className="hidden-scrollbar"
           padding={{ xs: '12px', md: '0' }}
         >
-          {creations?.results?.map((x) => (
+          {creations?.results?.map((x, index) => (
             <CollectionCard
+              key={index}
               title={x?.creation_title}
               description={x?.creation_description}
               creationDate={x?.creation_date}
               interactionBtns
+              mediaUrl={x?.source?.site_url}
               materials={x.materials}
             />
           ))}
