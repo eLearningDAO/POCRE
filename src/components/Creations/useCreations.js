@@ -15,7 +15,7 @@ const useCreations = () => {
 
       // get creations
       let creationResponse = await fetch(
-        `${API_BASE_URL}/creations?page=${1}&limit=100`,
+        `${API_BASE_URL}/creations?page=${1}&limit=100&descend_fields[]=creation_date`,
       )
         .then((x) => x.json());
 
