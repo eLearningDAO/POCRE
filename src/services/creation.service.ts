@@ -11,6 +11,7 @@ interface ICreation {
   tags: string[];
   materials?: string[];
   creation_date: string;
+  is_draft: boolean;
 }
 interface ICreationQuery {
   limit: number;
@@ -31,6 +32,8 @@ interface ICreationDoc {
   author_id: string;
   tags: string[];
   materials: string[];
+  creation_date: string;
+  is_draft: boolean;
 }
 
 /**
@@ -107,9 +110,9 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
   try {
     const result = await db.query(
       `INSERT INTO creation 
-      (creation_title,creation_description,source_id,author_id,tags,materials,creation_date) 
+      (creation_title,creation_description,source_id,author_id,tags,materials,creation_date,is_draft) 
       values 
-      ($1,$2,$3,$4,$5,$6,$7) 
+      ($1,$2,$3,$4,$5,$6,$7,$8) 
       RETURNING *;`,
       [
         creationBody.creation_title,
@@ -119,6 +122,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
         creationBody.tags,
         creationBody.materials || [],
         creationBody.creation_date,
+        creationBody.is_draft,
       ]
     );
     const creation = result.rows[0];
@@ -195,7 +199,7 @@ export const updateCreationById = async (id: string, updateBody: Partial<ICreati
 
   // build sql conditions and values
   const conditions: string[] = [];
-  const values: (string | string[] | null)[] = [];
+  const values: (string | string[] | null | boolean)[] = [];
   Object.entries(updateBody).map(([k, v], index) => {
     conditions.push(`${k} = $${index + 2}`);
     values.push(v);
