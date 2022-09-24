@@ -2,7 +2,7 @@ import {
   Button, Grid, TextField, Typography,
 } from '@mui/material';
 import moment from 'moment';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CollectionCard from './CollectionCard/CollectionCard';
 import './index.css';
@@ -10,6 +10,7 @@ import useCreations from './useCreations';
 
 function Creations() {
   const navigate = useNavigate();
+  const [search, setSearch] = useState('');
 
   const { fetchCreations, creations, loading } = useCreations();
 
@@ -20,6 +21,10 @@ function Creations() {
   useEffect(() => {
     fetchCreations();
   }, []);
+
+  const handleSearch = (event) => {
+    setSearch(event.target.value.trim());
+  };
 
   return (
     <Grid container spacing={2}>
@@ -45,6 +50,7 @@ function Creations() {
             className="input search-bar"
             placeholder="Search"
             id="fullWidth"
+            onChange={handleSearch}
           />
           <Button onClick={add} className="btn btn-primary">+ Add New</Button>
         </Grid>
@@ -63,18 +69,21 @@ function Creations() {
           padding={{ xs: '12px', md: '0' }}
         >
           {creations?.results?.map((x, index) => (
-            <CollectionCard
-              key={index}
-              title={x?.creation_title}
-              description={x?.creation_description}
-              creationDate={moment(x?.creation_date).format('Do MMMM YYYY')}
-              interactionBtns
-              mediaUrl={x?.source?.site_url}
-              materials={x.materials}
-            />
+            ((x.creation_title || '') + (x.creation_description || ''))
+              ?.toLowerCase()?.includes(search?.toLowerCase()) && (
+              <CollectionCard
+                key={index}
+                title={x?.creation_title}
+                description={x?.creation_description}
+                creationDate={moment(x?.creation_date).format('Do MMMM YYYY')}
+                interactionBtns
+                mediaUrl={x?.source?.site_url}
+                materials={x.materials}
+              />
+            )
           ))}
           {creations?.total_results < creations?.results?.length && (
-          <Button style={{ margin: 'auto' }} className="nextCollectionButton">
+          <Button style={{ margin: 'auto' }} className="nextCollectionButton" onClick={fetchCreations}>
             Load More
           </Button>
           )}
