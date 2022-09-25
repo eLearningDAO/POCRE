@@ -1,10 +1,13 @@
 import { useState, useCallback } from 'react';
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../../../config';
 
 let debounceInterval = null;
 
 const useCreate = () => {
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const [newCreationStatus, setNewCreationStatus] = useState({
     success: false,
@@ -218,10 +221,9 @@ const useCreate = () => {
         success: true,
         error: null,
       });
-      setTimeout(() => setNewCreationStatus({
-        success: false,
-        error: null,
-      }), 3000);
+
+      // redirect user to creations page
+      setTimeout(() => navigate('/creations'), 3000);
     } catch {
       setNewCreationStatus({
         success: false,
