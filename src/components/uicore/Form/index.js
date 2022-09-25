@@ -22,6 +22,7 @@ if (!('path' in Event.prototype)) {
 }
 
 function Form({
+  id,
   onSubmit,
   validationSchema,
   children,
@@ -48,9 +49,20 @@ function Form({
     }
   };
 
+  const handleReset = () => {
+    const fields = {};
+    Object.keys(initialValues).map((field) => {
+      fields[field] = '';
+      return null;
+    });
+    formMethods.reset(fields);
+  };
+
   return (
     <FormProvider {...formMethods}>
       <form
+        id={id}
+        onReset={handleReset}
         onKeyDown={handleKeyDown}
         onSubmit={handleFormSubmit}
         className={className}
@@ -62,6 +74,7 @@ function Form({
 }
 
 Form.propTypes = {
+  id: PropTypes.string,
   onSubmit: PropTypes.func,
   children: PropTypes.node,
   // eslint-disable-next-line react/forbid-prop-types
@@ -73,6 +86,7 @@ Form.propTypes = {
 };
 
 Form.defaultProps = {
+  id: null,
   onSubmit: () => {},
   children: '',
   className: '',

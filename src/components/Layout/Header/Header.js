@@ -146,8 +146,8 @@ function HomeHeader({ displayNav = false }) {
                 }}
               >
                 {
-                  users.map((x) => (
-                    <MenuItem value={x.user_id}>
+                  users.map((x, index) => (
+                    <MenuItem key={index} value={x.user_id}>
                       {x.user_name}
                       {' '}
                       (Test User)

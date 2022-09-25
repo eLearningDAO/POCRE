@@ -25,7 +25,7 @@ function CreateCollection() {
 
   const handleValues = async (values) => {
     if (step === 1) {
-      setCreationDraft(values);
+      setCreationDraft({ ...values, materials: creationDraft?.materials || null });
     }
 
     if (step === 2) {
@@ -80,6 +80,7 @@ function CreateCollection() {
       <StepTwo
         onBack={handleBack}
         onComplete={handleValues}
+        initialMaterials={creationDraft.materials || []}
       />
       )}
       {step === 3 && (

@@ -21,6 +21,7 @@ function MaterialCard({
   title = 'Mobile App Design',
   imageUrl = CreationCardImg,
   onDeleteClick = () => {},
+  onEditClick = () => {},
   canHide = true,
   canEdit = true,
   canDelete = true,
@@ -131,7 +132,7 @@ function MaterialCard({
           </Button>
           )}
           {canEdit && (
-          <Button className="material-card-action-btn material-card-action-btn-gray">
+          <Button className="material-card-action-btn material-card-action-btn-gray" onClick={onEditClick}>
             <img src={PencilIcon} alt="" />
           </Button>
           )}
