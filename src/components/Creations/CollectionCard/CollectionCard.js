@@ -60,6 +60,7 @@ function CollectionCard({
   title = 'Mobile App Design',
   description = '1000+ free files you can duplicate, remix, and reuse 1000+ free files',
   mediaUrl = 'https://images.pexels.com/photos/415071/pexels-photo-415071.jpeg?cs=srgb&dl=pexels-pixabay-415071.jpg&fm=jpg',
+  canEdit = true,
 }) {
   const [mediaType, setMediaType] = useState(null);
   const [showMediaPreview, setShowMediaPreview] = useState(null);
@@ -190,11 +191,13 @@ function CollectionCard({
         </Grid>
 
         {interactionBtns && (
-        <Grid item md={1} xs={12}>
+        <Grid item md={1} xs={12} display="flex" alignItems="center">
           <Grid display="flex" flexDirection={{ xs: 'row', md: 'column', xl: 'arow' }} justifyContent="space-between" maxWidth="200px" margin={{ xs: 'auto', sm: '0' }} alignItems="center" gap={{ xs: '12px', md: '16px' }}>
+            {canEdit && (
             <Button className="collection-card-action-btn">
               <img src={PencilIcon} alt="" />
             </Button>
+            )}
             <Button className="collection-card-action-btn">
               <img src={DownloadIcon} alt="" />
             </Button>

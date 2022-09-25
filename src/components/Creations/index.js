@@ -79,6 +79,7 @@ function Creations() {
                 interactionBtns
                 mediaUrl={x?.source?.site_url}
                 materials={x.materials}
+                canEdit={x.is_draft}
               />
             )
           ))}
