@@ -152,7 +152,7 @@ export default function StepThree({
             {(status.error || status.success)
             && (
             <Box width="100%" className={`${status.success ? 'bg-green' : 'bg-red'} color-white`} padding="16px" borderRadius="12px" fontSize="16px">
-              {status.success ? 'Success! A new creation was made' : status.error}
+              {status.success ? 'Success! A new creation was made. Redirecting...' : status.error}
             </Box>
             )}
           </Grid>
