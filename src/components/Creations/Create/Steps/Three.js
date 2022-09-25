@@ -161,7 +161,10 @@ export default function StepThree({
 
         <Grid item xs={12} className="collectionButtons">
           <Button className="backCollectionButton" onClick={onBack}>Back</Button>
-          <Button className="saveDraftButton" style={{ marginLeft: 'auto', marginRight: '12px' }}>Save Draft</Button>
+          <Button className="saveDraftButton" style={{ marginLeft: 'auto', marginRight: '12px' }} onClick={() => onComplete({ is_draft: true })}>
+            {!loading ? 'Save Draft'
+              : <div className="loader" />}
+          </Button>
           <Button disabled={loading} type="submit" className="nextCollectionButton" onClick={onComplete}>
             {!loading ? 'Finish'
               : <div className="loader" />}

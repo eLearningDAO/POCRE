@@ -208,6 +208,7 @@ const useCreate = () => {
           author_id: user.user_id,
           ...(materials.length > 0 && { materials: materials.map((x) => x.material_id) }),
           creation_date: new Date(creationBody.date).toISOString(),
+          is_draft: creationBody.is_draft,
         }),
       }).then((x) => x.json());
 

@@ -36,7 +36,7 @@ function CreateCollection() {
     }
 
     if (step === 3) {
-      await makeNewCreation(creationDraft);
+      await makeNewCreation({ ...creationDraft, is_draft: !!values?.is_draft });
     }
 
     if (step !== 3) {
