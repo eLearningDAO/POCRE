@@ -17,7 +17,7 @@ function Credit() {
           <div className="InnerContainer">
             {Data.credits[0].topContributors.slice(0, 6).map((data) => (
               <CreditCard
-                jobs={data.job}
+                job={data.job}
                 name={data.name}
                 bio={data.bio}
                 linkedIn={data.linkedinUrl}
@@ -37,7 +37,7 @@ function Credit() {
           {Data.credits[1].otherContributors.map((data2) => (
             <OtherContributerCard
               name={data2.name}
-              jobs={data2.job}
+              job={data2.job}
               profileUrl={data2.profileUrl}
             />
           ))}

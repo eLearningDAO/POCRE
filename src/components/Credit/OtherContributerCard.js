@@ -2,7 +2,7 @@ import { Typography } from '@mui/material';
 import React from 'react';
 import UserImage1 from '../../assets/top-learner-user.png';
 
-export default function OtherContributerCard({ name, jobs, profileUrl }) {
+export default function OtherContributerCard({ name, job, profileUrl }) {
   return (
     <div className="otherContributorCard">
       <a href={profileUrl} style={{ textDecoration: 'none' }}>
@@ -16,7 +16,7 @@ export default function OtherContributerCard({ name, jobs, profileUrl }) {
           </Typography>
 
           <Typography variant="h6">
-            {jobs }
+            {job }
           </Typography>
         </div>
       </a>
