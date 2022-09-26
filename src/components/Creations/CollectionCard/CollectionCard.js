@@ -7,10 +7,39 @@ import {
 import { useState, useEffect } from 'react';
 import DownloadIconSVG from '../../../assets/svgs/download.svg';
 import DownloadIcon from '../../../assets/download.png';
+import DeleteIconSVG from '../../../assets/svgs/delete.svg';
 import PencilIcon from '../../../assets/pencil.png';
 import ShareIcon from '../../../assets/share.png';
 import './CollectionCard.css';
 import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
+
+function DeleteCofirmationDialog({ onClose, onConfirm }) {
+  return (
+    <div className="delete-dialog-container" onClick={(event) => event.target === event.currentTarget && onClose()}>
+      <div className="delete-dialog-content">
+        <h4 className="heading h4">Confirm Delete</h4>
+        <p>
+          Are you sure to delete this creation?
+          All associated materials of this creation will be deleted forever.
+        </p>
+        <div className="delete-dialog-options">
+          <Button
+            className="btn btn-primary-outlined"
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            className="btn btn-primary icon-btn"
+            onClick={onConfirm}
+          >
+            Confirm
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function MediaPreview({ mediaType, mediaUrl, onClose }) {
   return (
@@ -61,8 +90,11 @@ function CollectionCard({
   description = '1000+ free files you can duplicate, remix, and reuse 1000+ free files',
   mediaUrl = 'https://images.pexels.com/photos/415071/pexels-photo-415071.jpeg?cs=srgb&dl=pexels-pixabay-415071.jpg&fm=jpg',
   canEdit = true,
+  canDelete = true,
+  onDeleteClick = () => {},
 }) {
   const [mediaType, setMediaType] = useState(null);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(null);
   const [showMediaPreview, setShowMediaPreview] = useState(null);
 
   useEffect(() => {
@@ -70,8 +102,23 @@ function CollectionCard({
     setMediaType(x);
   }, []);
 
+  const handleDeleteConfirmation = () => {
+    setShowDeleteConfirmation(true);
+  };
+
+  const handleDelete = async () => {
+    setShowDeleteConfirmation(false);
+    if (onDeleteClick) await onDeleteClick();
+  };
+
   return (
     <>
+      {showDeleteConfirmation && (
+      <DeleteCofirmationDialog
+        onClose={() => setShowDeleteConfirmation(false)}
+        onConfirm={handleDelete}
+      />
+      )}
       {showMediaPreview && (
       <MediaPreview
         mediaType={mediaType}
@@ -176,8 +223,8 @@ function CollectionCard({
             {materials.length === 0 ? (
               <Chip style={{ backgroundColor: 'var(--color-orange)', color: 'var(--color-white)', fontSize: '14px' }} label="Unique Creation (no materials)" />
             )
-              : materials.map(() => (
-                <img src={`https://i.pravatar.cc/50?img=${Math.random()}`} alt="" />
+              : materials.map((x, index) => (
+                <img key={index} src={`https://i.pravatar.cc/50?img=${Math.random()}`} alt="" />
               ))}
           </div>
           <Box alignItems="flex-start" display="flex" flexDirection="column" justifyContent="center">
@@ -196,6 +243,11 @@ function CollectionCard({
             {canEdit && (
             <Button className="collection-card-action-btn">
               <img src={PencilIcon} alt="" />
+            </Button>
+            )}
+            {canDelete && (
+            <Button className="collection-card-action-btn" onClick={handleDeleteConfirmation}>
+              <img src={DeleteIconSVG} alt="" />
             </Button>
             )}
             <Button className="collection-card-action-btn">

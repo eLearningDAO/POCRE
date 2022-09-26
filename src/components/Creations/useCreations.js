@@ -1,21 +1,26 @@
-import { useState, useCallback } from 'react';
 import Cookies from 'js-cookie';
+import { useCallback, useState } from 'react';
 import { API_BASE_URL } from '../../config';
 
 // get auth user
 const user = JSON.parse(Cookies.get('activeUser') || '{}');
 
 const useCreations = () => {
-  const [loading, setLoading] = useState(false);
+  const [isLoadingCreations, setIsLoadingCreations] = useState(false);
+  const [isDeletingCreation, setIsDeletingCreation] = useState(false);
   const [creations, setCreations] = useState({});
   const [fetchCreationStatus, setFetchCreationStatus] = useState({
+    success: false,
+    error: null,
+  });
+  const [deleteCreationStatus, setDeleteCreationStatus] = useState({
     success: false,
     error: null,
   });
 
   const fetchCreations = useCallback(async () => {
     try {
-      setLoading(true);
+      setIsLoadingCreations(true);
 
       // get creations
       let creationResponse = await fetch(
@@ -49,7 +54,7 @@ const useCreations = () => {
         success: true,
         error: null,
       });
-      setCreations(creationResponse);
+      setCreations({ ...creationResponse });
       // eslint-disable-next-line sonarjs/no-identical-functions
       setTimeout(() => setFetchCreationStatus({
         success: false,
@@ -61,14 +66,84 @@ const useCreations = () => {
         error: 'Failed to fetch creations',
       });
     } finally {
-      setLoading(false);
+      setIsLoadingCreations(false);
     }
   }, []);
 
+  const deleteCreation = useCallback(async (creation) => {
+    try {
+      if (!creation) return;
+
+      setIsDeletingCreation(true);
+
+      // delete creation
+      await fetch(
+        `${API_BASE_URL}/creations/${creation?.creation_id}`,
+        {
+          method: 'DELETE',
+        },
+      )
+        .then(() => {});
+
+      // delete creation materials
+      if ((creation?.materials || [])?.length > 0) {
+        await Promise.all(
+          creation?.materials?.map(
+            (materialId) => fetch(
+              `${API_BASE_URL}/materials/${materialId}`,
+              {
+                method: 'DELETE',
+              },
+            )
+              .then(() => {}),
+          ),
+        );
+      }
+
+      // delete creation source
+      await fetch(
+        `${API_BASE_URL}/source/${creation?.source?.source_id}`,
+        {
+          method: 'DELETE',
+        },
+      )
+        .then(() => {});
+
+      setDeleteCreationStatus({
+        success: true,
+        error: null,
+      });
+      setCreations(
+        {
+          ...creations,
+          results: [
+            ...(creations?.results?.filter((x) => x?.creation_id !== creation?.creation_id) || []),
+          ],
+        },
+      );
+      // eslint-disable-next-line sonarjs/no-identical-functions
+      setTimeout(() => setDeleteCreationStatus({
+        success: false,
+        error: null,
+      }), 3000);
+    } catch {
+      setDeleteCreationStatus({
+        success: false,
+        error: 'Failed to delete creation',
+      });
+    } finally {
+      setIsDeletingCreation(false);
+    }
+  }, [creations, setCreations]);
+
   return {
-    loading,
+    isLoadingCreations,
+    isDeletingCreation,
     fetchCreationStatus,
+    deleteCreationStatus,
+    setDeleteCreationStatus,
     fetchCreations,
+    deleteCreation,
     creations,
   };
 };

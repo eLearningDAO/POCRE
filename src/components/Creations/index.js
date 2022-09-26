@@ -1,5 +1,5 @@
 import {
-  Button, Grid, TextField, Typography,
+  Button, Grid, TextField, Typography, Snackbar, Alert,
 } from '@mui/material';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -7,12 +7,21 @@ import { useNavigate } from 'react-router-dom';
 import CollectionCard from './CollectionCard/CollectionCard';
 import './index.css';
 import useCreations from './useCreations';
+import Loader from '../uicore/Loader';
 
 function Creations() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
 
-  const { fetchCreations, creations, loading } = useCreations();
+  const {
+    fetchCreations,
+    creations,
+    isLoadingCreations,
+    deleteCreation,
+    isDeletingCreation,
+    deleteCreationStatus,
+    setDeleteCreationStatus,
+  } = useCreations();
 
   const add = () => {
     navigate('/creations/create');
@@ -26,9 +35,28 @@ function Creations() {
     setSearch(event.target.value.trim());
   };
 
+  const closeDeleteNotification = () => setDeleteCreationStatus({
+    success: false,
+    error: null,
+  });
+
   return (
     <Grid container spacing={2}>
-
+      {isDeletingCreation && <Loader withBackdrop size="large" />}
+      {(deleteCreationStatus.success || deleteCreationStatus.error) && (
+      <Snackbar
+        open
+        onClose={closeDeleteNotification}
+      >
+        <Alert
+          onClose={closeDeleteNotification}
+          severity={deleteCreationStatus.success ? 'success' : 'error'}
+          sx={{ width: '100%' }}
+        >
+          {deleteCreationStatus.success ? 'Creation deleted successfully!' : 'Failed to delete creation!'}
+        </Alert>
+      </Snackbar>
+      )}
       <Grid
         item
         xs={12}
@@ -56,7 +84,7 @@ function Creations() {
         </Grid>
       </Grid>
 
-      {loading ? <div style={{ margin: 'auto' }} className="loader" /> : (creations?.results?.length > 0 ? (
+      {isLoadingCreations ? <div style={{ margin: 'auto' }} className="loader" /> : (creations?.results?.length > 0 ? (
         <Grid
           xs={12}
           item
@@ -80,6 +108,8 @@ function Creations() {
                 mediaUrl={x?.source?.site_url}
                 materials={x.materials}
                 canEdit={x.is_draft}
+                // eslint-disable-next-line no-return-await
+                onDeleteClick={async () => await deleteCreation(x)}
               />
             )
           ))}
