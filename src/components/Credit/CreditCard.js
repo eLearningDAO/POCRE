@@ -52,13 +52,13 @@ export default function CreditCard(
           {linkedInPresent
             ? (
               <a href={linkedIn}>
-                <img src={TwitterIcon} alt="" href={linkedIn} />
+                <img src={LinkedinIcon} alt="" href={linkedIn} />
               </a>
             ) : null}
           {twitterPresent
             ? (
               <a href={twitter}>
-                <img src={LinkedinIcon} alt="" href={twitter} />
+                <img src={TwitterIcon} alt="" href={twitter} />
               </a>
             ) : null}
           {githubPresent
