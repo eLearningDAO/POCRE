@@ -17,7 +17,6 @@
   --color-black: #272727;
   --color-blue: #00B2FF;
   --color-purple: #6C69FD;
-  --color-black: #000000;
 }
 
 body {
@@ -29,4 +28,8 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.capitalize {
+  text-transform: capitalize;
 }

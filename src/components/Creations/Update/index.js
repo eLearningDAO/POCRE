@@ -122,6 +122,7 @@ function CreateCollection() {
             onComplete={handleValues}
             status={updateCreationStatus}
             loading={isUpdatingCreation}
+            creationDraft={creationDraft}
           />
         )}
       </Grid>

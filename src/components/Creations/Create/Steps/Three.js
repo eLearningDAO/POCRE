@@ -2,14 +2,14 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState } from 'react';
 import {
-  Button, Grid, TextField, Typography, Box,
+  Button, Grid, TextField, Typography, Box, Chip,
 } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import QrCode from '../../../../assets/qr.png';
 import SaveIcon from '../../../../assets/svgs/save.svg';
 import PreviewIcon from '../../../../assets/svgs/preview.svg';
-// import CloseIcon from '../../../../assets/svgs/close.svg';
+import CloseIcon from '../../../../assets/svgs/close.svg';
 // import GreenRightIcon from '../../../../assets/green-right.png';
 
 function dec2hex(dec) {
@@ -23,10 +23,10 @@ function generateId(length_) {
 }
 
 export default function StepThree({
-  onBack = () => {}, onComplete = () => {}, status = {}, loading = false,
+  onBack = () => {}, onComplete = () => {}, status = {}, loading = false, creationDraft = {},
 }) {
   const [dummyURL, setDummyURL] = useState('');
-  // const [showPreview, setShowPreview] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   const generateDummyURL = () => {
     setDummyURL(`https://example.com/${generateId()}`);
@@ -34,7 +34,7 @@ export default function StepThree({
 
   return (
     <>
-      {/* {showPreview && (
+      {showPreview && (
       <div
         className="creation-preview-container"
         onClick={(event) => event.target === event.currentTarget && setShowPreview(false)}
@@ -47,10 +47,48 @@ export default function StepThree({
             </Button>
           </div>
           <div className="creation-preview-content">
+            <div className="creation-preview-grid">
+              <span className="heading">Title</span>
+              <span>{creationDraft.title}</span>
+
+              <span className="heading">Description</span>
+              <span>{creationDraft.description}</span>
+
+              <span className="heading">Source</span>
+              <span>{creationDraft.source}</span>
+
+              <span className="heading">Date</span>
+              <span>{creationDraft.date}</span>
+
+              <span className="heading">Tags</span>
+              <span className="creation-tags">{creationDraft.tags.map((x, index) => <Chip key={index} label={x} />)}</span>
+            </div>
+
+            {creationDraft?.materials && (
+              <>
+                <h4 className="heading h4">Materials Submitted</h4>
+                <table>
+                  <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Link</th>
+                    <th>Author</th>
+                  </tr>
+                  {creationDraft.materials?.map((x) => (
+                    <tr>
+                      <td>{x.title}</td>
+                      <td className="capitalize">{x.fileType}</td>
+                      <td><a href={x.link}>{x.link}</a></td>
+                      <td>{x.author}</td>
+                    </tr>
+                  ))}
+                </table>
+              </>
+            )}
           </div>
         </div>
       </div>
-      )} */}
+      )}
       <Grid item xs={12}>
         <Grid container className="create-collection" justifyContent="flex-start" height="fit-content">
 
@@ -128,7 +166,7 @@ export default function StepThree({
               <Button
                 padding="0"
                 minWidth="0"
-              // onClick={() => setShowPreview(true)}
+                onClick={() => setShowPreview(true)}
               >
                 <img src={PreviewIcon} height="36" width="36" alt="" />
               </Button>
