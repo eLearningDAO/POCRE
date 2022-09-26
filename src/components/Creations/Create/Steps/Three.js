@@ -6,6 +6,7 @@ import {
 } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import { useNavigate } from 'react-router-dom';
 import QrCode from '../../../../assets/qr.png';
 import SaveIcon from '../../../../assets/svgs/save.svg';
 import PreviewIcon from '../../../../assets/svgs/preview.svg';
@@ -25,6 +26,8 @@ function generateId(length_) {
 export default function StepThree({
   onBack = () => {}, onComplete = () => {}, status = {}, loading = false, creationDraft = {},
 }) {
+  const navigate = useNavigate();
+
   const [dummyURL, setDummyURL] = useState('');
   const [showPreview, setShowPreview] = useState(false);
 
@@ -198,15 +201,24 @@ export default function StepThree({
         </Grid>
 
         <Grid item xs={12} className="collectionButtons">
-          <Button className="backCollectionButton" onClick={onBack}>Back</Button>
-          <Button className="saveDraftButton" style={{ marginLeft: 'auto', marginRight: '12px' }} onClick={() => onComplete({ is_draft: true })}>
-            {!loading ? 'Save Draft'
-              : <div className="loader" />}
-          </Button>
-          <Button disabled={loading} type="submit" className="nextCollectionButton" onClick={onComplete}>
-            {!loading ? 'Finish'
-              : <div className="loader" />}
-          </Button>
+          {!status?.success
+            ? (
+              <>
+                <Button className="backCollectionButton" onClick={onBack}>Back</Button>
+                <Button className="saveDraftButton" style={{ marginLeft: 'auto', marginRight: '12px' }} onClick={() => onComplete({ is_draft: true })}>
+                  {!loading ? 'Save Draft'
+                    : <div className="loader" />}
+                </Button>
+                <Button disabled={loading} type="submit" className="nextCollectionButton" onClick={onComplete}>
+                  {!loading ? 'Finish'
+                    : <div className="loader" />}
+                </Button>
+              </>
+            ) : (
+              <Button className="nextCollectionButton" style={{ marginLeft: 'auto' }} onClick={() => navigate('/creations')}>
+                Close
+              </Button>
+            )}
         </Grid>
       </Grid>
     </>

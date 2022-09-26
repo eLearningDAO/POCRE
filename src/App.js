@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 import Creations from './components/Creations';
 import CreateCreation from './components/Creations/Create';
+import UpdateCreation from './components/Creations/Update';
 import Invitation from './components/Invitation';
 import LitigationDashboard from './components/Litigation';
 import LitigationHome from './components/Litigation/LitigationHome';
@@ -22,6 +23,7 @@ function App() {
         <Route path="/" element={<Layout displayNav><Creations /></Layout>} />
         <Route path="/creations" element={<Layout displaySidebar><Creations /></Layout>} />
         <Route path="/creations/create" element={<Layout displaySidebar><CreateCreation /></Layout>} />
+        <Route path="/creations/:id/update" element={<Layout displaySidebar><UpdateCreation /></Layout>} />
         <Route path="/invitation" element={<Layout displaySidebar><Invitation /></Layout>} />
         <Route path="/litigation" element={<Layout displaySidebar><LitigationHome /></Layout>} />
         <Route path="/litigation/create" element={<Layout displaySidebar><LitigationCreate /></Layout>} />
