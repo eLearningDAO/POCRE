@@ -91,6 +91,7 @@ function CollectionCard({
   mediaUrl = 'https://images.pexels.com/photos/415071/pexels-photo-415071.jpeg?cs=srgb&dl=pexels-pixabay-415071.jpg&fm=jpg',
   canEdit = true,
   canDelete = true,
+  onEditClick = () => {},
   onDeleteClick = () => {},
 }) {
   const [mediaType, setMediaType] = useState(null);
@@ -241,7 +242,7 @@ function CollectionCard({
         <Grid item md={1} xs={12} display="flex" alignItems="center">
           <Grid display="flex" flexDirection={{ xs: 'row', md: 'column', xl: 'arow' }} justifyContent="space-between" maxWidth="200px" margin={{ xs: 'auto', sm: '0' }} alignItems="center" gap={{ xs: '12px', md: '16px' }}>
             {canEdit && (
-            <Button className="collection-card-action-btn">
+            <Button className="collection-card-action-btn" onClick={onEditClick}>
               <img src={PencilIcon} alt="" />
             </Button>
             )}

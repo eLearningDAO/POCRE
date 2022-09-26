@@ -108,6 +108,7 @@ function Creations() {
                 mediaUrl={x?.source?.site_url}
                 materials={x.materials}
                 canEdit={x.is_draft}
+                onEditClick={() => navigate(`/creations/${x.creation_id}/update`)}
                 // eslint-disable-next-line no-return-await
                 onDeleteClick={async () => await deleteCreation(x)}
               />
