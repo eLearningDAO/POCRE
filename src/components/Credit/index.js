@@ -22,6 +22,8 @@ function Credit() {
                 bio={data.bio}
                 linkedIn={data.linkedinUrl}
                 twitter={data.twitterUrl}
+                image={data.avatarUrl}
+                github={data.githubUrl}
               />
             ))}
           </div>
@@ -39,6 +41,7 @@ function Credit() {
               name={data2.name}
               jobs={data2.job}
               profileUrl={data2.profileUrl}
+              image={data2.avatarUrl}
             />
           ))}
         </Grid>

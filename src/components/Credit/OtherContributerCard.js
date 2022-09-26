@@ -1,13 +1,14 @@
 import { Typography } from '@mui/material';
 import React from 'react';
-import UserImage1 from '../../assets/top-learner-user.png';
 
-export default function OtherContributerCard({ name, jobs, profileUrl }) {
+export default function OtherContributerCard({
+  name, jobs, profileUrl, image,
+}) {
   return (
     <div className="otherContributorCard">
       <a href={profileUrl} style={{ textDecoration: 'none' }}>
         <div className="otherContributorCardImage">
-          <img alt="credit-user" src={UserImage1} />
+          <img alt="credit-user" src={image} />
         </div>
 
         <div className="otherContributorCardDetials">
