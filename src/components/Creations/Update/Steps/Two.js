@@ -185,6 +185,8 @@ export default function StepTwo({
   onComplete = () => {},
   onBack = () => {},
   initialMaterials = [],
+  authorSuggestions = [],
+  onAuthorInputChange = () => {},
 }) {
   const [materials, setMaterials] = useState(initialMaterials);
 
@@ -277,7 +279,7 @@ export default function StepTwo({
               <Typography className="heading">Author</Typography>
             </Grid>
             <Grid xs={12} md={10} marginTop={{ xs: '0px', md: '18px' }} display="flex" gap="8px" alignItems="center">
-              <Input placeholder="Select an author or add a new author name" name="author" hookToForm />
+              <Input onChange={onAuthorInputChange} autoComplete autoCompleteOptions={authorSuggestions.map((x) => x.user_name) || []} placeholder="Select an author or add a new author name" name="author" hookToForm />
               <Button className="inviteButton" style={{ width: 'fit-content', paddingLeft: '24px', paddingRight: '24px' }}>
                 <img width={17} style={{ marginRight: '10px' }} alt="invite-icon" src={InviteIcon} />
                 {' '}

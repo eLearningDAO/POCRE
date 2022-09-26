@@ -30,6 +30,8 @@ function CreateCollection() {
     handleTagInputChange,
     getCreationDetails,
     transformedCreation,
+    authorSuggestions,
+    handleAuthorInputChange,
   } = useUpdate();
 
   useEffect(() => {
@@ -110,6 +112,8 @@ function CreateCollection() {
             onBack={handleBack}
             onComplete={handleValues}
             initialMaterials={creationDraft.materials || []}
+            authorSuggestions={authorSuggestions}
+            onAuthorInputChange={handleAuthorInputChange}
           />
         )}
         {step === 3 && (

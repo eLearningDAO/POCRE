@@ -3,7 +3,8 @@ import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../../../config';
 
-let debounceInterval = null;
+let debounceTagInterval = null;
+let debounceAuthorInterval = null;
 
 const useCreate = () => {
   const navigate = useNavigate();
@@ -18,6 +19,11 @@ const useCreate = () => {
     error: null,
   });
   const [tagSuggestions, setTagSuggestions] = useState([]);
+  const [findAuthorsStatus, setFindAuthorsStatus] = useState({
+    success: false,
+    error: null,
+  });
+  const [authorSuggestions, setAuthorSuggestions] = useState([]);
 
   // get tag suggestions
   const findTagSuggestions = useCallback(async (searchText = '') => {
@@ -49,9 +55,9 @@ const useCreate = () => {
 
   // get tag suggestion on tag input change
   const handleTagInputChange = async (event) => {
-    if (debounceInterval) clearTimeout(debounceInterval);
+    if (debounceTagInterval) clearTimeout(debounceTagInterval);
 
-    debounceInterval = await setTimeout(async () => {
+    debounceTagInterval = await setTimeout(async () => {
       const value = event.target.value.trim();
       if (!value) return;
 
@@ -65,6 +71,55 @@ const useCreate = () => {
       );
 
       setTagSuggestions([...tagSuggestions, ...validSuggestions]);
+    }, 500);
+  };
+
+  // get author suggestions
+  const findAuthorSuggestions = useCallback(async (searchText = '') => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/users?query=${searchText}&search_fields[]=user_name`,
+      ).then((x) => x.json());
+
+      if (response.code === 400) throw new Error('Failed to get user suggestion');
+
+      setFindAuthorsStatus({
+        success: true,
+        error: null,
+      });
+      setTimeout(() => setFindAuthorsStatus({
+        success: false,
+        error: null,
+      }), 3000);
+
+      return response;
+    } catch {
+      setFindAuthorsStatus({
+        success: false,
+        error: 'Failed to get user suggestion',
+      });
+    }
+    return null;
+  }, []);
+
+  // get tag suggestion on tag input change
+  const handleAuthorInputChange = async (event) => {
+    if (debounceAuthorInterval) clearTimeout(debounceAuthorInterval);
+
+    debounceAuthorInterval = await setTimeout(async () => {
+      const value = event.target.value.trim();
+      if (!value) return;
+
+      const suggestions = await findAuthorSuggestions(value);
+
+      const validSuggestions = [];
+
+      suggestions?.results?.map(
+        (x) => validSuggestions.findIndex((y) => y.user_id === x.user_id) <= -1
+        && validSuggestions.push(x),
+      );
+
+      setAuthorSuggestions([...authorSuggestions, ...validSuggestions]);
     }, 500);
   };
 
@@ -240,7 +295,10 @@ const useCreate = () => {
     makeNewCreation,
     tagSuggestions,
     findTagsStatus,
+    findAuthorsStatus,
+    authorSuggestions,
     handleTagInputChange,
+    handleAuthorInputChange,
   };
 };
 

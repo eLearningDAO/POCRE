@@ -21,6 +21,8 @@ function CreateCollection() {
     loading,
     tagSuggestions,
     handleTagInputChange,
+    authorSuggestions,
+    handleAuthorInputChange,
   } = useCreate();
 
   const handleValues = async (values) => {
@@ -81,6 +83,8 @@ function CreateCollection() {
         onBack={handleBack}
         onComplete={handleValues}
         initialMaterials={creationDraft.materials || []}
+        authorSuggestions={authorSuggestions}
+        onAuthorInputChange={handleAuthorInputChange}
       />
       )}
       {step === 3 && (
