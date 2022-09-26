@@ -15,7 +15,7 @@ function Litigation() {
   };
 
   return (
-    <Grid container>
+    <Grid container className="Litigation">
 
       <Grid item xs={12}>
         <Typography className="inviationHeaderTitle" variant="h6">Litigation</Typography>

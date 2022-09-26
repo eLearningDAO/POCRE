@@ -2,6 +2,7 @@ import {
   Button, Grid, Typography, Chip,
 } from '@mui/material';
 import React from 'react';
+import './LitigationHome.css';
 import { useNavigate } from 'react-router-dom';
 
 export default function LitigationClosed() {

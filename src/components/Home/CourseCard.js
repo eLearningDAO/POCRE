@@ -1,5 +1,5 @@
 import { Button, Grid, Typography } from '@mui/material';
-import CourseCard1 from '../../assets/course-card1.png';
+import CourseCard1 from '../../assets/course-card2.png';
 
 function CourseCard() {
   return (

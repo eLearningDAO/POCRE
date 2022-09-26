@@ -2,7 +2,7 @@ import { Typography } from '@mui/material';
 import React from 'react';
 
 export default function OtherContributerCard({
-  name, jobs, profileUrl, image,
+  name, job, profileUrl, image,
 }) {
   return (
     <div className="otherContributorCard">
@@ -17,7 +17,7 @@ export default function OtherContributerCard({
           </Typography>
 
           <Typography variant="h6">
-            {jobs }
+            {job }
           </Typography>
         </div>
       </a>

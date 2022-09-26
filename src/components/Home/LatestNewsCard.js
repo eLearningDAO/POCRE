@@ -1,5 +1,5 @@
 import { Grid, Typography } from '@mui/material';
-import LatestNewsCardImg from '../../assets/latest-news-card.png';
+import LatestNewsCardImg from '../../assets/TrandingNewsImage.png';
 
 function LatestNewsCard() {
   return (
