@@ -3,9 +3,10 @@
     justify-content: space-between;
     padding: 20px;  
 }
-.inner-div{
-    position: relative;
-    bottom: 55px;
+.wallet-div{
+position:relative;
+bottom: 5px;
+
 }
 .inner-heading button{
     border: none;
