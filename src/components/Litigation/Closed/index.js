@@ -46,14 +46,17 @@ export default function LitigationClosed() {
         <Box display="flex" gap="4px" alignItems="center">
           <img src={LikeIcon} alt="" style={{ marginRight: '8px' }} />
           Agree
+          4
         </Box>
         <Box display="flex" gap="4px" alignItems="center">
           <img src={DislikeIcon} alt="" style={{ marginRight: '8px' }} />
           Opposition
+          5
         </Box>
         <Box display="flex" gap="4px" alignItems="center">
           <img src={ThumbPinIcon} alt="" style={{ marginRight: '8px' }} />
           Impartial
+          1
         </Box>
       </Grid>
 

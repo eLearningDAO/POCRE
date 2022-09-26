@@ -1,0 +1,7 @@
+.input-error {
+    border: 2px solid var(--color-red) !important;
+}
+.input-error + p {
+    margin-top: 5px !important;
+    color: var(--color-red) !important;
+}

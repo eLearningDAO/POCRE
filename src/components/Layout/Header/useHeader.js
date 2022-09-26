@@ -2,6 +2,9 @@ import { useState, useCallback } from 'react';
 import Cookies from 'js-cookie';
 import { API_BASE_URL } from '../../../config';
 
+// get auth user
+const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
+
 const useHeader = () => {
   const [users, setUsers] = useState([]);
   const [activeUser, setActiveUser] = useState(null);
@@ -23,7 +26,7 @@ const useHeader = () => {
       const usersWithAvatar = response.results.map((x) => ({ ...x, avatar: `https://i.pravatar.cc/50?img=${Math.random()}` }));
       setUsers(usersWithAvatar);
 
-      const temporaryUser = usersWithAvatar?.[0];
+      const temporaryUser = Object.keys(authUser).length > 0 ? authUser : usersWithAvatar?.[0];
       setActiveUser(temporaryUser);
       Cookies.set('activeUser', JSON.stringify(temporaryUser));
 

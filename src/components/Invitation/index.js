@@ -7,7 +7,7 @@ function Invitation() {
     <Grid container>
 
       <Grid item xs={12}>
-        <Typography className="inviationHeaderTitle" variant="h6">Invitation</Typography>
+        <Typography className="inviationHeaderTitle" variant="h6">Recognition</Typography>
       </Grid>
 
       <Grid item xs={12} style={{ marginTop: '10px' }}>

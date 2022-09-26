@@ -13,24 +13,36 @@
                 },
                 {
                     "name": "Huzaifa Rasheed",
+
                     "job": "FullStack Developer",
+
+                    "job": "FullStack Developer",
+
+
                     "bio": "Breathing Javascript, Dreaming in Binary",
                     "avatarUrl": "https://avatars.githubusercontent.com/u/68777211?v=4",
-                    "linkedinUrl": "",
-                    "twitterUrl": "",
+                    "linkedinUrl": "https://www.linkedin.com/in/huzaifa-rasheed/",
+                    "twitterUrl": "https://twitter.com/huzRasheed",
                     "githubUrl": "https://github.com/huzaifa-99"
                 },
                 {
-                    "name": "Emily",
-                    "job": "Designer",
-                    "bio": "A junior UX/UI designer",
-                    "avatarUrl": "https://robohash.org/43432",
+                    "name": "Smarty",
+                    "job": "Software Engineer",
+                    "bio": "We have to do things meaningful",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/95742807?v=4",
                     "linkedinUrl": "",
-                    "twitterUrl": "https://twitter.com/emily",
+                    "twitterUrl": "",
+                    "githubUrl": "https://github.com/ricvale0128"
+                },
+                {
+                    "name": "Mithun Ray",
+                    "job": "Designer",
+                    "bio": "A Senior UX/UI designer",
+                    "avatarUrl": "https://robohash.org/43432",
+                    "linkedinUrl": "https://www.linkedin.com/in/mithunray/",
+                    "twitterUrl": "https://twitter.com/mithunrayy",
                     "githubUrl": ""
                 }
-    
-
             ]
         },
         {
@@ -42,10 +54,10 @@
                     "profileUrl": "https://github.com/adisagar2003"
                 },
                 {
-                    "name": "You",
-                    "job": "bla bla",
-                    "avatarUrl": "https://robohash.org/43433",
-                    "profileUrl": "https://www.mypersonlablog.com"
+                    "name": "mrron313",
+                    "job": "Web developer",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/24652556?v=4",
+                    "profileUrl": "https://github.com/mrron313"
                 }
             ]
         }

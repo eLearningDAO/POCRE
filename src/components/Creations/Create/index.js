@@ -1,49 +1,96 @@
-import { Button, Grid, Typography } from '@mui/material';
-import React from 'react';
+import { Grid, Typography } from '@mui/material';
+import React, { useState } from 'react';
 import StepOne from './Steps/One';
 import StepTwo from './Steps/Two';
 import StepThree from './Steps/Three';
 import './index.css';
+import useCreate from './useCreate';
+
+const stepInfo = [
+  'What, when and where it is',
+  'What other materials you used and from who',
+  'Generate the proof of authorship',
+];
 
 function CreateCollection() {
-  const [step, setStep] = React.useState(1);
+  const [step, setStep] = useState(1);
+  const [creationDraft, setCreationDraft] = useState();
+  const {
+    makeNewCreation,
+    newCreationStatus,
+    loading,
+    tagSuggestions,
+    handleTagInputChange,
+  } = useCreate();
 
-  const next = () => {
+  const handleValues = async (values) => {
+    if (step === 1) {
+      setCreationDraft({ ...values, materials: creationDraft?.materials || null });
+    }
+
+    if (step === 2) {
+      setCreationDraft({
+        ...creationDraft,
+        materials: values,
+      });
+    }
+
+    if (step === 3) {
+      await makeNewCreation({ ...creationDraft, is_draft: !!values?.is_draft });
+    }
+
     if (step !== 3) {
       setStep(step + 1);
     }
   };
 
-  const back = () => {
-    if (step !== 1) {
-      setStep(step - 1);
-    }
+  const handleBack = () => {
+    setStep(step - 1);
   };
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} padding={{ xs: '12px', md: '0' }}>
         <Typography className="heading h4" variant="h4">
-          New Creation - Step 0
-          {`${step}`}
+          New Creation - Step
+          {' '}
+          {step}
+          {' '}
+          of 3
+          {' - '}
+          {stepInfo[step - 1]}
         </Typography>
       </Grid>
 
-      {step === 1 && <StepOne />}
-      {step === 2 && <StepTwo />}
-      {step === 3 && <StepThree />}
-
-      <Grid item xs={12} className="collectionButtons">
-        {step > 1 && <Button onClick={back} className="backCollectionButton">Back</Button>}
-        {step < 3 && <Button onClick={next} className="nextCollectionButton">Next</Button>}
-        {step === 3
-        && (
-        <Grid display="flex" alignItems="center" gap="12px">
-          <Button onClick={next} className="saveDraftButton">Save Draft</Button>
-          <Button onClick={next} className="nextCollectionButton">Finish</Button>
-        </Grid>
-        )}
-      </Grid>
+      {step === 1 && (
+      <StepOne
+        onComplete={handleValues}
+        onTagInputChange={handleTagInputChange}
+        tagSuggestions={tagSuggestions}
+        initialValues={{
+          ...(creationDraft?.title && { title: creationDraft.title }),
+          ...(creationDraft?.description && { description: creationDraft.description }),
+          ...(creationDraft?.source && { source: creationDraft.source }),
+          ...(creationDraft?.tags && { tags: creationDraft.tags }),
+          ...(creationDraft?.date && { date: creationDraft.date }),
+        }}
+      />
+      )}
+      {step === 2 && (
+      <StepTwo
+        onBack={handleBack}
+        onComplete={handleValues}
+        initialMaterials={creationDraft.materials || []}
+      />
+      )}
+      {step === 3 && (
+      <StepThree
+        onBack={handleBack}
+        onComplete={handleValues}
+        status={newCreationStatus}
+        loading={loading}
+      />
+      )}
     </Grid>
   );
 }

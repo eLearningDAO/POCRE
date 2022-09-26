@@ -1,7 +1,7 @@
 import { Grid, Typography } from '@mui/material';
 import TwitterIcon from '../../../assets/twitter2.png';
-import Github from '../../../assets/github.svg';
-import Globe from '../../../assets/globe.png';
+import GithubIcon from '../../../assets/github.svg';
+import GlobeIcon from '../../../assets/globe.png';
 import './Footer.css';
 
 function Footer() {
@@ -15,10 +15,10 @@ function Footer() {
           <img src={TwitterIcon} alt="@eLearningDAO" />
         </a>
         <a href="https://github.com/e-Learning-DAO/POCRE">
-          <img src={Github} alt="@eLearningDAO" width={30} height={30} />
+          <img src={GithubIcon} alt="@eLearningDAO" width={30} height={30} />
         </a>
-        <a href="https://pocre.net/">
-          <img src={Globe} alt="@eLearningDAO" width={30} height={30} />
+        <a href="https://www.pocre.net/">
+          <img src={GlobeIcon} alt="@eLearningDAO" width={30} height={30} />
         </a>
       </Grid>
     </Grid>

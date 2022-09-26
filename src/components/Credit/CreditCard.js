@@ -8,7 +8,7 @@ import './CreditCard.css';
 export default function CreditCard(
   {
     name,
-    jobs,
+    job,
     bio,
     linkedIn,
     twitter,
@@ -42,8 +42,8 @@ export default function CreditCard(
           { name }
         </Typography>
 
-        <Typography variant="h6" className="jobs">
-          {jobs}
+        <Typography variant="h6" className="job">
+          {job}
         </Typography>
         <Typography variant="span" className="bio">
           {bio}
