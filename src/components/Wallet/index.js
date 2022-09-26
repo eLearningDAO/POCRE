@@ -18,7 +18,7 @@ function Wallet() {
 
   return (
     <div>
-      <div className="inner-div">
+      <div className="wallet-div">
         <div className="inner-heading">
           <b>My Wallet</b>
           <button>Switch wallet</button>
