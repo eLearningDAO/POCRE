@@ -221,7 +221,9 @@ export const updateCreationById = async (id: string, updateBody: Partial<ICreati
   await getCreationById(id); // check if creation exists, throws error if not found
 
   // verify if material/s already exist for another creation, throw error if a material is found
-  if (updateBody.materials) await verifyCreationMaterialDuplicates(updateBody.materials, id);
+  if (updateBody.materials && updateBody.materials.length > 0) {
+    await verifyCreationMaterialDuplicates(updateBody.materials, id);
+  }
 
   // build sql conditions and values
   const conditions: string[] = [];

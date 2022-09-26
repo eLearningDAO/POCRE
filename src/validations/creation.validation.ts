@@ -45,7 +45,7 @@ export const updateCreation = {
       source_id: Joi.string().uuid().optional(),
       author_id: Joi.string().uuid().optional(),
       tags: Joi.array().items(Joi.string().uuid()).unique().optional().min(1),
-      materials: Joi.array().items(Joi.string().uuid()).unique().optional().min(1),
+      materials: Joi.array().items(Joi.string().uuid()).unique().optional(),
       creation_date: Joi.string().isoDate().optional(),
       is_draft: Joi.bool().default(false),
     })
