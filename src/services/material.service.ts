@@ -15,6 +15,8 @@ interface IMaterial {
 interface IMaterialQuery {
   limit: number;
   page: number;
+  query: string;
+  search_fields: string[];
 }
 interface IMaterialQueryResult {
   results: Array<IMaterialDoc>;
@@ -92,15 +94,25 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
  * Query for materials
  * @returns {Promise<Array<IMaterial>}
  */
-export const queryMaterials = async (options: IMaterialQuery = { limit: 10, page: 1 }): Promise<IMaterialQueryResult> => {
+export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterialQueryResult> => {
   try {
-    const result = await db.query(`SELECT * FROM material OFFSET $1 LIMIT $2;`, [
+    // search
+    const search =
+      options.search_fields && options.search_fields.length > 0
+        ? `WHERE ${options.search_fields
+            .map(
+              (field) => `${field} ${['invite_id'].includes(field) ? `= '${options.query}'` : `LIKE '%${options.query}%'`}`
+            )
+            .join(' OR ')}`
+        : '';
+
+    const result = await db.query(`SELECT * FROM material ${search} OFFSET $1 LIMIT $2;`, [
       options.page === 1 ? '0' : (options.page - 1) * options.limit,
       options.limit,
     ]);
     const materials = result.rows;
 
-    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM material;`, [])).rows[0];
+    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM material ${search};`, [])).rows[0];
 
     return {
       results: materials,
