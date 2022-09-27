@@ -184,17 +184,62 @@ const useCreate = () => {
   }, []);
 
   // creates a new material
-  const makeNewMaterial = useCallback(async (authorBody = {}) => {
+  const makeNewMaterial = useCallback(async (materialBody = {}) => {
     const response = await fetch(`${API_BASE_URL}/materials`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(authorBody),
+      body: JSON.stringify(materialBody),
     }).then((x) => x.json());
 
     if (response.code === 400) throw new Error('Failed to create a new material');
+    return response;
+  }, []);
+
+  // creates a new material
+  const updateMaterial = useCallback(async (materialId, materialBody = {}) => {
+    const response = await fetch(`${API_BASE_URL}/materials/${materialId}`, {
+      method: 'PATCH',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(materialBody),
+    }).then((x) => x.json());
+
+    if (response.code === 400) throw new Error('Failed to update material');
+    return response;
+  }, []);
+
+  // creates a new status
+  const makeNewStatus = useCallback(async (statusBody = {}) => {
+    const response = await fetch(`${API_BASE_URL}/status`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(statusBody),
+    }).then((x) => x.json());
+
+    if (response.code === 400) throw new Error('Failed to create a new status');
+    return response;
+  }, []);
+
+  // creates a new invitation
+  const makeNewInvitation = useCallback(async (invitationBody = {}) => {
+    const response = await fetch(`${API_BASE_URL}/invitations`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(invitationBody),
+    }).then((x) => x.json());
+
+    if (response.code === 400) throw new Error('Failed to create a new invitation');
     return response;
   }, []);
 
@@ -271,6 +316,31 @@ const useCreate = () => {
       }).then((x) => x.json());
 
       if (response.code === 400) throw new Error('Failed to make a new creation');
+
+      // sent invitation to material authors (if creation is not draft)
+      if (materials.length > 0 && !creationBody.is_draft) {
+        await Promise.all(materials.map(async (x) => {
+          // make new status
+          const status = await makeNewStatus({
+            status_name: 'pending',
+            status_description: x.material_description,
+          });
+
+          // make new invite
+          const invitation = await makeNewInvitation({
+            invite_from: user.user_id,
+            invite_to: x.author_id,
+            invite_description: x.material_description,
+            status_id: status.status_id,
+          });
+
+          // update material with invitation id
+          await updateMaterial(x.material_id, {
+            invite_id: invitation.invite_id,
+          });
+          console.log('invitation sent =>', invitation);
+        }));
+      }
 
       setNewCreationStatus({
         success: true,
