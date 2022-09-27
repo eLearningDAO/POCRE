@@ -1,5 +1,7 @@
 /* eslint-disable no-return-await */
-import { Grid, Typography } from '@mui/material';
+import {
+  Grid, Typography, Snackbar, Alert,
+} from '@mui/material';
 import React, { useEffect } from 'react';
 import Cookies from 'js-cookie';
 import InvitationCard from './InvitationCard';
@@ -10,15 +12,64 @@ const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 
 function Invitation() {
   const {
-    fetchInvitations, invitations,
+    fetchInvitations,
+    invitations,
+    acceptInvitation,
+    declineInvitation,
+    acceptInvitationStatus,
+    declineInvitationStatus,
+    setAcceptInvitationStatus,
+    setDeclineInvitationStatus,
   } = useInvitation();
 
   useEffect(() => {
     fetchInvitations();
   }, []);
 
+  const onCloseAcceptNotificationPopup = () => {
+    setAcceptInvitationStatus({
+      success: false,
+      error: null,
+    });
+  };
+
+  const onCloseDeclineNotificationPopup = () => {
+    setDeclineInvitationStatus({
+      success: false,
+      error: null,
+    });
+  };
+
   return (
     <Grid container>
+      {(acceptInvitationStatus.success || acceptInvitationStatus.error) && (
+      <Snackbar
+        open
+        onClose={onCloseAcceptNotificationPopup}
+      >
+        <Alert
+          onClose={onCloseAcceptNotificationPopup}
+          severity={acceptInvitationStatus.success ? 'success' : 'error'}
+          sx={{ width: '100%' }}
+        >
+          {acceptInvitationStatus.success ? 'Invitation Accepted!' : acceptInvitationStatus.error}
+        </Alert>
+      </Snackbar>
+      )}
+      {(declineInvitationStatus.success || declineInvitationStatus.error) && (
+      <Snackbar
+        open
+        onClose={onCloseDeclineNotificationPopup}
+      >
+        <Alert
+          onClose={onCloseDeclineNotificationPopup}
+          severity={declineInvitationStatus.success ? 'success' : 'error'}
+          sx={{ width: '100%' }}
+        >
+          {declineInvitationStatus.success ? 'Invitation Declined!' : declineInvitationStatus.error}
+        </Alert>
+      </Snackbar>
+      )}
 
       <Grid item xs={12}>
         <Typography className="inviationHeaderTitle" variant="h6">Where I am recognized as a co-creator</Typography>
@@ -38,6 +89,10 @@ function Invitation() {
           <InvitationCard
             materialTitle={x.material?.material_title}
             materialLink={x.material?.material_link}
+            // canAccept={x.status.status_name === 'pending'}
+            onAccept={async () => await acceptInvitation(x.invite_id)}
+            // canDecline={x.status.status_name === 'pending'}
+            onDecline={async () => await declineInvitation(x.invite_id)}
           />
         </Grid>
       ))}
