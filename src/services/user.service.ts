@@ -53,9 +53,10 @@ export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
  */
 export const queryUsers = async (options: IUserQuery): Promise<IUserQueryResult> => {
   try {
-    const search = options.search_fields
-      ? options.search_fields.map((field) => `WHERE ${field} LIKE '%${options.query}%'`).join(' OR ')
-      : '';
+    const search =
+      options.search_fields && options.search_fields.length > 0
+        ? `WHERE ${options.search_fields.map((field) => `${field} LIKE '%${options.query}%'`).join(' OR ')}`
+        : '';
 
     const result = await db.query(`SELECT * FROM users ${search} OFFSET $1 LIMIT $2;`, [
       options.page === 1 ? '0' : (options.page - 1) * options.limit,

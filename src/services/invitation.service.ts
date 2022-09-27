@@ -64,16 +64,17 @@ export const createInvitation = async (invitationBody: IInvitation): Promise<IIn
 export const queryInvitations = async (options: IInvitationQuery): Promise<IInvitationQueryResult> => {
   try {
     // search
-    const search = options.search_fields
-      ? options.search_fields
-          .map(
-            (field) =>
-              `WHERE ${field} ${
-                ['invite_from', 'invite_to'].includes(field) ? `= '${options.query}'` : `LIKE '%${options.query}%'`
-              }`
-          )
-          .join(' OR ')
-      : '';
+    const search =
+      options.search_fields && options.search_fields.length > 0
+        ? `WHERE ${options.search_fields
+            .map(
+              (field) =>
+                `${field} ${
+                  ['invite_from', 'invite_to'].includes(field) ? `= '${options.query}'` : `LIKE '%${options.query}%'`
+                }`
+            )
+            .join(' OR ')}`
+        : '';
 
     // order
     const ascendOrder =
