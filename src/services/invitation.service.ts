@@ -12,6 +12,10 @@ interface IInvitation {
 interface IInvitationQuery {
   limit: number;
   page: number;
+  query: string;
+  search_fields: string[];
+  ascend_fields: string[];
+  descend_fields: string[];
 }
 interface IInvitationQueryResult {
   results: Array<IInvitationDoc>;
@@ -57,17 +61,39 @@ export const createInvitation = async (invitationBody: IInvitation): Promise<IIn
  * Query for invitations
  * @returns {Promise<Array<IInvitation>}
  */
-export const queryInvitations = async (
-  options: IInvitationQuery = { limit: 10, page: 1 }
-): Promise<IInvitationQueryResult> => {
+export const queryInvitations = async (options: IInvitationQuery): Promise<IInvitationQueryResult> => {
   try {
-    const result = await db.query(`SELECT * FROM invitation OFFSET $1 LIMIT $2;`, [
+    // search
+    const search = options.search_fields
+      ? options.search_fields
+          .map(
+            (field) =>
+              `WHERE ${field} ${
+                ['invite_from', 'invite_to'].includes(field) ? `= '${options.query}'` : `LIKE '%${options.query}%'`
+              }`
+          )
+          .join(' OR ')
+      : '';
+
+    // order
+    const ascendOrder =
+      (options.ascend_fields || []).length > 0 ? `${options.ascend_fields.map((x) => `${x} ASC`).join(', ')}` : '';
+    const descendOrder =
+      (options.descend_fields || []).length > 0 ? `${options.descend_fields.map((x) => `${x} DESC`).join(', ')}` : '';
+    const order =
+      (options.ascend_fields || options.descend_fields || []).length > 0
+        ? `ORDER BY ${ascendOrder} ${
+            (options.ascend_fields || []).length > 0 && (options.descend_fields || []).length > 0 ? ', ' : ''
+          } ${descendOrder}`
+        : '';
+
+    const result = await db.query(`SELECT * FROM invitation ${search} ${order} OFFSET $1 LIMIT $2;`, [
       options.page === 1 ? '0' : (options.page - 1) * options.limit,
       options.limit,
     ]);
     const invitations = result.rows;
 
-    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM invitation;`, [])).rows[0];
+    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM invitation ${search};`, [])).rows[0];
 
     return {
       results: invitations,

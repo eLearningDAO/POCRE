@@ -13,6 +13,14 @@ export const queryInvitations = {
   query: Joi.object().keys({
     limit: Joi.number().integer().default(10),
     page: Joi.number().integer().default(1).greater(0),
+    query: Joi.string().optional(),
+    search_fields: Joi.array().items(Joi.string().valid('invite_from', 'invite_to')).when('query', {
+      is: Joi.string().exist(),
+      then: Joi.required(),
+      otherwise: Joi.forbidden(),
+    }),
+    ascend_fields: Joi.array().items(Joi.string().valid('invite_issued')).optional(),
+    descend_fields: Joi.array().items(Joi.string().valid('invite_issued')).optional(),
   }),
 };
 
