@@ -2,15 +2,20 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState } from 'react';
 import {
-  Button, Grid, TextField, Typography, Box, Chip,
+  Button, Grid, TextField, Typography, Box,
+  // Chip,
 } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import QrCode from '../../../../assets/qr.png';
 import SaveIcon from '../../../../assets/svgs/save.svg';
 import PreviewIcon from '../../../../assets/svgs/preview.svg';
 import CloseIcon from '../../../../assets/svgs/close.svg';
+
+// get auth user
+const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 
 function dec2hex(dec) {
   return dec.toString(16).padStart(2, '0');
@@ -62,8 +67,13 @@ export default function StepThree({
               <span className="heading">Date</span>
               <span>{creationDraft.date}</span>
 
-              <span className="heading">Tags</span>
-              <span className="creation-tags">{creationDraft.tags.map((x, index) => <Chip key={index} label={x} />)}</span>
+              <span className="heading">Author</span>
+              <span>{authUser?.user_name}</span>
+
+              {/* <span className="heading">Tags</span>
+              <span className="creation-tags">
+              {creationDraft.tags.map((x, index) => <Chip key={index} label={x} />)}
+              </span> */}
             </div>
 
             {creationDraft?.materials && (
