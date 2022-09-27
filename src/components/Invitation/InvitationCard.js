@@ -2,6 +2,7 @@ import {
   Chip,
   Grid,
   Typography,
+  Button,
 } from '@mui/material';
 import InvitationCardImg from '../../assets/invitation-card.png';
 import LinkedinIcon from '../../assets/linkedin.png';
@@ -10,20 +11,28 @@ import UserImage1 from '../../assets/user-image-2.jpeg';
 import LoadingImage from '../../assets/loading.png';
 import './InvitationCard.css';
 
-function InvitationCard() {
+function InvitationCard({
+  materialImageUrl = InvitationCardImg,
+  materialTitle = 'Pompeii',
+  materialLink = 'https://www.youtube.com/watch?v=dbMk9vWqgpc',
+  canAccept = true,
+  onAccept = () => {},
+  canDecline = true,
+  onDecline = () => {},
+}) {
   return (
     <Grid container className="invitationCard">
       <Grid item md={6.5} xs={12}>
         <div className="invitationCardLeft">
           <div className="invitationCardLeftImage">
-            <img src={InvitationCardImg} alt="" />
+            <img src={materialImageUrl} alt="" />
           </div>
           <div className="invitationCardLeftText">
             <Typography variant="h6">
-              Pompeii
+              {materialTitle}
             </Typography>
             <Typography variant="span">
-              https://www.youtube.com/watch?v=dbMk9vWqgpc
+              {materialLink}
             </Typography>
 
             <div className="invitationCardLeftButton non-responsive">
@@ -56,8 +65,26 @@ function InvitationCard() {
 
           </div>
           <div className="invitationCardRightButton">
-            <Chip label="Accept authorship" className="Accept" color="success" style={{ backgroundColor: 'lightgreen', padding: 20 }} />
-            <Chip label="I'm not the author" className="Decline" color="error" style={{ padding: 20 }} />
+            {canAccept && (
+            <Button
+              className="Accept"
+              color="success"
+              style={{ backgroundColor: 'lightgreen', padding: 20 }}
+              onClick={onAccept}
+            >
+              Accept Authorship
+            </Button>
+            )}
+            {canDecline && (
+              <Button
+                className="Decline"
+                color="error"
+                style={{ padding: 20 }}
+                onClick={onDecline}
+              >
+                I&apos;m not the author
+              </Button>
+            )}
           </div>
         </div>
       </Grid>
