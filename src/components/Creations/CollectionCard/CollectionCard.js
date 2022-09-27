@@ -222,7 +222,7 @@ function CollectionCard({
         >
           <div className="collection-member-images">
             {materials.length === 0 ? (
-              <Chip style={{ backgroundColor: 'var(--color-orange)', color: 'var(--color-white)', fontSize: '14px' }} label="Unique Creation (no materials)" />
+              <Chip style={{ backgroundColor: 'var(--color-orange)', color: 'var(--color-white)', fontSize: '14px' }} label="Not a collaborative creation" />
             )
               : materials.map((x, index) => (
                 <img key={index} src={`https://i.pravatar.cc/50?img=${Math.random()}`} alt="" />

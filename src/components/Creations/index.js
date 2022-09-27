@@ -66,7 +66,7 @@ function Creations() {
         height="fit-content"
         padding={{ xs: '12px', md: '0' }}
       >
-        <Typography className="heading h4" variant="h4">My Creations</Typography>
+        <Typography className="heading h4" variant="h4">The original creations I made</Typography>
         <Grid gap={{ sm: '8px' }} display="flex" height="fit-content" flexDirection="row">
           <TextField
             variant="standard"

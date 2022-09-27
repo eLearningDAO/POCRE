@@ -27,13 +27,13 @@ function InvitationCard() {
             </Typography>
 
             <div className="invitationCardLeftButton non-responsive">
-              <Chip label="Preview" className="chipPreview" />
-              <Chip label="Pending" className="chipPending" />
+              <Chip label="Creation preview" className="chipPreview" />
+              <Chip label="Creation authorship pending" className="chipPending" />
             </div>
           </div>
           <div className="invitationCardLeftButton responsive">
-            <Chip label="Preview" size="medium" className="Preview" avatar={<img alt="eye" src={EyeImage} />} style={{ paddingTop: 20, paddingBottom: 20, backgroundColor: 'lightblue' }} />
-            <Chip label="Pending" size="medium" color="warning" className="Pending" avatar={<img alt="eye" src={LoadingImage} style={{ width: 15, height: 15 }} width={5} height={5} />} style={{ padding: 15, height: 40 }} />
+            <Chip label="Creation preview" size="medium" className="Preview" avatar={<img alt="eye" src={EyeImage} />} style={{ paddingTop: 20, paddingBottom: 20, backgroundColor: 'lightblue' }} />
+            <Chip label="Creation authorship pending" size="medium" color="warning" className="Pending" avatar={<img alt="eye" src={LoadingImage} style={{ width: 15, height: 15 }} width={5} height={5} />} style={{ padding: 15, height: 40 }} />
           </div>
         </div>
       </Grid>
@@ -44,7 +44,7 @@ function InvitationCard() {
               <img src={UserImage1} alt="" />
 
               <Typography variant="h6">
-                Posted By jack 58
+                Recognized By jack 58
               </Typography>
             </div>
             <div className="postedImageRight">
@@ -56,8 +56,8 @@ function InvitationCard() {
 
           </div>
           <div className="invitationCardRightButton">
-            <Chip label="Accept" className="Accept" color="success" style={{ backgroundColor: 'lightgreen', padding: 20 }} />
-            <Chip label="Decline" className="Decline" color="error" style={{ padding: 20 }} />
+            <Chip label="Accept authorship" className="Accept" color="success" style={{ backgroundColor: 'lightgreen', padding: 20 }} />
+            <Chip label="I'm not the author" className="Decline" color="error" style={{ padding: 20 }} />
           </div>
         </div>
       </Grid>

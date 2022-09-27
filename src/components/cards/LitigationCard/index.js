@@ -75,7 +75,7 @@ function LitigationCard({
 
         <Button className="previewButton">
           <img src={EyeIcon} alt="" />
-          Preview
+          Creation preview
         </Button>
 
         <Grid display="flex" gap="12px" alignItems="center" fontSize="18px">

@@ -135,7 +135,7 @@ function NewMaterial({ material, onRemoveMaterial, onUpdate = () => {} }) {
             >
               <img width={17} style={{ marginRight: '10px' }} alt="invite-icon" src={InviteIcon} />
               {' '}
-              Invite
+              New author
             </Button>
           </Grid>
 
@@ -283,7 +283,7 @@ export default function StepTwo({
               <Button className="inviteButton" style={{ width: 'fit-content', paddingLeft: '24px', paddingRight: '24px' }}>
                 <img width={17} style={{ marginRight: '10px' }} alt="invite-icon" src={InviteIcon} />
                 {' '}
-                Invite
+                New author
               </Button>
             </Grid>
 
