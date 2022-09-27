@@ -338,7 +338,6 @@ const useCreate = () => {
           await updateMaterial(x.material_id, {
             invite_id: invitation.invite_id,
           });
-          console.log('invitation sent =>', invitation);
         }));
       }
 
