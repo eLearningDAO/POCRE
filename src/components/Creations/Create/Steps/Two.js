@@ -188,14 +188,13 @@ export default function StepTwo({
   authorSuggestions = [],
   onAuthorInputChange = () => {},
 }) {
+  const [formKey, setFormKey] = useState(new Date().toISOString());
   const [materials, setMaterials] = useState(initialMaterials);
 
   const handleValues = (values) => {
     setMaterials([...materials, values]);
 
-    // reset form
-    const form = document.getElementById('material-form');
-    form.reset();
+    setFormKey(new Date().toISOString());
   };
 
   const handleSkipClick = () => {
@@ -234,7 +233,7 @@ export default function StepTwo({
     <>
       <Grid item xs={12} display="flex" flexDirection="column" gap="24px">
         <Form
-          id="material-form"
+          key={formKey}
           onSubmit={handleValues}
           validationSchema={stepTwoValidation}
           initialValues={{
