@@ -28,7 +28,7 @@ const useCreations = () => {
       )
         .then((x) => x.json());
 
-      if (creationResponse.code === 400) throw new Error('Failed to fetch creations');
+      if (creationResponse.code >= 400) throw new Error('Failed to fetch creations');
 
       // get source for each creation
       creationResponse = {

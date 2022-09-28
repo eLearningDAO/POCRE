@@ -3,6 +3,9 @@ import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../../../config';
 
+// get auth user
+const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
+
 let debounceTagInterval = null;
 let debounceAuthorInterval = null;
 
@@ -32,7 +35,7 @@ const useCreate = () => {
         `${API_BASE_URL}/tags?query=${searchText}&search_fields[]=tag_name`,
       ).then((x) => x.json());
 
-      if (response.code === 400) throw new Error('Failed to get tag suggestion');
+      if (response.code >= 400) throw new Error('Failed to get tag suggestion');
 
       setFindTagsStatus({
         success: true,
@@ -81,7 +84,7 @@ const useCreate = () => {
         `${API_BASE_URL}/users?query=${searchText}&search_fields[]=user_name`,
       ).then((x) => x.json());
 
-      if (response.code === 400) throw new Error('Failed to get user suggestion');
+      if (response.code >= 400) throw new Error('Failed to get user suggestion');
 
       setFindAuthorsStatus({
         success: true,
@@ -114,7 +117,7 @@ const useCreate = () => {
 
       const validSuggestions = [];
 
-      suggestions?.results?.map(
+      suggestions?.results?.filter((x) => x.user_name.trim() !== authUser.user_name.trim()).map(
         (x) => validSuggestions.findIndex((y) => y.user_id === x.user_id) <= -1
         && validSuggestions.push(x),
       );
@@ -134,7 +137,7 @@ const useCreate = () => {
       body: JSON.stringify(sourceBody),
     }).then((x) => x.json());
 
-    if (response.code === 400) throw new Error('Failed to create a source');
+    if (response.code >= 400) throw new Error('Failed to create a source');
     return response;
   }, []);
 
@@ -149,7 +152,7 @@ const useCreate = () => {
       body: JSON.stringify(tagBody),
     }).then((x) => x.json());
 
-    if (response.code === 400) throw new Error('Failed to create a tag');
+    if (response.code >= 400) throw new Error('Failed to create a tag');
     return response;
   }, []);
 
@@ -164,7 +167,7 @@ const useCreate = () => {
       body: JSON.stringify(authorBody),
     }).then((x) => x.json());
 
-    if (response.code === 400) throw new Error('Failed to create a new material');
+    if (response.code >= 400) throw new Error('Failed to create a new material');
     return response;
   }, []);
 
@@ -179,7 +182,7 @@ const useCreate = () => {
       body: JSON.stringify(materialTypeBody),
     }).then((x) => x.json());
 
-    if (response.code === 400) throw new Error('Failed to create a new material');
+    if (response.code >= 400) throw new Error('Failed to create a new material');
     return response;
   }, []);
 
@@ -194,7 +197,7 @@ const useCreate = () => {
       body: JSON.stringify(materialBody),
     }).then((x) => x.json());
 
-    if (response.code === 400) throw new Error('Failed to create a new material');
+    if (response.code >= 400) throw new Error('Failed to create a new material');
     return response;
   }, []);
 
@@ -209,7 +212,7 @@ const useCreate = () => {
       body: JSON.stringify(materialBody),
     }).then((x) => x.json());
 
-    if (response.code === 400) throw new Error('Failed to update material');
+    if (response.code >= 400) throw new Error('Failed to update material');
     return response;
   }, []);
 
@@ -224,7 +227,7 @@ const useCreate = () => {
       body: JSON.stringify(statusBody),
     }).then((x) => x.json());
 
-    if (response.code === 400) throw new Error('Failed to create a new status');
+    if (response.code >= 400) throw new Error('Failed to create a new status');
     return response;
   }, []);
 
@@ -239,7 +242,7 @@ const useCreate = () => {
       body: JSON.stringify(invitationBody),
     }).then((x) => x.json());
 
-    if (response.code === 400) throw new Error('Failed to create a new invitation');
+    if (response.code >= 400) throw new Error('Failed to create a new invitation');
     return response;
   }, []);
 
@@ -347,7 +350,7 @@ const useCreate = () => {
         }),
       }).then((x) => x.json());
 
-      if (response.code === 400) throw new Error('Failed to make a new creation');
+      if (response.code >= 400) throw new Error('Failed to make a new creation');
 
       // sent invitation to material authors (if creation is not draft)
       if (materials.length > 0 && !creationBody.is_draft) {

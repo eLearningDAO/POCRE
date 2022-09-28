@@ -1,7 +1,11 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
+import Cookies from 'js-cookie';
 import { API_BASE_URL } from '../../../config';
+
+// get auth user
+const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 
 let debounceTagInterval = null;
 let debounceAuthorInterval = null;
@@ -89,7 +93,7 @@ const useUpdate = () => {
         `${API_BASE_URL}/users?query=${searchText}&search_fields[]=user_name`,
       ).then((x) => x.json());
 
-      if (response.code === 400) throw new Error('Failed to get user suggestion');
+      if (response.code >= 400) throw new Error('Failed to get user suggestion');
 
       setFindAuthorsStatus({
         success: true,
@@ -122,7 +126,7 @@ const useUpdate = () => {
 
       const validSuggestions = [];
 
-      suggestions?.results?.map(
+      suggestions?.results?.filter((x) => x.user_name.trim() !== authUser.user_name.trim()).map(
         (x) => validSuggestions.findIndex((y) => y.user_id === x.user_id) <= -1
         && validSuggestions.push(x),
       );
@@ -202,7 +206,7 @@ const useUpdate = () => {
       body: JSON.stringify(materialBody),
     }).then((x) => x.json());
 
-    if (response.code === 400) throw new Error('Failed to create a new material');
+    if (response.code >= 400) throw new Error('Failed to create a new material');
     return response;
   }, []);
 
@@ -217,7 +221,7 @@ const useUpdate = () => {
       body: JSON.stringify(materialBody),
     }).then((x) => x.json());
 
-    if (response.code === 400) throw new Error('Failed to update material');
+    if (response.code >= 400) throw new Error('Failed to update material');
     return response;
   }, []);
 
@@ -232,7 +236,7 @@ const useUpdate = () => {
       body: JSON.stringify(statusBody),
     }).then((x) => x.json());
 
-    if (response.code === 400) throw new Error('Failed to create a new status');
+    if (response.code >= 400) throw new Error('Failed to create a new status');
     return response;
   }, []);
 
@@ -247,7 +251,7 @@ const useUpdate = () => {
       body: JSON.stringify(invitationBody),
     }).then((x) => x.json());
 
-    if (response.code === 400) throw new Error('Failed to create a new invitation');
+    if (response.code >= 400) throw new Error('Failed to create a new invitation');
     return response;
   }, []);
 
