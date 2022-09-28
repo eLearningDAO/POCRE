@@ -10,7 +10,7 @@ import DownloadIcon from '../../../assets/download.png';
 import DeleteIconSVG from '../../../assets/svgs/delete.svg';
 import PencilIcon from '../../../assets/pencil.png';
 import ShareIcon from '../../../assets/share.png';
-import './CollectionCard.css';
+import './index.css';
 import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
 
 function DeleteCofirmationDialog({ onClose, onConfirm }) {

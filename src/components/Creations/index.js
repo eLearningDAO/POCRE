@@ -4,7 +4,7 @@ import {
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CollectionCard from './CollectionCard/CollectionCard';
+import CreationCard from './CreationCard';
 import './index.css';
 import useCreations from './useCreations';
 import Loader from '../uicore/Loader';
@@ -99,7 +99,7 @@ function Creations() {
           {creations?.results?.map((x, index) => (
             ((x.creation_title || '') + (x.creation_description || ''))
               ?.toLowerCase()?.includes(search?.toLowerCase()) && (
-              <CollectionCard
+              <CreationCard
                 key={index}
                 title={x?.creation_title}
                 description={x?.creation_description}
