@@ -260,6 +260,7 @@ export default function StepTwo({
                 name="fileType"
                 hookToForm
                 options={[
+                  { value: 'image', label: 'Image' },
                   { value: 'video', label: 'Video' },
                   { value: 'sound', label: 'Sound' },
                   { value: 'document', label: 'Document' },
