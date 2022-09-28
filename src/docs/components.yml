@@ -313,6 +313,15 @@ components:
           example:
             code: 409
             message: issuer already assigned to a litigation
+    UserCannotInviteThemselve:
+      description: User cannot invite themselve
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: user cannot invite themselve
     StatusNotFound:
       description: Status not found
       content:

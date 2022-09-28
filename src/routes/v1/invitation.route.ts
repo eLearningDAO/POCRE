@@ -88,12 +88,18 @@ export default router;
  *             schema:
  *               oneOf:
  *                 - $ref: '#/components/responses/StatusAlreadyAssignedToInvitation'
+ *                 - $ref: '#/components/responses/UserCannotInviteThemselve'
  *             examples:
  *               StatusAlreadyAssignedToInvitation:
  *                 summary: status already assigned to an invitation
  *                 value:
  *                   code: 409
  *                   message: status already assigned to an invitation
+ *               UserCannotInviteThemselve:
+ *                 summary: user cannot invite themselve
+ *                 value:
+ *                   code: 409
+ *                   message: user cannot invite themselve
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *
@@ -259,12 +265,18 @@ export default router;
  *             schema:
  *               oneOf:
  *                 - $ref: '#/components/responses/StatusAlreadyAssignedToInvitation'
+ *                 - $ref: '#/components/responses/UserCannotInviteThemselve'
  *             examples:
  *               StatusAlreadyAssignedToInvitation:
  *                 summary: status already assigned to an invitation
  *                 value:
  *                   code: 409
  *                   message: status already assigned to an invitation
+ *               UserCannotInviteThemselve:
+ *                 summary: user cannot invite themselve
+ *                 value:
+ *                   code: 409
+ *                   message: user cannot invite themselve
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *
