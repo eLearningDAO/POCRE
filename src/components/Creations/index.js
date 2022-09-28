@@ -4,7 +4,7 @@ import {
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CreationCard from './CreationCard';
+import CreationCard from '../cards/CreationCard';
 import './index.css';
 import useCreations from './useCreations';
 import Loader from '../uicore/Loader';
