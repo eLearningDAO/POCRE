@@ -256,10 +256,29 @@ const useCreate = () => {
       });
 
       // make new tags
-      const tags = await Promise.all(creationBody.tags.map((x) => makeNewTag({
-        tag_name: x,
-        tag_description: null,
-      })));
+      const tags = await (async () => {
+        const temporaryTags = [];
+
+        await Promise.all(creationBody.tags.map(async (x) => {
+          const foundTag = tagSuggestions.find(
+            (tag) => tag.tag_name.toLowerCase().trim() === x.toLowerCase().trim(),
+          );
+
+          if (foundTag) {
+            temporaryTags.push(foundTag);
+            return;
+          }
+
+          // else create a new tag
+          const newTag = await makeNewTag({
+            tag_name: x,
+            tag_description: null,
+          });
+          temporaryTags.push(newTag);
+        }));
+
+        return temporaryTags;
+      })();
 
       // make new materials (if creation has materials)
       let materials = [];
@@ -356,7 +375,7 @@ const useCreate = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [tagSuggestions]);
 
   return {
     loading,

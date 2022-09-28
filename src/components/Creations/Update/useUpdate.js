@@ -275,10 +275,29 @@ const useUpdate = () => {
       updatedCreation.source_id = source.source_id;
 
       // make new tags
-      const tags = await Promise.all(updateBody.tags.map((x) => makeNewTag({
-        tag_name: x,
-        tag_description: null,
-      })));
+      const tags = await (async () => {
+        const temporaryTags = [];
+
+        await Promise.all(updateBody.tags.map(async (x) => {
+          const foundTag = tagSuggestions.find(
+            (tag) => tag.tag_name.toLowerCase().trim() === x.toLowerCase().trim(),
+          );
+
+          if (foundTag) {
+            temporaryTags.push(foundTag);
+            return;
+          }
+
+          // else create a new tag
+          const newTag = await makeNewTag({
+            tag_name: x,
+            tag_description: null,
+          });
+          temporaryTags.push(newTag);
+        }));
+
+        return temporaryTags;
+      })();
       updatedCreation.tags = tags.map((x) => x.tag_id);
 
       // make new materials (if creation has materials)
@@ -377,7 +396,7 @@ const useUpdate = () => {
     } finally {
       setIsUpdatingCreation(false);
     }
-  }, [originalCreation, transformedCreation]);
+  }, [originalCreation, transformedCreation, tagSuggestions]);
 
   const getCreationDetails = async (id) => {
     try {
