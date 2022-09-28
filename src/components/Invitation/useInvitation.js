@@ -32,6 +32,7 @@ const useInvitation = () => {
       const response = await fetch(`${API_BASE_URL}/invitations?query=${user.user_id}&search_fields[]=invite_from&search_fields[]=invite_to`).then((x) => x.json());
       if (response.code >= 400) throw new Error('Failed to get invitations');
 
+      // transform results
       response.results = await Promise.all(
         response.results.map(async (invitation) => {
           // get details of inviteFrom user
@@ -89,6 +90,9 @@ const useInvitation = () => {
           return transformedInvitation;
         }),
       );
+
+      // filter out falsy data
+      response.results = response.results.filter((x) => x.material);
 
       setFetchInvitationsStatus({
         success: true,

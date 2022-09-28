@@ -17,6 +17,10 @@
 }
 
 /* backgrounds */
+.bg-orange-dark {
+    background-color: var(--color-orange-dark) !important;
+}
+
 .bg-yellow {
     background-color: var(--color-yellow) !important;
 }
@@ -51,6 +55,14 @@
 
 .color-white {
     color: var(--color-white) !important;
+}
+
+.color-green {
+    color: var(--color-green) !important;
+}
+
+.color-red {
+    color: var(--color-red) !important;
 }
 
 
