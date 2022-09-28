@@ -1,4 +1,5 @@
 import httpStatus from 'http-status';
+import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 
@@ -42,8 +43,13 @@ export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
     ]);
     const user = result.rows[0];
     return user;
-  } catch {
-    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
+  } catch (e: unknown) {
+    const err = e as DatabaseError;
+    if (err.message && err.message.includes('duplicate key')) {
+      if (err.message.includes('user_name')) throw new ApiError(httpStatus.CONFLICT, `user_name is already taken`);
+    }
+
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };
 
@@ -128,8 +134,13 @@ export const updateUserById = async (id: string, updateBody: Partial<IUser>): Pr
     );
     const user = updateQry.rows[0];
     return user;
-  } catch {
-    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
+  } catch (e: unknown) {
+    const err = e as DatabaseError;
+    if (err.message && err.message.includes('duplicate key')) {
+      if (err.message.includes('user_name')) throw new ApiError(httpStatus.CONFLICT, `user_name is already taken`);
+    }
+
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };
 

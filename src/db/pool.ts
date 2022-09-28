@@ -24,7 +24,7 @@ const init = async (): Promise<QueryResult<any>> => {
     `
     CREATE TABLE IF NOT EXISTS users (
       user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      user_name character varying NOT NULL,
+      user_name character varying NOT NULL UNIQUE,
       wallet_address character varying,
       user_bio text,
       date_joined DATE NOT NULL DEFAULT CURRENT_DATE
@@ -44,7 +44,7 @@ const init = async (): Promise<QueryResult<any>> => {
       CONSTRAINT maker_id
           FOREIGN KEY(maker_id) 
           REFERENCES users(user_id)
-          ON DELETE SET NULL
+          ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS invitation (
@@ -56,13 +56,16 @@ const init = async (): Promise<QueryResult<any>> => {
       status_id UUID UNIQUE NOT NULL,
       CONSTRAINT invite_from
           FOREIGN KEY(invite_from) 
-          REFERENCES users(user_id),
+          REFERENCES users(user_id)
+          ON DELETE CASCADE,
       CONSTRAINT invite_to
           FOREIGN KEY(invite_to) 
-          REFERENCES users(user_id),
+          REFERENCES users(user_id)
+          ON DELETE CASCADE,
       CONSTRAINT status_id
           FOREIGN KEY(status_id) 
           REFERENCES status(status_id)
+          ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS source (
@@ -96,16 +99,19 @@ const init = async (): Promise<QueryResult<any>> => {
       author_id UUID NOT NULL,
       CONSTRAINT source_id
           FOREIGN KEY(source_id) 
-          REFERENCES source(source_id),
+          REFERENCES source(source_id)
+          ON DELETE CASCADE,
       CONSTRAINT type_id
           FOREIGN KEY(type_id) 
-          REFERENCES material_type(type_id),
+          REFERENCES material_type(type_id)
+          ON DELETE CASCADE,
       CONSTRAINT invite_id
           FOREIGN KEY(invite_id) 
           REFERENCES invitation(invite_id),
       CONSTRAINT author_id
           FOREIGN KEY(author_id) 
           REFERENCES users(user_id)
+          ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS creation (
@@ -120,10 +126,12 @@ const init = async (): Promise<QueryResult<any>> => {
       isDraft bool default false,
       CONSTRAINT source_id
           FOREIGN KEY(source_id) 
-          REFERENCES source(source_id),
+          REFERENCES source(source_id)
+          ON DELETE CASCADE,
       CONSTRAINT author_id
           FOREIGN KEY(author_id) 
           REFERENCES users(user_id)
+          ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS litigation (
@@ -139,10 +147,12 @@ const init = async (): Promise<QueryResult<any>> => {
       reconcilate bool default false,
       CONSTRAINT material_id
           FOREIGN KEY(material_id) 
-          REFERENCES material(material_id),
+          REFERENCES material(material_id)
+          ON DELETE CASCADE,
       CONSTRAINT issuer_id
           FOREIGN KEY(issuer_id) 
           REFERENCES users(user_id)
+          ON DELETE CASCADE
     );
 
     CREATE OR REPLACE PROCEDURE remove_tag_references(tag_id UUID)
@@ -168,7 +178,7 @@ const init = async (): Promise<QueryResult<any>> => {
     AS $$
       UPDATE litigation SET decisions = array_remove(decisions, decision_id);
     $$;
-  `
+    `
   );
 };
 
