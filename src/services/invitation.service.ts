@@ -39,6 +39,10 @@ interface IInvitationDoc {
  * @returns {Promise<IInvitationDoc>}
  */
 export const createInvitation = async (invitationBody: IInvitation): Promise<IInvitationDoc | void> => {
+  if (invitationBody.invite_from === invitationBody.invite_to) {
+    throw new ApiError(httpStatus.CONFLICT, `user cannot invite themselve`);
+  }
+
   try {
     const result = await db.query(
       `INSERT INTO invitation (invite_from,invite_to,invite_description,status_id) values ($1,$2,$3,$4) RETURNING *;`,
@@ -135,7 +139,15 @@ export const getInvitationById = async (id: string): Promise<IInvitationDoc | nu
  * @returns {Promise<IInvitationDoc|null>}
  */
 export const updateInvitationById = async (id: string, updateBody: Partial<IInvitation>): Promise<IInvitationDoc | null> => {
-  await getInvitationById(id); // check if invitation exists, throws error if not found
+  const foundInvitation = await getInvitationById(id); // check if invitation exists, throws error if not found
+
+  if (
+    (updateBody.invite_to && !updateBody.invite_from && updateBody.invite_to === foundInvitation?.invite_from) ||
+    (updateBody.invite_from && !updateBody.invite_to && updateBody.invite_from === foundInvitation?.invite_to) ||
+    (updateBody.invite_from && updateBody.invite_to && updateBody.invite_from === updateBody.invite_to)
+  ) {
+    throw new ApiError(httpStatus.CONFLICT, `user cannot invite themselve`);
+  }
 
   // build sql conditions and values
   const conditions: string[] = [];
