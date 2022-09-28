@@ -284,10 +284,23 @@ const useCreate = () => {
       let materials = [];
       if (creationBody.materials && creationBody.materials.length > 0) {
         materials = await Promise.all(creationBody.materials.map(async (x) => {
-          // make new author
-          const author = await makeNewAuthor({
-            user_name: x.author,
-          });
+          // get author for material
+          const author = await (async () => {
+            let temporaryAuthor = null;
+
+            // return if author found from suggestions
+            temporaryAuthor = authorSuggestions.find(
+              (suggestion) => suggestion.user_name.trim() === x.author.trim(),
+            );
+            if (temporaryAuthor) return temporaryAuthor;
+
+            // make new author
+            temporaryAuthor = await makeNewAuthor({
+              user_name: x.author,
+            });
+
+            return temporaryAuthor;
+          })();
 
           // make a new source for material
           const materialSource = await makeNewSource({
@@ -375,7 +388,7 @@ const useCreate = () => {
     } finally {
       setLoading(false);
     }
-  }, [tagSuggestions]);
+  }, [tagSuggestions, authorSuggestions]);
 
   return {
     loading,
