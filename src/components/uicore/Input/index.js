@@ -21,6 +21,8 @@ function Input(
     variant,
     autoComplete,
     autoCompleteOptions,
+    multiline,
+    minRows,
   },
 ) {
   const formContext = useFormContext();
@@ -58,6 +60,7 @@ function Input(
             InputProps={{
               disableUnderline: true,
             }}
+            {...(multiline && { multiline, minRows })}
             fullWidth={fullWidth}
             name={name}
             placeholder={placeholder}
@@ -85,6 +88,8 @@ Input.propTypes = {
   variant: PropTypes.oneOf(Object.values(inputVariants)),
   autoComplete: PropTypes.bool,
   autoCompleteOptions: PropTypes.arrayOf(PropTypes.string),
+  multiline: PropTypes.bool,
+  minRows: PropTypes.number,
 };
 
 Input.defaultProps = {
@@ -97,6 +102,8 @@ Input.defaultProps = {
   variant: inputVariants.LIGHT,
   autoComplete: false,
   autoCompleteOptions: [],
+  multiline: false,
+  minRows: 5,
 };
 
 export default Input;

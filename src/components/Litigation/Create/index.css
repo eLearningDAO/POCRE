@@ -88,3 +88,34 @@
     height: 220px;
   }
 }
+
+.litigation-vote-container {
+  background-color: white;
+  padding: 24px 48px;
+  border-radius: 24px;
+  width: fit-content;
+  margin-left: auto;
+}
+
+.carousel-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 24px;
+  position: relative;
+  margin: auto;
+}
+
+.carousel-slide-btns-container {
+  position: absolute;
+  width: calc(100% + 54px);
+  margin-left: -27px; 
+  display: flex;
+  justify-content: space-between;
+}
+
+.carousel-slide-btns-container > button {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-width: initial !important;
+}
