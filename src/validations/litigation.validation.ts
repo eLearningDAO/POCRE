@@ -8,7 +8,8 @@ export const createLitigation = {
     issuer_id: Joi.string().uuid().required(),
     invitations: Joi.array().items(Joi.string().uuid()).unique().default([]),
     decisions: Joi.array().items(Joi.string().uuid()).unique().default([]),
-    litigation_end: Joi.string().isoDate().optional(),
+    litigation_start: Joi.string().isoDate().required(),
+    litigation_end: Joi.string().isoDate().required(),
     reconcilate: Joi.bool().optional(),
   }),
 };
@@ -38,6 +39,7 @@ export const updateLitigation = {
       issuer_id: Joi.string().uuid().optional(),
       invitations: Joi.array().items(Joi.string().uuid()).unique().optional().min(1),
       decisions: Joi.array().items(Joi.string().uuid()).unique().optional().min(1),
+      litigation_start: Joi.string().isoDate().optional(),
       litigation_end: Joi.string().isoDate().optional(),
       reconcilate: Joi.bool().optional(),
     })

@@ -10,6 +10,7 @@ interface ILitigation {
   issuer_id: string;
   invitations: string[];
   decisions: string[];
+  litigation_start: string;
   litigation_end: string;
   reconcilate: boolean;
 }
@@ -124,9 +125,9 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
   try {
     const result = await db.query(
       `INSERT INTO litigation
-      (litigation_title,litigation_description,material_id,issuer_id,invitations,decisions,litigation_end,reconcilate) 
+      (litigation_title,litigation_description,material_id,issuer_id,invitations,decisions,litigation_start,litigation_end,reconcilate) 
       values 
-      ($1,$2,$3,$4,$5,$6,$7,$8) 
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9) 
       RETURNING *;`,
       [
         litigationBody.litigation_title,
@@ -135,6 +136,7 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         litigationBody.issuer_id,
         litigationBody.invitations,
         litigationBody.decisions,
+        litigationBody.litigation_start,
         litigationBody.litigation_end,
         litigationBody.reconcilate,
       ]
