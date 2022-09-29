@@ -42,8 +42,8 @@ export default router;
  *               - litigation_title
  *               - material_id
  *               - issuer_id
- *               - decisions
- *               - invitations
+ *               - litigation_start
+ *               - litigation_end
  *             properties:
  *               litigation_title:
  *                 type: string
