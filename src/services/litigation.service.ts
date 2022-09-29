@@ -112,10 +112,14 @@ export const verifyLitigationDecisionDuplicates = async (
  */
 export const createLitigation = async (litigationBody: ILitigation): Promise<ILitigationDoc> => {
   // verify if invitation/s already exist for a litigation, throw error if a invitation is found
-  await verifyLitigationInvitationDuplicates(litigationBody.invitations);
+  if (litigationBody.invitations && litigationBody.invitations.length > 0) {
+    await verifyLitigationInvitationDuplicates(litigationBody.invitations);
+  }
 
   // verify if decision/s already exist for a litigation, throw error if a decision is found
-  await verifyLitigationDecisionDuplicates(litigationBody.decisions);
+  if (litigationBody.decisions && litigationBody.decisions.length > 0) {
+    await verifyLitigationDecisionDuplicates(litigationBody.decisions);
+  }
 
   try {
     const result = await db.query(
@@ -209,10 +213,14 @@ export const updateLitigationById = async (id: string, updateBody: Partial<ILiti
   await getLitigationById(id); // check if litigation exists, throws error if not found
 
   // verify if invitation/s already exist for another litigation, throw error if a invitation is found
-  if (updateBody.invitations) await verifyLitigationInvitationDuplicates(updateBody.invitations, id);
+  if (updateBody.invitations && updateBody.invitations.length > 0) {
+    await verifyLitigationInvitationDuplicates(updateBody.invitations, id);
+  }
 
   // verify if decision/s already exist for another litigation, throw error if a decision is found
-  if (updateBody.decisions) await verifyLitigationDecisionDuplicates(updateBody.decisions, id);
+  if (updateBody.decisions && updateBody.decisions.length > 0) {
+    await verifyLitigationDecisionDuplicates(updateBody.decisions, id);
+  }
 
   // build sql conditions and values
   const conditions: string[] = [];
