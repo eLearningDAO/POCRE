@@ -29,7 +29,7 @@ function App() {
         <Route path="/litigation/create" element={<Layout displaySidebar><LitigationCreate /></Layout>} />
         <Route path="/litigation/dashboard" element={<Layout displaySidebar><LitigationDashboard /></Layout>} />
         <Route path="/litigation/closed" element={<Layout displaySidebar><LitigationClosed /></Layout>} />
-        <Route path="/wallet" element={<Layout displaySidebar><Wallet name="John Doe" bio="Dev creating stuff" email="john@gmail.com" phone="no verify" id="no verify" time="1 year" avatar="https://robohash.org/333" /></Layout>} />
+        <Route path="/wallet" element={<Layout displaySidebar><Wallet name="John Doe" bio="Dev creating stuff" email="john@gmail.com" phone="no verify" id="no verify" time="1 year" avatar="https://robohash.org/333" precision={1} /></Layout>} />
         <Route path="/credit" element={<Layout displaySidebar><Credit /></Layout>} />
         <Route path="/scenario-2/create-collection" element={<Layout displaySidebar><CreateCollection2 /></Layout>} />
       </Routes>
