@@ -95,7 +95,7 @@ function Litigation() {
       </table>
 
       <Grid item xs={12} style={{ marginTop: '20px' }}>
-        <Typography className="inviationSectionTitle" variant="h6">Opening</Typography>
+        <Typography className="inviationSectionTitle" variant="h6">In progress</Typography>
       </Grid>
 
       <table className="litigationBox">

@@ -58,7 +58,7 @@ function Wallet() {
                   </defs>
                 </svg>
 
-                Create a new creation
+                New creation
               </Button>
             </Grid>
           </Grid>

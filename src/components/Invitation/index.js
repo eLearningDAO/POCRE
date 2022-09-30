@@ -145,7 +145,7 @@ function Invitation() {
         ).length > 0
         && (
         <Grid item xs={12} className="invitationSentSection">
-          <Typography className="inviationSectionTitle" variant="h6">Sent</Typography>
+          <Typography className="inviationSectionTitle" variant="h6">Where I recognize someone else co-creations</Typography>
         </Grid>
         )}
 
