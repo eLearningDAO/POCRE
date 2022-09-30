@@ -1,11 +1,13 @@
 import {
-  Grid, Button, Chip, Typography,
+  Grid, Button, Chip, Typography, Rating,
 } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Wallet.css';
 
-function Wallet() {
+function Wallet({
+  name, bio, email, phone, id, time, avatar,
+}) {
   const navigate = useNavigate();
 
   const handleClickNewCreation = () => {
@@ -29,10 +31,10 @@ function Wallet() {
             <Grid item className="userDetailsLeft" style={{ position: 'relative', width: '400px' }}>
               <div className="userDetailsLeftHeader">
                 <div className="Wallet--profile-pic">
-                  <img src="https://robohash.org/3434" alt="prop avatar" />
+                  <img src={avatar} alt="prop avatar" />
                 </div>
-                <Typography variant="h4">John Doe</Typography>
-                <Typography variant="p">User experience designer</Typography>
+                <Typography className="Wallet__avatar--name" variant="h4">{ name }</Typography>
+                <Typography className="Wallet__avatar--bio" variant="p">{ bio }</Typography>
               </div>
               <div className="userDetailsChip">
                 <Chip className="chip" label="Author of 10 Creations" />
@@ -40,24 +42,29 @@ function Wallet() {
             </Grid>
             <Grid item className="userDetailsLeft" style={{ position: 'relative', width: '400px' }}>
               <div className="Wallet__rating--container">
-                <Chip className="chip" label="Wallet rating" style={{ padding: 20, color: 'white', fontWeight: 600 }} />
-                <Chip className="chip" label="Wallet rating" style={{ padding: 20, color: 'white', fontWeight: 600 }} />
+                <Chip className="chip" id="wallet_rating--heading" label="Wallet rating" style={{ padding: 20, color: 'white', fontWeight: 600 }} />
+                <div className="Wallet__rating--stars">
+                  <Rating name="half-rating" defaultValue={4} precision={0.5} style={{ translate: 'scale(2,2)' }} />
+                </div>
               </div>
             </Grid>
-            <Grid item className="userDetailsLeft" style={{ position: 'relative', width: '300px', left: '150px' }}>
+            <Grid item className="userDetailsLeft" style={{ position: 'relative', width: '150px' }}>
               <div className="Wallet__verification--container">
                 <div className="Wallet__verification--email">
-                  twitch@gmail.com
+                  <img src="https://www.shoppre.com/img/images/GreenRoundTick.png" alt="unverified" width={20} height={20} style={{ position: 'relative', top: 2 }} />
+                  { email }
                 </div>
                 <div className="Wallet__verification--phone">
-                  <img src="https://www.dlf.pt/png/big/1/13075_false-png.png" alt="unverified" width={20} height={20} />
-                  no phone verified
+                  <img src="https://www.dlf.pt/png/big/1/13075_false-png.png" alt="unverified" width={20} height={20} style={{ position: 'relative', top: 5 }} />
+                  { phone }
                 </div>
                 <div className="Wallet__verification--id">
-                  ID verified
+                  <img src="https://www.shoppre.com/img/images/GreenRoundTick.png" alt="unverified" width={20} height={20} style={{ position: 'relative', top: 2 }} />
+                  { id }
                 </div>
                 <div className="Wallet__verification--time">
-                  1 week
+                  <img src="https://th.bing.com/th/id/R.d446c6791ec15b5f9c67f6f4373eb269?rik=MYt5MLw46stI7w&riu=http%3a%2f%2fcdn.onlinewebfonts.com%2fsvg%2fimg_489890.png&ehk=E%2fwmxBeSfgxNj6MGXw%2fJz%2b8PaSK%2fSZcenr776Jmj5UY%3d&risl=&pid=ImgRaw&r=0" alt="unverified" width={20} height={20} style={{ position: 'relative', top: 5 }} />
+                  { time }
                 </div>
               </div>
             </Grid>
