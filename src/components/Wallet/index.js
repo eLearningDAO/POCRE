@@ -50,7 +50,7 @@ function Wallet() {
                   twitch@gmail.com
                 </div>
                 <div className="Wallet__verification--phone">
-                  <img src="https://www.dlf.pt/png/big/1/13075_false-png.png" alt="unverified" width={20} height={20} /> 
+                  <img src="https://www.dlf.pt/png/big/1/13075_false-png.png" alt="unverified" width={20} height={20} />
                   no phone verified
                 </div>
                 <div className="Wallet__verification--id">
