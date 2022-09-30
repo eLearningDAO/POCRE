@@ -67,6 +67,22 @@ display: flex;
     position:relative;
     top: 90px;
     display: flex;
+    z-index: 999;
     flex-direction: column;
     gap: 40px;
+
+}
+
+.Wallet__verification--container{
+    display: flex;
+    flex-direction: column;
+    font-weight: 600;
+    font-size: 19px;
+    position: absolute;
+    right: 0px;
+}
+
+.Wallet__verification--container div{
+    margin-right: auto;
+
 }
