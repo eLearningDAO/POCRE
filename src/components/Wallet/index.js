@@ -44,7 +44,7 @@ function Wallet({
               <div className="Wallet__rating--container">
                 <Chip className="chip" id="wallet_rating--heading" label="Wallet rating" style={{ padding: 20, color: 'white', fontWeight: 600 }} />
                 <div className="Wallet__rating--stars">
-                  <Rating name="half-rating" defaultValue={4} precision={0.5} style={{ translate: 'scale(2,2)' }} />
+                  <Rating name="half-rating" defaultValue={4} precision={0.5} readOnly style={{ translate: 'scale(2,2)' }} />
                 </div>
               </div>
             </Grid>
