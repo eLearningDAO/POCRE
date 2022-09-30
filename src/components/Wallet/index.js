@@ -25,16 +25,30 @@ function Wallet() {
         </div>
         <div className="front">
           <div className="front__bkg-photo" />
-          <div className="front__face-photo" />
-          <Grid item className="userDetailsLeft">
-            <div className="userDetailsLeftHeader">
-              <Typography variant="h4">John Doe</Typography>
-              <Typography variant="p">User experience designer</Typography>
-            </div>
-
-            <div className="userDetailsChip">
-              <Chip className="chip" label="Author of 10 Creations" />
-            </div>
+          <Grid direction="row" className="Wallet--container">
+            <Grid item className="userDetailsLeft" style={{ position: 'relative', width: '400px' }}>
+              <div className="userDetailsLeftHeader">
+                <div className="Wallet--profile-pic">
+                  <img src="https://robohash.org/3434" alt="prop avatar" />
+                </div>
+                <Typography variant="h4">John Doe</Typography>
+                <Typography variant="p">User experience designer</Typography>
+              </div>
+              <div className="userDetailsChip">
+                <Chip className="chip" label="Author of 10 Creations" />
+              </div>
+            </Grid>
+            <Grid item className="userDetailsLeft" style={{ position: 'relative', width: '400px' }}>
+              <div className="Wallet__rating--container">
+                <Chip className="chip" label="Wallet rating" style={{ padding: 20, color: 'white', fontWeight: 600 }} />
+                <Chip className="chip" label="Wallet rating" style={{ padding: 20, color: 'white', fontWeight: 600 }} />
+              </div>
+            </Grid>
+            <Grid item className="userDetailsLeft" style={{ position: 'relative', width: '300px', left: '150px' }}>
+              <div className="Wallet__verification--container">
+                a
+              </div>
+            </Grid>
           </Grid>
           <Grid container className="userDetails">
             <Grid item md={12} spacing={5} className="userDetailsRight">
