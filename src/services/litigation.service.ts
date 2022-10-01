@@ -2,11 +2,13 @@ import httpStatus from 'http-status';
 import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
+import { getCreationById } from './creation.service';
 
 interface ILitigation {
   litigation_title: string;
   litigation_description?: string;
-  material_id: string;
+  creation_id: string;
+  material_id?: string;
   issuer_id: string;
   invitations: string[];
   decisions: string[];
@@ -29,6 +31,7 @@ interface ILitigationDoc {
   litigation_id: string;
   litigation_title: string;
   litigation_description: string;
+  creation_id: string;
   material_id: string;
   issuer_id: string;
   invitations: string[];
@@ -37,6 +40,40 @@ interface ILitigationDoc {
   litigation_end: string;
   reconcilate: boolean;
 }
+
+/**
+ * Check if a creation can be litigated
+ * @param {string} creation_id
+ * @param {string|undefined} material_id
+ * @returns {Promise<void>}
+ */
+export const verifyLitigationPossibilityForCreation = async (creation_id: string, material_id?: string): Promise<void> => {
+  const foundCreation = await getCreationById(creation_id);
+
+  // verify if material belongs to creation (if material id, the litigation is for a single material)
+  if (material_id && (foundCreation?.materials.length === 0 || !foundCreation?.materials.includes(material_id))) {
+    throw new ApiError(httpStatus.CONFLICT, 'material does not belong to creation');
+  }
+
+  // if no material id, litigation is for the whole creation
+  if (!material_id) {
+    // verify if creation has any materials
+    if (foundCreation && foundCreation?.materials.length > 0) {
+      throw new ApiError(httpStatus.CONFLICT, 'creation with materials are not allowed to be litigated');
+    }
+
+    // verify if litigation/s already exists for creation
+    const litigations = await (async () => {
+      try {
+        const result = await db.query(`SELECT * FROM litigation WHERE creation_id = $1;`, [creation_id]);
+        return result.rows;
+      } catch {
+        throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
+      }
+    })();
+    if (litigations.length > 0) throw new ApiError(httpStatus.CONFLICT, 'creation already assigned to a litigation');
+  }
+};
 
 /**
  * Check if a litigation has duplicate invitations
@@ -112,6 +149,9 @@ export const verifyLitigationDecisionDuplicates = async (
  * @returns {Promise<ILitigationDoc>}
  */
 export const createLitigation = async (litigationBody: ILitigation): Promise<ILitigationDoc> => {
+  // verify if the creation can be litigated
+  await verifyLitigationPossibilityForCreation(litigationBody.creation_id, litigationBody.material_id);
+
   // verify if invitation/s already exist for a litigation, throw error if a invitation is found
   if (litigationBody.invitations && litigationBody.invitations.length > 0) {
     await verifyLitigationInvitationDuplicates(litigationBody.invitations);
@@ -125,13 +165,25 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
   try {
     const result = await db.query(
       `INSERT INTO litigation
-      (litigation_title,litigation_description,material_id,issuer_id,invitations,decisions,litigation_start,litigation_end,reconcilate) 
+      (
+        litigation_title,
+        litigation_description,
+        creation_id,
+        material_id,
+        issuer_id,
+        invitations,
+        decisions,
+        litigation_start,
+        litigation_end,
+        reconcilate
+      ) 
       values 
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9) 
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) 
       RETURNING *;`,
       [
         litigationBody.litigation_title,
         litigationBody.litigation_description,
+        litigationBody.creation_id,
         litigationBody.material_id,
         litigationBody.issuer_id,
         litigationBody.invitations,
@@ -210,7 +262,12 @@ export const getLitigationById = async (id: string): Promise<ILitigationDoc | nu
  * @returns {Promise<ILitigationDoc|null>}
  */
 export const updateLitigationById = async (id: string, updateBody: Partial<ILitigation>): Promise<ILitigationDoc | null> => {
-  await getLitigationById(id); // check if litigation exists, throws error if not found
+  const foundLitigation = await getLitigationById(id); // check if litigation exists, throws error if not found
+
+  // verify if material belongs to creation of this litigation, else throw error
+  if (foundLitigation && updateBody.material_id) {
+    await verifyLitigationPossibilityForCreation(foundLitigation.creation_id, updateBody.material_id);
+  }
 
   // verify if invitation/s already exist for another litigation, throw error if a invitation is found
   if (updateBody.invitations && updateBody.invitations.length > 0) {

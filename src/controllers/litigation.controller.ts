@@ -4,6 +4,7 @@ import { getUserById } from '../services/user.service';
 import { getMaterialById } from '../services/material.service';
 import { getInvitationById } from '../services/invitation.service';
 import { getDecisionById } from '../services/decision.service';
+import { getCreationById } from '../services/creation.service';
 
 export const queryLitigations = catchAsync(async (req, res): Promise<void> => {
   const litigation = await litigationService.queryLitigations(req.query as any);
@@ -17,8 +18,9 @@ export const getLitigationById = catchAsync(async (req, res): Promise<void> => {
 
 export const createLitigation = catchAsync(async (req, res): Promise<void> => {
   // check if reference docs exist
-  await getMaterialById(req.body.material_id as string); // verify material, will throw an error if material not found
   await getUserById(req.body.issuer_id as string); // verify user, will throw an error if user not found
+  await getCreationById(req.body.creation_id as string); // verify creation, will throw an error if creation not found
+  if (req.body.material_id) await getMaterialById(req.body.material_id as string); // verify material, will throw an error if material not found
   if (req.body.invitations && req.body.invitations.length > 0) {
     await Promise.all(req.body.invitations.map((id: string) => getInvitationById(id))); // verify invitations, will throw an error if any invitation is not found
   }
@@ -37,8 +39,8 @@ export const deleteLitigationById = catchAsync(async (req, res): Promise<void> =
 
 export const updateLitigationById = catchAsync(async (req, res): Promise<void> => {
   // check if reference docs exist
-  if (req.body.material_id) await getMaterialById(req.body.material_id as string); // verify material, will throw an error if material not found
   if (req.body.issuer_id) await getUserById(req.body.issuer_id as string); // verify user, will throw an error if user not found
+  if (req.body.material_id) await getMaterialById(req.body.material_id as string); // verify material, will throw an error if material not found
   if (req.body.invitations && req.body.invitations.length > 0) {
     await Promise.all(req.body.invitations.map((id: string) => getInvitationById(id))); // verify invitations, will throw an error if any invitation is not found
   }
