@@ -1,0 +1,223 @@
+.hidden-scrollbar::-webkit-scrollbar {
+    visibility: hidden;
+    height: 0;
+    width: 0;
+}
+
+.hidden-scrollbar::-webkit-scrollbar-thumb {
+    visibility: hidden;
+    height: 0;
+    width: 0;
+}
+
+.hidden-scrollbar::-webkit-slider-thumb {
+    visibility: hidden;
+    height: 0;
+    width: 0;
+}
+
+/* backgrounds */
+.bg-orange-dark {
+    background-color: var(--color-orange-dark) !important;
+}
+
+.bg-yellow {
+    background-color: var(--color-yellow) !important;
+}
+
+.bg-red {
+    background-color: var(--color-red) !important;
+}
+
+.bg-red-20 {
+    background-color: var(--color-red-20) !important;
+}
+
+.bg-green {
+    background-color: var(--color-green) !important;
+}
+
+.bg-green-20 {
+    background-color: var(--color-green-20) !important;
+}
+
+.bg-black {
+    background-color: var(--color-black) !important;
+}
+
+.bg-blue {
+    background-color: var(--color-blue) !important;
+}
+
+.bg-purple {
+    background-color: var(--color-purple) !important;
+}
+
+.color-white {
+    color: var(--color-white) !important;
+}
+
+.color-green {
+    color: var(--color-green) !important;
+}
+
+.color-red {
+    color: var(--color-red) !important;
+}
+
+
+/* ui elements */
+.MuiInput-input {
+    padding: 0 !important;
+}
+
+.MuiButton-root {
+    line-height: 1.5 !important;
+}
+
+.btn {
+    height: fit-content !important;
+    min-height: fit-content !important;
+    width: fit-content !important;
+    min-width: fit-content !important;
+}
+
+.btn-primary {
+    color: #ffffff !important;
+    background: linear-gradient(104.08deg, var(--color-yellow) -28.92%, var(--color-orange) 76.85%) !important;
+    box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47) !important;
+}
+
+.btn-primary-outlined {
+    border: 2px solid var(--color-orange) !important;
+    color: var(--color-orange) !important;
+}
+
+.input {
+    height: fit-content !important;
+    background-color: #ffffff !important;
+    color: #32363C !important;
+}
+
+.input-dark {
+    background-color: #F5F9FD !important;
+}
+
+.input-date,
+.input-date>* {
+    color: rgb(169, 169, 169) !important;
+}
+
+.select {
+    height: fit-content !important;
+    background-color: #ffffff !important;
+    color: #32363C !important;
+}
+
+.select>div {
+    color: rgb(169, 169, 169) !important;
+}
+
+.select-dark {
+    background-color: #F5F9FD !important;
+}
+
+/* PHONES */
+@media (max-width: 599px) {
+    .btn {
+        padding: 8px 12px !important;
+        border-radius: 8px !important;
+        font-size: 14px !important;
+    }
+
+    .input {
+        padding: 8px 12px !important;
+        border-radius: 8px !important;
+        font-size: 14px !important;
+    }
+
+    .select {
+        padding: 8px 12px !important;
+        border-radius: 8px !important;
+        font-size: 14px !important;
+    }
+}
+
+/* TABLETS */
+@media (min-width: 600px) {
+    .btn {
+        padding: 8px 14px !important;
+        border-radius: 8px !important;
+        font-size: 16px !important;
+    }
+
+    .input {
+        padding: 8px 14px !important;
+        border-radius: 8px !important;
+        font-size: 16px !important;
+    }
+
+    .select {
+        padding: 8px 14px !important;
+        border-radius: 8px !important;
+        font-size: 16px !important;
+    }
+}
+
+@media (min-width: 900px) {
+    .btn {
+        padding: 8px 16px !important;
+        border-radius: 12px !important;
+    }
+
+    .input {
+        padding: 12px 16px !important;
+        border-radius: 12px !important;
+    }
+
+    .select {
+        padding: 12px 16px !important;
+        border-radius: 12px !important;
+    }
+}
+
+/* DESKTOPS */
+@media (min-width: 1200px) {}
+
+
+/* loader */
+.loader {
+    position: relative;
+}
+
+.loader::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    transform: translate3d(-50%, -50%, 0);
+    transform-origin: left top;
+    border-top: 3px solid white;
+    border-right: 3px solid black;
+    border-bottom: 3px solid black;
+    border-left: 3px solid black;
+    border-radius: 50%;
+    content: "";
+    animation: rotate-loader 0.4s infinite linear;
+}
+
+@keyframes rotate-loader {
+    from {
+        transform: rotate(0deg) translate3d(-50%, -50%, 0);
+    }
+
+    to {
+        transform: rotate(359deg) translate3d(-50%, -50%, 0);
+    }
+}
+
+.loader {
+    flex-basis: 33.333%;
+    height: 200px;
+}

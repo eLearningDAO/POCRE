@@ -1,0 +1,121 @@
+.create-litigation {
+  width: 100%;
+  background: #FFFFFF;
+  border: 1px solid #EBEFF0;
+}
+.create-litigation-qrcode {
+  background: #F5F9FD;
+  border: 1px solid rgba(39, 39, 39, 0.24);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.create-litigation-verify-box {
+  background: #F5F9FD !important;
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgba(39, 39, 39, 0.24) !important;
+  border-radius: 12px !important;
+  height: 60px;
+}
+
+/* PHONES */
+@media (max-width: 599px) {
+  .create-litigation {
+    margin-top: 10px;
+    padding: 59px 60px;
+    border-radius: 16px;
+  }
+  .create-litigation-qrcode {
+    width: 190px;
+    height: 190px;
+    border-radius: 16px;
+  }  
+  .create-litigation-qrcode > img {
+    width: 160px;
+    height: 160px;
+  }
+  .create-litigation-verify-box {
+    width: 180px;
+  }
+}
+
+/* TABLETS */
+@media (min-width: 600px) {
+  .create-litigation {
+    margin-top: 10px;
+    padding: 59px 60px;
+    border-radius: 16px;
+  }
+  .create-litigation-qrcode {
+    width: 190px;
+    height: 190px;
+    border-radius: 16px;
+  }  
+  .create-litigation-qrcode > img {
+    width: 160px;
+    height: 160px;
+  }
+  .create-litigation-verify-box {
+    width: 220px;
+  } 
+}
+@media (min-width: 900px) {
+  .create-litigation {
+    margin-top: 10px;
+    padding: 59px 60px;
+    border-radius: 16px;
+  }
+  .create-litigation-verify-box {
+    width: 200px;
+  }
+}
+
+/* DESKTOPS */
+@media (min-width: 1200px) {
+  .create-litigation {
+    margin-top: 10px;
+    padding: 59px 60px;
+    border-radius: 16px;
+  }
+  .create-litigation-qrcode {
+    width: 250px;
+    height: 250px;
+    border-radius: 16px;
+  }  
+  .create-litigation-qrcode > img {
+    width: 220px;
+    height: 220px;
+  }
+}
+
+.litigation-vote-container {
+  background-color: white;
+  padding: 24px 48px;
+  border-radius: 24px;
+  width: fit-content;
+  margin-left: auto;
+}
+
+.carousel-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 24px;
+  position: relative;
+  margin: auto;
+}
+
+.carousel-slide-btns-container {
+  position: absolute;
+  width: calc(100% + 54px);
+  margin-left: -27px; 
+  display: flex;
+  justify-content: space-between;
+}
+
+.carousel-slide-btns-container > button {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-width: initial !important;
+}
