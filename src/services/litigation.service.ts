@@ -69,7 +69,7 @@ export const verifyLitigationInvitationDuplicates = async (
     }
   })();
 
-  if (foundInvitation) throw new ApiError(httpStatus.NOT_FOUND, 'invitation already assigned to a litigation');
+  if (foundInvitation) throw new ApiError(httpStatus.CONFLICT, 'invitation already assigned to a litigation');
 };
 
 /**
@@ -103,7 +103,7 @@ export const verifyLitigationDecisionDuplicates = async (
     }
   })();
 
-  if (foundDecision) throw new ApiError(httpStatus.NOT_FOUND, 'decision already assigned to a litigation');
+  if (foundDecision) throw new ApiError(httpStatus.CONFLICT, 'decision already assigned to a litigation');
 };
 
 /**
@@ -149,8 +149,6 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
     if (err.message && err.message.includes('duplicate key')) {
       if (err.message.includes('material_id'))
         throw new ApiError(httpStatus.CONFLICT, `material already assigned to a litigation`);
-      if (err.message.includes('issuer_id'))
-        throw new ApiError(httpStatus.CONFLICT, `issuer already assigned to a litigation`);
     }
 
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
@@ -250,8 +248,6 @@ export const updateLitigationById = async (id: string, updateBody: Partial<ILiti
     if (err.message && err.message.includes('duplicate key')) {
       if (err.message.includes('material_id'))
         throw new ApiError(httpStatus.CONFLICT, `material already assigned to a litigation`);
-      if (err.message.includes('issuer_id'))
-        throw new ApiError(httpStatus.CONFLICT, `issuer already assigned to a litigation`);
     }
 
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
