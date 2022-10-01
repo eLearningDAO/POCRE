@@ -40,7 +40,7 @@ export default router;
  *             type: object
  *             required:
  *               - litigation_title
- *               - material_id
+ *               - creation_id
  *               - issuer_id
  *               - litigation_start
  *               - litigation_end
@@ -50,6 +50,9 @@ export default router;
  *               litigation_description:
  *                 type: string
  *                 description: can be null
+ *               creation_id:
+ *                 type: string
+ *                 format: uuid
  *               material_id:
  *                 type: string
  *                 format: uuid
@@ -66,6 +69,9 @@ export default router;
  *                 items:
  *                    type: string
  *                    format: uuid
+ *               litigation_start:
+ *                 type: string
+ *                 format: date-time
  *               litigation_end:
  *                 type: string
  *                 format: date-time
@@ -74,10 +80,12 @@ export default router;
  *             example:
  *                litigation_title: my first litigation
  *                litigation_description: an example litigation
+ *                creation_id: fa52d76c-664a-41de-aebb-b311a74ef571
  *                material_id: fa52d76c-664a-41de-aebb-b311a74ef570
  *                issuer_id: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
  *                decisions: [6087ac9e-7e15-4ad7-b256-7893a00c3577]
  *                invitations: [37a38a64-c2ea-4883-881b-2b1d5362db44]
+ *                litigation_start: 2022-09-09T19:00:00.000Z
  *                litigation_end: 2022-09-09T19:00:00.000Z
  *                reconcilate: false
  *     responses:
@@ -92,11 +100,17 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
+ *                 - $ref: '#/components/responses/CreationNotFound'
  *                 - $ref: '#/components/responses/MaterialNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
  *                 - $ref: '#/components/responses/DecisionNotFound'
  *                 - $ref: '#/components/responses/InvitationNotFound'
  *             examples:
+ *               CreationNotFound:
+ *                 summary: creation not found
+ *                 value:
+ *                   code: 404
+ *                   message: creation not found
  *               MaterialNotFound:
  *                 summary: material not found
  *                 value:
@@ -122,11 +136,29 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
+ *                 - $ref: '#/components/responses/CreationAlreadyAssignedToLitigation'
+ *                 - $ref: '#/components/responses/CreationLitigationNotAllowed'
+ *                 - $ref: '#/components/responses/MaterialDoesNotBelongToCreation'
  *                 - $ref: '#/components/responses/MaterialAlreadyAssignedToLitigation'
  *                 - $ref: '#/components/responses/IssuerAlreadyAssignedToLitigation'
  *                 - $ref: '#/components/responses/DecisionAlreadyAssignedToLitigation'
  *                 - $ref: '#/components/responses/InvitationAlreadyAssignedToLitigation'
  *             examples:
+ *               CreationAlreadyAssignedToLitigation:
+ *                 summary: creation already assigned to a litigation
+ *                 value:
+ *                   code: 409
+ *                   message: creation already assigned to a litigation
+ *               CreationLitigationNotAllowed:
+ *                 summary: creation with materials are not allowed to be litigated
+ *                 value:
+ *                   code: 409
+ *                   message: creation with materials are not allowed to be litigated
+ *               MaterialDoesNotBelongToCreation:
+ *                 summary: material does not belong to creation
+ *                 value:
+ *                   code: 409
+ *                   message: material does not belong to creation
  *               MaterialAlreadyAssignedToLitigation:
  *                 summary: material already assigned to a litigation
  *                 value:
@@ -261,6 +293,9 @@ export default router;
  *                 items:
  *                    type: string
  *                    format: uuid
+ *               litigation_start:
+ *                 type: string
+ *                 format: date-time
  *               litigation_end:
  *                 type: string
  *                 format: date-time
@@ -273,6 +308,7 @@ export default router;
  *                issuer_id: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
  *                decisions: [6087ac9e-7e15-4ad7-b256-7893a00c3577]
  *                invitations: [37a38a64-c2ea-4883-881b-2b1d5362db44]
+ *                litigation_start: 2022-09-09T19:00:00.000Z
  *                litigation_end: 2022-09-09T19:00:00.000Z
  *                reconcilate: false
  *     responses:
@@ -323,11 +359,17 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
+ *                 - $ref: '#/components/responses/MaterialDoesNotBelongToCreation'
  *                 - $ref: '#/components/responses/MaterialAlreadyAssignedToLitigation'
  *                 - $ref: '#/components/responses/IssuerAlreadyAssignedToLitigation'
  *                 - $ref: '#/components/responses/DecisionAlreadyAssignedToLitigation'
  *                 - $ref: '#/components/responses/InvitationAlreadyAssignedToLitigation'
  *             examples:
+ *               MaterialDoesNotBelongToCreation:
+ *                 summary: material does not belong to creation
+ *                 value:
+ *                   code: 409
+ *                   message: material does not belong to creation
  *               MaterialAlreadyAssignedToLitigation:
  *                 summary: material already assigned to a litigation
  *                 value:

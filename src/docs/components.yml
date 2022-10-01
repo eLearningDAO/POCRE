@@ -465,7 +465,16 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: material already assigned to a litigation    
+            message: material already assigned to a litigation     
+    MaterialDoesNotBelongToCreation:
+      description: Material does not belong to creation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: material does not belong to creation    
     TagNotFound:
       description: Tag not found
       content:
@@ -483,7 +492,25 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 404
-            message: creation not found
+            message: creation not found  
+    CreationAlreadyAssignedToLitigation:
+      description: Creation already assigned to a litigation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: creation already assigned to a litigation  
+    CreationLitigationNotAllowed:
+      description: Creation with materials are not allowed to be litigated
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: creation with materials are not allowed to be litigated
     LitigationNotFound:
       description: Litigation not found
       content:
