@@ -1,16 +1,34 @@
-import { Grid, Typography } from '@mui/material';
-import TwitterIcon from '../../../assets/twitter2.png';
-import GithubIcon from '../../../assets/github.svg';
-import GlobeIcon from '../../../assets/globe.png';
-import './Footer.css';
+import { Grid, Typography } from "@mui/material";
+import React from "react";
+import GithubIcon from "../../../assets/github.svg";
+import GlobeIcon from "../../../assets/globe.png";
+import TwitterIcon from "../../../assets/twitter2.png";
+import "./Footer.css";
 
 function Footer() {
   return (
-    <Grid container width="100%" borderTop="1px solid #d5d1d1" marginTop="70px" paddingY="24px">
+    <Grid
+      container
+      width="100%"
+      borderTop="1px solid #d5d1d1"
+      marginTop="70px"
+      paddingY="24px"
+    >
       <Grid item md={6} xs={9}>
-        <Typography color="#32363C">Copyright © 2022 e-Learning DAO. Use and distribution are covered by AGPL-3.0</Typography>
+        <Typography color="#32363C">
+          Copyright © 2022 e-Learning DAO. Use and distribution are covered by
+          AGPL-3.0
+        </Typography>
       </Grid>
-      <Grid item gap={2} md={6} xs={3} display="flex" justifyContent="flex-end" alignItems="center">
+      <Grid
+        item
+        gap={2}
+        md={6}
+        xs={3}
+        display="flex"
+        justifyContent="flex-end"
+        alignItems="center"
+      >
         <a href="https://twitter.com/eLearningDAO">
           <img src={TwitterIcon} alt="@eLearningDAO" />
         </a>

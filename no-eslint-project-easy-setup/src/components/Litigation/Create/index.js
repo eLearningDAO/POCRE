@@ -1,14 +1,15 @@
-import { Grid, Typography } from '@mui/material';
-import React, { useState } from 'react';
-import StepOne from './Steps/One';
-import StepTwo from './Steps/Two';
-import './index.css';
-import useCreate from './useCreate';
+import { Grid, Typography } from "@mui/material";
+import React, { useState } from "react";
+import "./index.css";
+import StepOne from "./Steps/One";
+import StepTwo from "./Steps/Two";
+import useCreate from "./useCreate";
 
 function CreateLitigation() {
   const [step, setStep] = useState(1);
   const [litigationDraft, setLitigationDraft] = useState({});
-  const [invalidAuthorOrCreationError, setInvalidAuthorOrCreationError] = useState(null);
+  const [invalidAuthorOrCreationError, setInvalidAuthorOrCreationError] =
+    useState(null);
 
   const {
     authorSuggestions,
@@ -27,7 +28,9 @@ function CreateLitigation() {
         (x) => x.creation_title === values.creation.trim(),
       );
       if (!isValidCreation) {
-        setInvalidAuthorOrCreationError('Invalid creation selected, please select one from the suggested list');
+        setInvalidAuthorOrCreationError(
+          "Invalid creation selected, please select one from the suggested list",
+        );
         return;
       }
 
@@ -36,12 +39,17 @@ function CreateLitigation() {
         (x) => x.user_name === values.author.trim(),
       );
       if (!isValidAuthor) {
-        setInvalidAuthorOrCreationError('Invalid author selected, please select one from the suggested list');
+        setInvalidAuthorOrCreationError(
+          "Invalid author selected, please select one from the suggested list",
+        );
         return;
       }
 
       setInvalidAuthorOrCreationError(null);
-      setLitigationDraft({ ...values, materials: litigationDraft?.materials || null });
+      setLitigationDraft({
+        ...values,
+        materials: litigationDraft?.materials || null,
+      });
     }
 
     if (step === 2) {
@@ -59,38 +67,45 @@ function CreateLitigation() {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} padding={{ xs: '12px', md: '0' }}>
+      <Grid item xs={12} padding={{ xs: "12px", md: "0" }}>
         <Typography className="heading h4" variant="h4">
-          Claim authorship of your creation - Step 0
-          {`${step}`}
+          Claim authorship of your creation - Step 0{`${step}`}
         </Typography>
       </Grid>
 
       {step === 1 && (
-      <StepOne
-        onComplete={handleValues}
-        authorSuggestions={authorSuggestions}
-        onAuthorInputChange={handleAuthorInputChange}
-        creationSuggestions={creationSuggestions}
-        onCreationInputChange={handleCreationInputChange}
-        error={invalidAuthorOrCreationError}
-        initialValues={{
-          ...(litigationDraft?.title && { title: litigationDraft.title }),
-          ...(litigationDraft?.description && { description: litigationDraft.description }),
-          ...(litigationDraft?.creation && { creation: litigationDraft.creation }),
-          ...(litigationDraft?.author && { author: litigationDraft.author }),
-          ...(litigationDraft?.publicDate && { publicDate: litigationDraft.publicDate }),
-          ...(litigationDraft?.endDate && { endDate: litigationDraft.endDate }),
-        }}
-      />
+        <StepOne
+          onComplete={handleValues}
+          authorSuggestions={authorSuggestions}
+          onAuthorInputChange={handleAuthorInputChange}
+          creationSuggestions={creationSuggestions}
+          onCreationInputChange={handleCreationInputChange}
+          error={invalidAuthorOrCreationError}
+          initialValues={{
+            ...(litigationDraft?.title && { title: litigationDraft.title }),
+            ...(litigationDraft?.description && {
+              description: litigationDraft.description,
+            }),
+            ...(litigationDraft?.creation && {
+              creation: litigationDraft.creation,
+            }),
+            ...(litigationDraft?.author && { author: litigationDraft.author }),
+            ...(litigationDraft?.publicDate && {
+              publicDate: litigationDraft.publicDate,
+            }),
+            ...(litigationDraft?.endDate && {
+              endDate: litigationDraft.endDate,
+            }),
+          }}
+        />
       )}
       {step === 2 && (
-      <StepTwo
-        onBack={handleBack}
-        onComplete={handleValues}
-        status={newLitigationStatus}
-        loading={isCreatingLitigation}
-      />
+        <StepTwo
+          onBack={handleBack}
+          onComplete={handleValues}
+          status={newLitigationStatus}
+          loading={isCreatingLitigation}
+        />
       )}
     </Grid>
   );
