@@ -1,0 +1,67 @@
+
+.sidebar {
+  padding: 20px;
+  display: flex;
+  background: #ffffff;
+  min-height: 300px;
+  border-radius: 25px;
+  width: 100%;
+  height: fit-content;
+  border: 1px solid #f0f0f0;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
+}
+
+.sidebar ul li {
+  margin: 20px 0px;
+  padding: 10px 20px;
+}
+
+.activeSidebarMenu {
+  background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
+  border-radius: 100px;
+  box-shadow: 0px 8px 40px rgba(247, 143, 138, 0.47);
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: #32363C;
+}
+
+.sidebar ul li a img {  
+  top: 4px;
+  position: relative;
+  margin-right: 15px;
+  margin-left: 10px;
+}
+
+.sidebar ul li a span {
+  top: -3px;
+  position: relative;
+}
+
+.activeSidebarMenu {
+  max-width: 400px;
+}
+
+.activeSidebarMenu a {
+  color: #fff!important;
+}
+
+/* PHONES */
+@media (max-width: 599px) {
+  .activeSidebarMenu {
+    background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
+    border-radius: 100px;
+    box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
+  }
+  
+  .activeSidebarMenu a {
+    color: #fff!important;
+  }
+}

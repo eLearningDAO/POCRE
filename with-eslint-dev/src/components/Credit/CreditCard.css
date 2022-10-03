@@ -1,0 +1,38 @@
+.creditCard{
+
+width:50%;
+height: 33%;
+position:relative;
+    
+}
+
+.creditCardDetials{
+   
+    height: 230px;
+    position: absolute;
+    left: 250px;
+}
+
+.creditCardIcons{
+    position: absolute;
+    bottom:-10px;
+}
+
+.creditCard{
+    height:300px;
+}
+.job{
+    position: relative;
+    top:20px;
+}
+.InnerContainer{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 33.3% 33.3% 33.3%;
+    grid-template-columns: 50% 50%;
+}
+.bio{
+    position: relative;
+    top: 40px;
+}

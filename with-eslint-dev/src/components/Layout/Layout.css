@@ -1,0 +1,2328 @@
+/**** GLOBAL ***/
+
+@font-face {
+  font-family: "Gliroy";
+  src: local("Gliroy"),
+    url(../../assets/fonts/Gilroy-Bold.ttf) format("opentype");
+}
+
+@font-face {
+  font-family: "Gliroy";
+  font-weight: 300;
+  src: local("Gliroy"),
+    url(../../assets/fonts/Gilroy-Light.ttf) format("opentype");
+}
+
+@font-face {
+  font-family: "Gliroy";
+  font-weight: 500;
+  src: local("Gliroy"),
+    url(../../assets/fonts/Gilroy-Medium.ttf) format("opentype");
+}
+
+@font-face {
+  font-family: "Gliroy";
+  font-weight: 400;
+  src: local("Gliroy"),
+    url(../../assets/fonts/Gilroy-Regular.ttf) format("opentype");
+}
+
+@font-face {
+  font-family: "Gliroy";
+  font-weight: 700;
+  src: local("Gliroy"),
+    url(../../assets/fonts/Gilroy-Semibold.ttf) format("opentype");
+}
+
+body {
+  background: linear-gradient(179.64deg, #cfffcb -121.85%, #ffffff 99.7%) fixed;
+  font-family: "Gliroy", sans-serif !important;
+}
+
+.non-responsive {
+  display: none !important;
+}
+
+/** END: GLOBAL **/
+
+/*
+  Layout Design
+*/
+.layout {
+  /* padding: 10px 120px; */
+  /* min-height: 1020px; */
+  max-width: 1920px;
+  width: 100%;
+  margin: auto;
+}
+/* base Image */
+.base-image {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+}
+
+/* PHONES */
+@media (max-width: 599px) {
+  .layout {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+/* TABLETS */
+@media (min-width: 600px) {
+  .layout {
+    padding-left: 36px;
+    padding-right: 36px;
+  }
+}
+
+/* DESKTOPS */
+@media (min-width: 1200px) {
+  .layout {
+    padding-left: 64px;
+    padding-right: 64px;
+  }
+}
+
+/*
+  Header Design
+*/
+/* .header {
+  height: 130px;
+  margin-bottom: 40px;
+}
+
+.header .logoContainer img {
+  width: 210px;
+  margin: 39px 0px;
+} */
+
+.searchBar {
+  margin-top: 50px !important;
+  width: 400px !important;
+  height: 40px;
+  box-sizing: border-box;
+  background: #f5f9fd;
+  border: 1.50117px solid rgba(43, 0, 212, 0.06);
+  border-radius: 15px;
+  border: none;
+  margin-left: 10px !important;
+  color: #32363c;
+}
+
+.searchBar label {
+  padding: 4px 12px;
+  top: -15px;
+}
+
+.headerMenu ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.headerMenu ul li {
+  float: left;
+}
+
+.menuBox {
+  cursor: pointer;
+}
+
+.menuBox img {
+  background: #f5f9fd !important;
+  border-radius: 15px !important;
+  padding: 12px;
+  width: 20px;
+}
+
+.headerMenu li img {
+  display: block;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  width: 20px;
+}
+
+a {
+  color: #32363c;
+}
+
+.collectionButton,
+.collectionButton2 {
+  border-radius: 24px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.collectionButton2 {
+  background-color: rgba(247, 143, 138, 0.1) !important;
+}
+
+.secondary-section-container {
+  background: rgba(255, 255, 255, 0.28);
+  border: 2px dashed #f78f8a;
+  border-radius: 16px;
+}
+
+/*
+  Header Menu Design
+*/
+/* .menu ul {
+  list-style-type: none;
+  margin: 45px 5px;
+  padding: 0px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+}
+
+.menu ul li {
+  padding: 12px 0px;
+}
+
+.menu ul li a {
+  text-decoration: none;
+  color: #32363C;
+  font-size: 17px;
+  line-height: 150%;
+  font-weight: 400;
+} */
+
+/*
+  Sidebar Design
+*/
+/* .sidebar {
+  padding: 20px;
+  display: flex;
+  background: #FAFBFC;
+  min-height: 300px;
+  border-radius: 25px;
+  width: 85%;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+  width: 95%;
+}
+
+.sidebar ul li {
+  margin: 20px 0px;
+  padding: 10px 20px;
+}
+
+.activeSidebarMenu {
+  background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
+  border-radius: 100px;
+  box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: #32363C;
+}
+
+.sidebar ul li a img {
+  top: 4px;
+  position: relative;
+  margin-right: 15px;
+  margin-left: 10px;
+}
+
+.sidebar ul li a span {
+  top: -3px;
+  position: relative;
+}
+
+.activeSidebarMenu {
+  max-width: 400px;
+}
+
+.activeSidebarMenu a {
+  color: #fff!important;
+} */
+
+/* Wallet Design */
+.inner-div {
+  height: 600px;
+  position: relative;
+  margin-top: 47px;
+}
+
+.inner-div {
+  font-weight: 400;
+  color: #071011;
+  font-size: 1rem;
+}
+
+.front {
+  position: relative;
+  top: 0;
+  left: 0;
+  backface-visibility: hidden;
+}
+
+.front {
+  cursor: pointer;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.front__bkg-photo {
+  position: relative;
+  height: 300px;
+  background: url("../../assets/wallet-banner.png") no-repeat;
+  background-size: cover;
+  backface-visibility: hidden;
+  overflow: hidden;
+  border-top-right-radius: 20px;
+}
+
+.front__face-photo {
+  position: relative;
+  top: -260px;
+  margin: 0 auto;
+  height: 120px;
+  width: 120px;
+  border-radius: 24%;
+  border: 5px solid #fff;
+  background: #333;
+  background-size: contain;
+  overflow: hidden;
+}
+
+.userDetails {
+  position: relative;
+  top: -244px;
+  text-align: center;
+  display: flex;
+  background: #fff;
+  gap: 50px;
+  padding: 50px;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+.userDetailsLeft {
+  text-align: center;
+  position: relative;
+  top: -244px;
+  color: #fff;
+  margin: 0 auto;
+}
+
+.userDetailsLeftHeader {
+  margin-bottom: 4px;
+}
+
+.userDetailsLeftHeader h4 {
+  font-size: 25px;
+  line-height: 30px;
+  font-weight: 700 !important;
+}
+
+.userDetailsLeftHeader span {
+  font-size: 16px;
+  margin-top: 5px;
+}
+
+.userDetailsChip {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  gap: 15px;
+}
+
+.userDetailsChip .chip {
+  border-radius: 12px;
+  box-sizing: border-box;
+  max-width: 260px !important;
+  min-width: 260px !important;
+  font-weight: 700 !important;
+  height: 45px;
+  line-height: 24px;
+  margin-top: 10px;
+  font-size: 16px !important;
+  color: #fff;
+  line-height: 24px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0px 5px 25px rgba(247, 143, 138, 0.47);
+}
+
+.collectionButton {
+  width: 328px;
+  height: 195px;
+  background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%);
+  box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
+  border-radius: 20px;
+  color: #fff !important;
+  margin-left: 50px !important;
+}
+
+.collectionButton2 {
+  width: 328px;
+  height: 195px;
+  background: rgba(247, 143, 138, 0.08);
+  border-radius: 20px;
+  border: 2px dashed #f78f8a !important;
+  color: #f78f8a !important;
+  margin-left: 40px !important;
+}
+
+/* Inivation */
+.inviationHeaderTitle {
+  font-size: 22px !important;
+  color: #272727;
+  font-weight: 700 !important;
+}
+
+.inviationSectionTitle {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #272727 !important;
+}
+
+.invitationSentSection {
+  margin-top: 40px !important;
+}
+
+/* .invitationCard {
+  box-sizing: border-box;
+  width: 995px;
+  height: 131px;
+  background: #FFFFFF;
+  border: 1px solid #EBEFF0;
+  box-shadow: 0px 10px 58px rgba(122, 97, 96, 0.31);
+  border-radius: 20px;
+  padding: 15px 20px;
+}
+
+.invitationCardLeft {
+  display: flex;
+  gap: 15px;
+}
+
+.invitationCardLeftText h6 {
+  font-size: 18px;
+  color: #272727;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
+.invitationCardLeftText span {
+  font-size: 16px;
+  color: #32363C;
+  font-weight: 300;
+}
+
+.invitationCardLeftButton .chipPreview {
+  width: 110px;
+  height: 35px;
+  background: rgba(0, 178, 255, 0.1);
+  border-radius: 10px;
+  color: #00B2FF;
+  margin-top: 10px;
+} */
+
+.chipPending {
+  margin-top: 10px;
+  width: 110px !important;
+  height: 35px !important;
+  background: #fdc369 !important;
+  border-radius: 10px !important;
+  color: #fff !important;
+}
+
+/*
+.invitationCardRight {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.invitationCardRightUser {
+  margin-top: 6px;
+}
+
+.invitationCardRightUser h6 {
+  font-size: 16px;
+  line-height: 150%;
+  color: #272727;
+}
+
+.invitationCardRightButton {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+} */
+
+.postedImage {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.postedImage h6 {
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.postedImageRight {
+  margin-top: 15px;
+}
+
+.postedImage img {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #ffffff;
+  filter: drop-shadow(0px 2px 13px rgba(91, 88, 88, 0.23));
+  border-radius: 10px;
+}
+
+.acceptButton {
+  box-sizing: border-box !important;
+  width: 171px !important;
+  height: 45px !important;
+  background: #6fd14c !important;
+  border-radius: 12px !important;
+  color: #fff !important;
+  font-size: 14px;
+}
+
+.declineButton {
+  box-sizing: border-box !important;
+  width: 171px !important;
+  height: 45px !important;
+  background: #ff3f3f !important;
+  border-radius: 12px !important;
+  color: #fff !important;
+  margin-top: 7px;
+  font-size: 14px;
+}
+
+/* Collection */
+/* .collectionCardLeftText {
+  height: 80px;
+  margin: 10px;
+  border-right: 1.45649px solid #EEF0F3;
+} */
+
+/* Course */
+.homepageTitle {
+  font-size: 24px !important;
+}
+
+.courseCard {
+  height: 215px;
+  margin-top: 15px;
+}
+
+.courseCardLeftText {
+  padding: 15px 0px;
+}
+
+.courseCardLeftText h6 {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.courseCardLeftText span {
+  display: block;
+}
+
+.courseCardLeftText button {
+  background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%);
+  box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
+  border-radius: 10px;
+  color: #fff;
+  margin-top: 15px;
+  height: 45px;
+  width: 155px;
+}
+
+/* Top Learner */
+.topLearnerCard {
+  height: 70px;
+  margin-top: 15px;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.topLearnerCardLeftText {
+  padding: 5px 0px;
+}
+
+.topLearnerCardLeftText h6 {
+  padding: 0px;
+  line-height: 1.2;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.topLearnerCardLeftImage img {
+  border-radius: 11.9162px;
+}
+
+/* Latest News Card */
+.latestNewsCard {
+  padding: 0px;
+  margin-top: 15px;
+}
+
+.latestNewsCardLeftText {
+  padding: 9px 15px;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.latestNewsCardLeftText h6 {
+  font-weight: 700;
+}
+
+/* Footer */
+/* .footerSection {
+  border-top: 1px solid #d5d1d1;
+  padding: 10px 130px;
+  margin-top: 70px;
+}
+.footerText {
+  font-size: 16px;
+  line-height: 45px;
+  color: #32363C;
+}
+
+.footerSection .socialIcons {
+  text-align: right;
+  justify-content: flex-end
+} */
+
+/* Slider */
+
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
+.slider-container {
+  height: 700px;
+}
+
+.rightIcon {
+  position: absolute;
+  background-color: transparent;
+  border: none;
+  top: 40%;
+  right: 1.5%;
+  cursor: pointer;
+}
+
+.leftIcon {
+  position: absolute;
+  background-color: transparent;
+  border: none;
+  top: 40%;
+  left: 2%;
+  cursor: pointer;
+}
+
+/** Create Collection **/
+.createCollectionBox {
+  width: 100%;
+  height: 470px;
+  left: 397px;
+  top: 243px;
+  margin-top: 10px;
+  background: #ffffff;
+  border: 1px solid #ebeff0;
+  padding: 59px 60px;
+  border-radius: 15px;
+}
+
+.collectionBoxStep2 {
+  background: transparent;
+  box-sizing: border-box;
+  height: 360px;
+  background: rgba(255, 255, 255, 0.28);
+  border: 2px dashed #f78f8a;
+  border-radius: 15px;
+}
+
+.collectionFieldTitle {
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  line-height: 21px !important;
+  color: #272727 !important;
+  align-items: center;
+  display: flex;
+  margin-top: 13px !important;
+}
+
+.leftCollectionTitle {
+  margin-left: 40px !important;
+}
+
+.collectionField {
+  height: 50px;
+  background: #f5f9fd;
+  border-radius: 15px;
+  border: none;
+}
+
+.collectionDesc {
+  height: 110px;
+}
+
+.inviteButton {
+  width: 100%;
+  height: 50px;
+  background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%);
+  box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
+  border-radius: 15px;
+  color: #fff !important;
+  border-radius: 15px !important;
+  margin-left: 20px !important;
+}
+
+.collectionStoreBoxFields {
+  margin-top: 20px !important;
+}
+
+.qrSectionDiv {
+  margin-left: 50px !important;
+  justify-content: center;
+  display: flex;
+  flex-direction: column !important;
+  align-items: center;
+}
+
+.qrSection {
+  box-sizing: border-box;
+  width: 300px;
+  height: 300px;
+  background: #f5f9fd;
+  border: 1px solid rgba(39, 39, 39, 0.24);
+  border-radius: 15px;
+}
+
+.qrCodeTitle {
+  width: 144px;
+  height: 22px;
+  font-weight: 700 !important;
+  font-size: 18px !important;
+  line-height: 21px !important;
+  color: #272727 !important;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 10px !important;
+}
+
+.qrSection img {
+  width: 270px;
+  height: 267px;
+  margin: 15px;
+}
+
+.transparentGreenButton {
+  box-sizing: border-box;
+  width: 150px;
+  height: 50px;
+  background: #f5f9fd !important;
+  border: 1px solid #6fd14c !important;
+  border-radius: 15px !important;
+}
+
+.signInCollectionButton {
+  margin-right: 10px !important;
+}
+
+.transparentGreenVerificationButton {
+  width: 180px;
+}
+
+.transparentGreenVerificationButton span {
+  margin-left: 20px !important;
+}
+
+.transparentGreenButton img {
+  position: absolute;
+  left: 12px;
+  top: 10px;
+}
+
+.humanCheckbox {
+  box-sizing: border-box;
+  width: 200px;
+  height: 80px;
+  background: #f5f9fd !important;
+  border: 1px solid rgba(39, 39, 39, 0.24) !important;
+  border-radius: 12px !important;
+  display: flex;
+  justify-content: center;
+}
+
+.collectionButtons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px !important;
+}
+
+.nextCollectionButton {
+  width: 150px;
+  height: 50px;
+  background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%);
+  box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
+  color: #fff !important;
+  border-radius: 15px !important;
+}
+
+.saveDraftButton {
+  width: 150px;
+  height: 50px;
+  background-color: var(--color-black) !important;
+  color: #fff !important;
+  border-radius: 15px !important;
+}
+
+.backCollectionButton {
+  box-sizing: border-box;
+  width: 150px;
+  height: 50px;
+  border: 2px solid #f78f8a !important;
+  color: #f78f8a !important;
+  border-radius: 15px !important;
+}
+
+.createCollectionBoxScenario2 {
+  height: 600px;
+}
+
+.createCollectionBoxScenario2Step2 {
+  height: 620px;
+  padding: 40px 55px;
+}
+
+.authorField {
+  height: 160px;
+  padding: 20px;
+}
+
+/* User Card */
+.userCard {
+  width: 500px;
+  /* height: 120px; */
+  background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%);
+  box-shadow: 0px 16.7655px 50.2966px rgba(247, 143, 138, 0.47);
+  border-radius: 20px;
+  display: flex;
+  padding: 20px 30px;
+  color: #fffefe !important;
+}
+
+.userCardImage img {
+  border-radius: 20px;
+}
+
+.userCardDetails {
+  margin-left: 30px;
+}
+
+.userCardDetails h6 {
+  font-size: 22px !important;
+}
+
+.userCardDetails span {
+  font-size: 16px !important;
+}
+
+.userCardChips {
+  margin-top: 10px !important;
+  display: flex;
+  gap: 15px;
+}
+
+.userCardChips .chip {
+  width: 155px;
+  height: 45px;
+  background: #fffefe !important;
+  color: #f78f8a !important;
+  border-radius: 12px !important;
+  font-size: 8px !important;
+  font-weight: 500;
+}
+
+.userCard2 {
+  color: #272727 !important;
+  background: #fffefe !important;
+  margin-left: 10px !important;
+}
+
+.userCard2 .userCardChips .chip {
+  background: rgba(247, 143, 138, 0.1) !important;
+  color: #f78f8a !important;
+}
+
+/* Litigation */
+
+.litigationBox {
+  box-sizing: border-box !important;
+  width: 100%;
+  height: 225px !important;
+  background: #ffffff !important;
+  border: 1px solid #ebeff0 !important;
+  border-radius: 20px !important;
+  border-spacing: 0px !important;
+  margin-top: 15px !important;
+}
+
+.litigationBoxHeader {
+  box-sizing: border-box;
+  height: 60px;
+  background: #f5f9fd;
+  border-radius: 20px !important;
+}
+
+.litigationBoxHeader th {
+  border: none !important;
+}
+
+.litigationBoxHeader tr:first-child {
+  border-top-left-radius: 20px !important;
+}
+
+.litigationBoxHeader th:last-child {
+  border-top-right-radius: 20px !important;
+}
+
+.litigationBoxBody td {
+  text-align: center;
+  padding: 13px 18px;
+}
+
+.litigationBoxBody td:first {
+  border-bottom: 1px solid #32363c !important;
+}
+
+.withdrawButton {
+  width: 150px;
+  height: 50px;
+  background: #6c69fd !important;
+  border-radius: 15px !important;
+  color: #ffffff !important;
+}
+
+.approveButton,
+.pendingButton,
+.previewButton {
+  width: 150px;
+  height: 50px;
+  background: #6fcd4c !important;
+  border-radius: 15px !important;
+  color: #ffffff !important;
+}
+
+.pendingButton {
+  background-color: var(--color-yellow) !important;
+}
+
+.previewButton {
+  background-color: var(--color-blue) !important;
+}
+
+.withdrawButton img,
+.approveButton img,
+.pendingButton img,
+.previewButton img {
+  padding-right: 10px !important;
+}
+
+.litigationUser {
+  display: flex;
+  gap: 10px;
+}
+
+.litigationUserImage img {
+  width: 40px;
+}
+
+.litigationUserText {
+  text-align: left;
+}
+
+.litigationUserText h6 {
+  padding: 0px;
+  margin: 2px 0px;
+  font-size: 15px;
+}
+
+.userClaimAuthorBox {
+  height: 300px;
+}
+
+.seeMoreButton {
+  box-sizing: border-box;
+  width: 140px;
+  height: 50px;
+  border: 2px solid #f78f8a !important;
+  color: #f78f8a !important;
+  border-radius: 15px !important;
+  margin-top: 80px !important;
+}
+
+.userClaimAuthorBox2 {
+  height: 400px;
+}
+
+.litigationCloseTitle {
+  font-size: 24px !important;
+  color: #272727;
+  font-weight: 700 !important;
+}
+
+/* Credit Card */
+.topContributorSection {
+  box-sizing: border-box;
+  width: 100%;
+  height: 1024px;
+  background: #ffffff;
+  border: 1px solid #ebeff0;
+  box-shadow: 0px 27px 58px rgba(84, 69, 68, 0.09);
+  border-radius: 25px;
+  margin-top: 10px !important;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 20px;
+}
+
+.creditCard {
+  display: flex;
+  max-width: 50%;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.creditCardImage img {
+  box-sizing: border-box;
+  height: 197.56px;
+  background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%);
+  border: 2px solid #ffffff;
+  box-shadow: 0px 10px 40px rgba(247, 143, 138, 0.47);
+  border-radius: 55px;
+  height: 90%;
+}
+
+.otherContributorSection {
+  box-sizing: border-box;
+  width: 100%;
+  height: 1020px;
+  background: #ffffff;
+  border: 1px solid #ebeff0;
+  box-shadow: 0px 27px 58px rgba(84, 69, 68, 0.09);
+  border-radius: 25px;
+  margin-top: 10px !important;
+  padding-top: 20px;
+}
+
+.creditCard {
+  gap: 10px;
+}
+
+.creditCardDetials {
+  padding: 7px;
+}
+
+.topContributorSection {
+  height: 97%;
+}
+
+.creditCardImage img {
+  height: 70%;
+  border-radius: 30px;
+}
+
+.creditCardDetials h5 {
+  height: 28px;
+  font-size: 18px;
+  color: #272727;
+  font-weight: 600;
+}
+
+.creditCardDetials h6 {
+  height: 19px;
+  font-size: 14px;
+  line-height: 137.8%;
+  color: #32363c;
+  margin-bottom: 8px !important;
+}
+
+.creditCardDetials span {
+  width: 99px;
+  height: 19px;
+  font-size: 14px;
+  line-height: 137.8%;
+  color: #32363c;
+}
+
+.creditCardIcons {
+  margin: 20px 0px !important;
+  display: flex;
+  gap: 20px;
+}
+
+.otherContributorCard {
+  display: flex;
+  gap: 20px;
+  margin: 12px 23px;
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0px;
+}
+
+.otherContributorCard img {
+  width: 50px;
+  box-sizing: border-box;
+  height: 197.56px;
+  background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%);
+  border-radius: 10px;
+  height: 50px;
+}
+
+.otherContributorCardDetials h5 {
+  height: 28px;
+  font-size: 18px;
+  color: #272727;
+  font-weight: 600;
+}
+
+.otherContributorCardDetials h6 {
+  height: 19px;
+  font-size: 14px;
+  line-height: 137.8%;
+  color: #32363c;
+  margin-bottom: 8px !important;
+}
+
+/** Creations **/
+/* .collectionCard {
+  padding: 14px 7px;
+}
+
+.collectionCardLeft {
+  padding: 0px;
+}
+
+.collectionCardLeftImage {
+  width: 135px!important;
+  padding: 0px 10px;
+} */
+
+.collectionTitleBox {
+  display: flex;
+  justify-content: space-between;
+}
+
+.collectionTitleBoxButton {
+  margin-bottom: 0px;
+}
+
+.searchBarCollection {
+  box-sizing: border-box;
+  width: 300px !important;
+  height: 40px;
+  background: #f5f9fd;
+  border-radius: 15px;
+}
+
+.collectionAddNew {
+  margin-left: 20px !important;
+  width: 130px !important;
+  height: 40px !important;
+  background: linear-gradient(
+    104.08deg,
+    #fece76 -28.92%,
+    #f78b88 76.85%
+  ) !important;
+  box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47) !important;
+  border-radius: 13px !important;
+  color: #fff !important;
+}
+
+/* .collectionFollowerImages {
+  padding: 5px 10px;
+  width: 200px;
+}
+
+.collectionFollowerImages img {
+  box-sizing: border-box;
+  width: 50px;
+  height: 50px;
+  border: 1.45649px solid #FFFFFF;
+  filter: drop-shadow(4.36946px 2.91297px 24.7603px rgba(200, 209, 216, 0.35));
+  border-radius: 32px;
+  margin-left: -17px;
+}
+
+.collectionFollowerDateCreated {
+  height: 80px;
+  width: 200px;
+  margin: 10px;
+  border-right: 1.45649px solid #EEF0F3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0px 20px;
+} */
+
+.socialIcons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 28px;
+  width: 100%;
+  text-align: center;
+}
+
+.socialIcons .socialIcon img {
+  position: relative;
+  top: 5px;
+}
+
+.socialIcons .active {
+  width: 70px;
+  color: #f78f8a;
+  font-weight: 600;
+}
+
+.socialIcons .socialIcon img {
+  border: none;
+  width: 25px;
+  height: 25px;
+}
+
+/* .collectionRightButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 20px;
+  width: 100%;
+  height: 100px;
+}
+
+.collectionRightButton img {
+  width: 25px;
+  height: 25px;
+  background: #F5F9FD;
+  border-radius: 15px;
+  padding: 10px;
+} */
+
+.learnHowToImage {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.learnHowToImage img {
+  width: 100%;
+}
+
+/* Tranding News */
+
+.trandingNewsHeader h5 {
+  font-size: 24px !important;
+  color: #272727 !important;
+  padding-bottom: 10px !important;
+  margin-top: 30px !important;
+  font-weight: 700 !important;
+}
+
+.trandingNewsCard {
+  display: flex;
+  gap: 20px;
+  background-color: #ffffff;
+  background: #ffffff;
+  border: 1px solid #ebeff0;
+  border-radius: 25px;
+  padding: 20px !important;
+}
+
+.trandingNewsCardText {
+  margin-top: 20px;
+}
+
+.trandingNewsCardImage img {
+  width: 220px;
+}
+
+.trandingNewsCardTextTitle {
+  display: flex;
+  justify-content: space-between;
+}
+
+.trandingNewsCardTextTitle h6 {
+  font-size: 25px;
+  line-height: 29px;
+  color: #272727;
+  font-weight: 700;
+}
+
+.trandingNewsCardTextParagraph {
+  font-size: 16px;
+  line-height: 22.4px;
+  color: #32363c;
+}
+
+.trandingNewsCardTextTime span {
+  color: #f78f8a;
+}
+
+.trendingNewsRightButton {
+  justify-content: flex-end;
+  align-items: start;
+  width: 50%;
+  height: 35px;
+}
+
+.responsiveClearIcon {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.responsiveClearIcon button {
+  height: 40px;
+  color: #071011;
+  min-width: 40px !important;
+}
+
+/**** MEDIA QUERY ****/
+@media only screen and (max-width: 480px) {
+  .non-responsive {
+    display: flex !important;
+  }
+
+  .sidebarResponsive,
+  .responsive {
+    display: none;
+  }
+
+  /* .header {
+    height: 95px;
+    margin-bottom: 70px;
+  }
+
+  .header ul {
+    justify-content: flex-end!important;
+    overflow: initial;
+    margin-top: 20px!important;
+    gap: 0px;
+  }
+
+  .headerMenu ul li {
+  }  */
+
+  .layout {
+    /* padding-left: 32px;
+    padding-right: 32px; */
+    /* padding: 10px 20px; */
+    /* min-height: 1020px; */
+  }
+
+  .collectionTitleBox {
+    display: block;
+    width: 100%;
+    margin-bottom: 30px;
+  }
+
+  .collectionTitleBoxButton {
+    display: flex;
+    justify-content: inherit;
+    margin-bottom: 20px;
+  }
+
+  .searchBarCollection {
+    width: 62% !important;
+  }
+
+  /* .collectionCard {
+    width: 76% !important;
+    height: 100%!important;
+    justify-content: flex-start;
+    padding: 15px;
+  }
+
+  .collectionCardLeft {
+    display: block;
+    gap: 0px;
+  }
+
+  .collectionCardLeftText {
+    border: none!important;
+  }
+
+  .collectionCardLeftImage {
+    padding: 0px;
+    width: 100%!important;
+  }
+
+  .collectionCardLeftImage img {
+    width: 100%!important;
+  } */
+
+  /* .collectionFollowerDateCreated {
+    width: 200px;
+    margin: 10px;
+    border-right: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: unset!important;
+    align-items: unset!important;
+    padding: 0px!important;
+    height: 50px;
+  }
+
+  .collectionRightButton {
+    height: 40px;
+    margin-top: 5px;
+  } */
+
+  .collectionAddNew {
+    width: 105px !important;
+  }
+
+  /* .invitationCard {
+    height: 100%;
+  }
+
+  .invitationCardRight {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .invitationCardLeft {
+    gap: 10px;
+  }
+
+  .invitationCardLeftText span {
+    font-size: 15px;
+    line-height: 23px;
+  }
+
+  .invitationCardRightButton {
+    flex-direction: row;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+  } */
+
+  .acceptButton span,
+  .declineButton span {
+    font-size: 15px;
+  }
+
+  /* .invitationCardLeftButton {
+    gap: 15px;
+  }
+
+  .invitationCardLeftImage {
+    min-width: 63px;
+  }
+
+  .invitationCardLeftImage img {
+    height: 100%;
+    min-width: 90px;
+    max-width: 90px;
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .invitationCardLeftButton .chipPending, .invitationCardLeftButton .chipPreview {
+    width: 78px !important;
+    height: 35px !important;
+  }
+
+  .invitationCardLeftButton .chipPreview span, .invitationCardLeftButton .chipPending span {
+    font-size: 14px;
+  } */
+
+  .courseCard {
+    height: 29.5%;
+  }
+
+  .topLearnerCard {
+    height: 70px;
+  }
+
+  .topLearnerCardLeftImage {
+    width: 13%;
+  }
+
+  .topLearnerCardLeftImage img {
+    border-radius: 11.9162px;
+    height: 50px;
+    width: 50px;
+  }
+
+  .trandingNewsCard {
+    flex-direction: column;
+    gap: 0px;
+  }
+
+  .trandingNewsCardImage img {
+    width: 100%;
+  }
+
+  .trandingNewsCardTextTitle {
+    margin-bottom: 10px;
+  }
+
+  .trendingNewsRightButton {
+    justify-content: start;
+    align-items: start;
+    width: 100%;
+    height: 35px;
+  }
+
+  /* .invitationCardRightButton {
+    margin-bottom: 20px;
+  } */
+
+  .trandingNewsCardTextParagraph {
+    text-align: justify;
+    line-height: 22px;
+    margin-bottom: 20px;
+  }
+
+  .createCollectionBox {
+    padding: 10px;
+    height: 460px;
+  }
+
+  .responsiveCreateCollectionBox {
+    height: 940px;
+  }
+
+  .leftCollectionTitle {
+    margin-left: 0px !important;
+  }
+
+  .createCollectionBoxScenario2 {
+    height: 700px;
+  }
+
+  .userCard {
+    width: 84%;
+    position: relative;
+    padding: 20px 17px;
+  }
+
+  .userCardImage img {
+    width: 55px;
+    border-radius: 10px;
+  }
+
+  .userCardDetails {
+    margin-left: 10px;
+  }
+
+  .userCardDetails h6 {
+    font-size: 15px;
+  }
+
+  .userCardChips {
+    position: absolute;
+    bottom: 20px;
+    left: 4%;
+  }
+
+  .userCardChips .chip {
+    width: 120px;
+    height: 35px;
+  }
+
+  .userCardChips .chip span {
+    font-size: 14px !important;
+  }
+
+  /* .footerSection {
+    padding: 10px 37px;
+    margin-top: 70px;
+    text-align: center;
+  }
+
+  .footerSection .socialIcons {
+    justify-content: center;
+  } */
+
+  .qrSectionDiv {
+    margin-left: 0px !important;
+  }
+
+  .litigationBoxHeader th:first-child {
+    border-top-left-radius: 20px !important;
+    border-top-right-radius: 20px;
+  }
+
+  .front__face-photo {
+    height: 71px;
+    width: 72px;
+    border: 2px solid #fff;
+  }
+
+  .userDetailsLeftHeader h4 {
+    font-size: 22px;
+    font-weight: 760 !important;
+  }
+
+  .userDetailsChip .chip {
+    min-width: 140px !important;
+    font-size: 14px !important;
+    font-weight: 600;
+  }
+
+  .inner-div {
+    height: 700px;
+    margin-top: 10px;
+  }
+
+  .userDetails {
+    top: -244px;
+    display: flex;
+    background: #fff;
+    gap: 0px;
+    padding: 20px;
+    margin-bottom: 100px;
+    height: 460px;
+  }
+
+  .collectionButton {
+    width: 90%;
+    height: 195px;
+    margin-left: 0px !important;
+  }
+
+  .collectionButton2 {
+    width: 90%;
+    height: 195px;
+    margin-left: 0px !important;
+    margin-top: 20px !important;
+  }
+
+  .signInCollectionButton {
+    width: 40%;
+  }
+
+  .transparentGreenButton {
+    width: 55%;
+  }
+
+  .latestNewsCard {
+    height: 16.5%;
+  }
+
+  .latestNewsCardLeft {
+    display: flex;
+    gap: 7px;
+    height: 100%;
+  }
+
+  .latestNewsCardLeftImage {
+    height: 100%;
+    width: 60%;
+  }
+
+  .latestNewsCardLeftImage img {
+    object-fit: contain;
+    height: auto;
+  }
+
+  .topLearnerCardLeft {
+    display: flex;
+    gap: 20px;
+  }
+
+  .courseCardLeft {
+    display: flex;
+    gap: 10px;
+  }
+
+  .courseCardLeftImage img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .latestNewsCardLeftText {
+    padding: 0px 15px !important;
+  }
+
+  .slider-container {
+    height: 470px;
+    min-width: 100%;
+  }
+
+  .carousel {
+    height: 410px;
+    perspective: 497px;
+    transform-style: preserve-3d;
+    transform-origin: 0% 43%;
+    top: 73%;
+    left: -7%;
+    min-width: 100%;
+  }
+
+  .carousel .carousel-item > img {
+    width: 63%;
+    height: 83%;
+  }
+
+  .carousel .carousel-item {
+    visibility: hidden;
+    width: 510px;
+    height: 400px;
+    position: absolute;
+    top: 0;
+    left: 116px;
+    opacity: 1 !important;
+  }
+
+  .rightIcon,
+  .leftIcon {
+    top: 32%;
+  }
+
+  .leftIcon {
+    left: -1%;
+  }
+
+  .rightIcon {
+    right: 1%;
+  }
+
+  /* header {
+    padding: 0 20px;
+    z-index: 99999999;
+  }
+
+  header .logoContainer img {
+    margin: 34px 0px 0px 108px!important;
+    width: 50%!important;
+  }
+
+  header nav {
+    position: absolute;
+    width: 100%;
+    height: calc(100vh - 50px);
+    background: #fff;
+    top: 0px;
+    left: -100px;
+    transition: 0.5s;
+  }
+
+  header nav.active {
+    left: 0;
+  }
+
+  header nav ul {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+    width: 95%;
+  }
+
+  header ul li {
+    margin: 20px 0px;
+    padding: 10px 80px;
+    margin-left: 41px;
+    width: 150px;
+  } */
+
+  /* .activeSidebarMenu {
+    background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
+    border-radius: 100px;
+    box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
+  }
+
+  .activeSidebarMenu a {
+    color: #fff!important;
+  } */
+
+  /* header ul li a {
+    text-decoration: none;
+    color: #32363C;
+  }
+
+  header ul li a img {
+    top: 4px;
+    position: relative;
+    margin-right: 15px;
+    margin-left: 10px;
+  }
+
+  header ul li a span {
+    top: -3px;
+    position: relative;
+  } */
+
+  .non-responsive .searchBar {
+    margin-top: 24px !important;
+    width: 100% !important;
+    margin-left: 0px !important;
+  }
+
+  .creditCard {
+    max-width: 100%;
+    margin-top: 0px;
+  }
+
+  .otherContributorSection {
+    height: 800px;
+  }
+
+  .responsiveMenuBar {
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .responsiveMenuBar button {
+    height: 40px;
+    background: #fff;
+    color: #071011;
+    min-width: 40px !important;
+  }
+
+  .responsiveClearIcon {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .responsiveClearIcon button {
+    height: 40px;
+    color: #071011;
+    min-width: 40px !important;
+  }
+}
+
+@media only screen and (max-width: 375px) {
+  .non-responsive {
+    display: flex !important;
+  }
+
+  .sidebarResponsive,
+  .responsive {
+    display: none;
+  }
+
+  /* .header {
+    height: 95px;
+    margin-bottom: 70px;
+  }
+
+  .header ul {
+    justify-content: flex-end!important;
+    overflow: initial;
+    margin-top: 20px!important;
+    gap: 0px;
+  } */
+
+  .layout {
+    /* padding-left: 16px;
+    padding-right: 16px; */
+    /* padding: 10px 20px; */
+    /* min-height: 1020px; */
+  }
+
+  .collectionTitleBox {
+    display: block;
+    width: 100%;
+    margin-bottom: 30px;
+  }
+
+  .collectionTitleBoxButton {
+    display: flex;
+    justify-content: inherit;
+    margin-bottom: 20px;
+  }
+
+  .searchBarCollection {
+    width: 62% !important;
+  }
+
+  /* .collectionCard {
+    width: 76% !important;
+    height: 100%!important;
+    justify-content: flex-start;
+    padding: 15px;
+  }
+
+  .collectionCardLeft {
+    display: block;
+    gap: 0px;
+  }
+
+  .collectionCardLeftText {
+    border: none!important;
+  }
+
+  .collectionCardLeftImage {
+    padding: 0px;
+    width: 100%!important;
+  }
+
+  .collectionCardLeftImage img {
+    width: 100%!important;
+  } */
+
+  /* .collectionFollowerDateCreated {
+    width: 200px;
+    margin: 10px;
+    border-right: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: unset!important;
+    align-items: unset!important;
+    padding: 0px!important;
+    height: 50px;
+  }
+
+  .collectionRightButton {
+    height: 40px;
+    margin-top: 5px;
+  } */
+
+  .collectionAddNew {
+    width: 105px !important;
+  }
+
+  /* .invitationCard {
+    height: 100%;
+  }
+
+  .invitationCardRight {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .invitationCardLeft {
+    gap: 10px;
+  }
+
+  .invitationCardLeftText span {
+    font-size: 15px;
+    line-height: 23px;
+  }
+
+  .invitationCardRightButton {
+    flex-direction: row;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+  } */
+
+  .acceptButton span,
+  .declineButton span {
+    font-size: 15px;
+  }
+
+  /* .invitationCardLeftButton {
+    gap: 15px;
+  }
+
+  .invitationCardLeftImage {
+    min-width: 63px;
+  }
+
+  .invitationCardLeftImage img {
+    height: 100%;
+    min-width: 90px;
+    max-width: 90px;
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .invitationCardLeftButton .chipPending, .invitationCardLeftButton .chipPreview {
+    width: 78px !important;
+    height: 35px !important;
+  }
+
+  .invitationCardLeftButton .chipPreview span, .invitationCardLeftButton .chipPending span {
+    font-size: 14px;
+  } */
+
+  .courseCard {
+    height: 29.5%;
+  }
+
+  .topLearnerCard {
+    height: 70px;
+  }
+
+  .topLearnerCardLeftImage {
+    width: 13%;
+  }
+
+  .topLearnerCardLeftImage img {
+    border-radius: 11.9162px;
+    height: 50px;
+    width: 50px;
+  }
+
+  .trandingNewsCard {
+    flex-direction: column;
+    gap: 0px;
+  }
+
+  .trandingNewsCardImage img {
+    width: 100%;
+  }
+
+  .trandingNewsCardTextTitle {
+    margin-bottom: 10px;
+  }
+
+  .trendingNewsRightButton {
+    justify-content: start;
+    align-items: start;
+    width: 100%;
+    height: 35px;
+  }
+
+  /* .invitationCardRightButton {
+    margin-bottom: 20px;
+  } */
+
+  .trandingNewsCardTextParagraph {
+    text-align: justify;
+    line-height: 22px;
+    margin-bottom: 20px;
+  }
+
+  .createCollectionBox {
+    padding: 10px;
+    height: 460px;
+  }
+
+  .responsiveCreateCollectionBox {
+    height: 940px;
+  }
+
+  .leftCollectionTitle {
+    margin-left: 0px !important;
+  }
+
+  .createCollectionBoxScenario2 {
+    height: 700px;
+  }
+
+  .userCard {
+    width: 84%;
+    position: relative;
+    padding: 20px 17px;
+  }
+
+  .userCardImage img {
+    width: 55px;
+    border-radius: 10px;
+  }
+
+  .userCardDetails {
+    margin-left: 10px;
+  }
+
+  .userCardDetails h6 {
+    font-size: 15px;
+  }
+
+  .userCardChips {
+    position: absolute;
+    bottom: 20px;
+    left: 4%;
+  }
+
+  .userCardChips .chip {
+    width: 120px;
+    height: 35px;
+  }
+
+  .userCardChips .chip span {
+    font-size: 14px !important;
+  }
+
+  /* .footerSection {
+    padding: 10px 37px;
+    margin-top: 70px;
+    text-align: center;
+  }
+
+  .footerSection .socialIcons {
+    justify-content: center;
+  } */
+
+  .qrSectionDiv {
+    margin-left: 0px !important;
+  }
+
+  .litigationBoxHeader th:first-child {
+    border-top-left-radius: 20px !important;
+    border-top-right-radius: 20px;
+  }
+
+  .front__face-photo {
+    height: 71px;
+    width: 72px;
+    border: 2px solid #fff;
+  }
+
+  .userDetailsLeftHeader h4 {
+    font-size: 22px;
+    font-weight: 760 !important;
+  }
+
+  .userDetailsChip .chip {
+    min-width: 140px !important;
+    font-size: 14px !important;
+    font-weight: 600;
+  }
+
+  .inner-div {
+    height: 700px;
+    margin-top: 10px;
+  }
+
+  .userDetails {
+    top: -244px;
+    display: flex;
+    background: #fff;
+    gap: 0px;
+    padding: 20px;
+    margin-bottom: 100px;
+    height: 460px;
+  }
+
+  .collectionButton {
+    width: 90%;
+    height: 195px;
+    margin-left: 0px !important;
+  }
+
+  .collectionButton2 {
+    width: 90%;
+    height: 195px;
+    margin-left: 0px !important;
+    margin-top: 20px !important;
+  }
+
+  .signInCollectionButton {
+    width: 40%;
+  }
+
+  .transparentGreenButton {
+    width: 55%;
+  }
+
+  .latestNewsCard {
+    height: 16.5%;
+  }
+
+  .latestNewsCardLeft {
+    display: flex;
+    gap: 7px;
+    height: 100%;
+  }
+
+  .latestNewsCardLeftImage {
+    height: 100%;
+    width: 60%;
+  }
+
+  .latestNewsCardLeftImage img {
+    object-fit: contain;
+    height: auto;
+  }
+
+  .topLearnerCardLeft {
+    display: flex;
+    gap: 20px;
+  }
+
+  .courseCardLeft {
+    display: flex;
+    gap: 10px;
+  }
+
+  .courseCardLeftImage img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .latestNewsCardLeftText {
+    padding: 0px 15px !important;
+  }
+
+  /* header {
+    padding: 0 20px;
+    z-index: 99999999;
+  }
+
+  header .logoContainer img {
+    margin: 34px 0px 0px 108px!important;
+    width: 50%!important;
+  }
+
+  header nav {
+    position: absolute;
+    width: 100%;
+    height: calc(100vh - 50px);
+    background: #fff;
+    top: 0px;
+    left: -100px;
+    transition: 0.5s;
+  }
+
+  header nav.active {
+    left: 0;
+  }
+
+  header nav ul {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+    width: 95%;
+  }
+
+  header ul li {
+    margin: 20px 0px;
+    padding: 10px 80px;
+    margin-left: 41px;
+    width: 150px;
+  } */
+
+  /* .activeSidebarMenu {
+    background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
+    border-radius: 100px;
+    box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
+  }
+
+  .activeSidebarMenu a {
+    color: #fff!important;
+  } */
+
+  /* header ul li a {
+    text-decoration: none;
+    color: #32363C;
+  }
+
+  header ul li a img {
+    top: 4px;
+    position: relative;
+    margin-right: 15px;
+    margin-left: 10px;
+  }
+
+  header ul li a span {
+    top: -3px;
+    position: relative;
+  } */
+
+  .non-responsive .searchBar {
+    margin-top: 24px !important;
+    width: 100% !important;
+    margin-left: 0px !important;
+  }
+
+  .creditCard {
+    max-width: 100%;
+    margin-top: 0px;
+  }
+
+  .otherContributorSection {
+    height: 800px;
+  }
+
+  .responsiveMenuBar {
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .responsiveMenuBar button {
+    height: 40px;
+    background: #fff;
+    color: #071011;
+    min-width: 40px !important;
+  }
+
+  .responsiveClearIcon {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .responsiveClearIcon button {
+    height: 40px;
+    color: #071011;
+    min-width: 40px !important;
+  }
+
+  .slider-container {
+    height: 470px;
+  }
+
+  .carousel {
+    height: 410px;
+    perspective: 497px;
+    transform-style: preserve-3d;
+    transform-origin: 0% 43%;
+    top: 73%;
+    left: -5%;
+  }
+
+  .carousel .carousel-item > img {
+    width: 60%;
+    height: 83%;
+  }
+
+  .carousel .carousel-item {
+    visibility: hidden;
+    width: 505px;
+    height: 400px;
+    position: absolute;
+    top: 0;
+    left: 116px;
+    opacity: 1 !important;
+  }
+
+  .rightIcon,
+  .leftIcon {
+    top: 32%;
+  }
+
+  .leftIcon {
+    left: -3%;
+  }
+
+  .rightIcon {
+    right: -1%;
+  }
+}
