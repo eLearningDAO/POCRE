@@ -55,7 +55,7 @@ const useCreations = () => {
         error: null,
       });
       setCreations({ ...creationResponse });
-      // eslint-disable-next-line sonarjs/no-identical-functions
+
       setTimeout(() => setFetchCreationStatus({
         success: false,
         error: null,
@@ -121,7 +121,7 @@ const useCreations = () => {
           ],
         },
       );
-      // eslint-disable-next-line sonarjs/no-identical-functions
+
       setTimeout(() => setDeleteCreationStatus({
         success: false,
         error: null,

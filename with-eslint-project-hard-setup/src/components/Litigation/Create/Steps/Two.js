@@ -1,4 +1,4 @@
-/* eslint-disable sonarjs/no-all-duplicated-branches */
+
 import {
   Button, Grid, Box,
 } from '@mui/material';

@@ -1,11 +1,13 @@
-import { useState, useCallback } from 'react';
-import Cookies from 'js-cookie';
-import { API_BASE_URL } from '../../../config';
+import Cookies from "js-cookie";
+import { useCallback, useState } from "react";
+import { API_BASE_URL } from "../../../config";
+import useUserInfo from "../../../hooks/user/userInfo";
 
 // get auth user
-const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
+const authUser = JSON.parse(Cookies.get("activeUser") || "{}");
 
 const useHeader = () => {
+  const setUserContext = useUserInfo((s) => s.setUser);
   const [users, setUsers] = useState([]);
   const [activeUser, setActiveUser] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -19,17 +21,21 @@ const useHeader = () => {
       setLoading(true);
 
       const response = await fetch(`${API_BASE_URL}/users?limit=100`, {
-        method: 'GET',
+        method: "GET",
       }).then((data) => data.json());
 
       // adding avatar temporarily (on frontend)
-      const usersWithAvatar = response.results.map((x) => ({ ...x, avatar: `https://i.pravatar.cc/50?img=${Math.random()}` }));
+      const usersWithAvatar = response.results.map((x) => ({
+        ...x,
+        avatar: `https://i.pravatar.cc/50?img=${Math.random()}`,
+      }));
       setUsers(usersWithAvatar);
 
-      const temporaryUser = Object.keys(authUser).length > 0 ? authUser : usersWithAvatar?.[0];
+      const temporaryUser =
+        Object.keys(authUser).length > 0 ? authUser : usersWithAvatar?.[0];
       setActiveUser(temporaryUser);
-      Cookies.set('activeUser', JSON.stringify(temporaryUser));
-
+      Cookies.set("activeUser", JSON.stringify(temporaryUser));
+      setUserContext(() => temporaryUser);
       setFetchUserStatus({
         success: true,
         error: null,
@@ -37,7 +43,7 @@ const useHeader = () => {
     } catch {
       setFetchUserStatus({
         success: false,
-        error: 'Failed to fetch users',
+        error: "Failed to fetch users",
       });
     } finally {
       setLoading(false);
@@ -45,9 +51,14 @@ const useHeader = () => {
   }, []);
 
   const onUserSelect = (event) => {
-    const temporaryUser = users.find((user) => user.user_id === event.target.value);
+    const temporaryUser = users.find(
+      (user) => user.user_id === event.target.value,
+    );
     setActiveUser(temporaryUser);
-    Cookies.set('activeUser', JSON.stringify(temporaryUser));
+    Cookies.set("activeUser", JSON.stringify(temporaryUser));
+
+    //set User gollably at our app
+    setUserContext(() => temporaryUser);
   };
 
   return {
