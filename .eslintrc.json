@@ -29,10 +29,9 @@
     }
   },
   "rules": {
-    "linebreak-style": [
-      "error",
-      "windows"
-    ],
+    "linebreak-style": 0,
+    "global-require": 0,
+    "eslint linebreak-style": [0, "error", "windows"],
     "no-console": "error",
     "sonarjs/no-identical-expressions": "error",
     "react/react-in-jsx-scope": "off",
