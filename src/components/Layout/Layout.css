@@ -28,20 +28,26 @@
   font-weight: 700;
   src: local('Gliroy'), url(../../assets/fonts/Gilroy-Semibold.ttf) format('opentype');
 }
-
+/* base Image */
+.base-image {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+}
 
 body {
-  background: linear-gradient(179.64deg, #CFFFCB -121.85%, #FFFFFF 99.7%) fixed;
+  background: linear-gradient(179.64deg, #cfffcb -121.85%, #ffffff 99.7%) fixed;
   font-family: 'Gliroy', sans-serif !important;
 }
 
 .non-responsive {
-  display: none !important
+  display: none !important;
 }
 
 /** END: GLOBAL **/
 
-/* 
+/*
   Layout Design
 */
 .layout {
@@ -51,7 +57,6 @@ body {
   width: 100%;
   margin: auto;
 }
-
 
 /* PHONES */
 @media (max-width: 599px) {
@@ -77,10 +82,7 @@ body {
   }
 }
 
-
-
-
-/* 
+/*
   Header Design
 */
 /* .header {
@@ -98,12 +100,12 @@ body {
   width: 400px !important;
   height: 40px;
   box-sizing: border-box;
-  background: #F5F9FD;
+  background: #f5f9fd;
   border: 1.50117px solid rgba(43, 0, 212, 0.06);
   border-radius: 15px;
   border: none;
   margin-left: 10px !important;
-  color: #32363C;
+  color: #32363c;
 }
 
 .searchBar label {
@@ -127,7 +129,7 @@ body {
 }
 
 .menuBox img {
-  background: #F5F9FD !important;
+  background: #f5f9fd !important;
   border-radius: 15px !important;
   padding: 12px;
   width: 20px;
@@ -142,7 +144,7 @@ body {
 }
 
 a {
-  color: #32363C;
+  color: #32363c;
 }
 
 .collectionButton,
@@ -161,12 +163,11 @@ a {
 
 .secondary-section-container {
   background: rgba(255, 255, 255, 0.28);
-  border: 2px dashed #F78F8A;
+  border: 2px dashed #f78f8a;
   border-radius: 16px;
 }
 
-
-/* 
+/*
   Header Menu Design
 */
 /* .menu ul {
@@ -191,9 +192,7 @@ a {
   font-weight: 400;
 } */
 
-
-
-/* 
+/*
   Sidebar Design
 */
 /* .sidebar {
@@ -228,7 +227,7 @@ a {
   color: #32363C;
 }
 
-.sidebar ul li a img {  
+.sidebar ul li a img {
   top: 4px;
   position: relative;
   margin-right: 15px;
@@ -247,9 +246,6 @@ a {
 .activeSidebarMenu a {
   color: #fff!important;
 } */
-
-
-
 
 /* Wallet Design */
 .inner-div {
@@ -280,7 +276,7 @@ a {
 .front__bkg-photo {
   position: relative;
   height: 300px;
-  background: url("../../assets/wallet-banner.png") no-repeat;
+  background: url('../../assets/wallet-banner.png') no-repeat;
   background-size: cover;
   backface-visibility: hidden;
   overflow: hidden;
@@ -295,7 +291,7 @@ a {
   width: 120px;
   border-radius: 24%;
   border: 5px solid #fff;
-  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/156905/profile/profile-512.jpg?1530296477") no-repeat;
+  background: #071011;
   background-size: contain;
   overflow: hidden;
 }
@@ -363,7 +359,7 @@ a {
 .collectionButton {
   width: 328px;
   height: 195px;
-  background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
+  background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%);
   box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
   border-radius: 20px;
   color: #fff !important;
@@ -375,15 +371,10 @@ a {
   height: 195px;
   background: rgba(247, 143, 138, 0.08);
   border-radius: 20px;
-  border: 2px dashed #F78F8A !important;
-  color: #F78F8A !important;
+  border: 2px dashed #f78f8a !important;
+  color: #f78f8a !important;
   margin-left: 40px !important;
 }
-
-
-
-
-
 
 /* Inivation */
 .inviationHeaderTitle {
@@ -444,12 +435,12 @@ a {
   margin-top: 10px;
   width: 110px !important;
   height: 35px !important;
-  background: #FDC369 !important;
+  background: #fdc369 !important;
   border-radius: 10px !important;
   color: #fff !important;
 }
 
-/* 
+/*
 .invitationCardRight {
   display: flex;
   justify-content: space-between;
@@ -493,7 +484,7 @@ a {
 .postedImage img {
   width: 30px;
   height: 30px;
-  border: 1px solid #FFFFFF;
+  border: 1px solid #ffffff;
   filter: drop-shadow(0px 2px 13px rgba(91, 88, 88, 0.23));
   border-radius: 10px;
 }
@@ -502,7 +493,7 @@ a {
   box-sizing: border-box !important;
   width: 171px !important;
   height: 45px !important;
-  background: #6FD14C !important;
+  background: #6fd14c !important;
   border-radius: 12px !important;
   color: #fff !important;
   font-size: 14px;
@@ -512,17 +503,12 @@ a {
   box-sizing: border-box !important;
   width: 171px !important;
   height: 45px !important;
-  background: #FF3F3F !important;
+  background: #ff3f3f !important;
   border-radius: 12px !important;
   color: #fff !important;
   margin-top: 7px;
   font-size: 14px;
 }
-
-
-
-
-
 
 /* Collection */
 /* .collectionCardLeftText {
@@ -531,13 +517,9 @@ a {
   border-right: 1.45649px solid #EEF0F3;
 } */
 
-
-
-
-
 /* Course */
 .homepageTitle {
-  font-size: 24px !important
+  font-size: 24px !important;
 }
 
 .courseCard {
@@ -559,7 +541,7 @@ a {
 }
 
 .courseCardLeftText button {
-  background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
+  background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%);
   box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
   border-radius: 10px;
   color: #fff;
@@ -567,8 +549,6 @@ a {
   height: 45px;
   width: 155px;
 }
-
-
 
 /* Top Learner */
 .topLearnerCard {
@@ -593,8 +573,6 @@ a {
   border-radius: 11.9162px;
 }
 
-
-
 /* Latest News Card */
 .latestNewsCard {
   padding: 0px;
@@ -611,9 +589,6 @@ a {
 .latestNewsCardLeftText h6 {
   font-weight: 700;
 }
-
-
-
 
 /* Footer */
 /* .footerSection {
@@ -632,12 +607,10 @@ a {
   justify-content: flex-end
 } */
 
-
-
 /* Slider */
 
-@import "~slick-carousel/slick/slick.css";
-@import "~slick-carousel/slick/slick-theme.css";
+@import '~slick-carousel/slick/slick.css';
+@import '~slick-carousel/slick/slick-theme.css';
 
 .slider-container {
   height: 700px;
@@ -661,11 +634,6 @@ a {
   cursor: pointer;
 }
 
-
-
-
-
-
 /** Create Collection **/
 .createCollectionBox {
   width: 100%;
@@ -673,8 +641,8 @@ a {
   left: 397px;
   top: 243px;
   margin-top: 10px;
-  background: #FFFFFF;
-  border: 1px solid #EBEFF0;
+  background: #ffffff;
+  border: 1px solid #ebeff0;
   padding: 59px 60px;
   border-radius: 15px;
 }
@@ -684,7 +652,7 @@ a {
   box-sizing: border-box;
   height: 360px;
   background: rgba(255, 255, 255, 0.28);
-  border: 2px dashed #F78F8A;
+  border: 2px dashed #f78f8a;
   border-radius: 15px;
 }
 
@@ -704,7 +672,7 @@ a {
 
 .collectionField {
   height: 50px;
-  background: #F5F9FD;
+  background: #f5f9fd;
   border-radius: 15px;
   border: none;
 }
@@ -716,7 +684,7 @@ a {
 .inviteButton {
   width: 100%;
   height: 50px;
-  background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
+  background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%);
   box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
   border-radius: 15px;
   color: #fff !important;
@@ -740,7 +708,7 @@ a {
   box-sizing: border-box;
   width: 300px;
   height: 300px;
-  background: #F5F9FD;
+  background: #f5f9fd;
   border: 1px solid rgba(39, 39, 39, 0.24);
   border-radius: 15px;
 }
@@ -768,8 +736,8 @@ a {
   box-sizing: border-box;
   width: 150px;
   height: 50px;
-  background: #F5F9FD !important;
-  border: 1px solid #6FD14C !important;
+  background: #f5f9fd !important;
+  border: 1px solid #6fd14c !important;
   border-radius: 15px !important;
 }
 
@@ -795,7 +763,7 @@ a {
   box-sizing: border-box;
   width: 200px;
   height: 80px;
-  background: #F5F9FD !important;
+  background: #f5f9fd !important;
   border: 1px solid rgba(39, 39, 39, 0.24) !important;
   border-radius: 12px !important;
   display: flex;
@@ -811,7 +779,7 @@ a {
 .nextCollectionButton {
   width: 150px;
   height: 50px;
-  background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
+  background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%);
   box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
   color: #fff !important;
   border-radius: 15px !important;
@@ -829,8 +797,8 @@ a {
   box-sizing: border-box;
   width: 150px;
   height: 50px;
-  border: 2px solid #F78F8A !important;
-  color: #F78F8A !important;
+  border: 2px solid #f78f8a !important;
+  color: #f78f8a !important;
   border-radius: 15px !important;
 }
 
@@ -848,20 +816,16 @@ a {
   padding: 20px;
 }
 
-
-
-
-
 /* User Card */
 .userCard {
   width: 500px;
   /* height: 120px; */
-  background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
+  background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%);
   box-shadow: 0px 16.7655px 50.2966px rgba(247, 143, 138, 0.47);
   border-radius: 20px;
   display: flex;
   padding: 20px 30px;
-  color: #FFFEFE !important;
+  color: #fffefe !important;
 }
 
 .userCardImage img {
@@ -889,8 +853,8 @@ a {
 .userCardChips .chip {
   width: 155px;
   height: 45px;
-  background: #FFFEFE !important;
-  color: #F78F8A !important;
+  background: #fffefe !important;
+  color: #f78f8a !important;
   border-radius: 12px !important;
   font-size: 8px !important;
   font-weight: 500;
@@ -898,19 +862,14 @@ a {
 
 .userCard2 {
   color: #272727 !important;
-  background: #FFFEFE !important;
+  background: #fffefe !important;
   margin-left: 10px !important;
 }
 
 .userCard2 .userCardChips .chip {
   background: rgba(247, 143, 138, 0.1) !important;
-  color: #F78F8A !important;
+  color: #f78f8a !important;
 }
-
-
-
-
-
 
 /* Litigation */
 
@@ -918,8 +877,8 @@ a {
   box-sizing: border-box !important;
   width: 100%;
   height: 225px !important;
-  background: #FFFFFF !important;
-  border: 1px solid #EBEFF0 !important;
+  background: #ffffff !important;
+  border: 1px solid #ebeff0 !important;
   border-radius: 20px !important;
   border-spacing: 0px !important;
   margin-top: 15px !important;
@@ -928,7 +887,7 @@ a {
 .litigationBoxHeader {
   box-sizing: border-box;
   height: 60px;
-  background: #F5F9FD;
+  background: #f5f9fd;
   border-radius: 20px !important;
 }
 
@@ -950,15 +909,15 @@ a {
 }
 
 .litigationBoxBody td:first {
-  border-bottom: 1px solid #32363C !important;
+  border-bottom: 1px solid #32363c !important;
 }
 
 .withdrawButton {
   width: 150px;
   height: 50px;
-  background: #6C69FD !important;
+  background: #6c69fd !important;
   border-radius: 15px !important;
-  color: #FFFFFF !important;
+  color: #ffffff !important;
 }
 
 .approveButton,
@@ -966,9 +925,9 @@ a {
 .previewButton {
   width: 150px;
   height: 50px;
-  background: #6FCD4C !important;
+  background: #6fcd4c !important;
   border-radius: 15px !important;
-  color: #FFFFFF !important;
+  color: #ffffff !important;
 }
 
 .pendingButton {
@@ -1013,8 +972,8 @@ a {
   box-sizing: border-box;
   width: 140px;
   height: 50px;
-  border: 2px solid #F78F8A !important;
-  color: #F78F8A !important;
+  border: 2px solid #f78f8a !important;
+  color: #f78f8a !important;
   border-radius: 15px !important;
   margin-top: 80px !important;
 }
@@ -1029,20 +988,13 @@ a {
   font-weight: 700 !important;
 }
 
-
-
-
-
-
-
-
 /* Credit Card */
 .topContributorSection {
   box-sizing: border-box;
   width: 100%;
   height: 1024px;
-  background: #FFFFFF;
-  border: 1px solid #EBEFF0;
+  background: #ffffff;
+  border: 1px solid #ebeff0;
   box-shadow: 0px 27px 58px rgba(84, 69, 68, 0.09);
   border-radius: 25px;
   margin-top: 10px !important;
@@ -1063,8 +1015,8 @@ a {
 .creditCardImage img {
   box-sizing: border-box;
   height: 197.56px;
-  background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
-  border: 2px solid #FFFFFF;
+  background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%);
+  border: 2px solid #ffffff;
   box-shadow: 0px 10px 40px rgba(247, 143, 138, 0.47);
   border-radius: 55px;
   height: 90%;
@@ -1074,8 +1026,8 @@ a {
   box-sizing: border-box;
   width: 100%;
   height: 1020px;
-  background: #FFFFFF;
-  border: 1px solid #EBEFF0;
+  background: #ffffff;
+  border: 1px solid #ebeff0;
   box-shadow: 0px 27px 58px rgba(84, 69, 68, 0.09);
   border-radius: 25px;
   margin-top: 10px !important;
@@ -1110,7 +1062,7 @@ a {
   height: 19px;
   font-size: 14px;
   line-height: 137.8%;
-  color: #32363C;
+  color: #32363c;
   margin-bottom: 8px !important;
 }
 
@@ -1119,13 +1071,13 @@ a {
   height: 19px;
   font-size: 14px;
   line-height: 137.8%;
-  color: #32363C;
+  color: #32363c;
 }
 
 .creditCardIcons {
   margin: 20px 0px !important;
   display: flex;
-  gap: 20px
+  gap: 20px;
 }
 
 .otherContributorCard {
@@ -1134,14 +1086,13 @@ a {
   margin: 12px 23px;
   border-bottom: 1px solid #ddd;
   padding: 10px 0px;
-
 }
 
 .otherContributorCard img {
   width: 50px;
   box-sizing: border-box;
   height: 197.56px;
-  background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
+  background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%);
   border-radius: 10px;
   height: 50px;
 }
@@ -1157,11 +1108,9 @@ a {
   height: 19px;
   font-size: 14px;
   line-height: 137.8%;
-  color: #32363C;
+  color: #32363c;
   margin-bottom: 8px !important;
 }
-
-
 
 /** Creations **/
 /* .collectionCard {
@@ -1190,7 +1139,7 @@ a {
   box-sizing: border-box;
   width: 300px !important;
   height: 40px;
-  background: #F5F9FD;
+  background: #f5f9fd;
   border-radius: 15px;
 }
 
@@ -1198,7 +1147,7 @@ a {
   margin-left: 20px !important;
   width: 130px !important;
   height: 40px !important;
-  background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%) !important;
+  background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%) !important;
   box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47) !important;
   border-radius: 13px !important;
   color: #fff !important;
@@ -1231,7 +1180,6 @@ a {
   padding: 0px 20px;
 } */
 
-
 .socialIcons {
   display: flex;
   justify-content: center;
@@ -1246,10 +1194,9 @@ a {
   top: 5px;
 }
 
-
 .socialIcons .active {
   width: 70px;
-  color: #F78F8A;
+  color: #f78f8a;
   font-weight: 600;
 }
 
@@ -1286,9 +1233,6 @@ a {
   width: 100%;
 }
 
-
-
-
 /* Tranding News */
 
 .trandingNewsHeader h5 {
@@ -1302,9 +1246,9 @@ a {
 .trandingNewsCard {
   display: flex;
   gap: 20px;
-  background-color: #FFFFFF;
-  background: #FFFFFF;
-  border: 1px solid #EBEFF0;
+  background-color: #ffffff;
+  background: #ffffff;
+  border: 1px solid #ebeff0;
   border-radius: 25px;
   padding: 20px !important;
 }
@@ -1332,11 +1276,11 @@ a {
 .trandingNewsCardTextParagraph {
   font-size: 16px;
   line-height: 22.4px;
-  color: #32363C;
+  color: #32363c;
 }
 
 .trandingNewsCardTextTime span {
-  color: #F78F8A;
+  color: #f78f8a;
 }
 
 .trendingNewsRightButton {
@@ -1357,16 +1301,6 @@ a {
   color: #071011;
   min-width: 40px !important;
 }
-
-
-
-
-
-
-
-
-
-
 
 /**** MEDIA QUERY ****/
 @media only screen and (max-width: 480px) {
@@ -1473,7 +1407,7 @@ a {
     justify-content: space-between;
     flex-direction: column;
     gap: 20px;
-  } 
+  }
 
   .invitationCardLeft {
     gap: 10px;
@@ -1639,7 +1573,6 @@ a {
     border-top-right-radius: 20px;
   }
 
-
   .front__face-photo {
     height: 71px;
     width: 72px;
@@ -1747,7 +1680,7 @@ a {
     min-width: 100%;
   }
 
-  .carousel .carousel-item>img {
+  .carousel .carousel-item > img {
     width: 63%;
     height: 83%;
   }
@@ -1827,14 +1760,14 @@ a {
     text-decoration: none;
     color: #32363C;
   }
-  
-  header ul li a img {  
+
+  header ul li a img {
     top: 4px;
     position: relative;
     margin-right: 15px;
     margin-left: 10px;
   }
-  
+
   header ul li a span {
     top: -3px;
     position: relative;
@@ -1848,7 +1781,7 @@ a {
 
   .creditCard {
     max-width: 100%;
-    margin-top: 0px
+    margin-top: 0px;
   }
 
   .otherContributorSection {
@@ -1981,7 +1914,7 @@ a {
     justify-content: space-between;
     flex-direction: column;
     gap: 20px;
-  } 
+  }
 
   .invitationCardLeft {
     gap: 10px;
@@ -2147,7 +2080,6 @@ a {
     border-top-right-radius: 20px;
   }
 
-
   .front__face-photo {
     height: 71px;
     width: 72px;
@@ -2292,14 +2224,14 @@ a {
     text-decoration: none;
     color: #32363C;
   }
-  
-  header ul li a img {  
+
+  header ul li a img {
     top: 4px;
     position: relative;
     margin-right: 15px;
     margin-left: 10px;
   }
-  
+
   header ul li a span {
     top: -3px;
     position: relative;
@@ -2313,7 +2245,7 @@ a {
 
   .creditCard {
     max-width: 100%;
-    margin-top: 0px
+    margin-top: 0px;
   }
 
   .otherContributorSection {
@@ -2357,7 +2289,7 @@ a {
     left: -5%;
   }
 
-  .carousel .carousel-item>img {
+  .carousel .carousel-item > img {
     width: 60%;
     height: 83%;
   }
