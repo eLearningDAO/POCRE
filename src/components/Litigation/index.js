@@ -5,13 +5,11 @@ import ApproveIcon from '../../assets/approve-icon.png';
 import UserImage2 from '../../assets/top-learner-user.png';
 import UserImage from '../../assets/user-image-2.jpeg';
 import WithdrawIcon from '../../assets/withdraw-icon.png';
-import useUserInfo from '../../hooks/user/userInfo';
 import './Litigation.css';
 
 function Litigation() {
   // get userInfo from the globale state with help of zustand store hook !
-  const user = useUserInfo((s) => s.user);
-  console.log('Litigation', { user });
+  // const user = useUserInfo((s) => s.user);
 
   const navigate = useNavigate();
   const approve = () => {
@@ -146,7 +144,7 @@ function Litigation() {
           <td className="responsive">
             <Button className="withdrawButton">
               <img src={WithdrawIcon} alt="withdraw" />
-               Withdraw
+              Withdraw
             </Button>
           </td>
         </tr>
@@ -180,7 +178,7 @@ function Litigation() {
           <td className="responsive">
             <Button onClick={approve} className="approveButton">
               <img src={ApproveIcon} alt="withdraw" />
-               Approve
+              Approve
             </Button>
           </td>
         </tr>

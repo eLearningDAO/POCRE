@@ -1,12 +1,15 @@
-import { Button, Chip, Grid, Typography } from '@mui/material';
+import {
+  Button, Chip, Grid, Typography,
+} from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useUserInfo from '../../hooks/user/userInfo';
 import './Wallet.css';
+
 function Wallet() {
-  //getting the user from the global state 👤🌎
+  // getting the user from the global state 👤🌎
   const user = useUserInfo((s) => s.user);
-  console.log(user);
+
   //
   const navigate = useNavigate();
 

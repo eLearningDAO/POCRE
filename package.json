@@ -1,5 +1,5 @@
 {
-  "name": "POCRE",
+  "name": "pocre",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -9,10 +9,15 @@
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.0",
     "@mui/styles": "^5.9.0",
+    "@mui/system": "^5.10.8",
+    "@popperjs/core": "^2.11.6",
+    "@svgr/core": "^6.4.0",
+    "@types/popper.js": "^1.11.0",
     "joi": "^17.6.0",
     "js-cookie": "^3.0.1",
     "materialize-css": "^1.0.0-rc.2",
     "moment": "^2.29.4",
+    "popper.js": "^1.16.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hook-form": "^7.35.0",
@@ -27,6 +32,7 @@
     "zustand": "^4.1.1"
   },
   "devDependencies": {
+    "@svgr/webpack": "^6.4.0",
     "eslint": "8.11.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-import": "^2.25.3",
