@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Grid, Typography, Button, Box,
 } from '@mui/material';
 import Form from '../../../uicore/Form';
 import Input from '../../../uicore/Input';
+import Select from '../../../uicore/Select';
 import { stepOneValidation } from './validation';
 
 export default function StepOne({
@@ -13,11 +14,68 @@ export default function StepOne({
   creationSuggestions = [],
   onAuthorInputChange = () => {},
   onCreationInputChange = () => {},
-  error = null,
+  getMaterialDetail = () => {},
 }) {
+  const [error, setError] = useState(null);
+  const [creation, setCreation] = useState(null);
+  const [materialsDetails, setMaterialsDetails] = useState(null);
+  const [author, setAuthor] = useState(null);
+
+  const onCreationSelect = async (event, value) => {
+    setCreation(value?.id);
+
+    // check if material is required for this creation
+    const foundCreation = creationSuggestions.find(
+      (x) => x.creation_id === value?.id,
+    );
+    if (foundCreation?.materials?.length > 0) {
+      const { materials } = foundCreation;
+      const response = await Promise.all(materials.map(async (x) => getMaterialDetail(x)));
+      setMaterialsDetails(response);
+    } else {
+      setMaterialsDetails(null);
+    }
+  };
+
+  const onAuthorSelect = (event, value) => {
+    setAuthor(value?.id);
+  };
+
+  const handleSubmit = async (values) => {
+    // check if material is present
+    if (materialsDetails?.length > 0 && !values?.material) {
+      setError('Invalid material selected, please select one from the suggested list');
+      return;
+    }
+
+    // check if creation is valid
+    const isValidCreation = creationSuggestions.find(
+      (x) => x.creation_id === creation,
+    );
+    if (!isValidCreation) {
+      setError('Invalid creation selected, please select one from the suggested list');
+      return;
+    }
+
+    // check if author name is valid
+    const isValidAuthor = authorSuggestions.find(
+      (x) => x.user_id === author,
+    );
+    if (!isValidAuthor) {
+      setError('Invalid author selected, please select one from the suggested list');
+      return;
+    }
+
+    // clear error
+    setError(null);
+
+    // submit
+    await onComplete({ ...values, creation, author });
+  };
+
   return (
     <Form
-      onSubmit={onComplete}
+      onSubmit={handleSubmit}
       validationSchema={stepOneValidation}
       initialValues={initialValues}
       preventSubmitOnEnter
@@ -58,9 +116,14 @@ export default function StepOne({
               placeholder="Select the creation with authorship infringement"
               name="creation"
               hookToForm
-              onChange={onCreationInputChange}
+              onChange={onCreationSelect}
+              onInput={onCreationInputChange}
               autoComplete
-              autoCompleteOptions={creationSuggestions.map((x) => x.creation_title) || []}
+              autoCompleteOptions={
+                creationSuggestions.map(
+                  (x) => ({ label: x.creation_title, id: x.creation_id }),
+                ) || []
+              }
             />
           </Grid>
 
@@ -73,9 +136,12 @@ export default function StepOne({
               placeholder="Select an author"
               name="author"
               hookToForm
-              onChange={onAuthorInputChange}
+              onChange={onAuthorSelect}
+              onInput={onAuthorInputChange}
               autoComplete
-              autoCompleteOptions={authorSuggestions.map((x) => x.user_name) || []}
+              autoCompleteOptions={
+                authorSuggestions.map((x) => ({ label: x.user_name, id: x.user_id })) || []
+              }
             />
           </Grid>
 
@@ -112,6 +178,36 @@ export default function StepOne({
               hookToForm
             />
           </Grid>
+
+          {materialsDetails && materialsDetails?.length > 0
+          && (
+          <>
+            <Grid
+              xs={12}
+              md={3}
+              lg={2}
+              marginTop={{ xs: '12px', md: '18px' }}
+              display="flex"
+              flexDirection="row"
+              alignItems="center"
+            >
+              <Typography className="heading">Material</Typography>
+            </Grid>
+            <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
+              <Select
+                variant="dark"
+                placeholder="Select the material with authorship infringement"
+                name="material"
+                hookToForm
+                options={
+                  materialsDetails.map(
+                    (x) => ({ value: x.material_id, label: x.material_title }),
+                  )
+              }
+              />
+            </Grid>
+          </>
+          )}
 
           {error && (
             <>

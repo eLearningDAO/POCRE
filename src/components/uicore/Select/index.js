@@ -53,7 +53,7 @@ function Select(
         onClose={handleClose}
       >
         {placeholder && <MenuItem selected value="">{placeholder}</MenuItem>}
-        {options?.map((x) => <MenuItem key={x} value={x?.value}>{x?.label}</MenuItem>)}
+        {options?.map((x, index) => <MenuItem key={index} value={x?.value}>{x?.label}</MenuItem>)}
       </MuiSelect>
       {
         hookToForm
@@ -74,7 +74,7 @@ Select.propTypes = {
   children: PropTypes.node,
   options: PropTypes.arrayOf(PropTypes.shape({
     value: PropTypes.string.isRequired,
-    label: PropTypes.number.isRequired,
+    label: PropTypes.string.isRequired,
   })),
 };
 

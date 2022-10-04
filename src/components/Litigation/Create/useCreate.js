@@ -50,6 +50,21 @@ const useCreate = () => {
     return null;
   }, []);
 
+  // get creation suggestions
+  const getMaterialDetail = useCallback(async (id = '') => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/materials/${id}`,
+      ).then((x) => x.json());
+
+      if (response.code >= 400) throw new Error('Failed to get material details');
+
+      return response;
+    } catch (error) {
+      return error?.message;
+    }
+  }, []);
+
   // get creation suggestion on creation input change
   const handleCreationInputChange = async (event) => {
     if (debounceTagInterval) clearTimeout(debounceTagInterval);
@@ -131,12 +146,18 @@ const useCreate = () => {
       // TODO: how do we decide on who will receive invitations
       )();
 
-      // find material of the creation
-      // TODO: ideally the material should also be selected by the user
-      const foundMaterialId = creationSuggestions?.[0]?.materials?.[0];
+      // check if creation exists
+      const foundCreation = creationSuggestions.find(
+        (x) => x.creation_id === litigationBody.creation,
+      );
+      if (!foundCreation) throw new Error('invalid creation');
+
+      // check if author exists
+      const foundAuthor = authorSuggestions.find((x) => x.user_id === litigationBody.author);
+      if (!foundAuthor) throw new Error('invalid author');
 
       // get auth user
-      const user = JSON.parse(Cookies.get('activeUser') || '{}');
+      // const user = JSON.parse(Cookies.get('activeUser') || '{}');
 
       // make a new litigation
       const response = await fetch(`${API_BASE_URL}/litigations`, {
@@ -148,8 +169,9 @@ const useCreate = () => {
         body: JSON.stringify({
           litigation_title: litigationBody.title.trim(),
           litigation_description: litigationBody.description?.trim(),
-          material_id: foundMaterialId,
-          issuer_id: user.user_id,
+          creation_id: litigationBody.creation,
+          material_id: litigationBody.material,
+          issuer_id: litigationBody.author,
           invitations,
           litigation_start: new Date(litigationBody.publicDate).toISOString(),
           litigation_end: new Date(litigationBody.endDate).toISOString(),
@@ -157,20 +179,25 @@ const useCreate = () => {
         }),
       }).then((x) => x.json());
 
-      if (
-        response.code === 409
-        && response.message === 'material already assigned to a litigation'
-      ) { throw new Error('A litigation for this material already exists'); }
-      if (response.code >= 400) throw new Error('Failed to make a new litigation');
+      if (response.code >= 400) throw new Error(response.message);
 
       setNewLitigationStatus({
         success: true,
         error: null,
       });
     } catch (error) {
+      const errorMap = {
+        'creation already assigned to a litigation': 'A litigation for this creation already exists',
+        'material already assigned to a litigation': 'A litigation for this material already exists',
+        'creation with materials are not allowed to be litigated': 'The selected creation requires a material to be litigated',
+        'invalid creation': 'Please select a valid creation from the suggested list',
+        'invalid author': 'Please select a valid author from the suggested list',
+        'invalid material': 'Please select a valid material from the suggested list',
+      };
+
       setNewLitigationStatus({
         success: false,
-        error: error.message.toString() || 'Failed to make a new litigation',
+        error: errorMap?.[error?.message] || 'Failed to make a new litigation',
       });
     } finally {
       setIsCreatingLitigation(false);
@@ -187,6 +214,7 @@ const useCreate = () => {
     authorSuggestions,
     handleCreationInputChange,
     handleAuthorInputChange,
+    getMaterialDetail,
   };
 };
 

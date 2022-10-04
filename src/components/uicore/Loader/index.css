@@ -14,7 +14,6 @@
 .loader {
     position: relative;
     flex-basis: 33.333%;
-    height: 200px;
 }
 
 .loader::before {
