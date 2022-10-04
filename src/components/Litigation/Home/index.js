@@ -6,8 +6,8 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import useUserInfo from '../../hooks/user/userInfo';
-import './LitigationHome.css';
+import useUserInfo from '../../../hooks/user/userInfo';
+import './index.css';
 
 export default function LitigationClosed() {
   const user = useUserInfo((s) => s.user);
