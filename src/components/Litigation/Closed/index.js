@@ -1,5 +1,10 @@
 /* eslint-disable sonarjs/no-all-duplicated-branches */
-import { Box, Button, Grid, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Grid,
+  Typography
+} from '@mui/material';
 import React, { useState } from 'react';
 import LeftIcon from '../../../assets/left.png';
 import RightIcon from '../../../assets/right.png';
@@ -9,7 +14,6 @@ import ThumbPinIcon from '../../../assets/svgs/thumb-pin.svg';
 import LitigationCard from '../../cards/LitigationCard';
 import UserCard from '../../cards/UserCard';
 import './index.css';
-
 export default function LitigationClosed() {
   const [slideNumber, setSlideNumber] = useState(1);
 

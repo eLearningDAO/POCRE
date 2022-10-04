@@ -1,9 +1,9 @@
-import create from "zustand";
+import create from 'zustand';
 
 const useUserInfo = create((set, get) => ({
   user: null,
-  setUser: (fn) => {
-    set({ user: fn(get().user) });
+  setUser: (setFnUser) => {
+    set({ user: setFnUser(get().user) });
     return { user: get().user };
   },
 }));

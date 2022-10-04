@@ -54,7 +54,7 @@ const useHeader = () => {
     setActiveUser(temporaryUser);
     Cookies.set('activeUser', JSON.stringify(temporaryUser));
 
-    //set User gollably at our app
+    // set User gollably at our app
     setUserContext(() => temporaryUser);
   };
 

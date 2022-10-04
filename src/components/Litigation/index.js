@@ -9,7 +9,7 @@ import useUserInfo from '../../hooks/user/userInfo';
 import './Litigation.css';
 
 function Litigation() {
-  //get userInfo from the globale state with help of zustand store hook !
+  // get userInfo from the globale state with help of zustand store hook !
   const user = useUserInfo((s) => s.user);
   console.log('Litigation', { user });
 
@@ -145,7 +145,8 @@ function Litigation() {
           <td className="responsive">01/07/2022</td>
           <td className="responsive">
             <Button className="withdrawButton">
-              <img src={WithdrawIcon} alt="withdraw" /> Withdraw
+              <img src={WithdrawIcon} alt="withdraw" />
+               Withdraw
             </Button>
           </td>
         </tr>
@@ -178,7 +179,8 @@ function Litigation() {
           <td className="responsive">01/07/2022</td>
           <td className="responsive">
             <Button onClick={approve} className="approveButton">
-              <img src={ApproveIcon} alt="withdraw" /> Approve
+              <img src={ApproveIcon} alt="withdraw" />
+               Approve
             </Button>
           </td>
         </tr>
