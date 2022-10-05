@@ -64,11 +64,6 @@ export default router;
  *                 items:
  *                    type: string
  *                    format: uuid
- *               invitations:
- *                 type: array
- *                 items:
- *                    type: string
- *                    format: uuid
  *               litigation_start:
  *                 type: string
  *                 format: date-time
@@ -84,7 +79,6 @@ export default router;
  *                material_id: fa52d76c-664a-41de-aebb-b311a74ef570
  *                issuer_id: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
  *                decisions: [6087ac9e-7e15-4ad7-b256-7893a00c3577]
- *                invitations: [37a38a64-c2ea-4883-881b-2b1d5362db44]
  *                litigation_start: 2022-09-09T19:00:00.000Z
  *                litigation_end: 2022-09-09T19:00:00.000Z
  *                reconcilate: false
@@ -104,7 +98,6 @@ export default router;
  *                 - $ref: '#/components/responses/MaterialNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
  *                 - $ref: '#/components/responses/DecisionNotFound'
- *                 - $ref: '#/components/responses/InvitationNotFound'
  *             examples:
  *               CreationNotFound:
  *                 summary: creation not found
@@ -126,11 +119,6 @@ export default router;
  *                 value:
  *                   code: 404
  *                   message: deicison not found
- *               InvitationNotFound:
- *                 summary: invitation not found
- *                 value:
- *                   code: 404
- *                   message: invitation not found
  *       "409":
  *         content:
  *           application/json:
@@ -142,7 +130,6 @@ export default router;
  *                 - $ref: '#/components/responses/MaterialAlreadyAssignedToLitigation'
  *                 - $ref: '#/components/responses/IssuerAlreadyAssignedToLitigation'
  *                 - $ref: '#/components/responses/DecisionAlreadyAssignedToLitigation'
- *                 - $ref: '#/components/responses/InvitationAlreadyAssignedToLitigation'
  *             examples:
  *               CreationAlreadyAssignedToLitigation:
  *                 summary: creation already assigned to a litigation
@@ -174,11 +161,6 @@ export default router;
  *                 value:
  *                   code: 409
  *                   message: decision already assigned to a litigation
- *               InvitationAlreadyAssignedToLitigation:
- *                 summary: invitation already assigned to a litigation
- *                 value:
- *                   code: 409
- *                   message: invitation already assigned to a litigation
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *
@@ -288,11 +270,6 @@ export default router;
  *                 items:
  *                    type: string
  *                    format: uuid
- *               invitations:
- *                 type: array
- *                 items:
- *                    type: string
- *                    format: uuid
  *               litigation_start:
  *                 type: string
  *                 format: date-time
@@ -307,7 +284,6 @@ export default router;
  *                material_id: fa52d76c-664a-41de-aebb-b311a74ef570
  *                issuer_id: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
  *                decisions: [6087ac9e-7e15-4ad7-b256-7893a00c3577]
- *                invitations: [37a38a64-c2ea-4883-881b-2b1d5362db44]
  *                litigation_start: 2022-09-09T19:00:00.000Z
  *                litigation_end: 2022-09-09T19:00:00.000Z
  *                reconcilate: false
@@ -327,7 +303,6 @@ export default router;
  *                 - $ref: '#/components/responses/MaterialNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
  *                 - $ref: '#/components/responses/DecisionNotFound'
- *                 - $ref: '#/components/responses/InvitationNotFound'
  *             examples:
  *               LitigationNotFound:
  *                 summary: litigation not found
@@ -349,11 +324,6 @@ export default router;
  *                 value:
  *                   code: 404
  *                   message: deicison not found
- *               InvitationNotFound:
- *                 summary: invitation not found
- *                 value:
- *                   code: 404
- *                   message: invitation not found
  *       "409":
  *         content:
  *           application/json:
@@ -363,7 +333,6 @@ export default router;
  *                 - $ref: '#/components/responses/MaterialAlreadyAssignedToLitigation'
  *                 - $ref: '#/components/responses/IssuerAlreadyAssignedToLitigation'
  *                 - $ref: '#/components/responses/DecisionAlreadyAssignedToLitigation'
- *                 - $ref: '#/components/responses/InvitationAlreadyAssignedToLitigation'
  *             examples:
  *               MaterialDoesNotBelongToCreation:
  *                 summary: material does not belong to creation
@@ -385,11 +354,6 @@ export default router;
  *                 value:
  *                   code: 409
  *                   message: decision already assigned to a litigation
- *               InvitationAlreadyAssignedToLitigation:
- *                 summary: invitation already assigned to a litigation
- *                 value:
- *                   code: 409
- *                   message: invitation already assigned to a litigation
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *
