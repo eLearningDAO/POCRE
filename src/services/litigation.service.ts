@@ -76,40 +76,6 @@ export const verifyLitigationPossibilityForCreation = async (creation_id: string
 };
 
 /**
- * Check if a litigation has duplicate invitations
- * @param {string[]} invitations
- * @param {string|undefined} exclude_litigation
- * @returns {Promise<void>}
- */
-export const verifyLitigationInvitationDuplicates = async (
-  invitations: string[],
-  exclude_litigation?: string
-): Promise<void> => {
-  const foundInvitation = await (async () => {
-    try {
-      const result = exclude_litigation
-        ? await db.query(
-            `SELECT * FROM litigation WHERE litigation_id <> $1 AND invitations && '{${invitations.reduce(
-              (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
-            )}}';`,
-            [exclude_litigation]
-          )
-        : await db.query(
-            `SELECT * FROM litigation WHERE invitations && '{${invitations.reduce(
-              (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
-            )}}';`,
-            []
-          );
-      return result.rows[0];
-    } catch {
-      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
-    }
-  })();
-
-  if (foundInvitation) throw new ApiError(httpStatus.CONFLICT, 'invitation already assigned to a litigation');
-};
-
-/**
  * Check if a litigation has duplicate decisions
  * @param {string[]} decisions
  * @param {string|undefined} exclude_litigation
@@ -151,11 +117,6 @@ export const verifyLitigationDecisionDuplicates = async (
 export const createLitigation = async (litigationBody: ILitigation): Promise<ILitigationDoc> => {
   // verify if the creation can be litigated
   await verifyLitigationPossibilityForCreation(litigationBody.creation_id, litigationBody.material_id);
-
-  // verify if invitation/s already exist for a litigation, throw error if a invitation is found
-  if (litigationBody.invitations && litigationBody.invitations.length > 0) {
-    await verifyLitigationInvitationDuplicates(litigationBody.invitations);
-  }
 
   // verify if decision/s already exist for a litigation, throw error if a decision is found
   if (litigationBody.decisions && litigationBody.decisions.length > 0) {
@@ -267,11 +228,6 @@ export const updateLitigationById = async (id: string, updateBody: Partial<ILiti
   // verify if material belongs to creation of this litigation, else throw error
   if (foundLitigation && updateBody.material_id) {
     await verifyLitigationPossibilityForCreation(foundLitigation.creation_id, updateBody.material_id);
-  }
-
-  // verify if invitation/s already exist for another litigation, throw error if a invitation is found
-  if (updateBody.invitations && updateBody.invitations.length > 0) {
-    await verifyLitigationInvitationDuplicates(updateBody.invitations, id);
   }
 
   // verify if decision/s already exist for another litigation, throw error if a decision is found
