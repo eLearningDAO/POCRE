@@ -141,11 +141,6 @@ const useCreate = () => {
     try {
       setIsCreatingLitigation(true);
 
-      // make new invitations
-      const invitations = await (async () => []
-      // TODO: how do we decide on who will receive invitations
-      )();
-
       // check if creation exists
       const foundCreation = creationSuggestions.find(
         (x) => x.creation_id === litigationBody.creation,
@@ -172,7 +167,6 @@ const useCreate = () => {
           creation_id: litigationBody.creation,
           material_id: litigationBody.material,
           issuer_id: litigationBody.author,
-          invitations,
           litigation_start: new Date(litigationBody.publicDate).toISOString(),
           litigation_end: new Date(litigationBody.endDate).toISOString(),
           reconcilate: litigationBody.inviteAuthors,
