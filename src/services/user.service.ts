@@ -28,6 +28,10 @@ interface IUserDoc {
   user_bio: string;
   date_joined: string;
 }
+interface IUserCriteria {
+  required_users: number;
+  exclude_users?: string[];
+}
 
 /**
  * Create a user
@@ -157,5 +161,24 @@ export const deleteUserById = async (id: string): Promise<IUserDoc | null> => {
     return user;
   } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
+  }
+};
+
+/**
+ * Find users that pass a defined criteria
+ * @param {IUserCriteria} criteria
+ * @returns {Promise<Array<IUserDoc>>}
+ */
+export const getReputedUsers = async (criteria: IUserCriteria): Promise<Array<IUserDoc>> => {
+  try {
+    const conditions =
+      criteria.exclude_users && criteria.exclude_users.length > 0
+        ? `WHERE ${criteria.exclude_users?.map((user_id) => `user_id <> '${user_id}'`).join(' AND ')}`
+        : '';
+    const result = await db.query(`SELECT * FROM users ${conditions} LIMIT $1;`, [criteria.required_users]);
+    const users = result.rows as Array<IUserDoc>;
+    return users;
+  } catch {
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };

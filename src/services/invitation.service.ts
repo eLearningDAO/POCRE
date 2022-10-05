@@ -38,7 +38,7 @@ interface IInvitationDoc {
  * @param {IInvitation} invitationBody
  * @returns {Promise<IInvitationDoc>}
  */
-export const createInvitation = async (invitationBody: IInvitation): Promise<IInvitationDoc | void> => {
+export const createInvitation = async (invitationBody: IInvitation): Promise<IInvitationDoc> => {
   if (invitationBody.invite_from === invitationBody.invite_to) {
     throw new ApiError(httpStatus.CONFLICT, `user cannot invite themselve`);
   }
