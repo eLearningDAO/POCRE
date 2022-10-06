@@ -219,5 +219,9 @@
 
 .loader {
     flex-basis: 33.333%;
-    height: 200px;
+}
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
 }

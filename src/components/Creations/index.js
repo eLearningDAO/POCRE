@@ -121,7 +121,7 @@ function Creations() {
                   // eslint-disable-next-line no-return-await
                   onDeleteClick={async () => await deleteCreation(x)}
                 />
-            ),
+              ),
           )}
           {creations?.total_results < creations?.results?.length && (
             <Button

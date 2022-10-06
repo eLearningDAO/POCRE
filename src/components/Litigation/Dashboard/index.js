@@ -1,11 +1,11 @@
 import { Button, Grid, Typography } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import ApproveIcon from '../../assets/approve-icon.png';
-import UserImage2 from '../../assets/top-learner-user.png';
-import UserImage from '../../assets/user-image-2.jpeg';
-import WithdrawIcon from '../../assets/withdraw-icon.png';
-import './Litigation.css';
+import ApproveIcon from '../../../assets/approve-icon.png';
+import UserImage2 from '../../../assets/top-learner-user.png';
+import UserImage from '../../../assets/user-image-2.jpeg';
+import WithdrawIcon from '../../../assets/withdraw-icon.png';
+import './index.css';
 
 function Litigation() {
   // get userInfo from the globale state with help of zustand store hook !

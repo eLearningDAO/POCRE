@@ -13,6 +13,7 @@ import RemoveButton from './btns/RemoveButton';
 import ShareButton from './btns/ShareButton';
 import './index.css';
 import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
+import CloseIcon from '../../../assets/svgs/close.svg';
 
 function DeleteCofirmationDialog({ onClose, onConfirm }) {
   return (
@@ -39,6 +40,85 @@ function DeleteCofirmationDialog({ onClose, onConfirm }) {
   );
 }
 
+function CreationDetailsPreviewDialog(
+  {
+    creation = {
+      title: 'First Creation',
+      description: 'Lorem Ipsum',
+      source: 'https://example.com',
+      date: '4/4/22',
+      author: {
+        user_name: 'ninja',
+      },
+      materials: [
+        {
+          title: 'First Material',
+          fileType: 'image',
+          link: 'https://example.com',
+          author: 'turtle',
+        },
+      ],
+    },
+    onClose = () => { },
+  },
+) {
+  return (
+    <div
+      className="creation-preview-container"
+      onClick={(event) => event.target === event.currentTarget && onClose()}
+    >
+      <div className="creation-preview">
+        <div className="creation-preview-header">
+          <Typography className="heading h4">Preview</Typography>
+          <Button padding="0" minWidth="0" onClick={() => onClose()}>
+            <img src={CloseIcon} height="24" width="24" alt="" />
+          </Button>
+        </div>
+        <div className="creation-preview-content">
+          <div className="creation-preview-grid">
+            <span className="heading">Title</span>
+            <span>{creation?.title}</span>
+
+            <span className="heading">Description</span>
+            <span>{creation?.description}</span>
+
+            <span className="heading">Source</span>
+            <span>{creation?.source}</span>
+
+            <span className="heading">Date</span>
+            <span>{creation?.date}</span>
+
+            <span className="heading">Author</span>
+            <span>{creation?.author?.user_name}</span>
+          </div>
+
+          {creation?.materials && (
+            <>
+              <h4 className="heading h4">Materials Submitted</h4>
+              <table>
+                <tr>
+                  <th>Title</th>
+                  <th>Type</th>
+                  <th>Link</th>
+                  <th>Author</th>
+                </tr>
+                {creation?.materials?.map((x) => (
+                  <tr>
+                    <td>{x?.title}</td>
+                    <td className="capitalize">{x?.fileType}</td>
+                    <td><a href={x?.link}>{x?.link}</a></td>
+                    <td>{x?.author}</td>
+                  </tr>
+                ))}
+              </table>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function MediaPreview({ mediaType, mediaUrl, onClose }) {
   return (
     <div
@@ -46,13 +126,11 @@ function MediaPreview({ mediaType, mediaUrl, onClose }) {
       onClick={(event) => event.target === event.currentTarget && onClose()}
     >
       <div
-        className={`media-preview-content ${
-          mediaType === 'audio' && 'media-preview-content-audio'
-        } ${
-          mediaType === 'document'
+        className={`media-preview-content ${mediaType === 'audio' && 'media-preview-content-audio'
+          } ${mediaType === 'document'
           && !mediaUrl.includes('.pdf')
           && 'media-preview-content-unsupported'
-        }`}
+          }`}
       >
         {mediaType === 'image' && <img src={mediaUrl} alt="" />}
         {mediaType === 'video' && <video src={mediaUrl} controls />}
@@ -85,18 +163,24 @@ function MediaPreview({ mediaType, mediaUrl, onClose }) {
 function CollectionCard({
   interactionBtns,
   creationDate = '2022-01-01 00:00:00',
-  materials = [1, 2, 3, 4],
+  materials = [{
+    title: 'First Material',
+    fileType: 'image',
+    link: 'https://example.com',
+    author: 'turtle',
+  }],
   title = 'Mobile App Design',
   description = '1000+ free files you can duplicate, remix, and reuse 1000+ free files',
   mediaUrl = 'https://images.pexels.com/photos/415071/pexels-photo-415071.jpeg?cs=srgb&dl=pexels-pixabay-415071.jpg&fm=jpg',
   canEdit = true,
   canDelete = true,
-  onEditClick = () => {},
-  onDeleteClick = () => {},
+  onEditClick = () => { },
+  onDeleteClick = () => { },
 }) {
   const [mediaType, setMediaType] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(null);
   const [showMediaPreview, setShowMediaPreview] = useState(null);
+  const [showCreationDetailsPreview, setShowCreationDetailsPreview] = useState(null);
 
   useEffect(() => {
     const x = getUrlFileType(mediaUrl);
@@ -118,6 +202,18 @@ function CollectionCard({
         <DeleteCofirmationDialog
           onClose={() => setShowDeleteConfirmation(false)}
           onConfirm={handleDelete}
+        />
+      )}
+      {showCreationDetailsPreview && (
+        <CreationDetailsPreviewDialog
+          creation={{
+            title,
+            description,
+            source: mediaUrl,
+            date: creationDate,
+            materials,
+          }}
+          onClose={() => setShowCreationDetailsPreview(false)}
         />
       )}
       {showMediaPreview && (

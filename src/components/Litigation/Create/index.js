@@ -8,7 +8,6 @@ import useCreate from './useCreate';
 function CreateLitigation() {
   const [step, setStep] = useState(1);
   const [litigationDraft, setLitigationDraft] = useState({});
-  const [invalidAuthorOrCreationError, setInvalidAuthorOrCreationError] = useState(null);
 
   const {
     authorSuggestions,
@@ -18,29 +17,11 @@ function CreateLitigation() {
     makeNewLitigation,
     newLitigationStatus,
     isCreatingLitigation,
+    getMaterialDetail,
   } = useCreate();
 
   const handleValues = async (values) => {
     if (step === 1) {
-      // check if creation title is valid
-      const isValidCreation = creationSuggestions.find(
-        (x) => x.creation_title === values.creation.trim(),
-      );
-      if (!isValidCreation) {
-        setInvalidAuthorOrCreationError('Invalid creation selected, please select one from the suggested list');
-        return;
-      }
-
-      // check if author name is valid
-      const isValidAuthor = authorSuggestions.find(
-        (x) => x.user_name === values.author.trim(),
-      );
-      if (!isValidAuthor) {
-        setInvalidAuthorOrCreationError('Invalid author selected, please select one from the suggested list');
-        return;
-      }
-
-      setInvalidAuthorOrCreationError(null);
       setLitigationDraft({ ...values, materials: litigationDraft?.materials || null });
     }
 
@@ -73,7 +54,7 @@ function CreateLitigation() {
         onAuthorInputChange={handleAuthorInputChange}
         creationSuggestions={creationSuggestions}
         onCreationInputChange={handleCreationInputChange}
-        error={invalidAuthorOrCreationError}
+        getMaterialDetail={getMaterialDetail}
         initialValues={{
           ...(litigationDraft?.title && { title: litigationDraft.title }),
           ...(litigationDraft?.description && { description: litigationDraft.description }),
@@ -90,6 +71,7 @@ function CreateLitigation() {
         onComplete={handleValues}
         status={newLitigationStatus}
         loading={isCreatingLitigation}
+        authors={litigationDraft?.involvedAuthors || []}
       />
       )}
     </Grid>

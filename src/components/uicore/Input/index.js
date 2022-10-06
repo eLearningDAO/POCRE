@@ -18,6 +18,7 @@ function Input(
     hookToForm,
     fullWidth,
     onChange,
+    onInput,
     variant,
     autoComplete,
     autoCompleteOptions,
@@ -40,6 +41,8 @@ function Input(
             freeSolo
             fullWidth
             options={options}
+            onChange={onChange}
+            onInput={onInput}
             renderInput={(parameters) => (
               <TextField
                 {...parameters}
@@ -48,7 +51,6 @@ function Input(
                 placeholder={placeholder}
                 {...(hookToForm ? formContext.register(name) : {})}
                 className={`input input-${variant} ${hookToForm && formContext?.formState?.errors?.[name]?.message ? 'input-error' : ''}`}
-                onChange={onChange}
               />
             )}
           />
@@ -80,6 +82,7 @@ function Input(
 
 Input.propTypes = {
   onChange: PropTypes.func,
+  onInput: PropTypes.func,
   name: PropTypes.string,
   type: PropTypes.oneOf('text', 'date'),
   placeholder: PropTypes.string,
@@ -94,6 +97,7 @@ Input.propTypes = {
 
 Input.defaultProps = {
   onChange: () => {},
+  onInput: () => {},
   name: '',
   type: 'text',
   placeholder: '',
