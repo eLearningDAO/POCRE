@@ -71,6 +71,7 @@ function CreateLitigation() {
         onComplete={handleValues}
         status={newLitigationStatus}
         loading={isCreatingLitigation}
+        authors={litigationDraft?.involvedAuthors || []}
       />
       )}
     </Grid>

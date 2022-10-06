@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import {
   Grid, Typography, Button, Box,
 } from '@mui/material';
+import Cookies from 'js-cookie';
 import Form from '../../../uicore/Form';
 import Input from '../../../uicore/Input';
 import Select from '../../../uicore/Select';
 import { stepOneValidation } from './validation';
+import { API_BASE_URL } from '../../../../config';
 
 export default function StepOne({
   onComplete = () => {},
@@ -69,8 +71,41 @@ export default function StepOne({
     // clear error
     setError(null);
 
+    // get involved authors
+    const involvedAuthors = await (async () => {
+      const temporaryAuthors = [];
+
+      // the one who is creating this litigation
+      const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
+      temporaryAuthors.push({ name: authUser?.user_name, image: `https://i.pravatar.cc/50?img=${Math.random()}` });
+
+      // the one who is the author of creation
+      const creationAuthorId = creationSuggestions.find(
+        (x) => x?.creation_id === creation,
+      )?.author_id;
+      const creationAuthor = await fetch(`${API_BASE_URL}/users/${creationAuthorId}`).then((x) => x.json());
+      temporaryAuthors.push({ name: creationAuthor?.user_name, image: `https://i.pravatar.cc/50?img=${Math.random()}` });
+
+      // the one who is the author of material
+      if (materialsDetails) {
+        const materialAuthorId = materialsDetails.find(
+          (x) => x?.material_id === values.material,
+        )?.author_id;
+        const materialAuthor = await fetch(`${API_BASE_URL}/users/${materialAuthorId}`).then((x) => x.json());
+        temporaryAuthors.push({ name: materialAuthor.user_name, image: `https://i.pravatar.cc/50?img=${Math.random()}` });
+      }
+
+      // the one who is the assumed author
+      const assumedAuthor = authorSuggestions.find((x) => x?.user_id === author);
+      temporaryAuthors.push({ name: assumedAuthor?.user_name, image: `https://i.pravatar.cc/50?img=${Math.random()}` });
+
+      return temporaryAuthors;
+    })();
+
     // submit
-    await onComplete({ ...values, creation, author });
+    await onComplete({
+      ...values, creation, author, involvedAuthors,
+    });
   };
 
   return (

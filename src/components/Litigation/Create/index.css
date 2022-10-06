@@ -119,3 +119,9 @@
   padding: 0 !important;
   min-width: initial !important;
 }
+
+.voting-msg {
+  background-color: white;
+  padding: 24px;
+  border-radius: 16px;
+}
