@@ -35,7 +35,7 @@ function Wallet() {
           </div>
           <Grid item className="userDetailsLeft">
             <div className="userDetailsLeftHeader">
-              <Typography variant="h4">{user.user_name || 'Loading'}</Typography>
+              <Typography variant="h4">{user?.user_name || 'Loading...'}</Typography>
               <Typography variant="p">User experience designer</Typography>
             </div>
 

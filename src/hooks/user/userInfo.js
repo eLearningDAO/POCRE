@@ -1,10 +1,10 @@
 import create from 'zustand';
 
 const useUserInfo = create((set, get) => ({
+  login: false,
   user: null,
-  setUser: (setFunctionUser) => {
-    set({ user: setFunctionUser(get().user) });
-    return { user: get().user };
+  setUser: (function_) => {
+    set(function_(get()));
   },
 }));
 

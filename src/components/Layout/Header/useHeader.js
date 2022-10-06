@@ -7,7 +7,7 @@ import useUserInfo from '../../../hooks/user/userInfo';
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 
 const useHeader = () => {
-  const setUserContext = useUserInfo((s) => s.setUser);
+  const { setUser: setUserContext, login } = useUserInfo();
   const [users, setUsers] = useState([]);
   const [activeUser, setActiveUser] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -34,7 +34,7 @@ const useHeader = () => {
       const temporaryUser = Object.keys(authUser).length > 0 ? authUser : usersWithAvatar?.[0];
       setActiveUser(temporaryUser);
       Cookies.set('activeUser', JSON.stringify(temporaryUser));
-      setUserContext(() => temporaryUser);
+      setUserContext((previousS) => ({ ...previousS, user: temporaryUser }));
       setFetchUserStatus({
         success: true,
         error: null,
@@ -55,10 +55,11 @@ const useHeader = () => {
     Cookies.set('activeUser', JSON.stringify(temporaryUser));
 
     // set User gollably at our app
-    setUserContext(() => temporaryUser);
+    setUserContext((previousS) => ({ ...previousS, user: temporaryUser }));
   };
 
   return {
+    login,
     users,
     activeUser,
     loading,

@@ -28,6 +28,7 @@ import './Header.css';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import LoginButton from '../../styled/btns/LoginButton';
 import SideBar from '../Sidebar/Sidebar';
 import logo from '../../../assets/logo-1.png';
 import useHeader from './useHeader';
@@ -46,7 +47,7 @@ import useHeader from './useHeader';
 function HomeHeader({ displayNav = false }) {
   const location = useLocation();
   const {
-    fetchUserStatus, fetchUsers, users, activeUser, onUserSelect,
+    fetchUserStatus, fetchUsers, users, activeUser, onUserSelect, login,
   } = useHeader();
 
   const [displayResponsiveMenu, setDisplayResponsiveMenu] = React.useState(false);
@@ -64,7 +65,9 @@ function HomeHeader({ displayNav = false }) {
         alignItems="center"
         display={{ xs: 'none', sm: 'none', md: 'flex' }}
       >
-        <Link to="/"><img alt="logo" src={logo} className="site-logo" /></Link>
+        <Link to="/">
+          <img alt="logo" src={logo} className="site-logo" />
+        </Link>
       </Grid>
 
       {/* <Grid item md={4} className='responsive'>
@@ -85,15 +88,25 @@ function HomeHeader({ displayNav = false }) {
         display={{ xs: 'none', sm: 'none', md: 'flex' }}
       >
         {displayNav && (
-        <nav className="site-nav">
-          <ul>
-            <li className={location.pathname === '/creations' ? 'activeSidebarMenu' : ''}><Link to="/creations">Creations</Link></li>
-            <li className={location.pathname === '/invitation' ? 'activeSidebarMenu' : ''}><Link to="/invitation">Recognition</Link></li>
-            <li className={location.pathname === '/litigation' ? 'activeSidebarMenu' : ''}><Link to="/litigation">Litigation</Link></li>
-            <li className={location.pathname === '/wallet' ? 'activeSidebarMenu' : ''}><Link to="/wallet">Wallet</Link></li>
-            <li className={location.pathname === '/credit' ? 'activeSidebarMenu' : ''}><Link to="/credit">Credits</Link></li>
-          </ul>
-        </nav>
+          <nav className="site-nav">
+            <ul>
+              <li className={location.pathname === '/creations' ? 'activeSidebarMenu' : ''}>
+                <Link to="/creations">Creations</Link>
+              </li>
+              <li className={location.pathname === '/invitation' ? 'activeSidebarMenu' : ''}>
+                <Link to="/invitation">Recognition</Link>
+              </li>
+              <li className={location.pathname === '/litigation' ? 'activeSidebarMenu' : ''}>
+                <Link to="/litigation">Litigation</Link>
+              </li>
+              <li className={location.pathname === '/wallet' ? 'activeSidebarMenu' : ''}>
+                <Link to="/wallet">Wallet</Link>
+              </li>
+              <li className={location.pathname === '/credit' ? 'activeSidebarMenu' : ''}>
+                <Link to="/credit">Credits</Link>
+              </li>
+            </ul>
+          </nav>
         )}
       </Grid>
 
@@ -107,7 +120,10 @@ function HomeHeader({ displayNav = false }) {
       >
         <Button
           style={{
-            minWidth: 'initial', padding: '24', backgroundColor: '#ffffff', borderRadius: '4px',
+            minWidth: 'initial',
+            padding: '24',
+            backgroundColor: '#ffffff',
+            borderRadius: '4px',
           }}
           onClick={() => setDisplayResponsiveMenu(!displayResponsiveMenu)}
         >
@@ -115,51 +131,66 @@ function HomeHeader({ displayNav = false }) {
         </Button>
       </Grid>
 
-      <Grid
-        item
-        md={3}
-        marginLeft="auto"
-        display="flex"
-        justifyContent="flex-end"
-        alignItems="center"
-      >
-        <ul style={{
-          display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center',
-        }}
+      {login && (
+        <Grid
+          item
+          md={3}
+          marginLeft="auto"
+          display="flex"
+          justifyContent="flex-end"
+          alignItems="center"
         >
-          {/* <li className='menuBox'><img alt='icon-menu-1' src={icon1} /></li>
+          <ul
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+            }}
+          >
+            {/* <li className='menuBox'><img alt='icon-menu-1' src={icon1} /></li>
           <li className='menuBox'><img alt='icon-menu-1' src={icon2} /></li> */}
-          <li style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            {activeUser && <img alt="user-img" style={{ width: '40px', border: '1px solid #fff', borderRadius: '7px' }} src={activeUser.avatar} />}
-            {fetchUserStatus.error && <span className="responsive">{fetchUserStatus.error}</span>}
-            {fetchUserStatus.success && activeUser && (
-            <FormControl fullWidth variant="standard" style={{ minWidth: '220px' }}>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={activeUser.user_id}
-                style={{ border: 'none' }}
-                // {... (activeUser.user_id && { value: activeUser?.user_id })}
-                onChange={onUserSelect}
-                SelectDisplayProps={{
-                  style: { border: 'none' },
-                }}
-              >
-                {
-                  users.map((x, index) => (
-                    <MenuItem key={index} value={x.user_id}>
-                      {x.user_name}
-                      {' '}
-                      (Test User)
-                    </MenuItem>
-                  ))
-                }
-              </Select>
-            </FormControl>
-            )}
-          </li>
-        </ul>
-      </Grid>
+            <li style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              {activeUser && (
+                <img
+                  alt="user-img"
+                  style={{
+                    width: '40px',
+                    border: '1px solid #fff',
+                    borderRadius: '7px',
+                  }}
+                  src={activeUser.avatar}
+                />
+              )}
+              {fetchUserStatus.error && <span className="responsive">{fetchUserStatus.error}</span>}
+              {fetchUserStatus.success && activeUser && (
+                <FormControl fullWidth variant="standard" style={{ minWidth: '220px' }}>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={activeUser.user_id}
+                    style={{ border: 'none' }}
+                    // {... (activeUser.user_id && { value: activeUser?.user_id })}
+                    onChange={onUserSelect}
+                    SelectDisplayProps={{
+                      style: { border: 'none' },
+                    }}
+                  >
+                    {users.map((x, index) => (
+                      <MenuItem key={index} value={x.user_id}>
+                        {x.user_name}
+                        {' '}
+                        (Test User)
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+            </li>
+          </ul>
+        </Grid>
+      )}
+      {!login && <LoginButton />}
 
       {/* <Grid item xs={12} className='non-responsive'>
         <TextField variant="standard"
@@ -175,20 +206,29 @@ function HomeHeader({ displayNav = false }) {
         onExit={() => setDisplayResponsiveMenu(false)}
       > */}
       {displayResponsiveMenu && (
-      <Box component="header" className="site-popup-menu" padding="2" display={{ md: 'none' }}>
-        <nav>
-          <Grid container className="site-popup-header" alignItems="center" justifyContent="space-between">
-            <Grid item xs={8} paddingTop="12" paddingLeft="12" alignItems="center">
-              <Link onClick={() => setDisplayResponsiveMenu(false)} to="/"><img alt="logo" src={logo} className="site-logo" /></Link>
+        <Box component="header" className="site-popup-menu" padding="2" display={{ md: 'none' }}>
+          <nav>
+            <Grid
+              container
+              className="site-popup-header"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Grid item xs={8} paddingTop="12" paddingLeft="12" alignItems="center">
+                <Link onClick={() => setDisplayResponsiveMenu(false)} to="/">
+                  <img alt="logo" src={logo} className="site-logo" />
+                </Link>
+              </Grid>
+
+              <Grid item xs={4} className="responsiveClearIcon">
+                <Button onClick={() => setDisplayResponsiveMenu(false)}>
+                  <ClearIcon fontSize="large" />
+                </Button>
+              </Grid>
             </Grid>
 
-            <Grid item xs={4} className="responsiveClearIcon">
-              <Button onClick={() => setDisplayResponsiveMenu(false)}><ClearIcon fontSize="large" /></Button>
-            </Grid>
-          </Grid>
-
-          <SideBar />
-          {/* <ul className="sidebar">
+            <SideBar />
+            {/* <ul className="sidebar">
               <li className={location.pathname === '/creations' ? 'activeSidebarMenu' : ''}>
                 <Link onClick={() => setDisplayResponsiveMenu(false)} to='/creations'>
                   <img
@@ -230,8 +270,8 @@ function HomeHeader({ displayNav = false }) {
                 </Link>
               </li>
             </ul> */}
-        </nav>
-      </Box>
+          </nav>
+        </Box>
       )}
       {/* </Fade> */}
     </Grid>

@@ -8,11 +8,12 @@ import CreationCard from '../cards/CreationCard';
 import './index.css';
 import useCreations from './useCreations';
 import Loader from '../uicore/Loader';
+import useUserInfo from '../../hooks/user/userInfo';
 
 function Creations() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
-
+  const login = useUserInfo((s) => s.login);
   const {
     fetchCreations,
     creations,
@@ -44,18 +45,17 @@ function Creations() {
     <Grid container spacing={2}>
       {isDeletingCreation && <Loader withBackdrop size="large" />}
       {(deleteCreationStatus.success || deleteCreationStatus.error) && (
-      <Snackbar
-        open
-        onClose={closeDeleteNotification}
-      >
-        <Alert
-          onClose={closeDeleteNotification}
-          severity={deleteCreationStatus.success ? 'success' : 'error'}
-          sx={{ width: '100%' }}
-        >
-          {deleteCreationStatus.success ? 'Creation deleted successfully!' : 'Failed to delete creation!'}
-        </Alert>
-      </Snackbar>
+        <Snackbar open onClose={closeDeleteNotification}>
+          <Alert
+            onClose={closeDeleteNotification}
+            severity={deleteCreationStatus.success ? 'success' : 'error'}
+            sx={{ width: '100%' }}
+          >
+            {deleteCreationStatus.success
+              ? 'Creation deleted successfully!'
+              : 'Failed to delete creation!'}
+          </Alert>
+        </Snackbar>
       )}
       <Grid
         item
@@ -66,7 +66,9 @@ function Creations() {
         height="fit-content"
         padding={{ xs: '12px', md: '0' }}
       >
-        <Typography className="heading h4" variant="h4">The original creations I made</Typography>
+        <Typography className="heading h4" variant="h4">
+          The original creations I made
+        </Typography>
         <Grid gap={{ sm: '8px' }} display="flex" height="fit-content" flexDirection="row">
           <TextField
             variant="standard"
@@ -80,11 +82,17 @@ function Creations() {
             id="fullWidth"
             onChange={handleSearch}
           />
-          <Button onClick={add} className="btn btn-primary">+ Add New</Button>
+          {login && (
+            <Button onClick={add} className="btn btn-primary">
+              + Add New
+            </Button>
+          )}
         </Grid>
       </Grid>
 
-      {isLoadingCreations ? <div style={{ margin: 'auto' }} className="loader" /> : (creations?.results?.length > 0 ? (
+      {isLoadingCreations ? (
+        <div style={{ margin: 'auto' }} className="loader" />
+      ) : (creations?.results?.length > 0 ? (
         <Grid
           xs={12}
           item
@@ -96,36 +104,38 @@ function Creations() {
           className="hidden-scrollbar"
           padding={{ xs: '12px', md: '0' }}
         >
-          {creations?.results?.map((x, index) => (
-            ((x.creation_title || '') + (x.creation_description || ''))
-              ?.toLowerCase()?.includes(search?.toLowerCase()) && (
-              <CreationCard
-                key={index}
-                title={x?.creation_title}
-                description={x?.creation_description}
-                creationDate={moment(x?.creation_date).format('Do MMMM YYYY')}
-                interactionBtns
-                mediaUrl={x?.source?.site_url}
-                materials={x.materials}
-                canEdit={x.is_draft}
-                onEditClick={() => navigate(`/creations/${x.creation_id}/update`)}
-                // eslint-disable-next-line no-return-await
-                onDeleteClick={async () => await deleteCreation(x)}
-              />
-            )
-          ))}
+          {creations?.results?.map(
+            (x, index) => ((x.creation_title || '') + (x.creation_description || ''))
+              ?.toLowerCase()
+              ?.includes(search?.toLowerCase()) && (
+                <CreationCard
+                  key={index}
+                  title={x?.creation_title}
+                  description={x?.creation_description}
+                  creationDate={moment(x?.creation_date).format('Do MMMM YYYY')}
+                  interactionBtns
+                  mediaUrl={x?.source?.site_url}
+                  materials={x.materials}
+                  canEdit={x.is_draft}
+                  onEditClick={() => navigate(`/creations/${x.creation_id}/update`)}
+                  // eslint-disable-next-line no-return-await
+                  onDeleteClick={async () => await deleteCreation(x)}
+                />
+            ),
+          )}
           {creations?.total_results < creations?.results?.length && (
-          <Button style={{ margin: 'auto' }} className="nextCollectionButton" onClick={fetchCreations}>
-            Load More
-          </Button>
+            <Button
+              style={{ margin: 'auto' }}
+              className="nextCollectionButton"
+              onClick={fetchCreations}
+            >
+              Load More
+            </Button>
           )}
         </Grid>
       ) : (
-        <h4 className="heading h4 result-msg">
-          No Creations Found
-        </h4>
-      )
-      )}
+        <h4 className="heading h4 result-msg">No Creations Found</h4>
+      ))}
     </Grid>
   );
 }
