@@ -1,11 +1,13 @@
 import Cookies from 'js-cookie';
 import { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../../../config';
 
 let debounceTagInterval = null;
 let debounceAuthorInterval = null;
 
 const useCreate = () => {
+  const navigate = useNavigate();
   const [isCreatingLitigation, setIsCreatingLitigation] = useState(false);
   const [newLitigationStatus, setNewLitigationStatus] = useState({
     success: false,
@@ -179,6 +181,9 @@ const useCreate = () => {
         success: true,
         error: null,
       });
+      setTimeout(() => {
+        navigate('/litigation/dashboard');
+      }, 3000);
     } catch (error) {
       const errorMap = {
         'creation already assigned to a litigation': 'A litigation for this creation already exists',
