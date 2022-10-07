@@ -378,12 +378,15 @@ function CollectionCard({
               alignItems="center"
               gap={{ xs: '12px', md: '16px' }}
             >
-              <DownloadButton canEdit={canEdit} onEditClick={onEditClick} />
-              <EditButton
+              <RemoveButton
                 canDelete={canDelete}
                 handleDeleteConfirmation={handleDeleteConfirmation}
               />
-              <RemoveButton />
+              <DownloadButton />
+              <EditButton
+                canEdit={canEdit}
+                onEditClick={onEditClick}
+              />
               <ShareButton />
             </Grid>
           </Grid>
