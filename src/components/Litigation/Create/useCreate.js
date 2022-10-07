@@ -143,19 +143,6 @@ const useCreate = () => {
     try {
       setIsCreatingLitigation(true);
 
-      // check if creation exists
-      const foundCreation = creationSuggestions.find(
-        (x) => x.creation_id === litigationBody.creation,
-      );
-      if (!foundCreation) throw new Error('invalid creation');
-
-      // check if author exists
-      const foundAuthor = authorSuggestions.find((x) => x.user_id === litigationBody.author);
-      if (!foundAuthor) throw new Error('invalid author');
-
-      // get auth user
-      // const user = JSON.parse(Cookies.get('activeUser') || '{}');
-
       // make a new litigation
       const response = await fetch(`${API_BASE_URL}/litigations`, {
         method: 'POST',

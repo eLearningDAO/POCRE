@@ -5,6 +5,7 @@ import {
 import Cookies from 'js-cookie';
 import Form from '../../../uicore/Form';
 import Input from '../../../uicore/Input';
+import Loader from '../../../uicore/Loader';
 import Select from '../../../uicore/Select';
 import { stepOneValidation } from './validation';
 import { API_BASE_URL } from '../../../../config';
@@ -19,6 +20,9 @@ export default function StepOne({
   getMaterialDetail = () => {},
 }) {
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(null);
+  const [creationUUIDFromLink, setCreationUUIDFromLink] = useState(null);
+  const [creationUUIDDetailsFromLink, setCreationUUIDDetailsFromLink] = useState(null);
   const [creation, setCreation] = useState(null);
   const [materialsDetails, setMaterialsDetails] = useState(null);
   const [author, setAuthor] = useState(null);
@@ -51,12 +55,18 @@ export default function StepOne({
     }
 
     // check if creation is valid
-    const isValidCreation = creationSuggestions.find(
-      (x) => x.creation_id === creation,
-    );
-    if (!isValidCreation) {
-      setError('Invalid creation selected, please select one from the suggested list');
+    if ((creation && creationUUIDFromLink) || (!creation && !creationUUIDFromLink)) {
+      setError('Please select either creation title or link.');
       return;
+    }
+    if (creation && !creationUUIDFromLink) {
+      const isValidCreation = creationSuggestions.find(
+        (x) => x.creation_id === creation,
+      );
+      if (!isValidCreation) {
+        setError('Invalid creation selected, please select one from the suggested list');
+        return;
+      }
     }
 
     // check if author name is valid
@@ -80,9 +90,11 @@ export default function StepOne({
       temporaryAuthors.push({ name: authUser?.user_name, image: `https://i.pravatar.cc/50?img=${Math.random()}` });
 
       // the one who is the author of creation
-      const creationAuthorId = creationSuggestions.find(
-        (x) => x?.creation_id === creation,
-      )?.author_id;
+      const creationAuthorId = creationUUIDDetailsFromLink
+        ? creationUUIDDetailsFromLink?.author_id
+        : creationSuggestions.find(
+          (x) => x?.creation_id === creation,
+        )?.author_id;
       const creationAuthor = await fetch(`${API_BASE_URL}/users/${creationAuthorId}`).then((x) => x.json());
       temporaryAuthors.push({ name: creationAuthor?.user_name, image: `https://i.pravatar.cc/50?img=${Math.random()}` });
 
@@ -104,8 +116,47 @@ export default function StepOne({
 
     // submit
     await onComplete({
-      ...values, creation, author, involvedAuthors,
+      ...values, creation: creationUUIDFromLink || creation, author, involvedAuthors,
     });
+  };
+
+  const handleCreationLinkChange = async (event) => {
+    const link = event.target.value?.trim();
+    const creationId = /((\w{4,12}-?)){5}/.exec(link)?.[0];
+
+    // uuid length is 36 chars
+    if (creationId?.length !== 36) {
+      setError('Invalid Creation Link');
+      setMaterialsDetails(null);
+      setCreationUUIDFromLink(null);
+    } else {
+      setCreationUUIDFromLink(creationId);
+      try {
+        setLoading(true);
+
+        // get creation details
+        const creationDetail = await fetch(`${API_BASE_URL}/creations/${creationId}`).then((x) => x.json());
+        if (creationDetail?.code >= 400) throw new Error('Invalid Creation Link. Please make sure the link is correct');
+        setCreationUUIDDetailsFromLink(creationDetail);
+
+        // get material details of creation
+        if (creationDetail?.materials?.length > 0) {
+          const { materials } = creationDetail;
+          const response = await Promise.all(materials.map(async (x) => getMaterialDetail(x)));
+          setMaterialsDetails(response);
+        } else {
+          setMaterialsDetails(null);
+        }
+      } catch {
+        setLoading(false);
+        setError('Invalid Creation Link. Please make sure the link is correct');
+        return;
+      } finally {
+        setLoading(false);
+      }
+
+      setError(null);
+    }
   };
 
   return (
@@ -142,10 +193,17 @@ export default function StepOne({
             />
           </Grid>
 
-          <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
-            <Typography className="heading">Creation</Typography>
+          <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', sm: '18px' }} display="flex" flexDirection="row" alignItems="center">
+            <Typography className="heading" />
           </Grid>
-          <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
+          <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', sm: '18px' }} display="flex" flexDirection="row" alignItems="center" justifyContent="center">
+            <Typography className="heading">Creation Title</Typography>
+          </Grid>
+
+          <Grid xs={12} md={3} lg={2} marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center">
+            <Typography className="heading" />
+          </Grid>
+          <Grid xs={12} md={9} lg={10} marginTop={{ xs: '8px' }}>
             <Input
               variant="dark"
               placeholder="Select the creation with authorship infringement"
@@ -159,6 +217,25 @@ export default function StepOne({
                   (x) => ({ label: x.creation_title, id: x.creation_id }),
                 ) || []
               }
+            />
+          </Grid>
+
+          <Grid xs={12} md={3} lg={2} marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center">
+            <Typography className="heading" />
+          </Grid>
+          <Grid xs={12} md={9} lg={10} marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center" justifyContent="center">
+            <Typography className="heading">or point it</Typography>
+          </Grid>
+
+          <Grid md={2} xs={12} marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center">
+            <Typography className="heading" />
+          </Grid>
+          <Grid xs={12} md={10} marginTop={{ xs: '8px' }}>
+            <Input
+              variant="dark"
+              placeholder="Paste the link of the creation"
+              name="creationLink"
+              onChange={handleCreationLinkChange}
             />
           </Grid>
 
@@ -261,7 +338,8 @@ export default function StepOne({
 
       <Grid item xs={12} className="collectionButtons">
         <Button type="submit" className="nextCollectionButton" style={{ marginLeft: 'auto' }}>
-          Next
+          {loading ? <Loader />
+            : 'Next'}
         </Button>
       </Grid>
     </Form>
