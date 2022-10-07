@@ -92,7 +92,7 @@ function CreationDetailsPreviewDialog(
             <span>{creation?.author?.user_name}</span>
           </div>
 
-          {creation?.materials && (
+          {creation?.materials && creation?.materials?.length > 0 && (
             <>
               <h4 className="heading h4">Materials Submitted</h4>
               <table>
@@ -161,6 +161,7 @@ function MediaPreview({ mediaType, mediaUrl, onClose }) {
 }
 
 function CollectionCard({
+  creationId = '378t7egf9gf38gf0239h',
   interactionBtns,
   creationDate = '2022-01-01 00:00:00',
   materials = [{
@@ -186,6 +187,19 @@ function CollectionCard({
     const x = getUrlFileType(mediaUrl);
     setMediaType(x);
   }, []);
+
+  useEffect(() => {
+    if (showCreationDetailsPreview) {
+      const parameters = new URLSearchParams(window.location.search);
+      parameters.set('preview', creationId);
+      const sanitizedNewParameters = parameters.toString().length > 0 ? `?${parameters.toString()}` : '';
+      const newRelativePathQuery = window.location.origin
+      + window.location.pathname + sanitizedNewParameters;
+      window.history.replaceState(null, '', newRelativePathQuery);
+    } else {
+      window.history.replaceState(null, '', window.location.origin + window.location.pathname);
+    }
+  }, [showCreationDetailsPreview]);
 
   const handleDeleteConfirmation = () => {
     setShowDeleteConfirmation(true);
@@ -382,7 +396,9 @@ function CollectionCard({
                 canDelete={canDelete}
                 handleDeleteConfirmation={handleDeleteConfirmation}
               />
-              <DownloadButton />
+              <DownloadButton
+                onClick={() => setShowCreationDetailsPreview(true)}
+              />
               <EditButton
                 canEdit={canEdit}
                 onEditClick={onEditClick}

@@ -3,9 +3,9 @@ import Button from '@mui/material/Button';
 
 import DownloadIcon from '../../../../assets/download.png';
 
-function DownloadButton() {
+function DownloadButton({ onClick }) {
   return (
-    <Button className="collection-card-action-btn">
+    <Button className="collection-card-action-btn" onClick={onClick}>
       <img src={DownloadIcon} alt="" />
     </Button>
   );
