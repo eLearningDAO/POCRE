@@ -140,6 +140,7 @@ const init = async (): Promise<QueryResult<any>> => {
       litigation_description text,
       creation_id UUID NOT NULL,
       material_id UUID UNIQUE,
+      assumed_author UUID NOT NULL,
       issuer_id UUID NOT NULL,
       invitations UUID[],
       decisions UUID[],

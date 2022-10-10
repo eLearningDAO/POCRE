@@ -9,6 +9,7 @@ interface ILitigation {
   litigation_description?: string;
   creation_id: string;
   material_id?: string;
+  assumed_author: string;
   issuer_id: string;
   invitations: string[];
   decisions: string[];
@@ -33,6 +34,7 @@ interface ILitigationDoc {
   litigation_description: string;
   creation_id: string;
   material_id: string;
+  assumed_author: string;
   issuer_id: string;
   invitations: string[];
   decisions: string[];
@@ -131,6 +133,7 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         litigation_description,
         creation_id,
         material_id,
+        assumed_author,
         issuer_id,
         invitations,
         decisions,
@@ -139,13 +142,14 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         reconcilate
       ) 
       values 
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) 
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) 
       RETURNING *;`,
       [
         litigationBody.litigation_title,
         litigationBody.litigation_description,
         litigationBody.creation_id,
         litigationBody.material_id,
+        litigationBody.assumed_author,
         litigationBody.issuer_id,
         litigationBody.invitations,
         litigationBody.decisions,

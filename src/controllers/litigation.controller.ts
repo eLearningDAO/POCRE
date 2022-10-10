@@ -31,7 +31,10 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
   }
 
   // create a new litigation
-  const newLitigation = await litigationService.createLitigation(req.body);
+  const newLitigation = await litigationService.createLitigation({
+    ...req.body,
+    assumed_author: material ? material.author_id : creation?.author_id,
+  });
 
   // send invites to litigators
   const invitations = await (async () => {
