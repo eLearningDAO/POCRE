@@ -77,6 +77,7 @@ export default router;
  *                litigation_description: an example litigation
  *                creation_id: fa52d76c-664a-41de-aebb-b311a74ef571
  *                material_id: fa52d76c-664a-41de-aebb-b311a74ef570
+ *                assumed_author: b49cf4d8-341d-4cd6-b5ad-d002e87d9331
  *                issuer_id: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
  *                decisions: [6087ac9e-7e15-4ad7-b256-7893a00c3577]
  *                litigation_start: 2022-09-09T19:00:00.000Z
@@ -259,12 +260,6 @@ export default router;
  *               litigation_description:
  *                 type: string
  *                 description: can be null
- *               material_id:
- *                 type: string
- *                 format: uuid
- *               issuer_id:
- *                 type: string
- *                 format: uuid
  *               decisions:
  *                 type: array
  *                 items:
@@ -282,6 +277,7 @@ export default router;
  *                litigation_title: my first litigation
  *                litigation_description: an example litigation
  *                material_id: fa52d76c-664a-41de-aebb-b311a74ef570
+ *                assumed_author: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
  *                issuer_id: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
  *                decisions: [6087ac9e-7e15-4ad7-b256-7893a00c3577]
  *                litigation_start: 2022-09-09T19:00:00.000Z
@@ -300,8 +296,6 @@ export default router;
  *             schema:
  *               oneOf:
  *                 - $ref: '#/components/responses/LitigationNotFound'
- *                 - $ref: '#/components/responses/MaterialNotFound'
- *                 - $ref: '#/components/responses/UserNotFound'
  *                 - $ref: '#/components/responses/DecisionNotFound'
  *             examples:
  *               LitigationNotFound:
@@ -309,16 +303,6 @@ export default router;
  *                 value:
  *                   code: 404
  *                   message: litigation not found
- *               MaterialNotFound:
- *                 summary: material not found
- *                 value:
- *                   code: 404
- *                   message: material not found
- *               UserNotFound:
- *                 summary: user not found
- *                 value:
- *                   code: 404
- *                   message: user not found
  *               DecisionNotFound:
  *                 summary: deicison not found
  *                 value:
@@ -330,8 +314,6 @@ export default router;
  *             schema:
  *               oneOf:
  *                 - $ref: '#/components/responses/MaterialDoesNotBelongToCreation'
- *                 - $ref: '#/components/responses/MaterialAlreadyAssignedToLitigation'
- *                 - $ref: '#/components/responses/IssuerAlreadyAssignedToLitigation'
  *                 - $ref: '#/components/responses/DecisionAlreadyAssignedToLitigation'
  *             examples:
  *               MaterialDoesNotBelongToCreation:
@@ -339,16 +321,6 @@ export default router;
  *                 value:
  *                   code: 409
  *                   message: material does not belong to creation
- *               MaterialAlreadyAssignedToLitigation:
- *                 summary: material already assigned to a litigation
- *                 value:
- *                   code: 409
- *                   message: material already assigned to a litigation
- *               IssuerAlreadyAssignedToLitigation:
- *                 summary: issuer already assigned to a litigation
- *                 value:
- *                   code: 409
- *                   message: issuer already assigned to a litigation
  *               DecisionAlreadyAssignedToLitigation:
  *                 summary: decision already assigned to a litigation
  *                 value:

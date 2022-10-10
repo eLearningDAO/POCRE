@@ -252,6 +252,7 @@ components:
         litigation_title: my first creation
         litigation_description: an example creation
         material_id: d91f005d-2037-41b9-b706-0e70c651e4e2
+        assumed_author: dd7a824b-b0a9-4868-bdbf-cfa6bdd36621
         issuer_id: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
         invitations: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
         decisions: [7b3439c6-a691-4a60-9e09-8235804c33fe]
