@@ -1,11 +1,17 @@
 import create from 'zustand';
+import { persist } from 'zustand/middleware';
 
-const useUserInfo = create((set, get) => ({
-  login: false,
-  user: null,
-  setUser: (function_) => {
-    set(function_(get()));
-  },
-}));
+const useUserInfo = create(
+  persist((set, get) => ({
+    login: false,
+    user: null,
+    setUser: (function_) => {
+      set(function_(get()));
+    },
+  }), {
+    name: 'userInfo',
+
+  }),
+);
 
 export default useUserInfo;

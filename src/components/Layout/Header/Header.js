@@ -1,16 +1,13 @@
-import '../responsive-menu-transition.css';
 import ClearIcon from '@mui/icons-material/Clear';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
-  // Button,
-  Grid,
-  // Fade,
-  Button,
   Box,
-  // TextField
+  Button,
+  Grid,
 } from '@mui/material';
 import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import '../responsive-menu-transition.css';
 // import { CSSTransition } from 'react-transition-group';
 // import MenuIcon4 from "../../../assets/bank-icon.png";
 // import MenuIcon4Active from "../../../assets/bank-icon-2.png";
@@ -24,13 +21,13 @@ import { Link, useLocation } from 'react-router-dom';
 // import icon2 from "../../../assets/icon-2.png";
 // import MenuIcon5 from "../../../assets/wallet-icon.png";
 // import MenuIcon5Active from "../../../assets/wallet-icon-2.png";
-import './Header.css';
-import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import logo from '../../../assets/logo-1.png';
 import LoginButton from '../../styled/btns/LoginButton';
 import SideBar from '../Sidebar/Sidebar';
-import logo from '../../../assets/logo-1.png';
+import './Header.css';
 import useHeader from './useHeader';
 
 // const duration = 200000;
@@ -131,15 +128,15 @@ function HomeHeader({ displayNav = false }) {
         </Button>
       </Grid>
 
-      {login && (
-        <Grid
-          item
-          md={3}
-          marginLeft="auto"
-          display="flex"
-          justifyContent="flex-end"
-          alignItems="center"
-        >
+      <Grid
+        item
+        md={3}
+        marginLeft="auto"
+        display="flex"
+        justifyContent="flex-end"
+        alignItems="center"
+      >
+        {login && (
           <ul
             style={{
               display: 'flex',
@@ -188,9 +185,9 @@ function HomeHeader({ displayNav = false }) {
               )}
             </li>
           </ul>
-        </Grid>
-      )}
-      {!login && <LoginButton />}
+        )}
+        <LoginButton />
+      </Grid>
 
       {/* <Grid item xs={12} className='non-responsive'>
         <TextField variant="standard"
