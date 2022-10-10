@@ -65,6 +65,8 @@ export default router;
  *               author_id:
  *                 type: string
  *                 format: uuid
+ *               is_claimable:
+ *                 type: bool
  *             example:
  *                material_title: plastic
  *                material_description: dangerous
@@ -73,6 +75,7 @@ export default router;
  *                type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
  *                invite_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
  *                author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
+ *                is_claimable: true
  *     responses:
  *       "201":
  *         description: Created
@@ -258,6 +261,8 @@ export default router;
  *               author_id:
  *                 type: string
  *                 format: uuid
+ *               is_claimable:
+ *                 type: bool
  *             example:
  *                material_title: plastic
  *                material_description: dangerous
@@ -266,6 +271,7 @@ export default router;
  *                type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
  *                invite_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
  *                author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
+ *                is_claimable: false
  *     responses:
  *       "200":
  *         description: OK
