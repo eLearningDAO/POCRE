@@ -21,11 +21,11 @@
                     "githubUrl": "https://github.com/huzaifa-99"
                 },
                 {
-                    "name": "Smarty",
+                    "name": "Eric Valentine",
                     "job": "Software Engineer",
                     "bio": "We have to do things meaningful",
-                    "avatarUrl": "https://avatars.githubusercontent.com/u/95742807?v=4",
-                    "linkedinUrl": "",
+                    "avatarUrl": "https://cdn.discordapp.com/attachments/989117788213874698/1026751484144140379/Selfie.png",
+                    "linkedinUrl": "https://www.linkedin.com/in/ericvale0128",
                     "twitterUrl": "",
                     "githubUrl": "https://github.com/ricvale0128"
                 },
@@ -53,6 +53,12 @@
                     "job": "Web developer",
                     "avatarUrl": "https://avatars.githubusercontent.com/u/24652556?v=4",
                     "profileUrl": "https://github.com/mrron313"
+                },
+                {
+                    "name": "Mahdi Soultana",
+                    "job": "Web developer",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/67097548?v=4",
+                    "profileUrl": "https://github.com/Mahdi-Soultana"
                 }
             ]
         }
