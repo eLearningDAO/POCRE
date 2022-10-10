@@ -39,7 +39,7 @@ export default function StepOne({
       if (foundCreation?.materials?.length > 0) {
         const { materials } = foundCreation;
         const response = await Promise.all(materials.map(async (x) => getMaterialDetail(x)));
-        setMaterialsDetails(response);
+        setMaterialsDetails(response.filter((x) => x.is_claimable));
       } else {
         // get details of creation author
         const creationAuthor = await fetch(`${API_BASE_URL}/users/${foundCreation.author_id}`).then((x) => x.json());
@@ -145,7 +145,7 @@ export default function StepOne({
         if (creationDetail?.materials?.length > 0) {
           const { materials } = creationDetail;
           const response = await Promise.all(materials.map(async (x) => getMaterialDetail(x)));
-          setMaterialsDetails(response);
+          setMaterialsDetails(response.filter((x) => x.is_claimable));
         } else {
           setMaterialsDetails(null);
         }

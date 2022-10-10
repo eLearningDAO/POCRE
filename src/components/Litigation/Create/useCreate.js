@@ -84,7 +84,10 @@ const useCreate = () => {
         && validSuggestions.push(x),
       );
 
-      setCreationSuggestions([...creationSuggestions, ...validSuggestions]);
+      setCreationSuggestions([
+        ...creationSuggestions,
+        ...validSuggestions.filter((x) => x.is_claimable),
+      ]);
     }, 500);
   };
 
