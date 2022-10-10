@@ -202,6 +202,8 @@ components:
           format: date-time
         is_draft:
           type: bool
+        is_claimable:
+          type: bool
       example:
         creation_id: b1171878-797e-4f8a-a726-961f761bb8fc
         creation_title: my first creation
@@ -212,6 +214,7 @@ components:
         materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
         creation_date: 2022-09-16T19:00:00.000Z
         is_draft: false
+        is_claimable: true
 
     Litigation:
       type: object

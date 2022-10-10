@@ -70,8 +70,9 @@ export default router;
  *                 type: string
  *                 format: date-time
  *               is_draft:
- *                 type: string
- *                 format: date-time
+ *                 type: bool
+ *               is_claimable:
+ *                 type: bool
  *             example:
  *                creation_title: my first creation
  *                creation_description: an example creation
@@ -81,6 +82,7 @@ export default router;
  *                materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
  *                creation_date: 2022-09-09T19:00:00.000Z
  *                is_draft: false
+ *                is_claimable: true
  *     responses:
  *       "201":
  *         description: Created
@@ -275,6 +277,8 @@ export default router;
  *                 format: date-time
  *               is_draft:
  *                 type: bool
+ *               is_claimable:
+ *                 type: bool
  *             example:
  *                creation_title: my first creation
  *                creation_description: an example creation
@@ -284,6 +288,7 @@ export default router;
  *                materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
  *                creation_date: 2022-09-09T19:00:00.000Z
  *                is_draft: false
+ *                is_claimable: false
  *     responses:
  *       "200":
  *         description: OK
