@@ -13,9 +13,9 @@ import { API_BASE_URL } from '../../../../config';
 export default function StepOne({
   onComplete = () => {},
   initialValues = {},
-  authorSuggestions = [],
+  // authorSuggestions = [],
   creationSuggestions = [],
-  onAuthorInputChange = () => {},
+  // onAuthorInputChange = () => {},
   onCreationInputChange = () => {},
   getMaterialDetail = () => {},
 }) {
@@ -25,7 +25,8 @@ export default function StepOne({
   const [creationUUIDDetailsFromLink, setCreationUUIDDetailsFromLink] = useState(null);
   const [creation, setCreation] = useState(null);
   const [materialsDetails, setMaterialsDetails] = useState(null);
-  const [author, setAuthor] = useState(null);
+  const [author] = useState(null);
+  const [creationOrMaterialAuthor, setCreationOrMaterialAuthor] = useState('');
 
   const onCreationSelect = async (event, value) => {
     setCreation(value?.id);
@@ -34,18 +35,24 @@ export default function StepOne({
     const foundCreation = creationSuggestions.find(
       (x) => x.creation_id === value?.id,
     );
-    if (foundCreation?.materials?.length > 0) {
-      const { materials } = foundCreation;
-      const response = await Promise.all(materials.map(async (x) => getMaterialDetail(x)));
-      setMaterialsDetails(response);
+    if (foundCreation) {
+      if (foundCreation?.materials?.length > 0) {
+        const { materials } = foundCreation;
+        const response = await Promise.all(materials.map(async (x) => getMaterialDetail(x)));
+        setMaterialsDetails(response);
+      } else {
+        // get details of creation author
+        const creationAuthor = await fetch(`${API_BASE_URL}/users/${foundCreation.author_id}`).then((x) => x.json());
+        setCreationOrMaterialAuthor(creationAuthor);
+      }
     } else {
       setMaterialsDetails(null);
     }
   };
 
-  const onAuthorSelect = (event, value) => {
-    setAuthor(value?.id);
-  };
+  // const onAuthorSelect = (event, value) => {
+  //   setAuthor(value?.id);
+  // };
 
   const handleSubmit = async (values) => {
     // check if material is present
@@ -67,15 +74,6 @@ export default function StepOne({
         setError('Invalid creation selected, please select one from the suggested list');
         return;
       }
-    }
-
-    // check if author name is valid
-    const isValidAuthor = authorSuggestions.find(
-      (x) => x.user_id === author,
-    );
-    if (!isValidAuthor) {
-      setError('Invalid author selected, please select one from the suggested list');
-      return;
     }
 
     // clear error
@@ -108,8 +106,8 @@ export default function StepOne({
       }
 
       // the one who is the assumed author
-      const assumedAuthor = authorSuggestions.find((x) => x?.user_id === author);
-      temporaryAuthors.push({ name: assumedAuthor?.user_name, image: `https://i.pravatar.cc/50?img=${Math.random()}` });
+      // const assumedAuthor = authorSuggestions.find((x) => x?.user_id === author);
+      // temporaryAuthors.push({ name: assumedAuthor?.user_name, image: `https://i.pravatar.cc/50?img=${Math.random()}` });
 
       return temporaryAuthors;
     })();
@@ -138,6 +136,10 @@ export default function StepOne({
         const creationDetail = await fetch(`${API_BASE_URL}/creations/${creationId}`).then((x) => x.json());
         if (creationDetail?.code >= 400) throw new Error('Invalid Creation Link. Please make sure the link is correct');
         setCreationUUIDDetailsFromLink(creationDetail);
+
+        // get details of creation author
+        const creationAuthor = await fetch(`${API_BASE_URL}/users/${creationDetail.author_id}`).then((x) => x.json());
+        setCreationOrMaterialAuthor(creationAuthor);
 
         // get material details of creation
         if (creationDetail?.materials?.length > 0) {
@@ -239,23 +241,18 @@ export default function StepOne({
             />
           </Grid>
 
-          <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
-            <Typography className="heading">Author</Typography>
-          </Grid>
-          <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
-            <Input
-              variant="dark"
-              placeholder="Select an author"
-              name="author"
-              hookToForm
-              onChange={onAuthorSelect}
-              onInput={onAuthorInputChange}
-              autoComplete
-              autoCompleteOptions={
-                authorSuggestions.map((x) => ({ label: x.user_name, id: x.user_id })) || []
-              }
-            />
-          </Grid>
+          {creationOrMaterialAuthor && (
+          <>
+            <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
+              <Typography className="heading">Authored By</Typography>
+            </Grid>
+            <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }} textAlign="center">
+              <h4 className="h4">
+                {creationOrMaterialAuthor?.user_name}
+              </h4>
+            </Grid>
+          </>
+          )}
 
           <Grid md={2} xs={12} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
             <Typography className="heading">Public Date</Typography>
