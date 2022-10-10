@@ -9,6 +9,7 @@ export const createMaterial = {
     type_id: Joi.string().uuid().required(),
     invite_id: Joi.string().uuid().optional().allow('').allow(null),
     author_id: Joi.string().uuid().required(),
+    is_claimable: Joi.bool().default(true),
   }),
 };
 
@@ -44,6 +45,7 @@ export const updateMaterial = {
       type_id: Joi.string().uuid().optional(),
       invite_id: Joi.string().uuid().optional().allow('').allow(null),
       author_id: Joi.string().uuid().optional(),
+      is_claimable: Joi.bool(),
     })
     .min(1),
 };

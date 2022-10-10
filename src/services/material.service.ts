@@ -11,6 +11,7 @@ interface IMaterial {
   type_id: string;
   invite_id?: string;
   author_id: string;
+  is_claimable: string;
 }
 interface IMaterialQuery {
   limit: number;
@@ -34,6 +35,7 @@ interface IMaterialDoc {
   type_id: string;
   invite_id: string;
   author_id: string;
+  is_claimable: string;
 }
 
 /**
@@ -51,7 +53,8 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
         source_id,
         type_id,
         invite_id,
-        author_id
+        author_id,
+        is_claimable
       ) 
       values 
       (
@@ -61,7 +64,8 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
         $4,
         $5,
         $6,
-        $7
+        $7,
+        $8
       ) 
       RETURNING *;`,
       [
@@ -72,6 +76,7 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
         materialBody.type_id,
         materialBody.invite_id,
         materialBody.author_id,
+        materialBody.is_claimable,
       ]
     );
     const material = result.rows[0];
