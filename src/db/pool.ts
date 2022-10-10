@@ -124,6 +124,7 @@ const init = async (): Promise<QueryResult<any>> => {
       materials UUID[],
       creation_date DATE NOT NULL DEFAULT CURRENT_DATE,
       is_draft bool default false,
+      is_claimable bool default true,
       CONSTRAINT source_id
           FOREIGN KEY(source_id) 
           REFERENCES source(source_id)
