@@ -76,8 +76,6 @@ export const deleteLitigationById = catchAsync(async (req, res): Promise<void> =
 
 export const updateLitigationById = catchAsync(async (req, res): Promise<void> => {
   // check if reference docs exist
-  if (req.body.issuer_id) await getUserById(req.body.issuer_id as string); // verify user, will throw an error if user not found
-  if (req.body.material_id) await getMaterialById(req.body.material_id as string); // verify material, will throw an error if material not found
   if (req.body.decisions && req.body.decisions.length > 0) {
     await Promise.all(req.body.decisions.map((id: string) => getDecisionById(id))); // verify decisions, will throw an error if any decision is not found
   }

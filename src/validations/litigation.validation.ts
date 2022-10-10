@@ -35,8 +35,6 @@ export const updateLitigation = {
     .keys({
       litigation_title: Joi.string().optional(),
       litigation_description: Joi.string().optional().allow('').allow(null),
-      material_id: Joi.string().uuid().optional(),
-      issuer_id: Joi.string().uuid().optional(),
       decisions: Joi.array().items(Joi.string().uuid()).unique().optional().min(1),
       litigation_start: Joi.string().isoDate().optional(),
       litigation_end: Joi.string().isoDate().optional(),
