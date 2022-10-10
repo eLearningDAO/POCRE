@@ -143,6 +143,9 @@ const useCreate = () => {
     try {
       setIsCreatingLitigation(true);
 
+      // get auth user
+      const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
+
       // make a new litigation
       const response = await fetch(`${API_BASE_URL}/litigations`, {
         method: 'POST',
@@ -155,7 +158,7 @@ const useCreate = () => {
           litigation_description: litigationBody.description?.trim(),
           creation_id: litigationBody.creation,
           material_id: litigationBody.material,
-          issuer_id: litigationBody.author,
+          issuer_id: authUser.user_id,
           litigation_start: new Date(litigationBody.publicDate).toISOString(),
           litigation_end: new Date(litigationBody.endDate).toISOString(),
           reconcilate: litigationBody.inviteAuthors,
