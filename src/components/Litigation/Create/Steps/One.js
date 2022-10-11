@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   Grid, Typography, Button, Box,
 } from '@mui/material';
-import Cookies from 'js-cookie';
 import Form from '../../../uicore/Form';
 import Input from '../../../uicore/Input';
 import Loader from '../../../uicore/Loader';
@@ -18,11 +17,12 @@ export default function StepOne({
   // onAuthorInputChange = () => {},
   onCreationInputChange = () => {},
   getMaterialDetail = () => {},
+  status = {},
+  creatingLitigation = false,
 }) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(null);
   const [creationUUIDFromLink, setCreationUUIDFromLink] = useState(null);
-  const [creationUUIDDetailsFromLink, setCreationUUIDDetailsFromLink] = useState(null);
   const [creation, setCreation] = useState(null);
   const [materialsDetails, setMaterialsDetails] = useState(null);
   const [author] = useState(null);
@@ -39,7 +39,13 @@ export default function StepOne({
       if (foundCreation?.materials?.length > 0) {
         const { materials } = foundCreation;
         const response = await Promise.all(materials.map(async (x) => getMaterialDetail(x)));
-        setMaterialsDetails(response.filter((x) => x.is_claimable));
+        const claimableMaterials = response.filter((x) => x.is_claimable);
+        if (claimableMaterials?.length === 0) {
+          setError('All materials of this creation are used in different litigations. This creation cannot be litigated');
+        } else {
+          setError(null);
+        }
+        setMaterialsDetails(claimableMaterials);
       } else {
         // get details of creation author
         const creationAuthor = await fetch(`${API_BASE_URL}/users/${foundCreation.author_id}`).then((x) => x.json());
@@ -47,6 +53,7 @@ export default function StepOne({
       }
     } else {
       setMaterialsDetails(null);
+      setError(null);
     }
   };
 
@@ -79,42 +86,9 @@ export default function StepOne({
     // clear error
     setError(null);
 
-    // get involved authors
-    const involvedAuthors = await (async () => {
-      const temporaryAuthors = [];
-
-      // the one who is creating this litigation
-      const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
-      temporaryAuthors.push({ name: authUser?.user_name, image: `https://i.pravatar.cc/50?img=${Math.random()}` });
-
-      // the one who is the author of creation
-      const creationAuthorId = creationUUIDDetailsFromLink
-        ? creationUUIDDetailsFromLink?.author_id
-        : creationSuggestions.find(
-          (x) => x?.creation_id === creation,
-        )?.author_id;
-      const creationAuthor = await fetch(`${API_BASE_URL}/users/${creationAuthorId}`).then((x) => x.json());
-      temporaryAuthors.push({ name: creationAuthor?.user_name, image: `https://i.pravatar.cc/50?img=${Math.random()}` });
-
-      // the one who is the author of material
-      if (materialsDetails) {
-        const materialAuthorId = materialsDetails.find(
-          (x) => x?.material_id === values.material,
-        )?.author_id;
-        const materialAuthor = await fetch(`${API_BASE_URL}/users/${materialAuthorId}`).then((x) => x.json());
-        temporaryAuthors.push({ name: materialAuthor.user_name, image: `https://i.pravatar.cc/50?img=${Math.random()}` });
-      }
-
-      // the one who is the assumed author
-      // const assumedAuthor = authorSuggestions.find((x) => x?.user_id === author);
-      // temporaryAuthors.push({ name: assumedAuthor?.user_name, image: `https://i.pravatar.cc/50?img=${Math.random()}` });
-
-      return temporaryAuthors;
-    })();
-
     // submit
     await onComplete({
-      ...values, creation: creationUUIDFromLink || creation, author, involvedAuthors,
+      ...values, creation: creationUUIDFromLink || creation, author,
     });
   };
 
@@ -135,7 +109,6 @@ export default function StepOne({
         // get creation details
         const creationDetail = await fetch(`${API_BASE_URL}/creations/${creationId}`).then((x) => x.json());
         if (creationDetail?.code >= 400) throw new Error('Invalid Creation Link. Please make sure the link is correct');
-        setCreationUUIDDetailsFromLink(creationDetail);
 
         // get details of creation author
         const creationAuthor = await fetch(`${API_BASE_URL}/users/${creationDetail.author_id}`).then((x) => x.json());
@@ -330,12 +303,19 @@ export default function StepOne({
               </Grid>
             </>
           )}
+
+          {(status.error || status.success)
+            && (
+            <Box width="100%" className={`${status.success ? 'bg-green' : 'bg-red'} color-white`} padding="16px" borderRadius="12px" fontSize="16px" style={{ margin: 'auto', marginTop: '18px' }}>
+              {status.success ? 'Success! A new litigation was made. Redirecting...' : status.error}
+            </Box>
+            )}
         </Grid>
       </Grid>
 
       <Grid item xs={12} className="collectionButtons">
         <Button type="submit" className="nextCollectionButton" style={{ marginLeft: 'auto' }}>
-          {loading ? <Loader />
+          {loading || creatingLitigation ? <Loader />
             : 'Next'}
         </Button>
       </Grid>

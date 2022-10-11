@@ -11,32 +11,30 @@ import UserCard from '../../../cards/UserCard';
 
 export default function StepOne({
   onComplete = () => {},
-  onBack = () => {},
   status = {},
   loading = false,
-  authors = [
-  ],
+  invitations = [],
 }) {
   const [slideNumber, setSlideNumber] = useState(1);
 
   const next = () => {
-    setSlideNumber((x) => (x === authors.length ? 1 : x + 1));
+    setSlideNumber((x) => (x === invitations.length ? 1 : x + 1));
   };
   const previous = () => {
-    setSlideNumber((x) => (x === 1 ? authors.length - 1 : x - 1));
+    setSlideNumber((x) => (x === 1 ? invitations.length - 1 : x - 1));
   };
 
   return (
     <>
       <Grid item xs={12} display="flex" flexDirection="column" justifyContent="center" alignItem="center" gap="24px" padding="24px" className="secondary-section-container">
-        {authors.length > 0 && (
+        {invitations.length > 0 && (
         <div className="carousel-container">
           {slideNumber}
-          {authors.map((author, index) => (index === slideNumber - 1 || index === slideNumber
+          {invitations.map((invite, index) => (index === slideNumber - 1 || index === slideNumber
             ? (
               <UserCard
-                username={author.name}
-                imageUrl={author.imageUrl}
+                username={invite?.invite_to?.user_name}
+                imageUrl={`https://i.pravatar.cc/50?img=${Math.random()}`}
                 totalCreationsAuthored={Math.floor(Math.random())}
               />
             )
@@ -69,13 +67,12 @@ export default function StepOne({
         {(status.error || status.success)
               && (
               <Box width="100%" className={`${status.success ? 'bg-green' : 'bg-red'} color-white`} padding="16px" borderRadius="12px" fontSize="16px" style={{ margin: 'auto', marginTop: '18px' }}>
-                {status.success ? 'Success! A new litigation was made. Redirecting...' : status.error}
+                {status.success ? 'Success! A new litigation was made.' : status.error}
               </Box>
               )}
       </Grid>
 
       <Grid item xs={12} className="collectionButtons">
-        <Button className="backCollectionButton" onClick={onBack}>Back</Button>
         <Button type="submit" className="nextCollectionButton" style={{ marginLeft: 'auto' }} onClick={onComplete}>
           {!loading ? 'Finish'
             : <div className="loader" />}

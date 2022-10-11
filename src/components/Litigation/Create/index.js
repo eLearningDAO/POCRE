@@ -1,15 +1,17 @@
+import { useNavigate } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import StepOne from './Steps/One';
 import StepTwo from './Steps/Two';
 import './index.css';
 import useCreate from './useCreate';
 
 function CreateLitigation() {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [litigationDraft, setLitigationDraft] = useState({});
 
   const {
+    newLitigation,
     authorSuggestions,
     handleAuthorInputChange,
     creationSuggestions,
@@ -20,22 +22,20 @@ function CreateLitigation() {
     getMaterialDetail,
   } = useCreate();
 
+  useEffect(() => {
+    if (newLitigation) {
+      setStep(2);
+    }
+  }, [newLitigation]);
+
   const handleValues = async (values) => {
     if (step === 1) {
-      setLitigationDraft({ ...values, materials: litigationDraft?.materials || null });
+      await makeNewLitigation({ ...values });
     }
 
     if (step === 2) {
-      await makeNewLitigation({ ...litigationDraft, ...values });
+      navigate('/litigation/dashboard');
     }
-
-    if (step !== 2) {
-      setStep(step + 1);
-    }
-  };
-
-  const handleBack = () => {
-    setStep(step - 1);
   };
 
   return (
@@ -55,23 +55,16 @@ function CreateLitigation() {
         creationSuggestions={creationSuggestions}
         onCreationInputChange={handleCreationInputChange}
         getMaterialDetail={getMaterialDetail}
-        initialValues={{
-          ...(litigationDraft?.title && { title: litigationDraft.title }),
-          ...(litigationDraft?.description && { description: litigationDraft.description }),
-          ...(litigationDraft?.creation && { creation: litigationDraft.creation }),
-          ...(litigationDraft?.author && { author: litigationDraft.author }),
-          ...(litigationDraft?.publicDate && { publicDate: litigationDraft.publicDate }),
-          ...(litigationDraft?.endDate && { endDate: litigationDraft.endDate }),
-        }}
+        status={newLitigationStatus}
+        creatingLitigation={isCreatingLitigation}
       />
       )}
       {step === 2 && (
       <StepTwo
-        onBack={handleBack}
         onComplete={handleValues}
         status={newLitigationStatus}
         loading={isCreatingLitigation}
-        authors={litigationDraft?.involvedAuthors || []}
+        invitations={newLitigation?.invitations || []}
       />
       )}
     </Grid>

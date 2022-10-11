@@ -1,14 +1,13 @@
 import Cookies from 'js-cookie';
 import { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../../../config';
 
 let debounceTagInterval = null;
 let debounceAuthorInterval = null;
 
 const useCreate = () => {
-  const navigate = useNavigate();
   const [isCreatingLitigation, setIsCreatingLitigation] = useState(false);
+  const [newLitigation, setNewLitigation] = useState(null);
   const [newLitigationStatus, setNewLitigationStatus] = useState({
     success: false,
     error: null,
@@ -174,13 +173,26 @@ const useCreate = () => {
         success: true,
         error: null,
       });
-      setTimeout(() => {
-        navigate('/litigation/dashboard');
-      }, 3000);
+
+      // get data about invited judges
+      response.invitations = await Promise.all(response.invitations.map(async (inviteId) => {
+        const invitation = await fetch(
+          `${API_BASE_URL}/invitations/${inviteId}`,
+        ).then((x) => x.json());
+
+        invitation.invite_to = await fetch(
+          `${API_BASE_URL}/users/${invitation.invite_to}`,
+        ).then((x) => x.json());
+
+        return invitation;
+      }));
+      setNewLitigation(response);
     } catch (error) {
       const errorMap = {
         'creation already assigned to a litigation': 'A litigation for this creation already exists',
         'material already assigned to a litigation': 'A litigation for this material already exists',
+        'creation is not claimable': 'This creation has already been claimed by someone',
+        'material is not claimable': 'This material has already been claimed by someone',
         'creation with materials are not allowed to be litigated': 'The selected creation requires a material to be litigated',
         'invalid creation': 'Please select a valid creation from the suggested list',
         'invalid author': 'Please select a valid author from the suggested list',
@@ -198,6 +210,7 @@ const useCreate = () => {
 
   return {
     isCreatingLitigation,
+    newLitigation,
     newLitigationStatus,
     makeNewLitigation,
     creationSuggestions,
