@@ -39,6 +39,7 @@ export const updateLitigation = {
       litigation_start: Joi.string().isoDate().optional(),
       litigation_end: Joi.string().isoDate().optional(),
       reconcilate: Joi.bool().optional(),
+      ownership_transferred: Joi.bool().optional(),
     })
     .min(1),
 };

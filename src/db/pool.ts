@@ -150,6 +150,7 @@ const init = async (): Promise<QueryResult<any>> => {
       litigation_start DATE NOT NULL DEFAULT CURRENT_DATE,
       litigation_end DATE,
       reconcilate bool default false,
+      ownership_transferred bool default false,
       CONSTRAINT material_id
           FOREIGN KEY(material_id) 
           REFERENCES material(material_id)

@@ -17,6 +17,7 @@ interface ILitigation {
   litigation_end: string;
   reconcilate: boolean;
   winner: string;
+  ownership_transferred: boolean;
 }
 interface ILitigationQuery {
   limit: number;
@@ -43,6 +44,7 @@ interface ILitigationDoc {
   litigation_end: string;
   reconcilate: boolean;
   winner: string;
+  ownership_transferred: boolean;
 }
 
 /**

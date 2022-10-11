@@ -114,10 +114,28 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     winner = votes.agreed > votes.opposed ? litigation?.issuer_id : litigation?.assumed_author;
   }
 
+  // transfer ownership to correct author
+  if (req.body.ownership_transferred || req.body.reconcilate) {
+    // transfer material
+    if (litigation?.material_id) {
+      await updateMaterialById(litigation.material_id, {
+        author_id: req.body.reconcilate ? litigation.issuer_id : winner,
+      });
+    }
+
+    // transfer creation
+    else if (litigation?.creation_id) {
+      await updateCreationById(litigation.creation_id, {
+        author_id: req.body.reconcilate ? litigation.issuer_id : winner,
+      });
+    }
+  }
+
   // update litigation
   const updatedLitigation = await litigationService.updateLitigationById(req.params.litigation_id, {
     ...req.body,
     winner,
+    ownership_transferred: req.body.reconcilate || req.body.ownership_transferred,
   });
   res.send(updatedLitigation);
 });
