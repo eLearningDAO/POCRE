@@ -57,8 +57,6 @@ export default router;
  *                $ref: '#/components/schemas/Decision'
  *       "404":
  *         $ref: '#/components/responses/UserNotFound'
- *       "409":
- *         $ref: '#/components/responses/DecisionAlreadyMadeByUser'
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  */
@@ -141,8 +139,6 @@ export default router;
  *                 value:
  *                   code: 404
  *                   message: user not found
- *       "409":
- *         $ref: '#/components/responses/DecisionAlreadyMadeByUser'
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *

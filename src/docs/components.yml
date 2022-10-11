@@ -356,15 +356,6 @@ components:
           example:
             code: 404
             message: decision not found
-    DecisionAlreadyMadeByUser:
-      description: User already made a decision
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 409
-            message: user already made a decision
     DecisionAlreadyAssignedToLitigation:
       description: Decision already assigned to a litigation
       content:
