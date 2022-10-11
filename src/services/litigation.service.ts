@@ -16,6 +16,7 @@ interface ILitigation {
   litigation_start: string;
   litigation_end: string;
   reconcilate: boolean;
+  winner: string;
 }
 interface ILitigationQuery {
   limit: number;
@@ -41,6 +42,7 @@ interface ILitigationDoc {
   litigation_start: string;
   litigation_end: string;
   reconcilate: boolean;
+  winner: string;
 }
 
 /**
@@ -139,10 +141,11 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         decisions,
         litigation_start,
         litigation_end,
-        reconcilate
+        reconcilate,
+        winner
       ) 
       values 
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) 
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) 
       RETURNING *;`,
       [
         litigationBody.litigation_title,
@@ -156,6 +159,7 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         litigationBody.litigation_start,
         litigationBody.litigation_end,
         litigationBody.reconcilate,
+        litigationBody.winner,
       ]
     );
     const litigation = result.rows[0];

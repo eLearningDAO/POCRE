@@ -144,6 +144,7 @@ const init = async (): Promise<QueryResult<any>> => {
       material_id UUID UNIQUE,
       assumed_author UUID NOT NULL,
       issuer_id UUID NOT NULL,
+      winner UUID NOT NULL,
       invitations UUID[],
       decisions UUID[],
       litigation_start DATE NOT NULL DEFAULT CURRENT_DATE,

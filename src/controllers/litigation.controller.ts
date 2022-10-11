@@ -46,6 +46,7 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
   const newLitigation = await litigationService.createLitigation({
     ...req.body,
     assumed_author: material ? material.author_id : creation?.author_id,
+    winner: req.body.issuer_id,
   });
 
   // send invites to litigators
@@ -96,11 +97,27 @@ export const deleteLitigationById = catchAsync(async (req, res): Promise<void> =
 });
 
 export const updateLitigationById = catchAsync(async (req, res): Promise<void> => {
+  const litigation = await litigationService.getLitigationById(req.params.litigation_id);
+  let winner = litigation?.winner;
+
   // check if reference docs exist
   if (req.body.decisions && req.body.decisions.length > 0) {
-    await Promise.all(req.body.decisions.map((id: string) => getDecisionById(id))); // verify decisions, will throw an error if any decision is not found
+    const decisions = await Promise.all(req.body.decisions.map((id: string) => getDecisionById(id))); // verify decisions, will throw an error if any decision is not found
+
+    // get decision votes
+    const votes = {
+      agreed: decisions.filter((x) => x.decision_status === true).length,
+      opposed: decisions.filter((x) => x.decision_status === false).length,
+    };
+
+    // recalculate winner
+    winner = votes.agreed > votes.opposed ? litigation?.issuer_id : litigation?.assumed_author;
   }
 
-  const litigation = await litigationService.updateLitigationById(req.params.litigation_id, req.body);
-  res.send(litigation);
+  // update litigation
+  const updatedLitigation = await litigationService.updateLitigationById(req.params.litigation_id, {
+    ...req.body,
+    winner,
+  });
+  res.send(updatedLitigation);
 });
