@@ -40,7 +40,7 @@ const init = async (): Promise<QueryResult<any>> => {
     CREATE TABLE IF NOT EXISTS decision (
       decision_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       decision_status bool default false,
-      maker_id UUID UNIQUE NOT NULL,
+      maker_id UUID NOT NULL,
       CONSTRAINT maker_id
           FOREIGN KEY(maker_id) 
           REFERENCES users(user_id)

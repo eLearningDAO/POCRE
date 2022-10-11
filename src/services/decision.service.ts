@@ -1,5 +1,4 @@
 import httpStatus from 'http-status';
-import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 
@@ -26,12 +25,7 @@ export const createDecision = async (decisionBody: IDecision): Promise<IDecision
     ]);
     const decision = result.rows[0];
     return decision;
-  } catch (e: unknown) {
-    const err = e as DatabaseError;
-    if (err.message && err.message.includes('duplicate key') && err.message.includes('maker_id')) {
-      throw new ApiError(httpStatus.CONFLICT, `user already made a decision`);
-    }
-
+  } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };
@@ -86,12 +80,7 @@ export const updateDecisionById = async (id: string, updateBody: Partial<IDecisi
     );
     const decision = updateQry.rows[0];
     return decision;
-  } catch (e: unknown) {
-    const err = e as DatabaseError;
-    if (err.message && err.message.includes('duplicate key') && err.message.includes('maker_id')) {
-      throw new ApiError(httpStatus.CONFLICT, `user already made a decision`);
-    }
-
+  } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };
