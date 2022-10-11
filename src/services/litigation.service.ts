@@ -22,6 +22,10 @@ interface ILitigation {
 interface ILitigationQuery {
   limit: number;
   page: number;
+  query: string;
+  search_fields: string[];
+  ascend_fields: string[];
+  descend_fields: string[];
 }
 interface ILitigationQueryResult {
   results: Array<ILitigationDoc>;
@@ -182,17 +186,42 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
  * Query for litigation
  * @returns {Promise<Array<ILitigation>}
  */
-export const queryLitigations = async (
-  options: ILitigationQuery = { limit: 10, page: 1 }
-): Promise<ILitigationQueryResult> => {
+export const queryLitigations = async (options: ILitigationQuery): Promise<ILitigationQueryResult> => {
   try {
-    const result = await db.query(`SELECT * FROM litigation OFFSET $1 LIMIT $2;`, [
+    // search
+    const search =
+      options.search_fields && options.search_fields.length > 0
+        ? `WHERE ${options.search_fields
+            .map(
+              (field) =>
+                `${field} ${
+                  ['creation_id', 'material_id', 'assumed_author', 'issuer_id', 'winner'].includes(field)
+                    ? `= '${options.query}'`
+                    : `LIKE '%${options.query}%'`
+                }`
+            )
+            .join(' OR ')}`
+        : '';
+
+    // order
+    const ascendOrder =
+      (options.ascend_fields || []).length > 0 ? `${options.ascend_fields.map((x) => `${x} ASC`).join(', ')}` : '';
+    const descendOrder =
+      (options.descend_fields || []).length > 0 ? `${options.descend_fields.map((x) => `${x} DESC`).join(', ')}` : '';
+    const order =
+      (options.ascend_fields || options.descend_fields || []).length > 0
+        ? `ORDER BY ${ascendOrder} ${
+            (options.ascend_fields || []).length > 0 && (options.descend_fields || []).length > 0 ? ', ' : ''
+          } ${descendOrder}`
+        : '';
+
+    const result = await db.query(`SELECT * FROM litigation ${search} ${order} OFFSET $1 LIMIT $2;`, [
       options.page === 1 ? '0' : (options.page - 1) * options.limit,
       options.limit,
     ]);
     const litigations = result.rows;
 
-    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM litigation;`, [])).rows[0];
+    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM litigation ${search};`, [])).rows[0];
 
     return {
       results: litigations,

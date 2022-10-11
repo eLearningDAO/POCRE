@@ -18,6 +18,16 @@ export const queryLitigations = {
   query: Joi.object().keys({
     limit: Joi.number().integer().default(10),
     page: Joi.number().integer().default(1).greater(0),
+    query: Joi.string().optional(),
+    search_fields: Joi.array()
+      .items(Joi.string().valid('creation_id', 'material_id', 'assumed_author', 'issuer_id', 'winner'))
+      .when('query', {
+        is: Joi.string().exist(),
+        then: Joi.required(),
+        otherwise: Joi.forbidden(),
+      }),
+    ascend_fields: Joi.array().items(Joi.string().valid('litigation_start', 'litigation_end')).optional(),
+    descend_fields: Joi.array().items(Joi.string().valid('litigation_start', 'litigation_end')).optional(),
   }),
 };
 
