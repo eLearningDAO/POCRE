@@ -1,12 +1,14 @@
+import httpStatus from 'http-status';
 import catchAsync from '../utils/catchAsync';
 import * as litigationService from '../services/litigation.service';
 import { getUserById, getReputedUsers } from '../services/user.service';
-import { getMaterialById } from '../services/material.service';
+import { getMaterialById, updateMaterialById } from '../services/material.service';
 import { createInvitation } from '../services/invitation.service';
 import { getDecisionById } from '../services/decision.service';
-import { getCreationById } from '../services/creation.service';
+import { getCreationById, updateCreationById } from '../services/creation.service';
 import { createStatus } from '../services/status.service';
 import config from '../config/config';
+import ApiError from '../utils/ApiError';
 
 export const queryLitigations = catchAsync(async (req, res): Promise<void> => {
   const litigation = await litigationService.queryLitigations(req.query as any);
@@ -28,6 +30,16 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
   }
   if (req.body.decisions && req.body.decisions.length > 0) {
     await Promise.all(req.body.decisions.map((id: string) => getDecisionById(id))); // verify decisions, will throw an error if any decision is not found
+  }
+
+  // check if creation can be claimed
+  if (!creation?.is_claimable) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'creation is not claimable');
+  }
+
+  // check if material can be claimed
+  if (material && !material?.is_claimable) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'material is not claimable');
   }
 
   // create a new litigation
@@ -68,6 +80,12 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
   // update litigation
   newLitigation.invitations = invitations.map((invitation) => invitation.invite_id);
   await litigationService.updateLitigationById(newLitigation.litigation_id, { invitations: newLitigation.invitations });
+
+  // make creation not claimable
+  if (!material && creation) await updateCreationById(creation.creation_id, { is_claimable: false });
+
+  // make material not claimable
+  if (material) await updateMaterialById(material.material_id, { is_claimable: false });
 
   res.send(newLitigation);
 });

@@ -11,7 +11,7 @@ interface IMaterial {
   type_id: string;
   invite_id?: string;
   author_id: string;
-  is_claimable: string;
+  is_claimable: boolean;
 }
 interface IMaterialQuery {
   limit: number;
@@ -35,7 +35,7 @@ interface IMaterialDoc {
   type_id: string;
   invite_id: string;
   author_id: string;
-  is_claimable: string;
+  is_claimable: boolean;
 }
 
 /**
@@ -162,7 +162,7 @@ export const updateMaterialById = async (id: string, updateBody: Partial<IMateri
 
   // build sql conditions and values
   const conditions: string[] = [];
-  const values: (string | null)[] = [];
+  const values: (string | null | boolean)[] = [];
   Object.entries(updateBody).map(([k, v], index) => {
     conditions.push(`${k} = $${index + 2}`);
     values.push(v);
