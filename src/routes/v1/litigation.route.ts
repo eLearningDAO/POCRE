@@ -128,6 +128,8 @@ export default router;
  *                 - $ref: '#/components/responses/CreationAlreadyAssignedToLitigation'
  *                 - $ref: '#/components/responses/CreationLitigationNotAllowed'
  *                 - $ref: '#/components/responses/MaterialDoesNotBelongToCreation'
+ *                 - $ref: '#/components/responses/CreationNotClaimable'
+ *                 - $ref: '#/components/responses/MaterialNotClaimable'
  *                 - $ref: '#/components/responses/MaterialAlreadyAssignedToLitigation'
  *                 - $ref: '#/components/responses/IssuerAlreadyAssignedToLitigation'
  *                 - $ref: '#/components/responses/DecisionAlreadyAssignedToLitigation'
@@ -142,6 +144,11 @@ export default router;
  *                 value:
  *                   code: 409
  *                   message: creation with materials are not allowed to be litigated
+ *               CreationNotClaimable:
+ *                 summary: creation is not claimable
+ *                 value:
+ *                   code: 409
+ *                   message: creation is not claimable
  *               MaterialDoesNotBelongToCreation:
  *                 summary: material does not belong to creation
  *                 value:
@@ -152,6 +159,11 @@ export default router;
  *                 value:
  *                   code: 409
  *                   message: material already assigned to a litigation
+ *               MaterialNotClaimable:
+ *                 summary: material is not claimable
+ *                 value:
+ *                   code: 409
+ *                   message: material is not claimable
  *               IssuerAlreadyAssignedToLitigation:
  *                 summary: issuer already assigned to a litigation
  *                 value:

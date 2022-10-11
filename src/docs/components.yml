@@ -481,7 +481,16 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: material does not belong to creation    
+            message: material does not belong to creation        
+    MaterialNotClaimable:
+      description: Material is not claimable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: material is not claimable    
     TagNotFound:
       description: Tag not found
       content:
@@ -517,7 +526,16 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: creation with materials are not allowed to be litigated
+            message: creation with materials are not allowed to be litigated        
+    CreationNotClaimable:
+      description: Creation is not claimable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: creation is not claimable   
     LitigationNotFound:
       description: Litigation not found
       content:
