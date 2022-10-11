@@ -79,10 +79,12 @@ export default router;
  *                material_id: fa52d76c-664a-41de-aebb-b311a74ef570
  *                assumed_author: b49cf4d8-341d-4cd6-b5ad-d002e87d9331
  *                issuer_id: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
+ *                winner: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
  *                decisions: [6087ac9e-7e15-4ad7-b256-7893a00c3577]
  *                litigation_start: 2022-09-09T19:00:00.000Z
  *                litigation_end: 2022-09-09T19:00:00.000Z
  *                reconcilate: false
+ *                ownership_transferred: false
  *     responses:
  *       "201":
  *         description: Created
@@ -285,16 +287,20 @@ export default router;
  *                 format: date-time
  *               reconcilate:
  *                 type: bool
+ *               ownership_transferred:
+ *                 type: bool
  *             example:
  *                litigation_title: my first litigation
  *                litigation_description: an example litigation
  *                material_id: fa52d76c-664a-41de-aebb-b311a74ef570
  *                assumed_author: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
  *                issuer_id: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
+ *                winner: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
  *                decisions: [6087ac9e-7e15-4ad7-b256-7893a00c3577]
  *                litigation_start: 2022-09-09T19:00:00.000Z
  *                litigation_end: 2022-09-09T19:00:00.000Z
  *                reconcilate: false
+ *                ownership_transferred: false
  *     responses:
  *       "200":
  *         description: OK
