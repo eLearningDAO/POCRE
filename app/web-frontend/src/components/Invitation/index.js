@@ -99,7 +99,7 @@ function Invitation() {
         ).length > 0
         && (
         <Grid item xs={12} style={{ marginTop: '10px' }}>
-          <Typography className="inviationSectionTitle" variant="h6">Inbox</Typography>
+          <Typography className="inviationSectionTitle" variant="h6">This label is to remove</Typography>
         </Grid>
         )}
 
