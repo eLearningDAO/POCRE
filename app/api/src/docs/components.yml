@@ -1,0 +1,545 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        user_name:
+          type: string
+        wallet_address:
+          type: string
+        user_bio:
+          type: string
+        date_joined:
+          type: string
+          format: date-time
+      example:
+        user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
+        user_name: john
+        wallet_address: 28y9gd27g2g237g80hnibhi
+        user_bio: ready to explore
+        date_joined: 2022-09-05T19:00:00.000Z
+    
+    Status:
+      type: object
+      properties:
+        status_id:
+          type: string
+          format: uuid
+        status_name:
+          type: string
+        status_description:
+          type: string
+        action_made:
+          type: string
+          format: date-time
+      example:
+        status_id: 2cc874d2-9f7d-48a8-a416-ec19e9462da9
+        status_name: invitation_created
+        status_description: invitaion to john
+        action_made: 2022-09-05T19:00:00.000Z   
+    
+    Decision:
+      type: object
+      properties:
+        decision_id:
+          type: string
+          format: uuid
+        decision_status:
+          type: bool
+        maker_id:
+          type: string
+          format: uuid
+      example:
+        decision_id: db71f5fa-4ee6-4d6d-893b-af08a4e2d575
+        decision_status: true
+        maker_id: c83a8680-e5db-4a79-8646-c6e3d010ec6b    
+
+    Invitation:
+      type: object
+      properties:
+        invite_id:
+          type: string
+          format: uuid
+        invite_from:
+          type: string
+          format: uuid
+        invite_to:
+          type: string
+          format: uuid
+        invite_description:
+          type: string
+        invite_issued:
+          type: string
+          format: date-time
+        status_id:
+          type: string
+          format: uuid
+      example:
+        invite_id: 8d098580-1e4c-40c8-95f3-9c78de09a121
+        invite_from: d5cef9e4-d497-45ea-bd68-609aba268886
+        invite_to: d5cef9e4-d497-45ea-bd68-609aba268886
+        invite_description: invitation to john
+        invite_issued: 2022-09-07T19:00:00.000Z
+        status_id: 865b3cff-d24e-4ec7-8873-f9634c5f2245
+
+    Source:
+      type: object
+      properties:
+        source_id:
+          type: string
+          format: uuid
+        source_title:
+          type: string
+        source_description:
+          type: string
+        site_url:
+          type: string
+      example:
+        source_id: 04588cf9-09c3-446c-828c-609390c66b29
+        source_title: turtle
+        source_description: turtle walks
+        site_url: https://google.com
+
+    Material:
+      type: object
+      properties:
+        material_id:
+          type: string
+          format: uuid
+        material_title:
+          type: string
+        material_description:
+          type: string
+        material_link:
+          type: string
+        source_id:
+          type: string
+          format: uuid
+        type_id:
+          type: string
+          format: uuid
+        invite_id:
+          type: string
+          format: uuid
+        author_id:
+          type: string
+          format: uuid
+        is_claimable:
+          type: bool
+      example:
+        material_id: 5d6ad369-55d8-469d-bf26-4a90017861dd
+        material_title: plastic
+        material_description: dangerous
+        material_link: https://example.com
+        source_id: 12ed7a55-a1ba-4895-83e9-7aa615247390
+        type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
+        invite_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
+        author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
+        is_claimable: true
+
+    MaterialType:
+      type: object
+      properties:
+        type_id:
+          type: string
+          format: uuid
+        type_name:
+          type: string
+        type_description:
+          type: string
+      example:
+        type_id: 670be025-7c46-4890-8348-b5ad620ad9a7
+        type_name: plastic
+        type_description: dangerous to environment
+
+    Tag:
+      type: object
+      properties:
+        tag_id:
+          type: string
+          format: uuid
+        tag_name:
+          type: string
+        tag_description:
+          type: string
+        tag_created:
+          type: string
+          format: date-time
+      example:
+        tag_id: fb018e05-5792-48a4-bee3-4518453443d3
+        tag_name: enhancement
+        tag_description: improvement tag
+        tag_created: 2022-09-06T19:00:00.000Z
+
+    Creation:
+      type: object
+      properties:
+        creation_id:
+          type: string
+          format: uuid
+        creation_title:
+          type: string
+        creation_description:
+          type: string
+        source_id:
+          type: string
+          format: uuid
+        author_id:
+          type: string
+          format: uuid
+        tags:
+          type: array
+          items: 
+            type: string
+            format: uuid
+        materials:
+          type: array
+          items: 
+            type: string
+            format: uuid
+        creation_date:
+          type: string
+          format: date-time
+        is_draft:
+          type: bool
+        is_claimable:
+          type: bool
+      example:
+        creation_id: b1171878-797e-4f8a-a726-961f761bb8fc
+        creation_title: my first creation
+        creation_description: an example creation
+        source_id: d91f005d-2037-41b9-b706-0e70c651e4e2
+        author_id: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
+        tags: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
+        materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
+        creation_date: 2022-09-16T19:00:00.000Z
+        is_draft: false
+        is_claimable: true
+
+    Litigation:
+      type: object
+      properties:
+        litigation_id:
+          type: string
+          format: uuid
+        litigation_title:
+          type: string
+        litigation_description:
+          type: string
+        material_id:
+          type: string
+          format: uuid
+        issuer_id:
+          type: string
+          format: uuid
+        winner:
+          type: string
+          format: uuid
+        invitations:
+          type: array
+          items: 
+            type: string
+            format: uuid
+        decisions:
+          type: array
+          items: 
+            type: string
+            format: uuid
+        litigation_start:
+          type: string
+          format: date-time
+        litigation_end:
+          type: string
+          format: date-time
+        reconcilate:
+          type: bool
+        ownership_transferred:
+          type: bool
+      example:
+        litigation_id: b1171878-797e-4f8a-a726-961f761bb8fc
+        litigation_title: my first creation
+        litigation_description: an example creation
+        material_id: d91f005d-2037-41b9-b706-0e70c651e4e2
+        assumed_author: dd7a824b-b0a9-4868-bdbf-cfa6bdd36621
+        issuer_id: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
+        winner: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
+        invitations: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
+        decisions: [7b3439c6-a691-4a60-9e09-8235804c33fe]
+        litigation_start: 2022-09-06T19:00:00.000Z
+        litigation_end: 2022-09-06T19:00:00.000Z
+        reconcilate: false
+        ownership_transferred: false
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: number
+        message:
+          type: string
+
+  responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 403
+            message: Forbidden
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: not found
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 500
+            message: internal server error
+    UserNotFound:
+      description: User not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: user not found
+    IssuerAlreadyAssignedToLitigation:
+      description: Issuer already assigned to a litigation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: issuer already assigned to a litigation
+    UserCannotInviteThemselve:
+      description: User cannot invite themselve
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: user cannot invite themselve
+    StatusNotFound:
+      description: Status not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: status not found
+    StatusAlreadyAssignedToInvitation:
+      description: Status already assigned to an invitation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: status already assigned to an invitation
+    DecisionNotFound:
+      description: Decision not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: decision not found
+    DecisionAlreadyAssignedToLitigation:
+      description: Decision already assigned to a litigation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: decision already assigned to a litigation
+    InvitationNotFound:
+      description: Invitation not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: invitation not found
+    InvitationAlreadyAssignedToMaterial:
+      description: Invitation already assigned to a material
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: invitation already assigned to a material
+    InvitationAlreadyAssignedToLitigation:
+      description: Invitation already assigned to a litigation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: invitation already assigned to a litigation
+    SourceNotFound:
+      description: Source not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: source not found
+    SourceAlreadyAssignedToMaterial:
+      description: Source already assigned to a material
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: source already assigned to a material
+    SourceAlreadyAssignedToCreation:
+      description: Source already assigned to a creation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: source already assigned to a creation
+    MaterialTypeNotFound:
+      description: Material Type not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: material type not found
+    MaterialTypeAlreadyAssignedToMaterial:
+      description: Material type already assigned to a material
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: material type already assigned to a material
+    MaterialNotFound:
+      description: Material not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: material not found
+    MaterialAlreadyAssignedToCreation:
+      description: Material already assigned to a creation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: material already assigned to a creation   
+    MaterialAlreadyAssignedToLitigation:
+      description: Material already assigned to a litigation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: material already assigned to a litigation     
+    MaterialDoesNotBelongToCreation:
+      description: Material does not belong to creation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: material does not belong to creation        
+    MaterialNotClaimable:
+      description: Material is not claimable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: material is not claimable    
+    TagNotFound:
+      description: Tag not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: tag not found
+    CreationNotFound:
+      description: Creation not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: creation not found  
+    CreationAlreadyAssignedToLitigation:
+      description: Creation already assigned to a litigation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: creation already assigned to a litigation  
+    CreationLitigationNotAllowed:
+      description: Creation with materials are not allowed to be litigated
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: creation with materials are not allowed to be litigated        
+    CreationNotClaimable:
+      description: Creation is not claimable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: creation is not claimable   
+    LitigationNotFound:
+      description: Litigation not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: litigation not found
