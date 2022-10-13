@@ -53,7 +53,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint ./src --ext .js",
     "lint:fix": "eslint ./src --ext .js --fix",
-    "prepare": "husky install"
+    "prepare": "cd .. && cd .. && husky install app/web-frontend/.husky"
   },
   "eslintConfig": {
     "extends": [
