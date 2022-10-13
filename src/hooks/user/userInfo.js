@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware';
 const useUserInfo = create(
   persist((set, get) => ({
     login: false,
-    user: null,
+    user: {},
     setUser: (function_) => {
       set(function_(get()));
     },

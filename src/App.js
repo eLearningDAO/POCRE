@@ -12,11 +12,20 @@ import Layout from './components/Layout';
 import CreateCollection2 from './components/Creations/Scenario2/CreateCollection';
 import Credit from './components/Credit';
 import ProtectedRoute from './routes/ProtectedRoute';
+import Home from './components/Home';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route
+          path="/home"
+          element={(
+            <Layout displayNav>
+              <Home />
+            </Layout>
+          )}
+        />
         <Route
           path="/"
           element={(
