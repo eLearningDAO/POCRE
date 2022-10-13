@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { API_BASE_URL } from '../../../config';
 import useUserInfo from '../../../hooks/user/userInfo';
 
@@ -7,10 +7,12 @@ import useUserInfo from '../../../hooks/user/userInfo';
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 
 const useHeader = () => {
-  const { setUser: setUserContext, login } = useUserInfo();
+  const { setUser: setUserContext, login, user: { userId } = {} } = useUserInfo();
+
   const [users, setUsers] = useState([]);
   const [activeUser, setActiveUser] = useState(null);
   const [loading, setLoading] = useState(false);
+
   const [fetchUserStatus, setFetchUserStatus] = useState({
     success: false,
     error: null,
@@ -48,15 +50,18 @@ const useHeader = () => {
       setLoading(false);
     }
   }, []);
-
-  const onUserSelect = (event) => {
-    const temporaryUser = users.find((user) => user.user_id === event.target.value);
+  const onUserSelect = (event, id) => {
+    const temporaryUser = users.find((user) => user.user_id === (event?.target?.value || id));
     setActiveUser(temporaryUser);
     Cookies.set('activeUser', JSON.stringify(temporaryUser));
 
     // set User gollably at our app
     setUserContext((previousS) => ({ ...previousS, user: temporaryUser }));
   };
+  React.useEffect(() => {
+    fetchUsers();
+    onUserSelect({}, userId);
+  }, []);
 
   return {
     login,

@@ -1,11 +1,7 @@
 import ClearIcon from '@mui/icons-material/Clear';
 import MenuIcon from '@mui/icons-material/Menu';
-import {
-  Box,
-  Button,
-  Grid,
-} from '@mui/material';
-import React, { useEffect } from 'react';
+import { Box, Button, Grid } from '@mui/material';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import '../responsive-menu-transition.css';
 // import { CSSTransition } from 'react-transition-group';
@@ -44,14 +40,10 @@ import useHeader from './useHeader';
 function HomeHeader({ displayNav = false }) {
   const location = useLocation();
   const {
-    fetchUserStatus, fetchUsers, users, activeUser, onUserSelect, login,
+    fetchUserStatus, users, activeUser, onUserSelect, login,
   } = useHeader();
 
   const [displayResponsiveMenu, setDisplayResponsiveMenu] = React.useState(false);
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
 
   return (
     <Grid container className="header" alignItems="center">

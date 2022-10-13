@@ -9,7 +9,7 @@ function LoginButton() {
   const login = useUserInfo((s) => s.login);
 
   function handleUserAuth(pram) {
-    setUser((previousS) => ({ user: pram ? { ...previousS } : null, login: pram }));
+    setUser(() => ({ login: pram }));
   }
   return (
     <Button
