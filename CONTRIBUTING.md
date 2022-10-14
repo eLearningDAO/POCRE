@@ -16,7 +16,7 @@ git clone https://github.com/e-Learning-DAO/POCRE.git
  |--*                       # Non-source code files
 ```
 
-## API 
+## API
 The api is build with NodeJS/Typescript using Postgresql as DB follwing RESTful architecture. 
 
 The source code is located at [/app/api](/app/api/). Please read the [README](/app/api/README.md) on how to set it up locally.
@@ -24,7 +24,7 @@ The source code is located at [/app/api](/app/api/). Please read the [README](/a
 ### DOCS
 We have swagger docs for api available at [https://pocre-api.herokuapp.com/v1/docs](https://pocre-api.herokuapp.com/v1/docs).
 
-### CI/CD 
+### CI/CD
 Automatic CD/CD for api is done via [heroku](https://heroku.com). It uses the [api branch](https://github.com/e-Learning-DAO/POCRE/tree/api) to deploy new changes.
 
 ### How to contribute
@@ -35,15 +35,15 @@ If you are looking to contribute to `API`, please follow this workflow
 3. Once your changes are merged to [api](https://github.com/e-Learning-DAO/POCRE/tree/api) branch, they will be deployed to live api.
 4. As an extra step, we will be merging the [api](https://github.com/e-Learning-DAO/POCRE/tree/api) branch to [main](https://github.com/e-Learning-DAO/POCRE/tree/main) branch on a regular basis.
 
-![contributing to api](./contributing-to-api.png)
+![contributing to api](./resources/contributing-to-api.png)
 
 
 ## Frontend
-The frontend is build with ReactJS. 
+The frontend is build with ReactJS.
 
 The source code is located at [/app/web-frontend](/app/web-frontend/). Please read the [README](/app/web-frontend/README.md) on how to set it up locally.
 
-### CI/CD 
+### CI/CD
 Automatic CD/CD for api is done via [netlify](https://netlify.com). It uses the [web-frontend branch](https://github.com/e-Learning-DAO/POCRE/tree/web-frontend) to deploy new changes. The live site is accessible at [https://pocre.netlify.app/](https://pocre.netlify.app/).
 
 ### How to contribute
@@ -54,4 +54,4 @@ If you are looking to contribute to `Frontend`, please follow this workflow
 3. Once your changes are merged to [web-frontend](https://github.com/e-Learning-DAO/POCRE/tree/web-frontend) branch, they will be deployed to live site.
 4. As an extra step, we will be merging the [web-frontend](https://github.com/e-Learning-DAO/POCRE/tree/web-frontend) branch to [main](https://github.com/e-Learning-DAO/POCRE/tree/main) branch on a regular basis.
 
-![contributing to frontend](./contributing-to-frontend.png)
+![contributing to frontend](./resources/contributing-to-frontend.png)
