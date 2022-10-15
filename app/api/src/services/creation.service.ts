@@ -167,7 +167,9 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
       options.search_fields && options.search_fields.length > 0
         ? `WHERE ${options.search_fields
             .map(
-              (field) => `${field} ${['author_id'].includes(field) ? `= '${options.query}'` : `LIKE '%${options.query}%'`}`
+              (field) => `
+              ${field === 'material_id' ? `'${options.query}'` : field} ${['author_id'].includes(field) ? `= '${options.query}'` : ['material_id'].includes(field) ? ` = ANY(materials)` : `LIKE '%${options.query}%'`}
+              `
             )
             .join(' OR ')}`
         : '';
