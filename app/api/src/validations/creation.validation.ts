@@ -27,6 +27,16 @@ export const queryCreations = {
     ascend_fields: Joi.array().items(Joi.string().valid('creation_date')).optional(),
     descend_fields: Joi.array().items(Joi.string().valid('creation_date')).optional(),
     is_trending: Joi.bool().optional(),
+    is_partially_assigned: Joi.bool().when('is_trending', {
+      is: Joi.bool().exist(),
+      then: Joi.forbidden(),
+      otherwise: Joi.optional(),
+    }),
+    is_fully_assigned: Joi.bool().when('is_trending', {
+      is: Joi.bool().exist(),
+      then: Joi.forbidden(),
+      otherwise: Joi.optional(),
+    }),
   }),
 };
 

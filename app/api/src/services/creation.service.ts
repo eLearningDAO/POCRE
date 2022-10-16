@@ -2,6 +2,7 @@ import httpStatus from 'http-status';
 import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
+import statusTypes from '../constants/statusTypes';
 
 interface ICreation {
   creation_title: string;
@@ -22,6 +23,8 @@ interface ICreationQuery {
   ascend_fields: string[];
   descend_fields: string[];
   is_trending?: boolean;
+  is_partially_assigned?: boolean;
+  is_fully_assigned?: boolean;
 }
 interface ICreationQueryResult {
   results: Array<ICreationDoc>;
@@ -220,16 +223,104 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                 NOT EXISTS 
                 (SELECT creation_id from litigation WHERE creation_id = c.creation_id)`,
       },
+      assigned: {
+        // opened creations that are partially or fully recognized by co-authors
+        query: `SELECT 
+                * 
+                FROM 
+                creation c 
+                ${search} 
+                ${search ? ' AND ' : ' WHERE '} 
+                materials <> '{}' 
+                AND 
+                EXISTS 
+                (SELECT 
+                material_id 
+                FROM 
+                  (SELECT 
+                    material.material_id, 
+                    material.invite_id, 
+                    invitation.status_id 
+                    FROM 
+                    material 
+                    INNER JOIN 
+                    invitation 
+                    ON 
+                    material.invite_id = invitation.invite_id
+                  ) 
+                as material_invite 
+                INNER JOIN 
+                status 
+                ON 
+                status.status_id = material_invite.status_id 
+                WHERE 
+                status.status_name ${
+                  options.is_fully_assigned ? `= '${statusTypes.ACCEPTED}'` : `<> '${statusTypes.DECLINED}'`
+                } 
+                AND 
+                material_invite.material_id = ANY(materials)
+                ) 
+                ${order} 
+                OFFSET $1 LIMIT $2`,
+        count: `SELECT 
+                COUNT(*) as total_results 
+                FROM 
+                creation c 
+                ${search} 
+                ${search ? ' AND ' : ' WHERE '} 
+                materials <> '{}' 
+                AND 
+                EXISTS 
+                (
+                  SELECT 
+                  material_id 
+                  FROM 
+                  (
+                    SELECT 
+                    material.material_id, 
+                    material.invite_id, 
+                    invitation.status_id 
+                    FROM 
+                    material 
+                    INNER JOIN 
+                    invitation ON 
+                    material.invite_id = invitation.invite_id
+                  ) 
+                  as 
+                  material_invite 
+                  INNER JOIN 
+                  status 
+                  ON 
+                  status.status_id = material_invite.status_id 
+                  WHERE 
+                  status.status_name ${
+                    options.is_fully_assigned ? `= '${statusTypes.ACCEPTED}'` : `<> '${statusTypes.DECLINED}'`
+                  } 
+                  AND 
+                  material_invite.material_id = ANY(materials)
+                )`,
+      },
     };
 
-    const result = await db.query(options.is_trending ? queryModes.trending.query : queryModes.default.query, [
-      options.page === 1 ? '0' : (options.page - 1) * options.limit,
-      options.limit,
-    ]);
+    const result = await db.query(
+      options.is_trending
+        ? queryModes.trending.query
+        : options.is_fully_assigned || options.is_partially_assigned
+        ? queryModes.assigned.query
+        : queryModes.default.query,
+      [options.page === 1 ? '0' : (options.page - 1) * options.limit, options.limit]
+    );
     const creations = result.rows;
 
     const count = await (
-      await db.query(options.is_trending ? queryModes.trending.count : queryModes.default.count, [])
+      await db.query(
+        options.is_trending
+          ? queryModes.trending.count
+          : options.is_fully_assigned || options.is_partially_assigned
+          ? queryModes.assigned.count
+          : queryModes.default.count,
+        []
+      )
     ).rows[0];
 
     return {
