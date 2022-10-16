@@ -20,6 +20,7 @@ interface IMaterialQuery {
   query: string;
   search_fields: string[];
   is_recognized: boolean;
+  is_claimed: boolean;
 }
 interface IMaterialQueryResult {
   results: Array<IMaterialDoc>;
@@ -119,7 +120,7 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
         query: `SELECT * FROM material ${search} OFFSET $1 LIMIT $2;`,
         count: `SELECT COUNT(*) as total_results FROM material ${search};`,
       },
-      recognized: {
+      recognizedOrClaimed: {
         query: `SELECT 
                 *
                 FROM
@@ -146,7 +147,28 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
                 )`
                     : ''
                 }
-                OFFSET $1 LIMIT $2;`,
+                ${
+                  (options.is_recognized === true || options.is_recognized === false) &&
+                  (options.is_claimed === true || options.is_claimed === false)
+                    ? ' AND '
+                    : ''
+                }
+                ${
+                  options.is_claimed === true || options.is_claimed === false
+                    ? `
+                    ${options.is_claimed === true ? '' : `NOT`} 
+                    EXISTS
+                (
+                  SELECT 
+                  material_id 
+                  FROM 
+                  litigation 
+                  WHERE 
+                  material_id = m.material_id
+                )
+                `
+                    : ''
+                } OFFSET $1 LIMIT $2;`,
         count: `SELECT 
                 COUNT(*) as total_results
                 FROM
@@ -173,13 +195,37 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
                 )`
                     : ''
                 }
-                `,
+                ${
+                  (options.is_recognized === true || options.is_recognized === false) &&
+                  (options.is_claimed === true || options.is_claimed === false)
+                    ? ' AND '
+                    : ''
+                }
+                ${
+                  options.is_claimed === true || options.is_claimed === false
+                    ? `
+                    ${options.is_claimed === true ? '' : `NOT`} 
+                    EXISTS
+                (
+                  SELECT 
+                  material_id 
+                  FROM 
+                  litigation 
+                  WHERE 
+                  material_id = m.material_id
+                )
+                `
+                    : ''
+                }`,
       },
     };
 
     const result = await db.query(
-      options.is_recognized === true || options.is_recognized === false
-        ? queryModes.recognized.query
+      options.is_recognized === true ||
+        options.is_recognized === false ||
+        options.is_claimed === true ||
+        options.is_claimed === false
+        ? queryModes.recognizedOrClaimed.query
         : queryModes.default.query,
       [options.page === 1 ? '0' : (options.page - 1) * options.limit, options.limit]
     );
@@ -187,8 +233,11 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
 
     const count = await (
       await db.query(
-        options.is_recognized === true || options.is_recognized === false
-          ? queryModes.recognized.count
+        options.is_recognized === true ||
+          options.is_recognized === false ||
+          options.is_claimed === true ||
+          options.is_claimed === false
+          ? queryModes.recognizedOrClaimed.count
           : queryModes.default.count,
         []
       )

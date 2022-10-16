@@ -24,6 +24,7 @@ export const queryMaterials = {
       otherwise: Joi.forbidden(),
     }),
     is_recognized: Joi.bool().optional(),
+    is_claimed: Joi.bool().optional(),
   }),
 };
 
