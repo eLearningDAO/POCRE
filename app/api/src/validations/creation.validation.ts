@@ -26,6 +26,7 @@ export const queryCreations = {
     }),
     ascend_fields: Joi.array().items(Joi.string().valid('creation_date')).optional(),
     descend_fields: Joi.array().items(Joi.string().valid('creation_date')).optional(),
+    is_trending: Joi.bool().optional(),
   }),
 };
 

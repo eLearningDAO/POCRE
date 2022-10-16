@@ -21,6 +21,7 @@ interface ICreationQuery {
   search_fields: string[];
   ascend_fields: string[];
   descend_fields: string[];
+  is_trending?: boolean;
 }
 interface ICreationQueryResult {
   results: Array<ICreationDoc>;
@@ -168,7 +169,13 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
         ? `WHERE ${options.search_fields
             .map(
               (field) => `
-              ${field === 'material_id' ? `'${options.query}'` : field} ${['author_id'].includes(field) ? `= '${options.query}'` : ['material_id'].includes(field) ? ` = ANY(materials)` : `LIKE '%${options.query}%'`}
+              ${field === 'material_id' ? `'${options.query}'` : field} ${
+                ['author_id'].includes(field)
+                  ? `= '${options.query}'`
+                  : ['material_id'].includes(field)
+                  ? ` = ANY(materials)`
+                  : `LIKE '%${options.query}%'`
+              }
               `
             )
             .join(' OR ')}`
@@ -186,13 +193,44 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
           } ${descendOrder}`
         : '';
 
-    const result = await db.query(`SELECT * FROM creation ${search} ${order} OFFSET $1 LIMIT $2;`, [
+    // list of queries
+    const queryModes = {
+      default: {
+        query: `SELECT * FROM creation ${search} ${order} OFFSET $1 LIMIT $2;`,
+        count: `SELECT COUNT(*) as total_results FROM creation ${search};`,
+      },
+      trending: {
+        // opened creations without any litigation
+        query: `SELECT 
+                * 
+                FROM 
+                creation c 
+                ${search} 
+                ${search ? ' AND ' : ' WHERE '} 
+                NOT EXISTS 
+                (SELECT creation_id from litigation WHERE creation_id = c.creation_id) 
+                ${order} 
+                OFFSET $1 LIMIT $2`,
+        count: `SELECT 
+                COUNT(*) as total_results 
+                FROM 
+                creation c 
+                ${search} 
+                ${search ? ' AND ' : ' WHERE '} 
+                NOT EXISTS 
+                (SELECT creation_id from litigation WHERE creation_id = c.creation_id)`,
+      },
+    };
+
+    const result = await db.query(options.is_trending ? queryModes.trending.query : queryModes.default.query, [
       options.page === 1 ? '0' : (options.page - 1) * options.limit,
       options.limit,
     ]);
     const creations = result.rows;
 
-    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM creation ${search};`, [])).rows[0];
+    const count = await (
+      await db.query(options.is_trending ? queryModes.trending.count : queryModes.default.count, [])
+    ).rows[0];
 
     return {
       results: creations,
