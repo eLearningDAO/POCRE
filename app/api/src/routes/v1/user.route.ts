@@ -92,6 +92,11 @@ export default router;
  *         schema:
  *           type: string[]
  *         description: list of fields to query search
+ *       - in: query
+ *         name: top_authors
+ *         schema:
+ *           type: bool
+ *         description: when true, returns users with most number of creations ordered by descending, a new field 'total_creations' is returned with each user response
  *     responses:
  *       "200":
  *         description: OK
