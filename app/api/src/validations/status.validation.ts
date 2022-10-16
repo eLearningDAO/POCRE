@@ -1,8 +1,11 @@
 import Joi from 'joi';
+import statusTypes from '../constants/statusTypes';
 
 export const createStatus = {
   body: Joi.object().keys({
-    status_name: Joi.string().required(),
+    status_name: Joi.string()
+      .valid(...Object.values(statusTypes))
+      .required(),
     status_description: Joi.string().optional().allow('').allow(null),
   }),
 };
@@ -19,7 +22,9 @@ export const updateStatus = {
   }),
   body: Joi.object()
     .keys({
-      status_name: Joi.string().optional(),
+      status_name: Joi.string()
+        .valid(...Object.values(statusTypes))
+        .optional(),
       status_description: Joi.string().optional().allow('').allow(null),
     })
     .min(1),

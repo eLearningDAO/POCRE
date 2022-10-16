@@ -37,7 +37,7 @@ components:
           format: date-time
       example:
         status_id: 2cc874d2-9f7d-48a8-a416-ec19e9462da9
-        status_name: invitation_created
+        status_name: pending
         status_description: invitaion to john
         action_made: 2022-09-05T19:00:00.000Z   
     

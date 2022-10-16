@@ -2,6 +2,7 @@ import httpStatus from 'http-status';
 import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
+import statusTypes from '../constants/statusTypes';
 
 interface IMaterial {
   material_title: string;
@@ -18,6 +19,8 @@ interface IMaterialQuery {
   page: number;
   query: string;
   search_fields: string[];
+  is_recognized: boolean;
+  is_claimed: boolean;
 }
 interface IMaterialQueryResult {
   results: Array<IMaterialDoc>;
@@ -111,13 +114,134 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
             .join(' OR ')}`
         : '';
 
-    const result = await db.query(`SELECT * FROM material ${search} OFFSET $1 LIMIT $2;`, [
-      options.page === 1 ? '0' : (options.page - 1) * options.limit,
-      options.limit,
-    ]);
+    // list of queries
+    const queryModes = {
+      default: {
+        query: `SELECT * FROM material ${search} OFFSET $1 LIMIT $2;`,
+        count: `SELECT COUNT(*) as total_results FROM material ${search};`,
+      },
+      recognizedOrClaimed: {
+        query: `SELECT 
+                *
+                FROM
+                material m
+                ${search} 
+                ${search ? ' AND ' : ' WHERE '}
+                ${
+                  options.is_recognized === true || options.is_recognized === false
+                    ? `
+                    ${options.is_recognized === true ? '' : `NOT`}
+                    EXISTS
+                (
+                  SELECT 
+                  invite_id 
+                  FROM 
+                  invitation 
+                  INNER JOIN 
+                  status 
+                  ON 
+                  invitation.status_id = status.status_id 
+                  WHERE 
+                  status.status_name = '${statusTypes.ACCEPTED}' 
+                  AND invite_id = m.invite_id
+                )`
+                    : ''
+                }
+                ${
+                  (options.is_recognized === true || options.is_recognized === false) &&
+                  (options.is_claimed === true || options.is_claimed === false)
+                    ? ' AND '
+                    : ''
+                }
+                ${
+                  options.is_claimed === true || options.is_claimed === false
+                    ? `
+                    ${options.is_claimed === true ? '' : `NOT`} 
+                    EXISTS
+                (
+                  SELECT 
+                  material_id 
+                  FROM 
+                  litigation 
+                  WHERE 
+                  material_id = m.material_id
+                )
+                `
+                    : ''
+                } OFFSET $1 LIMIT $2;`,
+        count: `SELECT 
+                COUNT(*) as total_results
+                FROM
+                material m
+                ${search} 
+                ${search ? ' AND ' : ' WHERE '}
+                ${
+                  options.is_recognized === true || options.is_recognized === false
+                    ? `
+                    ${options.is_recognized === true ? '' : `NOT`}
+                    EXISTS
+                (
+                  SELECT 
+                  invite_id 
+                  FROM 
+                  invitation 
+                  INNER JOIN 
+                  status 
+                  ON 
+                  invitation.status_id = status.status_id 
+                  WHERE 
+                  status.status_name = '${statusTypes.ACCEPTED}' 
+                  AND invite_id = m.invite_id
+                )`
+                    : ''
+                }
+                ${
+                  (options.is_recognized === true || options.is_recognized === false) &&
+                  (options.is_claimed === true || options.is_claimed === false)
+                    ? ' AND '
+                    : ''
+                }
+                ${
+                  options.is_claimed === true || options.is_claimed === false
+                    ? `
+                    ${options.is_claimed === true ? '' : `NOT`} 
+                    EXISTS
+                (
+                  SELECT 
+                  material_id 
+                  FROM 
+                  litigation 
+                  WHERE 
+                  material_id = m.material_id
+                )
+                `
+                    : ''
+                }`,
+      },
+    };
+
+    const result = await db.query(
+      options.is_recognized === true ||
+        options.is_recognized === false ||
+        options.is_claimed === true ||
+        options.is_claimed === false
+        ? queryModes.recognizedOrClaimed.query
+        : queryModes.default.query,
+      [options.page === 1 ? '0' : (options.page - 1) * options.limit, options.limit]
+    );
     const materials = result.rows;
 
-    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM material ${search};`, [])).rows[0];
+    const count = await (
+      await db.query(
+        options.is_recognized === true ||
+          options.is_recognized === false ||
+          options.is_claimed === true ||
+          options.is_claimed === false
+          ? queryModes.recognizedOrClaimed.count
+          : queryModes.default.count,
+        []
+      )
+    ).rows[0];
 
     return {
       results: materials,

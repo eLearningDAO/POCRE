@@ -2,6 +2,7 @@ import httpStatus from 'http-status';
 import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
+import statusTypes from '../constants/statusTypes';
 
 interface ICreation {
   creation_title: string;
@@ -21,6 +22,9 @@ interface ICreationQuery {
   search_fields: string[];
   ascend_fields: string[];
   descend_fields: string[];
+  is_trending?: boolean;
+  is_partially_assigned?: boolean;
+  is_fully_assigned?: boolean;
 }
 interface ICreationQueryResult {
   results: Array<ICreationDoc>;
@@ -168,7 +172,13 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
         ? `WHERE ${options.search_fields
             .map(
               (field) => `
-              ${field === 'material_id' ? `'${options.query}'` : field} ${['author_id'].includes(field) ? `= '${options.query}'` : ['material_id'].includes(field) ? ` = ANY(materials)` : `LIKE '%${options.query}%'`}
+              ${field === 'material_id' ? `'${options.query}'` : field} ${
+                ['author_id'].includes(field)
+                  ? `= '${options.query}'`
+                  : ['material_id'].includes(field)
+                  ? ` = ANY(materials)`
+                  : `LIKE '%${options.query}%'`
+              }
               `
             )
             .join(' OR ')}`
@@ -186,13 +196,132 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
           } ${descendOrder}`
         : '';
 
-    const result = await db.query(`SELECT * FROM creation ${search} ${order} OFFSET $1 LIMIT $2;`, [
-      options.page === 1 ? '0' : (options.page - 1) * options.limit,
-      options.limit,
-    ]);
+    // list of queries
+    const queryModes = {
+      default: {
+        query: `SELECT * FROM creation ${search} ${order} OFFSET $1 LIMIT $2;`,
+        count: `SELECT COUNT(*) as total_results FROM creation ${search};`,
+      },
+      trending: {
+        // opened creations without any litigation
+        query: `SELECT 
+                * 
+                FROM 
+                creation c 
+                ${search} 
+                ${search ? ' AND ' : ' WHERE '} 
+                NOT EXISTS 
+                (SELECT creation_id from litigation WHERE creation_id = c.creation_id) 
+                ${order} 
+                OFFSET $1 LIMIT $2`,
+        count: `SELECT 
+                COUNT(*) as total_results 
+                FROM 
+                creation c 
+                ${search} 
+                ${search ? ' AND ' : ' WHERE '} 
+                NOT EXISTS 
+                (SELECT creation_id from litigation WHERE creation_id = c.creation_id)`,
+      },
+      assigned: {
+        // opened creations that are partially or fully recognized by co-authors
+        query: `SELECT 
+                * 
+                FROM 
+                creation c 
+                ${search} 
+                ${search ? ' AND ' : ' WHERE '} 
+                materials <> '{}' 
+                AND 
+                EXISTS 
+                (SELECT 
+                material_id 
+                FROM 
+                  (SELECT 
+                    material.material_id, 
+                    material.invite_id, 
+                    invitation.status_id 
+                    FROM 
+                    material 
+                    INNER JOIN 
+                    invitation 
+                    ON 
+                    material.invite_id = invitation.invite_id
+                  ) 
+                as material_invite 
+                INNER JOIN 
+                status 
+                ON 
+                status.status_id = material_invite.status_id 
+                WHERE 
+                status.status_name ${
+                  options.is_fully_assigned ? `= '${statusTypes.ACCEPTED}'` : `<> '${statusTypes.DECLINED}'`
+                } 
+                AND 
+                material_invite.material_id = ANY(materials)
+                ) 
+                ${order} 
+                OFFSET $1 LIMIT $2`,
+        count: `SELECT 
+                COUNT(*) as total_results 
+                FROM 
+                creation c 
+                ${search} 
+                ${search ? ' AND ' : ' WHERE '} 
+                materials <> '{}' 
+                AND 
+                EXISTS 
+                (
+                  SELECT 
+                  material_id 
+                  FROM 
+                  (
+                    SELECT 
+                    material.material_id, 
+                    material.invite_id, 
+                    invitation.status_id 
+                    FROM 
+                    material 
+                    INNER JOIN 
+                    invitation ON 
+                    material.invite_id = invitation.invite_id
+                  ) 
+                  as 
+                  material_invite 
+                  INNER JOIN 
+                  status 
+                  ON 
+                  status.status_id = material_invite.status_id 
+                  WHERE 
+                  status.status_name ${
+                    options.is_fully_assigned ? `= '${statusTypes.ACCEPTED}'` : `<> '${statusTypes.DECLINED}'`
+                  } 
+                  AND 
+                  material_invite.material_id = ANY(materials)
+                )`,
+      },
+    };
+
+    const result = await db.query(
+      options.is_trending
+        ? queryModes.trending.query
+        : options.is_fully_assigned || options.is_partially_assigned
+        ? queryModes.assigned.query
+        : queryModes.default.query,
+      [options.page === 1 ? '0' : (options.page - 1) * options.limit, options.limit]
+    );
     const creations = result.rows;
 
-    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM creation ${search};`, [])).rows[0];
+    const count = await (
+      await db.query(
+        options.is_trending
+          ? queryModes.trending.count
+          : options.is_fully_assigned || options.is_partially_assigned
+          ? queryModes.assigned.count
+          : queryModes.default.count,
+        []
+      )
+    ).rows[0];
 
     return {
       results: creations,

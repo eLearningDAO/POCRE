@@ -13,6 +13,7 @@ interface IUserQuery {
   page: number;
   query: string;
   search_fields: string[];
+  top_authors?: boolean;
 }
 interface IUserQueryResult {
   results: Array<IUserDoc>;
@@ -27,6 +28,7 @@ interface IUserDoc {
   wallet_address: string;
   user_bio: string;
   date_joined: string;
+  total_creations?: string;
 }
 interface IUserCriteria {
   required_users: number;
@@ -63,18 +65,98 @@ export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
  */
 export const queryUsers = async (options: IUserQuery): Promise<IUserQueryResult> => {
   try {
+    // search
     const search =
       options.search_fields && options.search_fields.length > 0
         ? `WHERE ${options.search_fields.map((field) => `${field} LIKE '%${options.query}%'`).join(' OR ')}`
         : '';
 
-    const result = await db.query(`SELECT * FROM users ${search} OFFSET $1 LIMIT $2;`, [
+    // list of queries
+    const queryModes = {
+      default: {
+        query: `SELECT * FROM users ${search} OFFSET $1 LIMIT $2;`,
+        count: `SELECT COUNT(*) as total_results FROM users ${search};`,
+      },
+      topAuthors: {
+        // users with most number of creations
+        query: `SELECT 
+                *, 
+                (
+                  SELECT 
+                  COUNT(author_id) value_occurrence 
+                  FROM 
+                  creation 
+                  WHERE 
+                  author_id = u.user_id
+                ) 
+                as total_creations
+                FROM 
+                users u 
+                ${search}
+                WHERE 
+                u.user_id = ANY(
+                              ARRAY(
+                                SELECT 
+                                author_id 
+                                FROM (
+                                  SELECT 
+                                  author_id, 
+                                  COUNT(author_id) value_occurrence 
+                                  FROM 
+                                  creation 
+                                  GROUP BY 
+                                  author_id 
+                                  ORDER BY 
+                                  value_occurrence 
+                                  DESC
+                                )
+                                AS authors
+                              )
+                            )
+                  ORDER BY 
+                  total_creations
+                  DESC
+                  OFFSET $1 
+                  LIMIT $2;
+                  `,
+        count: `SELECT 
+                COUNT(*) as total_results 
+                FROM 
+                users u 
+                ${search}
+                WHERE 
+                u.user_id = ANY(
+                              ARRAY(
+                                SELECT 
+                                author_id 
+                                FROM (
+                                  SELECT 
+                                  author_id, 
+                                  COUNT(author_id) value_occurrence 
+                                  FROM 
+                                  creation 
+                                  GROUP BY 
+                                  author_id 
+                                  ORDER BY 
+                                  value_occurrence 
+                                  DESC
+                                )
+                                AS authors
+                              )
+                            );
+                  `,
+      },
+    };
+
+    const result = await db.query(options.top_authors ? queryModes.topAuthors.query : queryModes.default.query, [
       options.page === 1 ? '0' : (options.page - 1) * options.limit,
       options.limit,
     ]);
     const users = result.rows;
 
-    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM users ${search};`, [])).rows[0];
+    const count = await (
+      await db.query(options.top_authors ? queryModes.topAuthors.count : queryModes.default.count, [])
+    ).rows[0];
 
     return {
       results: users,

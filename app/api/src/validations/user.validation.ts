@@ -18,6 +18,7 @@ export const queryUsers = {
       then: Joi.required(),
       otherwise: Joi.forbidden(),
     }),
+    top_authors: Joi.bool().optional(),
   }),
 };
 
