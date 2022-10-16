@@ -169,6 +169,16 @@ export default router;
  *         schema:
  *           type: string[]
  *         description: list of fields to query search
+ *       - in: query
+ *         name: is_recognized
+ *         schema:
+ *           type: bool
+ *         description: when true, returns materials that are recognized by co-authors (invitation accepted by co-authors)
+ *       - in: query
+ *         name: is_claimed
+ *         schema:
+ *           type: bool
+ *         description: when true, returns materials that are claimed by original authors (in litigation process)
  *     responses:
  *       "200":
  *         description: OK
