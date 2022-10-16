@@ -180,6 +180,21 @@ export default router;
  *         schema:
  *           type: string[]
  *         description: list of fields to order by descending
+ *       - in: query
+ *         name: is_trending
+ *         schema:
+ *           type: bool
+ *         description: when true, returns opened creations not in litigation process
+ *       - in: query
+ *         name: is_partially_assigned
+ *         schema:
+ *           type: bool
+ *         description: when true, returns opened creations of which some materials are recognized by co-authors (invitation accepted by co-authors)
+ *       - in: query
+ *         name: is_fully_assigned
+ *         schema:
+ *           type: bool
+ *         description: when true, returns opened creations of which all materials are recognized by co-authors (invitation accepted by co-authors)
  *     responses:
  *       "200":
  *         description: OK
