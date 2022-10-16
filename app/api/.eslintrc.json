@@ -18,6 +18,7 @@
     "no-underscore-dangle": "off",
     "consistent-return": "off",
     "security/detect-object-injection": "off",
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "no-nested-ternary": "off"
   }
 }
