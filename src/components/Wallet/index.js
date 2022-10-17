@@ -69,7 +69,6 @@ function ButtonConnectWallet(state, pollWallets, setState, refreshData) {
             >
               Disconnect
               {' '}
-              {wallets[0]}
             </button>
             <p>
               balance:
@@ -91,14 +90,40 @@ function ButtonConnectWallet(state, pollWallets, setState, refreshData) {
     for (const wallet of wallets) {
       if (wallet === whichWalletSelected) {
         buttons.push(
-          <button
-            onClick={() => refreshData()}
-            className="hover"
-          >
-            Connect
-            {' '}
-            {wallet}
-          </button>,
+          (
+            joined === undefined ? (
+              <div className="c_button">
+                <button
+                  onClick={() => refreshData()}
+                  className="hover"
+                >
+                  Connect
+                  {' '}
+                  {wallet}
+                </button>
+              </div>
+            ) : (
+              <div className="c_button">
+                <button
+                  onClick={() => window.location.reload()}
+                  className="hover"
+                >
+                  Disconnect
+                  {' '}
+                </button>
+                <p>
+                  balance:
+                  &nbsp;&nbsp;
+                  {balance}
+                </p>
+                <p>
+                  Address:
+                  &nbsp;&nbsp;
+                  {joined}
+                </p>
+              </div>
+            )
+          ),
         );
       } else {
         buttons.push(
@@ -537,6 +562,12 @@ function Wallet() {
     setState((previous) => ({ ...previous, wallets, whichWalletSelected: wallets[0] }));
     // refreshData();
   };
+
+  useEffect(() => {
+    window?.cardano?.onAccountChange(() => {
+      window.location.reload();
+    });
+  }, [state.usedAddress]);
 
   useEffect(() => {
     pollWallets();
