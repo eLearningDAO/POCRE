@@ -23,14 +23,12 @@
 }
 
 .front__bkg-photo {
-    height: 500px;
-    min-height: 500px;
-    max-height: 500px;
+    min-height: 440px;
+    max-height: 440px;
 }
 
 .Wallet__layout {
-    position: absolute;
-    top:35px;    
+    position: absolute;   
     left: 20px;
 }
 .Wallet__layout--bio{
@@ -154,19 +152,16 @@ top: 40px;
     left: 30px;
 }
 .Wallet__stars{
-    position: absolute;
-    left: 45%;
-    transform: translate(-50%,-50%);
-    transform: scale(2,2);
-    bottom: 20px;   
-    padding: 10px;
-    width: 135px;
-    color: black;
-    border-radius: 25px;
+ z-index: 99111199;
+ position: absolute;
+ top: 140px;
+ transform: scale(2,2);
+ left: 45%;
+ transform: translate(-50% -50%);
 }
 .Wallet__stars div{
     position: absolute;
-    left: 62%;
+    left: 50%;
     transform: translate(-50%,-50%);
     bottom: 50px;
     width: 120px;
@@ -178,9 +173,10 @@ top: 40px;
 .Wallet__layout--text--input{
     background: none;
     outline: none;
-    padding: 14px;
+    padding: 10px;
     border-radius: 25px;
     position: absolute;
+    bottom: 0px;
     border: none;
 left: 40px;
     
@@ -329,6 +325,42 @@ position: relative;
 left: 50%;
 }
 #name_button{
-position: relative;
+position: absolute;
+top: -30px;
+left:200px;
+}
+.front__face-photo{
+    position: relative;
+    background-color: red;
 
+}
+
+.image__container{
+    position: absolute;
+    left: 75px;
+    top: 90px;
+}
+
+.userDetailsChip{
+    position: absolute;
+    bottom: -19px;
+}
+.Wallet__name{
+    position: absolute;
+    bottom: 65px;
+    left: 100px;
+
+}
+
+.Wallet__layout--text{
+    position: relative;
+    z-index: 99999;
+    left: 290px;
+    top: -490px;
+
+}
+.Wallet__layout--text--input{
+    position: relative;
+    top: -1px;
+    left: -2px;
 }
