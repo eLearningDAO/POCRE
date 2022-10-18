@@ -4,8 +4,8 @@
             "topContributors": [
                 {
                     "name": "Mario Altimari",
-                    "job": "Founder",
-                    "bio": "Hands-on CTO",
+                    "job": "Founder & C*O",
+                    "bio": "Deus ex machina",
                     "avatarUrl": "https://pbs.twimg.com/profile_images/1534602268724576256/sr747gQi_400x400.jpg",
                     "linkedinUrl": "https://www.linkedin.com/in/altimario/",
                     "twitterUrl": "https://twitter.com/AltiMario",
@@ -49,7 +49,13 @@
                     "profileUrl": "https://github.com/adisagar2003"
                 },
                 {
-                    "name": "mrron313",
+                    "name": "Jack Kostic",
+                    "job": "Full Stack Developer",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/106480299?v=4",
+                    "profileUrl": "https://github.com/kostic0510"
+                },                
+                {
+                    "name": "Arif Ul Islam",
                     "job": "Web developer",
                     "avatarUrl": "https://avatars.githubusercontent.com/u/24652556?v=4",
                     "profileUrl": "https://github.com/mrron313"
