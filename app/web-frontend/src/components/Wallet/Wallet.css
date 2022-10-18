@@ -3,6 +3,16 @@
     justify-content: space-between;
     padding: 20px;  
 }
+
+.inner-heading > div {
+    display: flex;
+    align-items: center;
+}
+
+.inner-heading > div > button {
+    height: fit-content;
+}
+
 .wallet-div{
 position:relative;
 bottom: 5px;
@@ -16,4 +26,16 @@ bottom: 5px;
     font-weight: 700;
 }
 
+.hover {
+    cursor: pointer;
+}
 
+.c_button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.c_button > button {
+    width: fit-content;
+}
