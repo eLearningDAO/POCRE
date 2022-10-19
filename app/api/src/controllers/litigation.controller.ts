@@ -32,6 +32,16 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
     await Promise.all(req.body.decisions.map((id: string) => getDecisionById(id))); // verify decisions, will throw an error if any decision is not found
   }
 
+  // check if assumed author and issuer are same for creation
+  if (!material && creation?.author_id === req.body.issuer_id) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'creation is already owned');
+  }
+
+  // check if assumed author and issuer are same for material
+  if (material?.author_id === req.body.issuer_id) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'material is already owned');
+  }
+
   // check if creation can be claimed
   if (!creation?.is_claimable) {
     throw new ApiError(httpStatus.NOT_FOUND, 'creation is not claimable');
