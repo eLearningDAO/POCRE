@@ -470,7 +470,16 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: material already assigned to a litigation     
+            message: material already assigned to a litigation  
+    MaterialAlreadyOwned:
+      description: Material is already owned
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: material is already owned     
     MaterialDoesNotBelongToCreation:
       description: Material does not belong to creation
       content:
@@ -516,6 +525,15 @@ components:
           example:
             code: 409
             message: creation already assigned to a litigation  
+    CreationAlreadyOwned:
+      description: Creation is already owned
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 409
+            message: creation is already owned  
     CreationLitigationNotAllowed:
       description: Creation with materials are not allowed to be litigated
       content:
