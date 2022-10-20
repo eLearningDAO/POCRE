@@ -31,6 +31,7 @@ const init = async (): Promise<QueryResult<any>> => {
       email_address character varying,
       phone character varying,
       verified_Id character varying,
+      reputation_stars integer  DEFAULT 0,
       date_joined DATE NOT NULL DEFAULT CURRENT_DATE
     );
 

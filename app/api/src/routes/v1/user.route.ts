@@ -58,13 +58,16 @@ export default router;
  *               verified_Id:
  *                 type: string
  *                 description: can be null
+ *               reputation_stars:
+ *                 type: integer
  *             example:
  *                user_name: john
  *                wallet_address: 28y9gd27g2g237g80hnibhi
  *                user_bio: ready to explore
  *                phone: '+92313555544'
  *                email_address: 'example@example.com'
- *                verified_Id: 28y9gd27g2g237g80hnibhi       
+ *                verified_Id: 28y9gd27g2g237g80hnibhi 
+ *                reputation_stars: 0
  *     responses:
  *       "201":
  *         description: Created
@@ -198,13 +201,16 @@ export default router;
  *               verified_Id:
  *                 type: string
  *                 description: can be null
+ *               reputation_stars:
+ *                 type: integer    
  *             example:
  *                user_name: john
  *                wallet_address: 28y9gd27g2g237g80hnibhi
  *                user_bio: ready to explore
   *                phone: '+92313555544'
  *                email_address: 'example@example.com'
- *                verified_Id: 28y9gd27g2g237g80hnibhi   
+ *                verified_Id: 28y9gd27g2g237g80hnibhi  
+ *                reputation_stars: 0
  *     responses:
  *       "200":
  *         description: OK

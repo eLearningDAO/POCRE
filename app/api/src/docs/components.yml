@@ -18,6 +18,8 @@ components:
           type: string
         verified_Id:
           type: string
+        reputation_stars:
+          type: number
         date_joined:
           type: string
           format: date-time
@@ -29,6 +31,7 @@ components:
         phone: '+92313555544'
         email_addres: 'example@example.com'
         verified_Id: 28y9gd27g2g237g80hnibhi
+        reputation_stars: 0
         date_joined: 2022-09-05T19:00:00.000Z
 
     Status:

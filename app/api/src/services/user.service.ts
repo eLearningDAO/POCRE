@@ -10,6 +10,7 @@ interface IUser {
   phone?: string;
   email_address?: string;
   verified_Id?: string;
+  reputation_stars?: number
 }
 interface IUserQuery {
   limit: number;
@@ -33,6 +34,7 @@ interface IUserDoc {
   phone?: string;
   email_address?: string;
   verified_Id?: string;
+  reputation_stars?: number
   date_joined: string;
   total_creations?: string;
 }
@@ -48,13 +50,14 @@ interface IUserCriteria {
  */
 export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
   try {
-    const result = await db.query(`INSERT INTO users (user_name,wallet_address,user_bio,phone,email_address, verified_Id) values ($1,$2,$3,$4,$5,$6) RETURNING *;`, [
+    const result = await db.query(`INSERT INTO users (user_name,wallet_address,user_bio,phone,email_address, verified_Id,  reputation_stars) values ($1,$2,$3,$4,$5,$6,$7) RETURNING *;`, [
       userBody.user_name,
       userBody.wallet_address,
       userBody.user_bio,
       userBody.phone,
       userBody.email_address,
       userBody.verified_Id,
+      userBody.reputation_stars
     ]);
     const user = result.rows[0];
     return user;
@@ -210,7 +213,7 @@ export const updateUserById = async (id: string, updateBody: Partial<IUser>): Pr
 
   // build sql conditions and values
   const conditions: string[] = [];
-  const values: (string | null)[] = [];
+  const values: (string | number | null)[] = [];
   Object.entries(updateBody).map(([k, v], index) => {
     conditions.push(`${k} = $${index + 2}`);
     values.push(v);

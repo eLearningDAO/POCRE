@@ -8,6 +8,7 @@ export const createUser = {
     phone: Joi.string().optional().allow('').allow(null),
     email_address: Joi.string().optional().allow('').allow(null),
     verified_Id: Joi.string().optional().allow('').allow(null),
+    reputation_stars: Joi.number().optional().allow(0).allow(null),
   }),
 };
 
@@ -43,6 +44,7 @@ export const updateUser = {
       phone: Joi.string().optional().allow('').allow(null),
       email_address: Joi.string().optional().allow('').allow(null),
       verified_Id: Joi.string().optional().allow('').allow(null),
+      reputation_stars: Joi.number().optional().allow(0).allow(null),
     })
     .min(1),
 };
