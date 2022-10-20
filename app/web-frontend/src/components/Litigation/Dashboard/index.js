@@ -1,6 +1,7 @@
+import Cookies from 'js-cookie';
 import moment from 'moment';
 import {
-  Button, Grid, Typography, Chip,
+  Button, Grid, Typography, Chip, Snackbar, Alert,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import ApproveIcon from '../../../assets/approve-icon.png';
@@ -8,6 +9,8 @@ import WithdrawIcon from '../../../assets/withdraw-icon.png';
 import './index.css';
 import Loader from '../../uicore/Loader';
 import useDashboard from './useDashboard';
+
+const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 
 function LitigationCard({
   title = 'I want to reclaim',
@@ -31,6 +34,7 @@ function LitigationCard({
   onAccept = () => {},
   // mode = closed
   canRedeem = true,
+  isRedeemed = true,
   onRedeem = () => {},
   winner = {
     name: 'bob',
@@ -65,12 +69,16 @@ function LitigationCard({
       </div>
       {/* modes */}
       <div className="litigation-card-options">
-        {mode === 'closed'
+        {mode === 'closed' && canRedeem
         && (
-          (canRedeem && (
-          <Button onClick={onRedeem} className="approveButton">
-            Redeem
-          </Button>
+          (!isRedeemed ? (
+            <Button onClick={onRedeem} className="approveButton">
+              Redeem
+            </Button>
+          ) : (
+            <h3 className="litigation-jury-members-count mr-auto">
+              Redeemed
+            </h3>
           ))
         )}
         {mode === 'litigate'
@@ -111,83 +119,118 @@ function Litigation() {
   // get userInfo from the globale state with help of zustand store hook !
   // const user = useUserInfo((s) => s.user);
   const [activeLitigation, setActiveLitigation] = useState('opening');
-  const { fetchLitigations, litigations, isFetchingLitigations } = useDashboard();
+  const {
+    fetchLitigations,
+    litigations,
+    isFetchingLitigations,
+    isTransferringOwnership,
+    transferLitigatedItemOwnership,
+    transferOwnershipStatus,
+    setTransferOwnershipStatus,
+  } = useDashboard();
 
   useEffect(() => {
     fetchLitigations();
   }, []);
 
+  const closeTransferNotification = () => {
+    setTransferOwnershipStatus({
+      success: false,
+      error: null,
+    });
+  };
+
   if (isFetchingLitigations) return <Loader />;
 
   return (
-    <Grid container className="Litigation">
-      <Grid item xs={12}>
-        <Typography className="inviationHeaderTitle" variant="h6">
-          Litigation
-        </Typography>
-      </Grid>
+    <>
+      {isTransferringOwnership && <Loader withBackdrop size="large" />}
+      {(transferOwnershipStatus.success || transferOwnershipStatus.error) && (
+        <Snackbar open onClose={closeTransferNotification}>
+          <Alert
+            onClose={closeTransferNotification}
+            severity={transferOwnershipStatus.success ? 'success' : 'error'}
+            sx={{ width: '100%' }}
+          >
+            {transferOwnershipStatus.success
+              ? 'Ownership transferred!'
+              : transferOwnershipStatus.error}
+          </Alert>
+        </Snackbar>
+      )}
+      <Grid container className="Litigation">
+        <Grid item xs={12}>
+          <Typography className="inviationHeaderTitle" variant="h6">
+            Litigation
+          </Typography>
+        </Grid>
 
-      <div className="toggle-bar">
-        <Button
-          className={`btn ${activeLitigation === 'opening' && 'btn-active'}`}
-          onClick={() => setActiveLitigation('opening')}
-        >
-          Opening
-        </Button>
-        <Button
-          className={`btn ${activeLitigation === 'openedAgainstMe' && 'btn-active'}`}
-          onClick={() => setActiveLitigation('openedAgainstMe')}
-        >
-          Opened against me
-        </Button>
-        <Button
-          className={`btn ${activeLitigation === 'closed' && 'btn-active'}`}
-          onClick={() => setActiveLitigation('closed')}
-        >
-          Closed
-        </Button>
-        <Button
-          className={`btn ${activeLitigation === 'toJudge' && 'btn-active'}`}
-          onClick={() => setActiveLitigation('toJudge')}
-        >
-          To judge
-        </Button>
-      </div>
+        <div className="toggle-bar">
+          <Button
+            className={`btn ${activeLitigation === 'opening' && 'btn-active'}`}
+            onClick={() => setActiveLitigation('opening')}
+          >
+            Waiting authorship recognition
+          </Button>
+          <Button
+            className={`btn ${activeLitigation === 'openedAgainstMe' && 'btn-active'}`}
+            onClick={() => setActiveLitigation('openedAgainstMe')}
+          >
+            Opened against me
+          </Button>
+          <Button
+            className={`btn ${activeLitigation === 'closed' && 'btn-active'}`}
+            onClick={() => setActiveLitigation('closed')}
+          >
+            Closed
+          </Button>
+          <Button
+            className={`btn ${activeLitigation === 'toJudge' && 'btn-active'}`}
+            onClick={() => setActiveLitigation('toJudge')}
+          >
+            To judge
+          </Button>
+        </div>
 
-      {litigations?.results?.[activeLitigation]?.length > 0 ? (
-        <div className="grid-container">
-          {litigations?.results?.[activeLitigation]?.map((x, index) => (
-            <LitigationCard
-              key={x}
-              title={x?.litigation_title}
-              claimer={{
-                name: x?.issuer?.user_name,
-                walletAddress: x?.issuer?.wallet_address,
-              }}
-              assumedAuthor={{
-                name: x?.assumed_author?.user_name,
-                walletAddress: x?.assumed_author?.wallet_address,
-              }}
-              startDate={moment(x.litigation_start).format('DD/MM/YYYY')}
-              endDate={moment(x.litigation_end).format('DD/MM/YYYY')}
-              mode={
+        {litigations?.results?.[activeLitigation]?.length > 0 ? (
+          <div className="grid-container">
+            {litigations?.results?.[activeLitigation]?.map((x, index) => (
+              <LitigationCard
+                key={x}
+                title={x?.litigation_title}
+                claimer={{
+                  name: x?.issuer?.user_name,
+                  walletAddress: x?.issuer?.wallet_address,
+                }}
+                assumedAuthor={{
+                  name: x?.assumed_author?.user_name,
+                  walletAddress: x?.assumed_author?.wallet_address,
+                }}
+                startDate={moment(x.litigation_start).format('DD/MM/YYYY')}
+                endDate={moment(x.litigation_end).format('DD/MM/YYYY')}
+                mode={
                 (activeLitigation === 'opening' && 'info')
                 || (activeLitigation === 'openedAgainstMe' && 'litigate')
                 || (activeLitigation === 'closed' && 'closed')
               }
-              canWithdraw={index % 2 === 0}
-              canAccept={index % 2 !== 0}
-              canRedeem
-              winner={{
-                name: x?.winner?.user_name,
-                walletAddress: x?.winner?.wallet_address,
-              }}
-            />
-          ))}
-        </div>
-      )
-        : <h3 className="m-auto p-64">Nothing here yet!</h3>}
-    </Grid>
+                totalJuryMembers={x?.invitations?.length}
+                canWithdraw={index % 2 === 0}
+                canAccept={index % 2 !== 0}
+                canRedeem={x?.winner?.wallet_address === authUser?.wallet_address}
+                isRedeemed={x.ownership_transferred}
+                // eslint-disable-next-line no-return-await
+                onRedeem={async () => await transferLitigatedItemOwnership(x?.litigation_id)}
+                winner={{
+                  name: x?.winner?.user_name,
+                  walletAddress: x?.winner?.wallet_address,
+                }}
+              />
+            ))}
+          </div>
+        )
+          : <h3 className="m-auto p-64">Nothing here yet!</h3>}
+      </Grid>
+    </>
   );
 }
 

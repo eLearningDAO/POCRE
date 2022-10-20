@@ -7,6 +7,7 @@ const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 
 const useDashboard = () => {
   const [isFetchingLitigations, setIsFetchingLitigations] = useState(false);
+  const [isTransferringOwnership, setIsTransferringOwnership] = useState(false);
   const [litigations, setLitigations] = useState({
     opening: [],
     closed: [],
@@ -14,6 +15,10 @@ const useDashboard = () => {
     toJudge: [],
   });
   const [fetchLitigationsStatus, setFetchLitigationsStatus] = useState({
+    success: false,
+    error: null,
+  });
+  const [transferOwnershipStatus, setTransferOwnershipStatus] = useState({
     success: false,
     error: null,
   });
@@ -94,7 +99,7 @@ const useDashboard = () => {
         ...litigationResponse,
         results: {
           closed: litigationResponse?.results?.filter(
-            (x) => moment(x.litigation_end).isBefore(new Date().toISOString()),
+            (x) => moment(x.litigation_end).isBefore(new Date().toISOString()) || x.reconcilate,
           ),
           opening: litigationResponse?.results?.filter(
             (x) => moment(x.litigation_start).isAfter(new Date().toISOString()),
@@ -102,7 +107,7 @@ const useDashboard = () => {
           openedAgainstMe: litigationResponse?.results?.filter(
             (x) => moment(x.litigation_start).isBefore(new Date().toISOString())
             && moment(x.litigation_end).isAfter(new Date().toISOString())
-            && x?.assumed_author?.user_id === authUser?.user_id,
+            && x?.assumed_author?.user_id === authUser?.user_id && !x.reconcilate,
           ),
         },
       };
@@ -127,11 +132,59 @@ const useDashboard = () => {
     }
   }, []);
 
+  const transferLitigatedItemOwnership = useCallback(async (id) => {
+    try {
+      setIsTransferringOwnership(true);
+
+      // make api call to edit the litigation
+      const litigationResponse = await fetch(
+        `${API_BASE_URL}/litigations/${id}`,
+        {
+          method: 'PATCH',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ownership_transferred: true }),
+        },
+      ).then((x) => x.json());
+      if (!litigationResponse || litigationResponse?.code >= 400) throw new Error('Failed to transfer litigated item ownership!');
+
+      // update litigation
+      const updatedLitigations = { ...litigations };
+      const foundLitigation = updatedLitigations?.results?.closed?.find(
+        (x) => x.litigation_id === id,
+      );
+      foundLitigation.ownership_transferred = true;
+
+      setTransferOwnershipStatus({
+        success: true,
+        error: null,
+      });
+      setLitigations({ ...updatedLitigations });
+      setTimeout(() => setTransferOwnershipStatus({
+        success: false,
+        error: null,
+      }), 3000);
+    } catch {
+      setTransferOwnershipStatus({
+        success: false,
+        error: 'Failed to transfer litigated item ownership!',
+      });
+    } finally {
+      setIsTransferringOwnership(false);
+    }
+  }, [litigations]);
+
   return {
     isFetchingLitigations,
+    isTransferringOwnership,
     fetchLitigationsStatus,
-    fetchLitigations,
+    transferOwnershipStatus,
+    setTransferOwnershipStatus,
     litigations,
+    fetchLitigations,
+    transferLitigatedItemOwnership,
   };
 };
 
