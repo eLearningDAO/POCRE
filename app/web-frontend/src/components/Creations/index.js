@@ -78,13 +78,13 @@ function Creations() {
             }}
             fullWidth
             className="input search-bar"
-            placeholder="Search"
+            placeholder="Search creations"
             id="fullWidth"
             onChange={handleSearch}
           />
           {login && (
             <Button onClick={add} className="btn btn-primary">
-              + Add New
+              + Add New Creation
             </Button>
           )}
         </Grid>
