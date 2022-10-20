@@ -34,7 +34,8 @@ interface IUserDoc {
   phone?: string;
   email_address?: string;
   verified_Id?: string;
-  reputation_stars?: number
+  reputation_stars?: number;
+  authorship_duation?: string;
   date_joined: string;
   total_creations?: string;
 }
@@ -191,7 +192,9 @@ export const getUserById = async (id: string): Promise<IUserDoc | null> => {
   const user = await (async () => {
     try {
       const result = await db.query(`SELECT * FROM users WHERE user_id = $1;`, [id]);
-      return result.rows[0];
+      const user = result.rows[0]
+      const authorship_duration = calculateAuthorizationDuration(user.reputation_stars);
+      return { ...user, authorship_duration };
     } catch {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
     }
@@ -201,6 +204,23 @@ export const getUserById = async (id: string): Promise<IUserDoc | null> => {
 
   return user;
 };
+
+
+
+const reputation: any = {
+  '0': "6 months",
+  '2': "1 month",
+  '4': "1 day",
+  '1': "3 months",
+  '3': "1 week",
+  '5': "",
+}
+
+function calculateAuthorizationDuration(reputationStar: number) {
+  return reputation[reputationStar]
+}
+
+
 
 /**
  * Update user by id
