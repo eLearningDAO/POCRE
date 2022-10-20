@@ -7,6 +7,7 @@ const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 
 const useDashboard = () => {
   const [isFetchingLitigations, setIsFetchingLitigations] = useState(false);
+  const [isUpdatingReconcilateStatus, setIsUpdatingReconcilateStatus] = useState(false);
   const [isTransferringOwnership, setIsTransferringOwnership] = useState(false);
   const [litigations, setLitigations] = useState({
     opening: [],
@@ -15,6 +16,10 @@ const useDashboard = () => {
     toJudge: [],
   });
   const [fetchLitigationsStatus, setFetchLitigationsStatus] = useState({
+    success: false,
+    error: null,
+  });
+  const [updatedReconcilateStatus, setUpdatedReconcilateStatus] = useState({
     success: false,
     error: null,
   });
@@ -132,6 +137,65 @@ const useDashboard = () => {
     }
   }, []);
 
+  const updateReconcilateStatus = useCallback(async (id, reconcilate) => {
+    try {
+      setIsUpdatingReconcilateStatus(true);
+
+      // make api call to update the litigation
+      const litigationResponse = await fetch(
+        `${API_BASE_URL}/litigations/${id}`,
+        {
+          method: 'PATCH',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ reconcilate }),
+        },
+      ).then((x) => x.json());
+      if (!litigationResponse || litigationResponse?.code >= 400) throw new Error('Failed to update litigation status');
+
+      // update litigation
+      const updatedLitigations = { ...litigations };
+      const foundLitigation = updatedLitigations?.results?.openedAgainstMe?.find(
+        (x) => x.litigation_id === id,
+      );
+      foundLitigation.reconcilate = reconcilate;
+      if (reconcilate) {
+        // update ownership status
+        foundLitigation.ownership_transferred = true;
+
+        // remove from opened
+        updatedLitigations.results.openedAgainstMe = [
+          ...updatedLitigations.results.openedAgainstMe,
+        ].filter((x) => !x.reconcilate);
+
+        // add to closed
+        updatedLitigations.results.closed = [
+          ...updatedLitigations.results.closed,
+          { ...foundLitigation },
+        ];
+      }
+
+      setUpdatedReconcilateStatus({
+        success: true,
+        error: null,
+      });
+      setLitigations({ ...updatedLitigations });
+      setTimeout(() => setUpdatedReconcilateStatus({
+        success: false,
+        error: null,
+      }), 3000);
+    } catch {
+      setUpdatedReconcilateStatus({
+        success: false,
+        error: 'Failed to update litigation status',
+      });
+    } finally {
+      setIsUpdatingReconcilateStatus(false);
+    }
+  }, [litigations]);
+
   const transferLitigatedItemOwnership = useCallback(async (id) => {
     try {
       setIsTransferringOwnership(true);
@@ -179,12 +243,16 @@ const useDashboard = () => {
   return {
     isFetchingLitigations,
     isTransferringOwnership,
+    isUpdatingReconcilateStatus,
     fetchLitigationsStatus,
     transferOwnershipStatus,
     setTransferOwnershipStatus,
+    updatedReconcilateStatus,
+    setUpdatedReconcilateStatus,
     litigations,
     fetchLitigations,
     transferLitigatedItemOwnership,
+    updateReconcilateStatus,
   };
 };
 

@@ -30,6 +30,7 @@ function LitigationCard({
   // mode = litigate
   canWithdraw = false,
   canAccept = false,
+  isDeclined = false,
   onWithdraw = () => {},
   onAccept = () => {},
   // mode = closed
@@ -67,6 +68,23 @@ function LitigationCard({
           && <span className="litigation-winner-label">Winner</span>}
         </div>
       </div>
+      {mode === 'litigate'
+        && (
+        <div className="litigation-action-buttons">
+          {canWithdraw && (
+          <Button onClick={onWithdraw} className="btn withdrawButton">
+            <img src={WithdrawIcon} alt="withdraw" />
+            Withdraw
+          </Button>
+          )}
+          {canAccept && (
+          <Button onClick={onAccept} className="btn approveButton">
+            <img src={ApproveIcon} alt="withdraw" />
+            Approve
+          </Button>
+          )}
+        </div>
+        )}
       {/* modes */}
       <div className="litigation-card-options">
         {mode === 'closed' && canRedeem
@@ -82,20 +100,12 @@ function LitigationCard({
           ))
         )}
         {mode === 'litigate'
-        && (
-          (canWithdraw && (
-          <Button onClick={onWithdraw} className="withdrawButton">
-            <img src={WithdrawIcon} alt="withdraw" />
-            Withdraw
-          </Button>
-          ))
-          || (canAccept && (
-          <Button onClick={onAccept} className="approveButton">
-            <img src={ApproveIcon} alt="withdraw" />
-            Approve
-          </Button>
-          ))
-        )}
+        && !isDeclined && !canAccept && !canWithdraw
+            && (
+            <h3 className="litigation-jury-members-count mr-auto">
+              In voting process
+            </h3>
+            )}
         {mode === 'info' && (
           <h3 className="litigation-jury-members-count mr-auto">
             {totalJuryMembers}
@@ -127,6 +137,10 @@ function Litigation() {
     transferLitigatedItemOwnership,
     transferOwnershipStatus,
     setTransferOwnershipStatus,
+    updateReconcilateStatus,
+    updatedReconcilateStatus,
+    isUpdatingReconcilateStatus,
+    setUpdatedReconcilateStatus,
   } = useDashboard();
 
   useEffect(() => {
@@ -140,11 +154,19 @@ function Litigation() {
     });
   };
 
+  const closeUpdateStatusNotification = () => {
+    setUpdatedReconcilateStatus({
+      success: false,
+      error: null,
+    });
+  };
+
   if (isFetchingLitigations) return <Loader />;
 
   return (
     <>
       {isTransferringOwnership && <Loader withBackdrop size="large" />}
+      {isUpdatingReconcilateStatus && <Loader withBackdrop size="large" />}
       {(transferOwnershipStatus.success || transferOwnershipStatus.error) && (
         <Snackbar open onClose={closeTransferNotification}>
           <Alert
@@ -155,6 +177,19 @@ function Litigation() {
             {transferOwnershipStatus.success
               ? 'Ownership transferred!'
               : transferOwnershipStatus.error}
+          </Alert>
+        </Snackbar>
+      )}
+      {(updatedReconcilateStatus.success || updatedReconcilateStatus.error) && (
+        <Snackbar open onClose={closeUpdateStatusNotification}>
+          <Alert
+            onClose={closeUpdateStatusNotification}
+            severity={updatedReconcilateStatus.success ? 'success' : 'error'}
+            sx={{ width: '100%' }}
+          >
+            {updatedReconcilateStatus.success
+              ? 'Litigation status updated!'
+              : updatedReconcilateStatus.error}
           </Alert>
         </Snackbar>
       )}
@@ -194,7 +229,7 @@ function Litigation() {
 
         {litigations?.results?.[activeLitigation]?.length > 0 ? (
           <div className="grid-container">
-            {litigations?.results?.[activeLitigation]?.map((x, index) => (
+            {litigations?.results?.[activeLitigation]?.map((x) => (
               <LitigationCard
                 key={x}
                 title={x?.litigation_title}
@@ -214,8 +249,13 @@ function Litigation() {
                 || (activeLitigation === 'closed' && 'closed')
               }
                 totalJuryMembers={x?.invitations?.length}
-                canWithdraw={index % 2 === 0}
-                canAccept={index % 2 !== 0}
+                canWithdraw={x?.reconcilate === null}
+                // eslint-disable-next-line no-return-await
+                onWithdraw={async () => await updateReconcilateStatus(x?.litigation_id, true)}
+                canAccept={x?.reconcilate === null}
+                isDeclined={x?.reconcilate}
+                // eslint-disable-next-line no-return-await
+                onAccept={async () => await updateReconcilateStatus(x?.litigation_id, false)}
                 canRedeem={x?.winner?.wallet_address === authUser?.wallet_address}
                 isRedeemed={x.ownership_transferred}
                 // eslint-disable-next-line no-return-await
