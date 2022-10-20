@@ -7,6 +7,9 @@ interface IUser {
   user_name: string;
   wallet_address?: string;
   user_bio?: string;
+  phone?: string;
+  email_address?: string;
+  verified_Id?: string;
 }
 interface IUserQuery {
   limit: number;
@@ -27,6 +30,9 @@ interface IUserDoc {
   user_name: string;
   wallet_address: string;
   user_bio: string;
+  phone?: string;
+  email_address?: string;
+  verified_Id?: string;
   date_joined: string;
   total_creations?: string;
 }
@@ -42,10 +48,13 @@ interface IUserCriteria {
  */
 export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
   try {
-    const result = await db.query(`INSERT INTO users (user_name,wallet_address,user_bio) values ($1,$2,$3) RETURNING *;`, [
+    const result = await db.query(`INSERT INTO users (user_name,wallet_address,user_bio,phone,email_address, verified_Id) values ($1,$2,$3,$4,$5,$6) RETURNING *;`, [
       userBody.user_name,
       userBody.wallet_address,
       userBody.user_bio,
+      userBody.phone,
+      userBody.email_address,
+      userBody.verified_Id,
     ]);
     const user = result.rows[0];
     return user;
