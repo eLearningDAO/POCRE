@@ -6,7 +6,6 @@ import {
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import DownloadIconSVG from '../../../assets/svgs/download.svg';
-
 import DownloadButton from './btns/DownloadButton';
 import EditButton from './btns/EditButton';
 import RemoveButton from './btns/RemoveButton';

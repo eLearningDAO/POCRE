@@ -6,7 +6,7 @@ import Invitation from './components/Invitation';
 import LitigationHome from './components/Litigation/Home';
 import LitigationDashboard from './components/Litigation/Dashboard';
 import LitigationCreate from './components/Litigation/Create';
-import LitigationClosed from './components/Litigation/Closed';
+import LitigationDetails from './components/Litigation/Details';
 import Wallet from './components/Wallet';
 import Layout from './components/Layout';
 import CreateCollection2 from './components/Creations/Scenario2/CreateCollection';
@@ -97,11 +97,11 @@ function App() {
           )}
         />
         <Route
-          path="/litigation/closed"
+          path="/litigation/:id"
           element={(
             <ProtectedRoute>
               <Layout displaySidebar>
-                <LitigationClosed />
+                <LitigationDetails />
               </Layout>
             </ProtectedRoute>
           )}
