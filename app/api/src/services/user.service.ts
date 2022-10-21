@@ -2,6 +2,7 @@ import httpStatus from 'http-status';
 import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
+import { reputation } from '../constants/statusTypes';
 
 interface IUser {
   user_name: string;
@@ -9,7 +10,7 @@ interface IUser {
   user_bio?: string;
   phone?: string;
   email_address?: string;
-  verified_Id?: string;
+  verified_id?: string;
   reputation_stars?: number
 }
 interface IUserQuery {
@@ -33,9 +34,9 @@ interface IUserDoc {
   user_bio: string;
   phone?: string;
   email_address?: string;
-  verified_Id?: string;
+  verified_id?: string;
   reputation_stars?: number;
-  authorship_duation?: string;
+  authorship_duration?: string;
   date_joined: string;
   total_creations?: string;
 }
@@ -51,13 +52,13 @@ interface IUserCriteria {
  */
 export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
   try {
-    const result = await db.query(`INSERT INTO users (user_name,wallet_address,user_bio,phone,email_address, verified_Id,  reputation_stars) values ($1,$2,$3,$4,$5,$6,$7) RETURNING *;`, [
+    const result = await db.query(`INSERT INTO users (user_name,wallet_address,user_bio,phone,email_address, verified_id,  reputation_stars) values ($1,$2,$3,$4,$5,$6,$7) RETURNING *;`, [
       userBody.user_name,
       userBody.wallet_address,
       userBody.user_bio,
       userBody.phone,
       userBody.email_address,
-      userBody.verified_Id,
+      userBody.verified_id,
       userBody.reputation_stars
     ]);
     const user = result.rows[0];
@@ -193,7 +194,7 @@ export const getUserById = async (id: string): Promise<IUserDoc | null> => {
     try {
       const result = await db.query(`SELECT * FROM users WHERE user_id = $1;`, [id]);
       const user = result.rows[0]
-      const authorship_duration = calculateAuthorizationDuration(user.reputation_stars);
+      const authorship_duration = reputation[user.reputation_stars];
       return { ...user, authorship_duration };
     } catch {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
@@ -204,23 +205,6 @@ export const getUserById = async (id: string): Promise<IUserDoc | null> => {
 
   return user;
 };
-
-
-
-const reputation: any = {
-  '0': "6 months",
-  '2': "1 month",
-  '4': "1 day",
-  '1': "3 months",
-  '3': "1 week",
-  '5': "",
-}
-
-function calculateAuthorizationDuration(reputationStar: number) {
-  return reputation[reputationStar]
-}
-
-
 
 /**
  * Update user by id

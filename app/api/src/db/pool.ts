@@ -30,7 +30,7 @@ const init = async (): Promise<QueryResult<any>> => {
       image_url character varying,
       email_address character varying,
       phone character varying,
-      verified_Id character varying,
+      verified_id character varying,
       reputation_stars integer  DEFAULT 0,
       date_joined DATE NOT NULL DEFAULT CURRENT_DATE
     );

@@ -16,7 +16,7 @@ components:
           type: string
         email_addres:
           type: string
-        verified_Id:
+        verified_id:
           type: string
         reputation_stars:
           type: number
@@ -30,7 +30,7 @@ components:
         user_bio: ready to explore
         phone: '+92313555544'
         email_addres: 'example@example.com'
-        verified_Id: 28y9gd27g2g237g80hnibhi
+        verified_id: 28y9gd27g2g237g80hnibhi
         reputation_stars: 0
         date_joined: 2022-09-05T19:00:00.000Z
 

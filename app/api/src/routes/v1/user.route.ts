@@ -55,7 +55,7 @@ export default router;
  *               email_address:
  *                 type: string
  *                 description: can be null
- *               verified_Id:
+ *               verified_id:
  *                 type: string
  *                 description: can be null
  *               reputation_stars:
@@ -66,7 +66,7 @@ export default router;
  *                user_bio: ready to explore
  *                phone: '+92313555544'
  *                email_address: 'example@example.com'
- *                verified_Id: 28y9gd27g2g237g80hnibhi 
+ *                verified_id: 28y9gd27g2g237g80hnibhi 
  *                reputation_stars: 0
  *     responses:
  *       "201":
@@ -198,7 +198,7 @@ export default router;
  *               email_address:
  *                 type: string
  *                 description: can be null
- *               verified_Id:
+ *               verified_id:
  *                 type: string
  *                 description: can be null
  *               reputation_stars:
@@ -209,7 +209,7 @@ export default router;
  *                user_bio: ready to explore
   *                phone: '+92313555544'
  *                email_address: 'example@example.com'
- *                verified_Id: 28y9gd27g2g237g80hnibhi  
+ *                verified_id: 28y9gd27g2g237g80hnibhi  
  *                reputation_stars: 0
  *     responses:
  *       "200":
