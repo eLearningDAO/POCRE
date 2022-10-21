@@ -23,6 +23,7 @@ function NewMaterial({ material, onRemoveMaterial, onUpdate = () => {} }) {
         key={material}
         title={material.title}
         link={material.link}
+        mediaUrl={material.link}
         username={material.author}
         interactionBtns
         onDeleteClick={onRemoveMaterial}
