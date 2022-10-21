@@ -26,7 +26,7 @@ export default function LitigationDetails() {
   const {
     litigation,
     fetchLitigationDetails,
-    // fetchLitigationStatus,
+    fetchLitigationStatus,
     isFetchingLitigation,
   } = useDetails();
 
@@ -45,6 +45,14 @@ export default function LitigationDetails() {
   };
 
   if (isFetchingLitigation) return <Loader />;
+
+  if (fetchLitigationStatus.error) {
+    return (
+      <h2 className="color-red">
+        {fetchLitigationStatus.error}
+      </h2>
+    );
+  }
 
   return (
     <Grid item xs={12}>
@@ -120,6 +128,11 @@ export default function LitigationDetails() {
           username={litigation?.assumed_author?.user_name}
           interactionBtns={false}
           showReconcilateOptions={false}
+          recognitionStatus={
+            litigation?.material && litigation?.material?.invite?.status?.status_name
+              ? litigation?.material?.invite?.status?.status_name
+              : null
+            }
         />
       </Grid>
       <Grid

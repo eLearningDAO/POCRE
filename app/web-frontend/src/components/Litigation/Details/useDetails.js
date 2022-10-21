@@ -1,5 +1,6 @@
 // import Cookies from 'js-cookie';
 import { useCallback, useState } from 'react';
+import moment from 'moment';
 import { API_BASE_URL } from '../../../config';
 
 // const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
@@ -47,6 +48,19 @@ const useDetails = () => {
       // get details about litigation material
       if (litigationResponse.material_id) {
         const material = await fetch(`${API_BASE_URL}/materials/${litigationResponse.material_id}`).then((x) => x.json());
+
+        // get details about material recognition
+        if (material.invite_id) {
+          const invitation = await fetch(`${API_BASE_URL}/invitations/${material.invite_id}`).then((x) => x.json());
+          invitation.status = await fetch(`${API_BASE_URL}/status/${invitation.status_id}`).then((x) => x.json());
+
+          // update keys
+          delete invitation.status_id;
+          material.invite = invitation;
+          delete material.invite_id;
+        }
+
+        // update keys
         litigationResponse.material = material;
         delete litigationResponse.material_id;
       }
