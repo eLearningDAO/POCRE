@@ -70,6 +70,14 @@ const useDetails = () => {
       ));
       litigationResponse.decisions = decisions;
 
+      // calculate litigation status
+      litigationResponse.status = (() => {
+        if (moment(litigationResponse.litigation_end).isBefore(new Date().toISOString()) || litigationResponse.reconcilate) return 'Closed';
+        if (moment(litigationResponse.litigation_start).isAfter(new Date().toISOString())) return 'Opened';
+        if (moment(litigationResponse.litigation_start).isBefore(new Date().toISOString()) && moment(litigationResponse.litigation_end).isAfter(new Date().toISOString())) return 'Waiting authorship recognition';
+        return null;
+      })();
+
       setFetchLitigationStatus({
         success: true,
         error: null,
