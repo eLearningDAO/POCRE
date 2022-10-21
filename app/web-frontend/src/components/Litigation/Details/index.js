@@ -24,8 +24,9 @@ export default function LitigationDetails() {
   const { id } = useParams();
 
   const {
-    litigation, fetchLitigationDetails,
-    // fetchLitigationStatus,
+    litigation,
+    fetchLitigationDetails,
+    fetchLitigationStatus,
     isFetchingLitigation,
   } = useDetails();
 
@@ -45,6 +46,14 @@ export default function LitigationDetails() {
 
   if (isFetchingLitigation) return <Loader />;
 
+  if (fetchLitigationStatus.error) {
+    return (
+      <h2 className="color-red">
+        {fetchLitigationStatus.error}
+      </h2>
+    );
+  }
+
   return (
     <Grid item xs={12}>
       <Grid item xs={12}>
@@ -60,9 +69,18 @@ export default function LitigationDetails() {
         )}
       </Grid>
 
-      <Grid display="flex" justifyContent="space-between" marginTop="18px" width="100%">
-        <Chip label={`Started on ${moment(litigation?.litigation_start).format('DD/MM/YYYY')}`} />
-        <Chip label={`Ends on ${moment(litigation?.litigation_end).format('DD/MM/YYYY')}`} />
+      <Grid display="flex" justifyContent="space-between" alignItems="flex-start" marginTop="18px" width="100%">
+        <Chip label={`STATUS: ${litigation?.status}`} className="bg-black color-white" />
+        <Grid
+          display="flex"
+          flexDirection="column"
+          justifyContent="flex-end"
+          alignItems="flex-end"
+          gap="8px"
+        >
+          <Chip className="bg-orange color-white" label={`Starts on ${moment(litigation?.litigation_start).format('DD/MM/YYYY')}`} />
+          <Chip className="bg-orange color-white" label={`Ends on ${moment(litigation?.litigation_end).format('DD/MM/YYYY')}`} />
+        </Grid>
       </Grid>
 
       <Grid
@@ -110,6 +128,11 @@ export default function LitigationDetails() {
           username={litigation?.assumed_author?.user_name}
           interactionBtns={false}
           showReconcilateOptions={false}
+          recognitionStatus={
+            litigation?.material && litigation?.material?.invite?.status?.status_name
+              ? litigation?.material?.invite?.status?.status_name
+              : null
+            }
         />
       </Grid>
       <Grid

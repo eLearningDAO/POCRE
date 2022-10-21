@@ -127,9 +127,9 @@ export default function CreationDetails() {
             <Typography className="inviationSectionTitle" variant="h6">
               {creation?.author?.user_name}
             </Typography>
-            <Typography className="creation-author-wallet" variant="p">
+            {/* <Typography className="creation-author-wallet" variant="p">
               {creation?.author?.wallet_address?.slice(0, 48)}
-            </Typography>
+            </Typography> */}
           </Box>
         </Box>
         <Chip className="mr-auto bg-orange color-white" label={`Created on ${moment(creation?.creation_date).format('DD/MM/YYYY')}`} />
