@@ -1,12 +1,18 @@
 import httpStatus from 'http-status';
-import { DatabaseError } from 'pg';
+import { DatabaseError, QueryResult } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
+import { reputation } from '../constants/statusTypes';
+import { getStar } from '../utils/userStarCalculation';
 
-interface IUser {
+export interface IUser {
   user_name: string;
   wallet_address?: string;
   user_bio?: string;
+  phone?: string;
+  email_address?: string;
+  verified_id?: string;
+  reputation_stars?: number
 }
 interface IUserQuery {
   limit: number;
@@ -27,6 +33,11 @@ interface IUserDoc {
   user_name: string;
   wallet_address: string;
   user_bio: string;
+  phone?: string;
+  email_address?: string;
+  verified_id?: string;
+  reputation_stars?: number;
+  authorship_duration?: string;
   date_joined: string;
   total_creations?: string;
 }
@@ -42,10 +53,14 @@ interface IUserCriteria {
  */
 export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
   try {
-    const result = await db.query(`INSERT INTO users (user_name,wallet_address,user_bio) values ($1,$2,$3) RETURNING *;`, [
+    const result = await db.query(`INSERT INTO users (user_name,wallet_address,user_bio,phone,email_address, verified_id,  reputation_stars) values ($1,$2,$3,$4,$5,$6,$7) RETURNING *;`, [
       userBody.user_name,
       userBody.wallet_address,
       userBody.user_bio,
+      userBody.phone,
+      userBody.email_address,
+      userBody.verified_id,
+      userBody.reputation_stars
     ]);
     const user = result.rows[0];
     return user;
@@ -179,7 +194,7 @@ export const getUserById = async (id: string): Promise<IUserDoc | null> => {
   const user = await (async () => {
     try {
       const result = await db.query(`SELECT * FROM users WHERE user_id = $1;`, [id]);
-      return result.rows[0];
+      return responseWithAuthorishipDuration(result)
     } catch {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
     }
@@ -199,15 +214,15 @@ export const getUserById = async (id: string): Promise<IUserDoc | null> => {
 export const updateUserById = async (id: string, updateBody: Partial<IUser>): Promise<IUserDoc | null> => {
   await getUserById(id); // check if user exists, throws error if not found
 
+  updateBody['reputation_stars'] = getStar(updateBody); //update the stars field according to aviable user fields .
   // build sql conditions and values
   const conditions: string[] = [];
-  const values: (string | null)[] = [];
+  const values: (string | number | null)[] = [];
   Object.entries(updateBody).map(([k, v], index) => {
     conditions.push(`${k} = $${index + 2}`);
     values.push(v);
     return null;
   });
-
   // update user
   try {
     const updateQry = await db.query(
@@ -218,8 +233,7 @@ export const updateUserById = async (id: string, updateBody: Partial<IUser>): Pr
       `,
       [id, ...values]
     );
-    const user = updateQry.rows[0];
-    return user;
+    return responseWithAuthorishipDuration(updateQry)
   } catch (e: unknown) {
     const err = e as DatabaseError;
     if (err.message && err.message.includes('duplicate key')) {
@@ -264,3 +278,14 @@ export const getReputedUsers = async (criteria: IUserCriteria): Promise<Array<IU
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };
+
+/**
+ * this function is used to update the authorship 
+ * duration of the user and return the update user object
+ *
+ */
+const responseWithAuthorishipDuration = (queryResult: QueryResult<any>) => {
+  const user = queryResult.rows[0]
+  const authorship_duration = reputation[user.reputation_stars];
+  return { ...user, authorship_duration };
+}

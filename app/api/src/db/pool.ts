@@ -27,6 +27,11 @@ const init = async (): Promise<QueryResult<any>> => {
       user_name character varying NOT NULL UNIQUE,
       wallet_address character varying,
       user_bio text,
+      image_url character varying,
+      email_address character varying,
+      phone character varying,
+      verified_id character varying,
+      reputation_stars integer  DEFAULT 0,
       date_joined DATE NOT NULL DEFAULT CURRENT_DATE
     );
 
