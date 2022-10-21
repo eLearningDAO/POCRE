@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Creations from './components/Creations';
 import CreateCreation from './components/Creations/Create';
 import UpdateCreation from './components/Creations/Update';
+import CreationDetails from './components/Creations/Details';
 import Invitation from './components/Invitation';
 import LitigationHome from './components/Litigation/Home';
 import LitigationDashboard from './components/Litigation/Dashboard';
@@ -55,6 +56,14 @@ function App() {
           element={(
             <Layout displaySidebar>
               <UpdateCreation />
+            </Layout>
+          )}
+        />
+        <Route
+          path="/creations/:id"
+          element={(
+            <Layout displaySidebar>
+              <CreationDetails />
             </Layout>
           )}
         />

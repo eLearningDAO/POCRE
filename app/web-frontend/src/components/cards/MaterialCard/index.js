@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/media-has-caption */
 import {
-  Box, Button, Grid, Typography,
+  Box, Button, Chip, Grid, Typography,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import CreationCardImg from '../../../assets/creation-card.png';
@@ -75,6 +75,7 @@ function MaterialCard({
   canDelete = true,
   canAccept = true,
   canDecline = true,
+  recognitionStatus = null,
 }) {
   const [mediaType, setMediaType] = useState(null);
   const [showMediaPreview, setShowMediaPreview] = useState(null);
@@ -229,6 +230,16 @@ function MaterialCard({
               {username}
             </span>
           </Grid>
+
+          {
+          recognitionStatus
+          && (
+          <Chip
+            label={`Recognition invite ${recognitionStatus === 'accepted' ? 'was accepted' : (recognitionStatus === 'declined' ? 'was declined' : 'is pending')}`}
+            className={`color-white ${recognitionStatus === 'accepted' ? 'bg-green' : (recognitionStatus === 'declined' ? 'bg-red' : 'bg-purple')}`}
+          />
+          )
+          }
 
           {showReconcilateOptions && (
           <Grid display="flex" gap="12px" flexWrap={{ md: 'wrap', lg: 'initial' }} justifyContent={{ md: 'center', lg: 'initial' }}>
