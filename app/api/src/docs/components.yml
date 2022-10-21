@@ -12,6 +12,14 @@ components:
           type: string
         user_bio:
           type: string
+        phone:
+          type: string
+        email_addres:
+          type: string
+        verified_id:
+          type: string
+        reputation_stars:
+          type: number
         date_joined:
           type: string
           format: date-time
@@ -20,8 +28,12 @@ components:
         user_name: john
         wallet_address: 28y9gd27g2g237g80hnibhi
         user_bio: ready to explore
+        phone: '+92313555544'
+        email_addres: 'example@example.com'
+        verified_id: 28y9gd27g2g237g80hnibhi
+        reputation_stars: 0
         date_joined: 2022-09-05T19:00:00.000Z
-    
+
     Status:
       type: object
       properties:
@@ -39,8 +51,8 @@ components:
         status_id: 2cc874d2-9f7d-48a8-a416-ec19e9462da9
         status_name: pending
         status_description: invitaion to john
-        action_made: 2022-09-05T19:00:00.000Z   
-    
+        action_made: 2022-09-05T19:00:00.000Z
+
     Decision:
       type: object
       properties:
@@ -55,7 +67,7 @@ components:
       example:
         decision_id: db71f5fa-4ee6-4d6d-893b-af08a4e2d575
         decision_status: true
-        maker_id: c83a8680-e5db-4a79-8646-c6e3d010ec6b    
+        maker_id: c83a8680-e5db-4a79-8646-c6e3d010ec6b
 
     Invitation:
       type: object
@@ -192,12 +204,12 @@ components:
           format: uuid
         tags:
           type: array
-          items: 
+          items:
             type: string
             format: uuid
         materials:
           type: array
-          items: 
+          items:
             type: string
             format: uuid
         creation_date:
@@ -240,12 +252,12 @@ components:
           format: uuid
         invitations:
           type: array
-          items: 
+          items:
             type: string
             format: uuid
         decisions:
           type: array
-          items: 
+          items:
             type: string
             format: uuid
         litigation_start:
@@ -461,7 +473,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: material already assigned to a creation   
+            message: material already assigned to a creation
     MaterialAlreadyAssignedToLitigation:
       description: Material already assigned to a litigation
       content:
@@ -479,7 +491,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: material is already owned     
+            message: material is already owned  
     MaterialDoesNotBelongToCreation:
       description: Material does not belong to creation
       content:
@@ -488,7 +500,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: material does not belong to creation        
+            message: material does not belong to creation
     MaterialNotClaimable:
       description: Material is not claimable
       content:
@@ -497,7 +509,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: material is not claimable    
+            message: material is not claimable
     TagNotFound:
       description: Tag not found
       content:
@@ -515,7 +527,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 404
-            message: creation not found  
+            message: creation not found
     CreationAlreadyAssignedToLitigation:
       description: Creation already assigned to a litigation
       content:
@@ -542,7 +554,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: creation with materials are not allowed to be litigated        
+            message: creation with materials are not allowed to be litigated
     CreationNotClaimable:
       description: Creation is not claimable
       content:
@@ -551,7 +563,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: creation is not claimable   
+            message: creation is not claimable
     LitigationNotFound:
       description: Litigation not found
       content:
