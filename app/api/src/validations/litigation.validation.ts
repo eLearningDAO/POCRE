@@ -28,6 +28,7 @@ export const queryLitigations = {
       }),
     ascend_fields: Joi.array().items(Joi.string().valid('litigation_start', 'litigation_end')).optional(),
     descend_fields: Joi.array().items(Joi.string().valid('litigation_start', 'litigation_end')).optional(),
+    judged_by: Joi.string().uuid().optional(),
   }),
 };
 
