@@ -5,7 +5,7 @@ import { API_BASE_URL } from '../../../config';
 
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 
-const useDashboard = () => {
+const useHome = () => {
   const [isFetchingLitigations, setIsFetchingLitigations] = useState(false);
   const [isUpdatingReconcilateStatus, setIsUpdatingReconcilateStatus] = useState(false);
   const [isTransferringOwnership, setIsTransferringOwnership] = useState(false);
@@ -256,4 +256,4 @@ const useDashboard = () => {
   };
 };
 
-export default useDashboard;
+export default useHome;
