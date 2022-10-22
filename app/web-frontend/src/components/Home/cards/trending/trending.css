@@ -1,0 +1,54 @@
+.trending-card {
+    box-sizing: border-box;
+    height: 246px;
+    background: #FFFFFF;
+    border: 1.48953px solid #EBEFF0;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.trending-detial {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.trending-btn {
+    width: 145px;
+    height: 50px;
+    background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
+    box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
+    border-radius: 15px !important;
+    color: #FFFFFF !important;
+    font-family: 'ABeeZee' !important;
+    font-style: normal !important;
+}
+
+.trending-title {
+    width: 182px;
+    height: 30px;
+    font-family: 'ABeeZee';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 30px;
+    color: #272727;
+}
+
+.trending-body {
+    font-family: 'ABeeZee';
+    width: 323px;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 140%;
+    color: #32363C;
+}
+
+.trending-img {
+    padding: 1rem;
+}

@@ -20,119 +20,117 @@ function App() {
       <Routes>
         <Route
           path="/home"
-          element={(
+          element={
             <Layout displayNav>
               <Home />
             </Layout>
-          )}
+          }
         />
         <Route
           path="/"
-          element={(
+          element={
             <Layout displayNav>
-              <Creations />
+              <Home />
             </Layout>
-          )}
+          }
         />
         <Route
           path="/creations"
-          element={(
+          element={
             <Layout displaySidebar>
               <Creations />
             </Layout>
-          )}
+          }
         />
         <Route
           path="/creations/create"
-          element={(
+          element={
             <Layout displaySidebar>
               <CreateCreation />
             </Layout>
-          )}
+          }
         />
         <Route
           path="/creations/:id/update"
-          element={(
+          element={
             <Layout displaySidebar>
               <UpdateCreation />
             </Layout>
-          )}
+          }
         />
         <Route
           path="/invitation"
-          element={(
+          element={
             <Layout displaySidebar>
               <Invitation />
             </Layout>
-          )}
+          }
         />
         <Route
           path="/litigation"
-          element={(
+          element={
             <ProtectedRoute>
               <Layout displaySidebar>
                 <LitigationHome />
               </Layout>
             </ProtectedRoute>
-          )}
+          }
         />
         <Route
           path="/litigation/create"
-          element={(
+          element={
             <ProtectedRoute>
               <Layout displaySidebar>
                 <LitigationCreate />
               </Layout>
             </ProtectedRoute>
-          )}
+          }
         />
         <Route
           path="/litigation/dashboard"
-          element={(
+          element={
             <ProtectedRoute>
               <Layout displaySidebar>
                 <LitigationDashboard />
               </Layout>
             </ProtectedRoute>
-          )}
+          }
         />
         <Route
           path="/litigation/closed"
-          element={(
+          element={
             <ProtectedRoute>
               <Layout displaySidebar>
                 <LitigationClosed />
               </Layout>
             </ProtectedRoute>
-          )}
+          }
         />
         <Route
           path="/wallet"
-          element={(
-
+          element={
             <Layout displaySidebar>
               <Wallet />
             </Layout>
-
-          )}
+          }
         />
         <Route
           path="/credit"
-          element={(
+          element={
             <Layout displaySidebar>
               <Credit />
             </Layout>
-          )}
+          }
         />
         <Route
           path="/scenario-2/create-collection"
-          element={(
+          element={
             <ProtectedRoute>
               <Layout displaySidebar>
                 <CreateCollection2 />
               </Layout>
             </ProtectedRoute>
-          )}
+          }
         />
       </Routes>
     </BrowserRouter>

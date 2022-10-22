@@ -1,24 +1,26 @@
-.inner-heading{
+.inner-heading {
     display: flex;
     justify-content: space-between;
-    padding: 20px;  
+    padding: 20px;
 }
 
-.inner-heading > div {
+.inner-heading>div {
     display: flex;
     align-items: center;
+    gap: 1rem
 }
 
-.inner-heading > div > button {
+.inner-heading>div>button {
     height: fit-content;
 }
 
-.wallet-div{
-position:relative;
-bottom: 5px;
+.wallet-div {
+    position: relative;
+    bottom: 5px;
 
 }
-.inner-heading button{
+
+.inner-heading button {
     border: none;
     background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
     padding: 5px;
@@ -36,6 +38,6 @@ bottom: 5px;
     align-items: center;
 }
 
-.c_button > button {
+.c_button>button {
     width: fit-content;
 }

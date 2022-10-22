@@ -9,6 +9,8 @@ import MenuIcon2Active from '../../../assets/book-icon-2.png';
 import MenuIcon6Active from '../../../assets/credit-icon-2.png';
 import MenuIcon3Active from '../../../assets/envelope-icon-2.png';
 import MenuIcon5Active from '../../../assets/wallet-icon-2.png';
+import HomeIcon from '../../../assets/homeicon.png';
+
 import './Sidebar.css';
 import useUserInfo from '../../../hooks/user/userInfo';
 
@@ -18,6 +20,15 @@ function SideBar() {
   return (
     <div className="sidebar">
       <ul>
+        <li className={location.pathname.includes('/home') ? 'activeSidebarMenu' : ''}>
+          <Link to="/home">
+            <img
+              alt="menu-icon"
+              src={HomeIcon}
+            />
+            <span>Home</span>
+          </Link>
+        </li>
         <li className={location.pathname.includes('/creations') ? 'activeSidebarMenu' : ''}>
           <Link to="/creations">
             <img

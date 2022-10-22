@@ -1,42 +1,77 @@
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
+import LatestNewsCard from './cards/latestnews/LatestNewsCard';
+import TopAuthorCard from './cards/author/TopAuthorCard';
+import './home.css';
+import Slider from './slider/Slider';
+import CourseCard from './cards/trending/CourseCard';
+import johnImage from '../../assets/user-image-2.jpeg';
 
-import CourseCard from './CourseCard';
-import LatestNewsCard from './LatestNewsCard';
-import TopLearnerCard from './TopLearnerCard';
+const topAuthorList = [
+  {
+    id: 1,
+    name: 'John Smith',
+    email: 'john.smith@gmail.com',
+    image_path: johnImage,
+  },
+  {
+    id: 2,
+    name: 'Esther Howard',
+    email: 'esther@gmail.com',
+    image_path: johnImage,
 
-import Slider from './Slider';
+  },
+  {
+    id: 3,
+    name: 'Brooklyn Simmons',
+    email: 'brook@gmail.com',
+    image_path: johnImage,
+
+  },
+  {
+    id: 4,
+    name: 'Jenny Wilson',
+    email: 'jenny@gmail.com',
+    image_path: johnImage,
+  },
+  {
+    id: 5,
+    name: 'Cody Fisher',
+    email: 'cody@gmail.com',
+    image_path: johnImage,
+  },
+];
 
 function Home() {
   return (
-    <Grid container spacing={4}>
-      <Grid item xs={12} className="slider-container">
-        <Slider />
+    <div className="container">
+      <Slider />
+      <Grid container spacing={3}>
+        <Grid item md={5} xs={12} sm={12} className="trending-container">
+          <h4 className="home-title">Trending Collections</h4>
+          <div>
+            {[1, 2].map((trending) => (
+              <CourseCard trending={trending} />
+            ))}
+          </div>
+        </Grid>
+        <Grid item md={3} xs={12} sm={12} className="top-author-container">
+          <h4 className="home-title">Top Authors</h4>
+          <div>
+            {topAuthorList.map((author) => (
+              <TopAuthorCard author={author} />
+            ))}
+          </div>
+        </Grid>
+        <Grid item md={4} xs={12} sm={12} className="latest-material-container">
+          <h4 className="home-title">Latest recognized materials</h4>
+          <div>
+            {[1, 2, 3].map((card) => (
+              <LatestNewsCard id={card} />
+            ))}
+          </div>
+        </Grid>
       </Grid>
-
-      <Grid item md={5} xs={12} sm={12}>
-        <Typography className="inviationHeaderTitle homepageTitle" variant="h6">Trending Collections</Typography>
-
-        {[1, 2, 3].map((card, key) => (
-          <CourseCard key={key} />
-        ))}
-      </Grid>
-
-      <Grid item md={3} xs={12} sm={12}>
-        <Typography className="inviationHeaderTitle homepageTitle" variant="h6">Top Learners</Typography>
-
-        {[1, 2, 3, 4, 5].map((card, key) => (
-          <TopLearnerCard key={key} />
-        ))}
-      </Grid>
-
-      <Grid item md={4} xs={12} sm={12}>
-        <Typography className="inviationHeaderTitle homepageTitle" variant="h6">Latest News</Typography>
-
-        {[1, 2, 3, 4, 5].map((card, key) => (
-          <LatestNewsCard key={key} />
-        ))}
-      </Grid>
-    </Grid>
+    </div>
   );
 }
 
