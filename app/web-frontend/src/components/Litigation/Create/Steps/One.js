@@ -149,7 +149,7 @@ export default function StepOne({
           <Grid xs={12} md={9} lg={10}>
             <Input
               variant="dark"
-              placeholder="The title of the creation you are claiming"
+              placeholder="The title of your creation"
               name="title"
               hookToForm
             />
@@ -163,7 +163,7 @@ export default function StepOne({
               multiline
               variant="dark"
               name="description"
-              placeholder="Describe the creation you are claiming"
+              placeholder="Describe to the jury when and where your creation is published. Any further details will help you in this claiming process"
               hookToForm
             />
           </Grid>
@@ -172,7 +172,7 @@ export default function StepOne({
             <Typography className="heading" />
           </Grid>
           <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', sm: '18px' }} display="flex" flexDirection="row" alignItems="center" justifyContent="center">
-            <Typography className="heading">Creation Title</Typography>
+            <Typography className="heading">Title of the creation you are claiming</Typography>
           </Grid>
 
           <Grid xs={12} md={3} lg={2} marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center">
@@ -199,7 +199,7 @@ export default function StepOne({
             <Typography className="heading" />
           </Grid>
           <Grid xs={12} md={9} lg={10} marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center" justifyContent="center">
-            <Typography className="heading">or point it</Typography>
+            <Typography className="heading">or point to it</Typography>
           </Grid>
 
           <Grid md={2} xs={12} marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center">
@@ -208,7 +208,7 @@ export default function StepOne({
           <Grid xs={12} md={10} marginTop={{ xs: '8px' }}>
             <Input
               variant="dark"
-              placeholder="Paste the link of the creation"
+              placeholder="Paste the link of the creation with the authorship infringement"
               name="creationLink"
               onChange={handleCreationLinkChange}
             />

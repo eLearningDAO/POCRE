@@ -5,6 +5,10 @@ export const createUser = {
     user_name: Joi.string().required(),
     wallet_address: Joi.string().optional().allow('').allow(null),
     user_bio: Joi.string().optional().allow('').allow(null),
+    phone: Joi.string().optional().allow('').allow(null),
+    email_address: Joi.string().optional().allow('').allow(null),
+    verified_id: Joi.string().optional().allow('').allow(null),
+    reputation_stars: Joi.number().optional().allow(0).allow(null),
   }),
 };
 
@@ -37,6 +41,10 @@ export const updateUser = {
       user_name: Joi.string().optional(),
       wallet_address: Joi.string().optional().allow('').allow(null),
       user_bio: Joi.string().optional().allow('').allow(null),
+      phone: Joi.string().optional().allow('').allow(null),
+      email_address: Joi.string().optional().allow('').allow(null),
+      verified_id: Joi.string().optional().allow('').allow(null),
+      reputation_stars: Joi.number().optional().allow(0).allow(null),
     })
     .min(1),
 };

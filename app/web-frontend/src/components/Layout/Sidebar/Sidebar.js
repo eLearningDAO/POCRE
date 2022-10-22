@@ -44,7 +44,7 @@ function SideBar() {
               alt="menu-icon"
               src={location.pathname.includes('/invitation') ? MenuIcon3Active : MenuIcon3}
             />
-            <span>Recognition</span>
+            <span>Recognitions</span>
           </Link>
         </li>
         {login && (
@@ -80,7 +80,7 @@ function SideBar() {
                 alt="menu-icon"
                 src={location.pathname.includes('/litigation') ? MenuIcon4Active : MenuIcon4}
               />
-              <span>Litigation</span>
+              <span>Litigations</span>
             </Link>
           </li>
         )}
