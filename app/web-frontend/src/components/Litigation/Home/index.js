@@ -38,6 +38,7 @@ function LitigationCard({
   // mode = closed
   canRedeem = true,
   isRedeemed = true,
+  lostClaim = false,
   onRedeem = () => {},
   winner = {
     name: 'bob',
@@ -100,6 +101,13 @@ function LitigationCard({
               Redeemed
             </h3>
           ))
+        )}
+        {mode === 'closed' && !canRedeem
+        && lostClaim && (
+          <Chip
+            className="color-white bg-red"
+            label="You lost the claim"
+          />
         )}
         {mode === 'litigate'
         && !isDeclined && !canAccept && !canWithdraw
@@ -252,23 +260,26 @@ function Litigation() {
                   name: x?.assumed_author?.user_name,
                   walletAddress: x?.assumed_author?.wallet_address,
                 }}
-                startDate={moment(x.litigation_start).format('DD/MM/YYYY')}
-                endDate={moment(x.litigation_end).format('DD/MM/YYYY')}
+                startDate={moment(x?.litigation_start).format('DD/MM/YYYY')}
+                endDate={moment(x?.litigation_end).format('DD/MM/YYYY')}
                 mode={
-                (activeLitigation === 'opening' && 'info')
-                || (activeLitigation === 'openedAgainstMe' && 'litigate')
-                || (activeLitigation === 'closed' && 'closed')
-              }
+                  (activeLitigation === 'opening' && 'info')
+                  || (activeLitigation === 'openedAgainstMe' && 'litigate')
+                  || (activeLitigation === 'closed' && 'closed')
+                }
                 totalJuryMembers={x?.invitations?.length}
-                canWithdraw={x?.reconcilate === null}
+                canWithdraw={!x?.toJudge ? x?.reconcilate === null : null}
                 // eslint-disable-next-line no-return-await
                 onWithdraw={async () => await updateReconcilateStatus(x?.litigation_id, true)}
-                canAccept={x?.reconcilate === null}
-                isDeclined={x?.reconcilate}
+                canAccept={!x?.toJudge ? x?.reconcilate === null : null}
+                isDeclined={!x?.toJudge ? x?.reconcilate : null}
                 // eslint-disable-next-line no-return-await
                 onAccept={async () => await updateReconcilateStatus(x?.litigation_id, false)}
-                canRedeem={x?.winner?.wallet_address === authUser?.wallet_address}
-                isRedeemed={x.ownership_transferred}
+                canRedeem={!x?.toJudge
+                  ? x?.winner?.wallet_address === authUser?.wallet_address : null}
+                isRedeemed={!x?.toJudge ? x?.ownership_transferred : null}
+                lostClaim={!x?.toJudge
+                  ? x?.winner?.wallet_address !== authUser?.wallet_address : null}
                 // eslint-disable-next-line no-return-await
                 onRedeem={async () => await transferLitigatedItemOwnership(x?.litigation_id)}
                 winner={{
