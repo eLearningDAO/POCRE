@@ -36,13 +36,19 @@ function LitigationCard({
   onWithdraw = () => {},
   onAccept = () => {},
   // mode = closed
-  canRedeem = true,
-  isRedeemed = true,
-  onRedeem = () => {},
   winner = {
     name: 'bob',
     walletAddress: '73gd8egv',
   },
+  canRedeem = true,
+  isRedeemed = true,
+  onRedeem = () => {},
+  lostClaim = false,
+  // mode = closed or mode = toJudge
+  votedInFavour = null,
+  votedInOpposition = null,
+  notVoted = null,
+
 }) {
   return (
     <div className="litigation-card1">
@@ -59,6 +65,8 @@ function LitigationCard({
           <img src={`https://i.pravatar.cc/50?img=${Math.random()}`} alt="" />
           <h4>{assumedAuthor.name}</h4>
           <p>{assumedAuthor.walletAddress?.slice(1, 8)}</p>
+          {mode === 'closed' && winner.name === assumedAuthor.name
+          && <span className="litigation-winner-label">Winner</span>}
         </div>
         <h1>vs</h1>
         <div className="litigation-card-author">
@@ -90,6 +98,9 @@ function LitigationCard({
       {/* modes */}
       <div className="litigation-card-options">
         {mode === 'closed' && canRedeem
+        && votedInFavour === null
+        && votedInOpposition === null
+        && notVoted === null
         && (
           (!isRedeemed ? (
             <Button onClick={onRedeem} className="approveButton">
@@ -100,6 +111,45 @@ function LitigationCard({
               Redeemed
             </h3>
           ))
+        )}
+        {mode === 'closed' && !canRedeem
+        && votedInFavour === null
+        && votedInOpposition === null
+        && notVoted === null
+        && lostClaim && (
+          <Chip
+            className="color-white bg-red"
+            label="You lost the claim"
+          />
+        )}
+        {((mode === 'closed' && !canRedeem
+        && (
+          votedInFavour
+          || votedInOpposition
+          || notVoted
+        )) || mode === 'toJudge')
+        && (
+          (votedInFavour && (
+            <Chip
+              style={{ fontSize: '14px' }}
+              className="color-white bg-green"
+              label="Voted in favor"
+            />
+          ))
+          || (votedInOpposition && (
+            <Chip
+              style={{ fontSize: '14px' }}
+              className="color-white bg-red"
+              label="Voted in opposition"
+            />
+          ))
+         || (notVoted && (
+         <Chip
+           style={{ fontSize: '14px' }}
+           className="color-white bg-black"
+           label="Vote not casted"
+         />
+         ))
         )}
         {mode === 'litigate'
         && !isDeclined && !canAccept && !canWithdraw
@@ -118,6 +168,8 @@ function LitigationCard({
         <a className="litigation-details-link" href={`/litigation/${id}`}>
           <h4>
             View Details
+            {' '}
+            {mode === 'toJudge' && notVoted ? 'To Vote' : ''}
           </h4>
           {' '}
           <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M869 487.8L491.2 159.9c-2.9-2.5-6.6-3.9-10.5-3.9h-88.5c-7.4 0-10.8 9.2-5.2 14l350.2 304H152c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h585.1L386.9 854c-5.6 4.9-2.2 14 5.2 14h91.5c1.9 0 3.8-.7 5.2-2L869 536.2a32.07 32.07 0 0 0 0-48.4z" /></svg>
@@ -237,9 +289,9 @@ function Litigation() {
           </Button>
         </div>
 
-        {litigations?.results?.[activeLitigation]?.length > 0 ? (
+        {litigations?.[activeLitigation]?.length > 0 ? (
           <div className="grid-container">
-            {litigations?.results?.[activeLitigation]?.map((x) => (
+            {litigations?.[activeLitigation]?.map((x) => (
               <LitigationCard
                 key={x}
                 id={x?.litigation_id}
@@ -252,23 +304,46 @@ function Litigation() {
                   name: x?.assumed_author?.user_name,
                   walletAddress: x?.assumed_author?.wallet_address,
                 }}
-                startDate={moment(x.litigation_start).format('DD/MM/YYYY')}
-                endDate={moment(x.litigation_end).format('DD/MM/YYYY')}
+                startDate={moment(x?.litigation_start).format('DD/MM/YYYY')}
+                endDate={moment(x?.litigation_end).format('DD/MM/YYYY')}
                 mode={
-                (activeLitigation === 'opening' && 'info')
-                || (activeLitigation === 'openedAgainstMe' && 'litigate')
-                || (activeLitigation === 'closed' && 'closed')
-              }
+                  (activeLitigation === 'opening' && 'info')
+                  || (activeLitigation === 'openedAgainstMe' && 'litigate')
+                  || (activeLitigation === 'closed' && 'closed')
+                  || (activeLitigation === 'toJudge' && 'toJudge')
+                }
+                notVoted={
+                  x?.toJudge
+                  && (x?.decisions?.length === 0
+                  || !x?.decisions?.find((decision) => decision.maker_id === authUser.user_id))
+                }
+                votedInFavour={
+                  x?.toJudge
+                  && x?.decisions?.find(
+                    (decision) => decision.maker_id === authUser.user_id
+                    && decision.decision_status,
+                  )
+                }
+                votedInOpposition={
+                  x?.toJudge
+                  && x?.decisions?.find(
+                    (decision) => decision.maker_id === authUser.user_id
+                    && !decision.decision_status,
+                  )
+                }
                 totalJuryMembers={x?.invitations?.length}
-                canWithdraw={x?.reconcilate === null}
+                canWithdraw={!x?.toJudge ? x?.reconcilate === null : null}
                 // eslint-disable-next-line no-return-await
                 onWithdraw={async () => await updateReconcilateStatus(x?.litigation_id, true)}
-                canAccept={x?.reconcilate === null}
-                isDeclined={x?.reconcilate}
+                canAccept={!x?.toJudge ? x?.reconcilate === null : null}
+                isDeclined={!x?.toJudge ? x?.reconcilate : null}
                 // eslint-disable-next-line no-return-await
                 onAccept={async () => await updateReconcilateStatus(x?.litigation_id, false)}
-                canRedeem={x?.winner?.wallet_address === authUser?.wallet_address}
-                isRedeemed={x.ownership_transferred}
+                canRedeem={!x?.toJudge
+                  ? x?.winner?.wallet_address === authUser?.wallet_address : null}
+                isRedeemed={!x?.toJudge ? x?.ownership_transferred : null}
+                lostClaim={!x?.toJudge
+                  ? x?.winner?.wallet_address !== authUser?.wallet_address : null}
                 // eslint-disable-next-line no-return-await
                 onRedeem={async () => await transferLitigatedItemOwnership(x?.litigation_id)}
                 winner={{

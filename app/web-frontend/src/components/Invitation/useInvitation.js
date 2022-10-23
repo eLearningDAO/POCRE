@@ -2,6 +2,9 @@ import Cookies from 'js-cookie';
 import { useCallback, useState } from 'react';
 import { API_BASE_URL } from '../../config';
 
+// get auth user
+const user = JSON.parse(Cookies.get('activeUser') || '{}');
+
 const useInvitation = () => {
   const [isLoadingInvitations, setIsLoadingInvitations] = useState(false);
   const [isAcceptingInvitation, setIsAcceptingInvitation] = useState(false);
@@ -24,9 +27,6 @@ const useInvitation = () => {
   const fetchInvitations = useCallback(async () => {
     try {
       setIsLoadingInvitations(true);
-
-      // get auth user
-      const user = JSON.parse(Cookies.get('activeUser') || '{}');
 
       // get invitations (throw error if not found)
       const response = await fetch(`${API_BASE_URL}/invitations?query=${user.user_id}&search_fields[]=invite_from&search_fields[]=invite_to`).then((x) => x.json());
