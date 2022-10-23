@@ -97,6 +97,8 @@ export default function LitigationDetails() {
         <Grid display="flex" width="100%" flexDirection="column" gap="12px">
           <Typography className="inviationSectionTitle" variant="h6">
             Assumed Author
+            {' '}
+            {litigation?.isClosed && litigation?.winner?.wallet_address === litigation?.assumed_author?.wallet_address ? '(Winner)' : ''}
           </Typography>
           <UserCard
             username={litigation?.assumed_author?.user_name}
@@ -109,6 +111,8 @@ export default function LitigationDetails() {
         <Grid display="flex" width="100%" flexDirection="column" gap="12px">
           <Typography className="inviationSectionTitle" variant="h6">
             Claimer
+            {' '}
+            {litigation?.isClosed && litigation?.winner?.wallet_address === litigation?.issuer?.wallet_address ? '(Winner)' : ''}
           </Typography>
           <UserCard
             username={litigation?.issuer?.user_name}
