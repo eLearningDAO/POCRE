@@ -27,3 +27,7 @@
     padding: 0 !important;
     min-width: initial !important;
 }
+
+.vote-button {
+    padding: 8px 12px !important;
+}

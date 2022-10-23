@@ -1,22 +1,20 @@
 /* eslint-disable sonarjs/no-all-duplicated-branches */
 import {
   Box,
-  Button,
-  Grid,
+  Button, Chip, Grid,
   Typography,
-  Chip,
 } from '@mui/material';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import moment from 'moment';
-import Loader from '../../uicore/Loader';
 import LeftIcon from '../../../assets/left.png';
 import RightIcon from '../../../assets/right.png';
-import DislikeIcon from '../../../assets/svgs/dislike.svg';
-import LikeIcon from '../../../assets/svgs/like.svg';
-import ThumbPinIcon from '../../../assets/svgs/thumb-pin.svg';
+import { ReactComponent as DislikeIcon } from '../../../assets/svgs/dislike.svg';
+import { ReactComponent as LikeIcon } from '../../../assets/svgs/like.svg';
+import { ReactComponent as ThumbPinIcon } from '../../../assets/svgs/thumb-pin.svg';
 import MaterialCard from '../../cards/MaterialCard';
 import UserCard from '../../cards/UserCard';
+import Loader from '../../uicore/Loader';
 import './index.css';
 import useDetails from './useDetails';
 
@@ -28,6 +26,9 @@ export default function LitigationDetails() {
     fetchLitigationDetails,
     fetchLitigationStatus,
     isFetchingLitigation,
+    isCastingVote,
+    castLitigationVote,
+    voteStatusTypes,
   } = useDetails();
 
   useEffect(() => {
@@ -56,6 +57,7 @@ export default function LitigationDetails() {
 
   return (
     <Grid item xs={12}>
+      {isCastingVote && <Loader size="large" withBackdrop />}
       <Grid item xs={12}>
         <Typography className="litigationCloseTitle" variant="h6">
           Litigation -
@@ -143,25 +145,100 @@ export default function LitigationDetails() {
         justifyContent="flex-end"
         className="litigation-vote-container"
       >
+        {
+          litigation?.isJudging && !litigation?.isClosed
+            ? (
+              <>
+                <Button
+                  display="flex"
+                  gap="4px"
+                  className="vote-button"
+                  alignItems="center"
+                  style={{
+                    backgroundColor: litigation.voteStatus === voteStatusTypes.AGREED ? 'var(--color-green)' : 'transparent',
+                    color: litigation.voteStatus === voteStatusTypes.AGREED ? 'var(--color-white)' : 'var(--color-black)',
+                  }}
+                  // eslint-disable-next-line no-return-await
+                  onClick={async () => await castLitigationVote(voteStatusTypes.AGREED)}
+                >
+                  <LikeIcon style={{
+                    marginRight: '8px',
+                    fill: litigation.voteStatus === voteStatusTypes.AGREED ? 'var(--color-white)' : 'var(--color-green)',
+                  }}
+                  />
+                  Agree
+                  {' '}
+                  {litigation?.decisions?.filter((x) => x?.decision_status)?.length}
+                </Button>
+                <Button
+                  display="flex"
+                  gap="4px"
+                  className="vote-button"
+                  alignItems="center"
+                  style={{
+                    backgroundColor: litigation.voteStatus === voteStatusTypes.DISAGREED ? 'var(--color-red)' : 'transparent',
+                    color: litigation.voteStatus === voteStatusTypes.DISAGREED ? 'var(--color-white)' : 'var(--color-black)',
+                  }}
+                  // eslint-disable-next-line no-return-await
+                  onClick={async () => await castLitigationVote(voteStatusTypes.DISAGREED)}
+                >
+                  <DislikeIcon style={{
+                    marginRight: '8px',
+                    fill: litigation.voteStatus === voteStatusTypes.DISAGREED ? 'var(--color-white)' : 'var(--color-red)',
+                  }}
+                  />
+                  Opposition
+                  {' '}
+                  {litigation?.decisions?.filter((x) => !x?.decision_status)?.length}
+                </Button>
+                <Button
+                  display="flex"
+                  gap="4px"
+                  className="vote-button"
+                  alignItems="center"
+                  style={{
+                    backgroundColor: litigation.voteStatus === voteStatusTypes.IMPARTIAL ? 'var(--color-purple)' : 'transparent',
+                    color: litigation.voteStatus === voteStatusTypes.IMPARTIAL ? 'var(--color-white)' : 'var(--color-black)',
+                  }}
+                  // eslint-disable-next-line no-return-await
+                  onClick={async () => await castLitigationVote(voteStatusTypes.IMPARTIAL)}
+                >
+                  <ThumbPinIcon style={{
+                    marginRight: '8px',
+                    fill: litigation.voteStatus === voteStatusTypes.IMPARTIAL ? 'var(--color-white)' : 'var(--color-purple)',
+                  }}
+                  />
+                  Impartial
+                  {' '}
+                  {/* eslint-disable-next-line no-unsafe-optional-chaining */}
+                  {litigation?.invitations?.length - litigation?.decisions?.length}
+                </Button>
+              </>
+            )
+            : (
+              <>
         <Box display="flex" gap="4px" alignItems="center">
-          <img src={LikeIcon} alt="" style={{ marginRight: '8px' }} />
+                  <LikeIcon style={{ marginRight: '8px' }} />
           Agree
           {' '}
           {litigation?.decisions?.filter((x) => x.decision_status)?.length}
         </Box>
         <Box display="flex" gap="4px" alignItems="center">
-          <img src={DislikeIcon} alt="" style={{ marginRight: '8px' }} />
+                  <DislikeIcon style={{ marginRight: '8px' }} />
           Opposition
           {' '}
           {litigation?.decisions?.filter((x) => !x.decision_status)?.length}
         </Box>
         <Box display="flex" gap="4px" alignItems="center">
-          <img src={ThumbPinIcon} alt="" style={{ marginRight: '8px' }} />
+                  <ThumbPinIcon style={{ marginRight: '8px' }} />
           Impartial
           {' '}
           {/* eslint-disable-next-line no-unsafe-optional-chaining */}
           {litigation?.invitations?.length - litigation?.decisions?.length}
         </Box>
+              </>
+            )
+        }
       </Grid>
 
       <Grid item xs={12} style={{ marginTop: '40px' }}>
