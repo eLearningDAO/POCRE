@@ -39,6 +39,9 @@ function LitigationCard({
   canRedeem = true,
   isRedeemed = true,
   lostClaim = false,
+  votedInFavour = null,
+  votedInOpposition = null,
+  notVoted = null,
   onRedeem = () => {},
   winner = {
     name: 'bob',
@@ -91,6 +94,9 @@ function LitigationCard({
       {/* modes */}
       <div className="litigation-card-options">
         {mode === 'closed' && canRedeem
+        && votedInFavour === null
+        && votedInOpposition === null
+        && notVoted === null
         && (
           (!isRedeemed ? (
             <Button onClick={onRedeem} className="approveButton">
@@ -103,11 +109,40 @@ function LitigationCard({
           ))
         )}
         {mode === 'closed' && !canRedeem
+        && votedInFavour === null
+        && votedInOpposition === null
+        && notVoted === null
         && lostClaim && (
           <Chip
             className="color-white bg-red"
             label="You lost the claim"
           />
+        )}
+        {mode === 'closed' && !canRedeem
+        && (
+          votedInFavour
+          || votedInOpposition
+          || notVoted
+        )
+        && (
+          (votedInFavour && (
+            <Chip
+              className="color-white bg-green"
+              label="Voted in favor"
+            />
+          ))
+          || (votedInOpposition && (
+            <Chip
+              className="color-white bg-red"
+              label="Voted in opposition"
+            />
+          ))
+         || (notVoted && (
+         <Chip
+           className="color-white bg-black"
+           label="Vote not casted"
+         />
+         ))
         )}
         {mode === 'litigate'
         && !isDeclined && !canAccept && !canWithdraw
@@ -266,6 +301,25 @@ function Litigation() {
                   (activeLitigation === 'opening' && 'info')
                   || (activeLitigation === 'openedAgainstMe' && 'litigate')
                   || (activeLitigation === 'closed' && 'closed')
+                }
+                notVoted={
+                  x?.toJudge
+                  && (x?.decisions?.length === 0
+                  || !x?.decisions?.find((decision) => decision.maker_id === authUser.user_id))
+                }
+                votedInFavour={
+                  x?.toJudge
+                  && x?.decisions?.find(
+                    (decision) => decision.maker_id === authUser.user_id
+                    && decision.decision_status,
+                  )
+                }
+                votedInOpposition={
+                  x?.toJudge
+                  && x?.decisions?.find(
+                    (decision) => decision.maker_id === authUser.user_id
+                    && !decision.decision_status,
+                  )
                 }
                 totalJuryMembers={x?.invitations?.length}
                 canWithdraw={!x?.toJudge ? x?.reconcilate === null : null}
