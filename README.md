@@ -12,4 +12,4 @@ There continues to be a problematic identification process of who retains author
 
 #
 
-Follow our [Wiki](https://github.com/e-Learning-DAO/POCRE/wiki/High-level-use-case-workflow) for further details.
+Follow our [Wiki](https://github.com/e-Learning-DAO/POCRE/wiki) for further details.
