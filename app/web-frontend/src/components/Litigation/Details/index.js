@@ -221,25 +221,25 @@ export default function LitigationDetails() {
             )
             : (
               <>
-        <Box display="flex" gap="4px" alignItems="center">
+                <Box display="flex" gap="4px" alignItems="center">
                   <LikeIcon style={{ marginRight: '8px' }} />
-          Agree
-          {' '}
-          {litigation?.decisions?.filter((x) => x.decision_status)?.length}
-        </Box>
-        <Box display="flex" gap="4px" alignItems="center">
+                  Agree
+                  {' '}
+                  {litigation?.decisions?.filter((x) => x.decision_status)?.length}
+                </Box>
+                <Box display="flex" gap="4px" alignItems="center">
                   <DislikeIcon style={{ marginRight: '8px' }} />
-          Opposition
-          {' '}
-          {litigation?.decisions?.filter((x) => !x.decision_status)?.length}
-        </Box>
-        <Box display="flex" gap="4px" alignItems="center">
+                  Opposition
+                  {' '}
+                  {litigation?.decisions?.filter((x) => !x.decision_status)?.length}
+                </Box>
+                <Box display="flex" gap="4px" alignItems="center">
                   <ThumbPinIcon style={{ marginRight: '8px' }} />
-          Impartial
-          {' '}
-          {/* eslint-disable-next-line no-unsafe-optional-chaining */}
-          {litigation?.invitations?.length - litigation?.decisions?.length}
-        </Box>
+                  Impartial
+                  {' '}
+                  {/* eslint-disable-next-line no-unsafe-optional-chaining */}
+                  {litigation?.invitations?.length - litigation?.decisions?.length}
+                </Box>
               </>
             )
         }
@@ -269,6 +269,14 @@ export default function LitigationDetails() {
               ? (
                 <UserCard
                   key={index}
+                  // eslint-disable-next-line jsx-a11y/aria-role
+                  role={(() => {
+                    const vote = litigation?.decisions?.find(
+                      (x) => x?.maker_id === invite?.invite_to?.user_id,
+                    )?.decision_status;
+
+                    return vote === false ? 'Voted in opposition' : (vote === true ? 'Voted in favor' : 'Vote not casted');
+                  })()}
                   username={invite?.invite_to?.user_name}
                   imageUrl={`https://i.pravatar.cc/50?img=${Math.random()}`}
                   totalCreationsAuthored={Math.floor(Math.random())}
