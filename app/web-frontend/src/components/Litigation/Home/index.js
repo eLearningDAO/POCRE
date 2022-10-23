@@ -237,9 +237,9 @@ function Litigation() {
           </Button>
         </div>
 
-        {litigations?.results?.[activeLitigation]?.length > 0 ? (
+        {litigations?.[activeLitigation]?.length > 0 ? (
           <div className="grid-container">
-            {litigations?.results?.[activeLitigation]?.map((x) => (
+            {litigations?.[activeLitigation]?.map((x) => (
               <LitigationCard
                 key={x}
                 id={x?.litigation_id}
