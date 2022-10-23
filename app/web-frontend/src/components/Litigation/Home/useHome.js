@@ -155,9 +155,16 @@ const useHome = () => {
         closed: litigationResponse?.results?.filter(
           (x) => moment(x.litigation_end).isBefore(new Date().toISOString()) || x.reconcilate,
         ),
-        opening: litigationResponse?.results?.filter(
-          (x) => moment(x.litigation_start).isAfter(new Date().toISOString()),
-        ),
+        opening: [
+          ...litigationResponse?.results?.filter(
+            (x) => moment(x.litigation_start).isAfter(new Date().toISOString()),
+          ) || [],
+          ...litigationResponse?.results?.filter(
+            (x) => moment(x.litigation_start).isBefore(new Date().toISOString())
+              && moment(x.litigation_end).isAfter(new Date().toISOString())
+              && x?.issuer?.user_id === authUser?.user_id && !x.reconcilate && !x.toJudge,
+          ) || [],
+        ],
         openedAgainstMe: litigationResponse?.results?.filter(
           (x) => moment(x.litigation_start).isBefore(new Date().toISOString())
             && moment(x.litigation_end).isAfter(new Date().toISOString())
