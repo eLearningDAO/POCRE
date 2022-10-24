@@ -1,14 +1,12 @@
 import LatestNewsCardImg from '../../../../assets/svgs/newsimage.svg';
+import { accessibleOnClick } from '../../util';
 import './latestnewscard.css';
 // date is missing in material api json data.
 function LatestNewsCard({ material, handleRecognizedMaterialCardClick }) {
   return (
     <div
       className="latest-news-card"
-      key={material.material_id}
-      onClick={() => handleRecognizedMaterialCardClick()}
-      role="button"
-      tabIndex={material.material_id}
+      {...accessibleOnClick(handleRecognizedMaterialCardClick, material.material_id)}
     >
       <div className="latest-news-image-container">
         <img alt="course-card" src={LatestNewsCardImg} />

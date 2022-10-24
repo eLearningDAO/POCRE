@@ -1,15 +1,13 @@
 import { Button } from '@mui/material';
 import CourseCard1 from '../../../../assets/course-card2.png';
+import { accessibleOnClick } from '../../util';
 import './trending.css';
 
 function TrendingCard({ trending, handleCreationCardClick, handleCreationPreview }) {
   return (
     <div
       className="trending-card"
-      key={trending.creation_id}
-      onClick={() => handleCreationCardClick()}
-      role="button"
-      tabIndex={trending.creation_id}
+      {...accessibleOnClick(handleCreationCardClick, trending.creation_id)}
     >
       <div className="trending-img">
         <img alt="course-card" src={CourseCard1} />
