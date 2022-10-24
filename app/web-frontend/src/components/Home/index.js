@@ -1,4 +1,5 @@
 import { Grid } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import LatestNewsCard from './cards/latestnews/LatestNewsCard';
 import TopAuthorCard from './cards/author/TopAuthorCard';
 import './home.css';
@@ -42,15 +43,43 @@ const topAuthorList = [
 ];
 
 function Home() {
+  const navigate = useNavigate();
+
+  const handleAuthorCardClick = () => {
+    navigate('/wallet');
+  };
+
+  const handleCreationCardClick = () => {
+    navigate('/creations');
+  };
+
+  const handleRecognizedMaterialCardClick = () => {
+    navigate('/creations');
+  };
+
+  const handleCreationPreview = () => {
+    navigate('/creations');
+  };
+
+  const handleSlidClick = () => {
+    navigate('/creations');
+  };
+
   return (
     <div className="container">
-      <Slider />
+      <Slider
+        handleSlidClick={handleSlidClick}
+      />
       <Grid container spacing={3}>
         <Grid item md={5} xs={12} sm={12} className="trending-container">
           <h4 className="home-title">Latest Co-Creations</h4>
           <div>
             {[1, 2].map((trending) => (
-              <TrendingCard trending={trending} />
+              <TrendingCard
+                trending={trending}
+                handleCreationCardClick={handleCreationCardClick}
+                handleCreationPreview={handleCreationPreview}
+              />
             ))}
           </div>
         </Grid>
@@ -58,7 +87,10 @@ function Home() {
           <h4 className="home-title">Top Authors</h4>
           <div>
             {topAuthorList.map((author) => (
-              <TopAuthorCard author={author} />
+              <TopAuthorCard
+                author={author}
+                handleAuthorCardClick={handleAuthorCardClick}
+              />
             ))}
           </div>
         </Grid>
@@ -66,7 +98,10 @@ function Home() {
           <h4 className="home-title">Latest recognized materials</h4>
           <div>
             {[1, 2, 3].map((card) => (
-              <LatestNewsCard id={card} />
+              <LatestNewsCard
+                material={card}
+                handleRecognizedMaterialCardClick={handleRecognizedMaterialCardClick}
+              />
             ))}
           </div>
         </Grid>

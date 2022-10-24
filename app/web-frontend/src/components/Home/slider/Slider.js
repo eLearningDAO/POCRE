@@ -22,7 +22,7 @@ const slides = [
   <img src={SliderImage5} alt="5" />,
 ];
 
-export default function Slider() {
+export default function Slider({ handleSlidClicked }) {
   const [car, setCar] = React.useState(null);
 
   React.useEffect(() => {
@@ -47,6 +47,10 @@ export default function Slider() {
     instance.prev();
   };
 
+  const handleSlidClick = () => {
+    handleSlidClicked();
+  };
+
   return (
     <div style={{ position: 'relative' }}>
       <div
@@ -56,8 +60,13 @@ export default function Slider() {
         className="carousel"
       >
         {
-          slides.map((slide) => (
-            <a className="carousel-item">
+          slides.map((slide, index) => (
+            <a
+              className="carousel-item"
+              onClick={() => handleSlidClick()}
+              role="button"
+              tabIndex={index}
+            >
               {slide}
             </a>
           ))

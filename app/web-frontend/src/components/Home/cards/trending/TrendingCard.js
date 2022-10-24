@@ -1,10 +1,20 @@
 import { Button } from '@mui/material';
 import CourseCard1 from '../../../../assets/course-card2.png';
 import './trending.css';
-
-function TrendingCard({ trending }) {
+/**
+ * i have used trending keyword which equal to creation
+ * @param {*} param0
+ * @returns
+ */
+function TrendingCard({ trending, handleCreationCardClick, handleCreationPreview }) {
   return (
-    <div className="trending-card" key={trending}>
+    <div
+      className="trending-card"
+      key={trending}
+      onClick={() => handleCreationCardClick()}
+      role="button"
+      tabIndex={trending}
+    >
       <div className="trending-img">
         <img alt="course-card" src={CourseCard1} />
       </div>
@@ -17,7 +27,7 @@ function TrendingCard({ trending }) {
             1000+ free files you deliver real-time metrics for actionalble results.
           </span>
         </div>
-        <Button className="trending-btn">Preview</Button>
+        <Button className="trending-btn" onClick={handleCreationPreview}>Preview</Button>
       </div>
     </div>
   );

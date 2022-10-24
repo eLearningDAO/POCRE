@@ -1,8 +1,14 @@
 import './authorcard.css';
 
-function TopAuthorCard({ author }) {
+function TopAuthorCard({ author, handleAuthorCardClick }) {
   return (
-    <div className="topauthor-card" key={author.id}>
+    <div
+      className="topauthor-card"
+      key={author.id}
+      onClick={() => handleAuthorCardClick()}
+      role="button"
+      tabIndex={author.id}
+    >
       <div className="topauthor-image">
         <img alt="author" src={author.image_path} />
       </div>

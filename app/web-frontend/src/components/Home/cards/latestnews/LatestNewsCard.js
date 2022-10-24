@@ -1,9 +1,15 @@
 import LatestNewsCardImg from '../../../../assets/svgs/newsimage.svg';
 import './latestnewscard.css';
 
-function LatestNewsCard({ id }) {
+function LatestNewsCard({ material, handleRecognizedMaterialCardClick }) {
   return (
-    <div className="latest-news-card" key={id}>
+    <div
+      className="latest-news-card"
+      key={material}
+      onClick={() => handleRecognizedMaterialCardClick()}
+      role="button"
+      tabIndex={material}
+    >
       <div className="latest-news-image-container">
         <img alt="course-card" src={LatestNewsCardImg} />
       </div>
