@@ -5,7 +5,6 @@ import UpdateCreation from './components/Creations/Update';
 import CreationDetails from './components/Creations/Details';
 import Invitation from './components/Invitation';
 import LitigationHome from './components/Litigation/Home';
-import LitigationDashboard from './components/Litigation/Dashboard';
 import LitigationCreate from './components/Litigation/Create';
 import LitigationDetails from './components/Litigation/Details';
 import Wallet from './components/Wallet';

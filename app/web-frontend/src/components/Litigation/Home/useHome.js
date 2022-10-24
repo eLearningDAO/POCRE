@@ -5,7 +5,7 @@ import { API_BASE_URL } from '../../../config';
 
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 
-const useDashboard = () => {
+const useHome = () => {
   const [isFetchingLitigations, setIsFetchingLitigations] = useState(false);
   const [isUpdatingReconcilateStatus, setIsUpdatingReconcilateStatus] = useState(false);
   const [isTransferringOwnership, setIsTransferringOwnership] = useState(false);
@@ -39,6 +39,18 @@ const useDashboard = () => {
         .then((x) => x.json());
 
       if (litigationResponse.code >= 400) throw new Error('Failed to fetch litigations');
+
+      // get litigations to judge
+      const litigationToJudgeResponse = await fetch(
+        `${API_BASE_URL}/litigations?judged_by=${authUser?.user_id}`,
+      )
+        .then((x) => x.json());
+      if (litigationToJudgeResponse.code >= 400) throw new Error('Failed to fetch litigations');
+
+      litigationResponse.results = [
+        ...litigationResponse.results,
+        ...(litigationToJudgeResponse?.results?.map((x) => ({ ...x, toJudge: true })) || []),
+      ];
 
       // get details for each litigation
       litigationResponse = {
@@ -88,6 +100,45 @@ const useDashboard = () => {
           }
           delete litigation.material_id;
 
+          // fill details of to judge litigations
+          if (litigation.toJudge) {
+            // get litigation invitation details
+            litigation.invitations = await Promise.all(
+              litigation.invitations.map(async (inviteId) => {
+                // get invite details
+                const invite = await fetch(
+                  `${API_BASE_URL}/invitations/${inviteId}`,
+                ).then((y) => y.json()).catch(() => null);
+
+                // get invite status details
+                const status = await fetch(
+                  `${API_BASE_URL}/status/${invite.status_id}`,
+                ).then((y) => y.json()).catch(() => null);
+
+                // get invited user details
+                const inviteTo = await fetch(
+                  `${API_BASE_URL}/users/${invite.invite_to}`,
+                ).then((y) => y.json()).catch(() => null);
+
+                // update keys
+                delete invite.status_id;
+                delete invite.invite_to;
+                invite.status = status;
+                invite.invite_to = inviteTo;
+
+                return invite;
+              }),
+            );
+
+            // get litigation decisions details
+            litigation.decisions = await Promise.all(
+              // eslint-disable-next-line no-return-await
+              litigation.decisions.map(async (decisionId) => await fetch(
+                `${API_BASE_URL}/decision/${decisionId}`,
+              ).then((y) => y.json()).catch(() => null)),
+            );
+          }
+
           return {
             ...litigation,
             issuer,
@@ -101,20 +152,29 @@ const useDashboard = () => {
 
       // calculate open/closed and in progress litigations
       litigationResponse = {
-        ...litigationResponse,
-        results: {
-          closed: litigationResponse?.results?.filter(
-            (x) => moment(x.litigation_end).isBefore(new Date().toISOString()) || x.reconcilate,
-          ),
-          opening: litigationResponse?.results?.filter(
+        closed: litigationResponse?.results?.filter(
+          (x) => moment(x.litigation_end).isBefore(new Date().toISOString()) || x.reconcilate,
+        ),
+        opening: [
+          ...litigationResponse?.results?.filter(
             (x) => moment(x.litigation_start).isAfter(new Date().toISOString()),
-          ),
-          openedAgainstMe: litigationResponse?.results?.filter(
+          ) || [],
+          ...litigationResponse?.results?.filter(
             (x) => moment(x.litigation_start).isBefore(new Date().toISOString())
+              && moment(x.litigation_end).isAfter(new Date().toISOString())
+              && x?.issuer?.user_id === authUser?.user_id && !x.reconcilate && !x.toJudge,
+          ) || [],
+        ],
+        openedAgainstMe: litigationResponse?.results?.filter(
+          (x) => moment(x.litigation_start).isBefore(new Date().toISOString())
             && moment(x.litigation_end).isAfter(new Date().toISOString())
-            && x?.assumed_author?.user_id === authUser?.user_id && !x.reconcilate,
-          ),
-        },
+            && x?.assumed_author?.user_id === authUser?.user_id && !x.reconcilate && !x.toJudge,
+        ),
+        toJudge: litigationResponse?.results?.filter(
+          (x) => moment(x.litigation_start).isBefore(new Date().toISOString())
+            && moment(x.litigation_end).isAfter(new Date().toISOString())
+            && !x.reconcilate && x.toJudge,
+        ),
       };
 
       setFetchLitigationsStatus({
@@ -256,4 +316,4 @@ const useDashboard = () => {
   };
 };
 
-export default useDashboard;
+export default useHome;
