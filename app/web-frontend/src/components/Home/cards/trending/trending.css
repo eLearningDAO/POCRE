@@ -57,17 +57,32 @@
 
 .trending-img {
     padding: 1rem;
+    width: 200px;
+    height: 203px;
 }
 
-@media only screen and (max-width: 480px),
-only screen and (max-device-width: 600px) {
+.treding-card-media {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: 100% !important;
+    object-fit: fill;
+    border-radius: 17.8743px;
+}
+
+
+@media only screen and (max-width: 480px) {
     .trending-card {
         border-radius: 15px;
     }
 
-    .trending-img>img {
+    .treding-card-media {
+        border-radius: 10.163px;
+    }
+
+    .trending-img {
         width: 88.08px;
         height: 114.33px;
+
     }
 
     .trending-card {
@@ -83,16 +98,21 @@ only screen and (max-device-width: 600px) {
 
     .trending-body {
         font-weight: 400;
+        max-width: 212.58px;
         font-size: 11.8568px;
         line-height: 140%;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
     .trending-btn {
         width: 95.7px;
         height: 29.64px;
-        font-weight: 400;
-        font-size: 11.8568px;
-        line-height: 150%;
+        font-weight: 400 !important;
+        font-size: 11.8568px !important;
+        line-height: 150% !important;
         border-radius: 8.46914px !important;
     }
 
