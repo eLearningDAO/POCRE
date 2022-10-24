@@ -13,6 +13,7 @@ import SliderImage4 from '../../../assets/slider/slider-04.jpg';
 import SliderImage5 from '../../../assets/slider/slider-05.jpg';
 
 import './materialize.css';
+import { accessibleOnClick } from '../util';
 
 const slides = [
   <img src={SliderImage1} alt="1" />,
@@ -47,10 +48,6 @@ export default function Slider({ handleSlidClicked }) {
     instance.prev();
   };
 
-  const handleSlidClick = () => {
-    handleSlidClicked();
-  };
-
   return (
     <div style={{ position: 'relative' }}>
       <div
@@ -63,9 +60,7 @@ export default function Slider({ handleSlidClicked }) {
           slides.map((slide, index) => (
             <a
               className="carousel-item"
-              onClick={() => handleSlidClick()}
-              role="button"
-              tabIndex={index}
+              {...accessibleOnClick(handleSlidClicked, index)}
             >
               {slide}
             </a>
