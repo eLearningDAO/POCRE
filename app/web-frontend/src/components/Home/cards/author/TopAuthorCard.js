@@ -1,23 +1,24 @@
 import './authorcard.css';
+import johnImage from '../../../../assets/user-image-2.jpeg';
 
 function TopAuthorCard({ author, handleAuthorCardClick }) {
   return (
     <div
       className="topauthor-card"
-      key={author.id}
+      key={author.user_id}
       onClick={() => handleAuthorCardClick()}
       role="button"
-      tabIndex={author.id}
+      tabIndex={author.user_id}
     >
       <div className="topauthor-image">
-        <img alt="author" src={author.image_path} />
+        <img alt="author" src={johnImage} />
       </div>
       <div className="topauthor-body">
         <h6>
-          {author.name}
+          {author.user_name}
         </h6>
         <span>
-          {author.email}
+          {author.email_address}
         </span>
       </div>
     </div>
