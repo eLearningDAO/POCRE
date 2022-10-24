@@ -1,4 +1,3 @@
-
 .carousel {
   overflow: hidden;
   position: relative;
@@ -54,12 +53,12 @@
   position: absolute;
   top: 0;
   left: 0;
-  opacity: 1!important;
+  opacity: 1 !important;
 }
 
-.carousel .carousel-item > img {
+.carousel .carousel-item>img {
   box-sizing: border-box;
-  width: 630px;
+  width: 100%;
   height: 507.93px;
   border: 4px solid #FFFFFF;
   border-radius: 22.3429px;
@@ -72,7 +71,7 @@
   right: 0;
   bottom: 0;
   margin: 0;
-  bottom: -30px;
+  /* bottom: -30px; */
 }
 
 .carousel .indicators .indicator-item {
@@ -97,4 +96,30 @@
 .carousel.scrolling .carousel-item .materialboxed,
 .carousel .carousel-item:not(.active) .materialboxed {
   pointer-events: none;
+}
+
+@media only screen and (max-width: 480px) {
+  .carousel .carousel-item>img {
+    height: 380.93px;
+  }
+
+  .carousel .carousel-item {
+    width: 244px !important;
+    height: 327px;
+    position: absolute;
+    top: 0;
+    left: 24px !important;
+    opacity: 1;
+
+  }
+}
+
+@media only screen and (min-width: 2048px) {
+  .leftIcon {
+    left: 5%;
+  }
+
+  .rightIcon {
+    right: 7%;
+  }
 }

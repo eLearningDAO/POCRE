@@ -30,7 +30,7 @@ function App() {
           path="/"
           element={(
             <Layout displayNav>
-              <Creations />
+              <Home />
             </Layout>
           )}
         />
@@ -55,6 +55,14 @@ function App() {
           element={(
             <Layout displaySidebar>
               <UpdateCreation />
+            </Layout>
+          )}
+        />
+        <Route
+          path="/creations/:id"
+          element={(
+            <Layout displaySidebar>
+              <CreationDetails />
             </Layout>
           )}
         />
@@ -107,11 +115,9 @@ function App() {
         <Route
           path="/wallet"
           element={(
-
             <Layout displaySidebar>
               <Wallet />
             </Layout>
-
           )}
         />
         <Route
