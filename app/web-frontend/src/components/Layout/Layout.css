@@ -622,7 +622,7 @@ a {
   background-color: transparent;
   border: none;
   top: 40%;
-  right: -1.5%;
+  right: -2%;
   cursor: pointer;
 }
 
@@ -1698,7 +1698,7 @@ a {
 
   .rightIcon,
   .leftIcon {
-    top: 32%;
+    top: 41%;
   }
 
   .leftIcon {

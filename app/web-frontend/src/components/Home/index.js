@@ -3,7 +3,7 @@ import LatestNewsCard from './cards/latestnews/LatestNewsCard';
 import TopAuthorCard from './cards/author/TopAuthorCard';
 import './home.css';
 import Slider from './slider/Slider';
-import CourseCard from './cards/trending/CourseCard';
+import TrendingCard from './cards/trending/TrendingCard';
 import johnImage from '../../assets/user-image-2.jpeg';
 
 const topAuthorList = [
@@ -47,10 +47,10 @@ function Home() {
       <Slider />
       <Grid container spacing={3}>
         <Grid item md={5} xs={12} sm={12} className="trending-container">
-          <h4 className="home-title">Trending Collections</h4>
+          <h4 className="home-title">Latest Co-Creations</h4>
           <div>
             {[1, 2].map((trending) => (
-              <CourseCard trending={trending} />
+              <TrendingCard trending={trending} />
             ))}
           </div>
         </Grid>

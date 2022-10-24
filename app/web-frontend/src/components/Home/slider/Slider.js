@@ -14,16 +14,16 @@ import SliderImage5 from '../../../assets/slider/slider-05.jpg';
 
 import './materialize.css';
 
+const slides = [
+  <img src={SliderImage1} alt="1" />,
+  <img src={SliderImage2} alt="2" />,
+  <img src={SliderImage3} alt="3" />,
+  <img src={SliderImage4} alt="4" />,
+  <img src={SliderImage5} alt="5" />,
+];
+
 export default function Slider() {
   const [car, setCar] = React.useState(null);
-
-  const slides = [
-    <img width={400} src={SliderImage1} alt="1" />,
-    <img width={400} src={SliderImage2} alt="2" />,
-    <img width={400} src={SliderImage3} alt="3" />,
-    <img width={400} src={SliderImage4} alt="4" />,
-    <img width={400} src={SliderImage5} alt="5" />,
-  ];
 
   React.useEffect(() => {
     const options = {
@@ -55,21 +55,13 @@ export default function Slider() {
         }}
         className="carousel"
       >
-        <a className="carousel-item">
-          {slides[0]}
-        </a>
-        <a className="carousel-item">
-          {slides[1]}
-        </a>
-        <a className="carousel-item">
-          {slides[2]}
-        </a>
-        <a className="carousel-item">
-          {slides[3]}
-        </a>
-        <a className="carousel-item">
-          {slides[4]}
-        </a>
+        {
+          slides.map((slide) => (
+            <a className="carousel-item">
+              {slide}
+            </a>
+          ))
+        }
       </div>
       <Button className="rightIcon" onClick={next}><img src={RightIcon} /></Button>
       <Button className="leftIcon" onClick={previous}><img src={LeftIcon} /></Button>
