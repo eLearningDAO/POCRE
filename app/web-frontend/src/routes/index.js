@@ -9,7 +9,7 @@ import LitigationCreate from '../components/Litigation/Create';
 import LitigationDetails from '../components/Litigation/Details';
 import WalletHome from '../components/Wallet/Home';
 import Layout from '../components/Layout';
-import CreditHome from '../components/Credit/Home';
+import CreditsHome from '../components/Credits/Home';
 import Protected from './Protected';
 import Home from '../components/Home';
 
@@ -112,10 +112,10 @@ function AppRoutes() {
           )}
         />
         <Route
-          path="/credit"
+          path="/credits"
           element={(
             <Layout displaySidebar>
-              <CreditHome />
+              <CreditsHome />
             </Layout>
           )}
         />

@@ -93,11 +93,11 @@ function SideBar() {
             <span>Wallet</span>
           </Link>
         </li>
-        <li className={location.pathname.includes('/credit') ? 'activeSidebarMenu' : ''}>
-          <Link to="/credit">
+        <li className={location.pathname.includes('/credits') ? 'activeSidebarMenu' : ''}>
+          <Link to="/credits">
             <img
               alt="menu-icon"
-              src={location.pathname.includes('/credit') ? MenuIcon6Active : MenuIcon6}
+              src={location.pathname.includes('/credits') ? MenuIcon6Active : MenuIcon6}
             />
             <span>Credits</span>
           </Link>

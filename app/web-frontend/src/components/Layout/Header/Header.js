@@ -91,8 +91,8 @@ function HomeHeader({ displayNav = false }) {
               <li className={location.pathname === '/wallet' ? 'activeSidebarMenu' : ''}>
                 <Link to="/wallet">Wallet</Link>
               </li>
-              <li className={location.pathname === '/credit' ? 'activeSidebarMenu' : ''}>
-                <Link to="/credit">Credits</Link>
+              <li className={location.pathname === '/credits' ? 'activeSidebarMenu' : ''}>
+                <Link to="/credits">Credits</Link>
               </li>
             </ul>
           </nav>
