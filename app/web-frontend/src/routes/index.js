@@ -3,13 +3,13 @@ import CreationsHome from '../components/Creations/Home';
 import CreateCreation from '../components/Creations/Create';
 import UpdateCreation from '../components/Creations/Update';
 import CreationDetails from '../components/Creations/Details';
-import Invitation from '../components/Invitation';
+import InvitationHome from '../components/Invitation/Home';
 import LitigationHome from '../components/Litigation/Home';
 import LitigationCreate from '../components/Litigation/Create';
 import LitigationDetails from '../components/Litigation/Details';
 import Wallet from '../components/Wallet';
 import Layout from '../components/Layout';
-import Credit from '../components/Credit/Home';
+import CreditHome from '../components/Credit/Home';
 import Protected from './Protected';
 import Home from '../components/Home';
 
@@ -69,7 +69,7 @@ function AppRoutes() {
           path="/invitation"
           element={(
             <Layout displaySidebar>
-              <Invitation />
+              <InvitationHome />
             </Layout>
           )}
         />
@@ -115,7 +115,7 @@ function AppRoutes() {
           path="/credit"
           element={(
             <Layout displaySidebar>
-              <Credit />
+              <CreditHome />
             </Layout>
           )}
         />

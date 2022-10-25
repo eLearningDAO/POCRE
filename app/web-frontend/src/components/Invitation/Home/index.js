@@ -5,10 +5,10 @@ import {
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import moment from 'moment';
-import InvitationCard from '../cards/InvitationCard';
+import InvitationCard from '../../cards/InvitationCard';
 import useInvitation from './useInvitation';
 import './index.css';
-import Loader from '../uicore/Loader';
+import Loader from '../../uicore/Loader';
 
 // get auth user
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');

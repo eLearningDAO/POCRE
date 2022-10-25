@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import { useCallback, useState } from 'react';
-import { API_BASE_URL } from '../../config';
+import { API_BASE_URL } from '../../../config';
 
 // get auth user
 const user = JSON.parse(Cookies.get('activeUser') || '{}');
