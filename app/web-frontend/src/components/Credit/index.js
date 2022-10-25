@@ -1,7 +1,7 @@
 import { Grid, Typography } from '@mui/material';
 import React from 'react';
 import CreditCard from '../cards/CreditCard';
-import OtherContributerCard from './OtherContributerCard';
+import OtherContributerCard from '../cards/OtherContributersCard';
 import Data from './properties.json';
 
 function Credit() {
