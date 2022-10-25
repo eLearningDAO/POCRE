@@ -14,12 +14,32 @@ const useStore = create((set) => ({
   fetchAuthor: async () => {
     const response = await fetch(topAuthorUrl);
     const author = await response.json();
-    set({ topAuthorList: author.results });
+    const usersWithAvatar = author.results.map((x) => ({
+      ...x,
+      avatar: `https://i.pravatar.cc/50?img=${Math.random()}`,
+    }));
+    set({ topAuthorList: usersWithAvatar });
   },
   fetchMaterial: async () => {
-    const response = await fetch(materialsUrl);
-    const material = await response.json();
-    set({ materialList: material.results });
+    let materialResponse = await fetch(materialsUrl).then((response) => response.json());
+    if (materialResponse.code >= 400) throw new Error('Failed to fetch material');
+
+    materialResponse = {
+      ...materialResponse,
+      results: await Promise.all(materialResponse?.results?.map(async (response) => {
+        const creation = { ...response };
+        const source = await fetch(
+          `${API_BASE_URL}/source/${response.source_id}`,
+        ).then((y) => y.json()).catch(() => null);
+        delete creation.source_id;
+        return {
+          ...creation,
+          source,
+        };
+      })),
+    };
+
+    set({ materialList: materialResponse.results });
   },
   fetchTrending: async () => {
     let creationResponse = await fetch(trendingUrl).then((response) => response.json());

@@ -21,12 +21,13 @@
 
 .latest-news-image-container {
     padding-top: 0.2rem;
+    width: 185px;
+    height: 160px;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
 }
 
-.latest-news-image-container>img {
-    height: 160px;
-    border-start-start-radius: 25px;
-}
+
 
 .latest-news-body {
     display: flex;
@@ -73,7 +74,7 @@ only screen and (max-device-width: 600px) {
         line-height: 169.3%;
     }
 
-    .latest-news-image-container>img {
+    .latest-news-image-container {
         height: 114px;
         border-top-left-radius: 15px;
         border-bottom-left-radius: 15px;

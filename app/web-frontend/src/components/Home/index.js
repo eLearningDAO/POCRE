@@ -37,10 +37,6 @@ function Home() {
     navigate(`/creations/${creationId}`);
   };
 
-  const handleRecognizedMaterialCardClick = () => {
-    navigate('/creations');
-  };
-
   const handleSlidClick = () => {
     navigate('/creations');
   };
@@ -80,7 +76,7 @@ function Home() {
             {materialList && materialList.map((material) => (
               <LatestNewsCard
                 material={material}
-                handleRecognizedMaterialCardClick={handleRecognizedMaterialCardClick}
+                mediaUrl={material?.source?.site_url}
               />
             ))}
           </div>
