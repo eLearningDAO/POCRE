@@ -1,5 +1,4 @@
 import './authorcard.css';
-import johnImage from '../../../../assets/user-image-2.jpeg';
 import { accessibleOnClick } from '../../util';
 
 function TopAuthorCard({ author, handleAuthorCardClick }) {
@@ -9,7 +8,7 @@ function TopAuthorCard({ author, handleAuthorCardClick }) {
       {...accessibleOnClick(handleAuthorCardClick, author.user_id)}
     >
       <div className="topauthor-image">
-        <img alt="author" src={johnImage} />
+        <img alt="author" src={author.userDetail.avatar} />
       </div>
       <div className="topauthor-body">
         <h6>

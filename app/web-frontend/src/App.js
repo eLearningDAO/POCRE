@@ -67,14 +67,6 @@ function App() {
           )}
         />
         <Route
-          path="/creations/:id"
-          element={(
-            <Layout displaySidebar>
-              <CreationDetails />
-            </Layout>
-          )}
-        />
-        <Route
           path="/invitation"
           element={(
             <Layout displaySidebar>

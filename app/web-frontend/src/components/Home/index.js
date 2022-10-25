@@ -7,6 +7,7 @@ import './home.css';
 import Slider from './slider/Slider';
 import useStore from './homeStore';
 import TrendingCard from './cards/trending/TrendingCard';
+import useUserInfo from '../../hooks/user/userInfo';
 
 function Home() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ function Home() {
   const fetchTrending = useStore((state) => state.fetchTrending);
   const fetchAuthor = useStore((state) => state.fetchAuthor);
   const fetchMaterial = useStore((state) => state.fetchMaterial);
+  const setUser = useUserInfo((s) => s.setUser);
 
   useEffect(() => {
     fetchAuthor();
@@ -23,20 +25,19 @@ function Home() {
     fetchMaterial();
   }, []);
 
-  const handleAuthorCardClick = () => {
-    navigate('/wallet');
+  const handleAuthorCardClick = (userId) => {
+    const authors = topAuthorList.filter((author) => author.user_id === userId);
+    if (authors.length > 0) {
+      setUser((previousS) => ({
+        user: authors[0].userDetail ? { ...previousS } : null,
+        login: authors[0].userDetail,
+      }));
+      navigate('/wallet');
+    }
   };
 
-  const handleCreationCardClick = () => {
-    navigate('/creations');
-  };
-
-  const handleRecognizedMaterialCardClick = () => {
-    navigate('/creations');
-  };
-
-  const handleCreationPreview = () => {
-    navigate('/creations');
+  const handleCreationCardClick = (creationId) => {
+    navigate(`/creations/${creationId}`);
   };
 
   const handleSlidClick = () => {
@@ -54,9 +55,9 @@ function Home() {
           <div>
             {trendingList && trendingList.map((trending) => (
               <TrendingCard
+                mediaUrl={trending?.source?.site_url}
                 trending={trending}
                 handleCreationCardClick={handleCreationCardClick}
-                handleCreationPreview={handleCreationPreview}
               />
             ))}
           </div>
@@ -78,7 +79,7 @@ function Home() {
             {materialList && materialList.map((material) => (
               <LatestNewsCard
                 material={material}
-                handleRecognizedMaterialCardClick={handleRecognizedMaterialCardClick}
+                mediaUrl={material?.source?.site_url}
               />
             ))}
           </div>
