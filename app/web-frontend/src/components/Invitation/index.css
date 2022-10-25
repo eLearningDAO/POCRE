@@ -3,3 +3,22 @@
     text-align: center;
     margin-top: 36px;
 }
+
+.toggle-bar2 {
+    width: 100%;
+    border-radius: 12px;
+    background-color: var(--color-orange-dark);
+    margin-bottom: 24px;
+    margin-top: 16px;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.toggle-bar2 .btn {
+    color: var(--color-white) !important;
+    width: 100% !important;
+}
+.toggle-bar2 .btn-active {
+    color: var(--color-orange-dark) !important;
+    background-color: var(--color-white) !important;
+}
