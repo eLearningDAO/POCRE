@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 // import Checkbox from '@mui/material/Checkbox';
 import LeftIcon from '../../../../assets/images/left.png';
 import RightIcon from '../../../../assets/images/right.png';
-import UserCard from '../../../cards/UserCard';
+import UserCard from '../../../../components/cards/UserCard';
 
 export default function StepOne({
   onComplete = () => {},

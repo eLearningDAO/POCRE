@@ -7,8 +7,8 @@ import {
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import MaterialCard from '../../cards/MaterialCard';
-import Loader from '../../uicore/Loader';
+import MaterialCard from '../../../components/cards/MaterialCard';
+import Loader from '../../../components/uicore/Loader';
 import './index.css';
 import useDetails from './useDetails';
 import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';

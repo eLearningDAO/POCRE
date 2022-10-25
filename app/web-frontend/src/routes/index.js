@@ -1,17 +1,17 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import CreationsHome from '../components/Creations/Home';
-import CreateCreation from '../components/Creations/Create';
-import UpdateCreation from '../components/Creations/Update';
-import CreationDetails from '../components/Creations/Details';
-import RecognitionsHome from '../components/Recognitions/Home';
-import LitigationsHome from '../components/Litigations/Home';
-import LitigationsCreate from '../components/Litigations/Create';
-import LitigationsDetails from '../components/Litigations/Details';
-import WalletHome from '../components/Wallet/Home';
+import CreationsHome from '../pages/Creations/Home';
+import CreateCreation from '../pages/Creations/Create';
+import UpdateCreation from '../pages/Creations/Update';
+import CreationDetails from '../pages/Creations/Details';
+import RecognitionsHome from '../pages/Recognitions/Home';
+import LitigationsHome from '../pages/Litigations/Home';
+import LitigationsCreate from '../pages/Litigations/Create';
+import LitigationsDetails from '../pages/Litigations/Details';
+import WalletHome from '../pages/Wallet/Home';
 import Layout from '../components/Layout';
-import CreditsHome from '../components/Credits/Home';
+import CreditsHome from '../pages/Credits/Home';
 import Protected from './Protected';
-import Home from '../components/Home';
+import Home from '../pages/Home';
 
 function AppRoutes() {
   return (

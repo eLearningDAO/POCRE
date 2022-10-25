@@ -1,12 +1,11 @@
-import React from 'react';
 import {
-  Grid,
+  Button, Grid,
   Typography,
-  Button,
 } from '@mui/material';
-import Input from '../../../uicore/Input';
-import Form from '../../../uicore/Form';
-import TagInput from '../../../uicore/TagInput';
+import React from 'react';
+import Form from '../../../../components/uicore/Form';
+import Input from '../../../../components/uicore/Input';
+import TagInput from '../../../../components/uicore/TagInput';
 import { stepOneValidation } from './validation';
 
 export default function StepOne({

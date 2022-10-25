@@ -6,7 +6,7 @@ import StepTwo from './Steps/Two';
 import StepThree from './Steps/Three';
 import './index.css';
 import useUpdate from './useUpdate';
-import Loader from '../../uicore/Loader';
+import Loader from '../../../components/uicore/Loader';
 
 const stepInfo = [
   'What, when and where it is',

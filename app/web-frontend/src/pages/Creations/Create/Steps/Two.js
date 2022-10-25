@@ -3,10 +3,10 @@ import {
 } from '@mui/material';
 import React, { useState } from 'react';
 import InviteIcon from '../../../../assets/images/invite-icon.png';
-import MaterialCard from '../../../cards/MaterialCard';
-import Input from '../../../uicore/Input';
-import Select from '../../../uicore/Select';
-import Form from '../../../uicore/Form';
+import MaterialCard from '../../../../components/cards/MaterialCard';
+import Input from '../../../../components/uicore/Input';
+import Select from '../../../../components/uicore/Select';
+import Form from '../../../../components/uicore/Form';
 import { stepTwoValidation } from './validation';
 
 function NewMaterial({ material, onRemoveMaterial, onUpdate = () => {} }) {

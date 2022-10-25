@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import ApproveIcon from '../../../assets/images/approve-icon.png';
 import WithdrawIcon from '../../../assets/images/withdraw-icon.png';
 import './index.css';
-import Loader from '../../uicore/Loader';
+import Loader from '../../../components/uicore/Loader';
 import useHome from './useHome';
 
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
