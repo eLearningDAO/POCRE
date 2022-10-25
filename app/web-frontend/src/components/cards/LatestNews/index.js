@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { getUrlFileType } from '../../../../utils/helpers/getUrlFileType';
-import { MediaPreview } from '../../../cards/CreationCard';
-import { accessibleOnClick } from '../../util';
-import './latestnewscard.css';
+import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
+import { MediaPreview } from '../CreationCard';
+import { accessibleOnClick } from '../../../utils/helpers/accessibleOnClick';
+import './index.css';
 
 function LatestNewsCard({
   material,

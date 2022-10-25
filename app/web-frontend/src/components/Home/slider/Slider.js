@@ -11,7 +11,7 @@ import SliderImage3 from '../../../assets/images/slider-03.jpg';
 import SliderImage4 from '../../../assets/images/slider-04.jpg';
 import SliderImage5 from '../../../assets/images/slider-05.jpg';
 import './materialize.css';
-import { accessibleOnClick } from '../util';
+import { accessibleOnClick } from '../../../utils/helpers/accessibleOnClick';
 
 const slides = [
   <img src={SliderImage1} alt="1" />,

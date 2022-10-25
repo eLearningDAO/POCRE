@@ -1,8 +1,8 @@
 import { Grid } from '@mui/material';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import LatestNewsCard from './cards/latestnews/LatestNewsCard';
-import TopAuthorCard from './cards/author/TopAuthorCard';
+import LatestNewsCard from '../cards/LatestNews';
+import TopAuthorCard from '../cards/TopAuthorCard';
 import './home.css';
 import Slider from './slider/Slider';
 import useStore from './homeStore';

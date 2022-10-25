@@ -1,5 +1,5 @@
-import './authorcard.css';
-import { accessibleOnClick } from '../../util';
+import './index.css';
+import { accessibleOnClick } from '../../../utils/helpers/accessibleOnClick';
 
 function TopAuthorCard({ author, handleAuthorCardClick }) {
   return (
