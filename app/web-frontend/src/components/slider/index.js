@@ -3,15 +3,15 @@
 import React from 'react';
 import { Button } from 'react-materialize';
 import M from 'materialize-css';
-import RightIcon from '../../../assets/images/right.png';
-import LeftIcon from '../../../assets/images/left.png';
-import SliderImage1 from '../../../assets/images/slider-01.jpg';
-import SliderImage2 from '../../../assets/images/slider-02.jpg';
-import SliderImage3 from '../../../assets/images/slider-03.jpg';
-import SliderImage4 from '../../../assets/images/slider-04.jpg';
-import SliderImage5 from '../../../assets/images/slider-05.jpg';
-import './materialize.css';
-import { accessibleOnClick } from '../../../utils/helpers/accessibleOnClick';
+import RightIcon from '../../assets/images/right.png';
+import LeftIcon from '../../assets/images/left.png';
+import SliderImage1 from '../../assets/images/slider-01.jpg';
+import SliderImage2 from '../../assets/images/slider-02.jpg';
+import SliderImage3 from '../../assets/images/slider-03.jpg';
+import SliderImage4 from '../../assets/images/slider-04.jpg';
+import SliderImage5 from '../../assets/images/slider-05.jpg';
+import './index.css';
+import { accessibleOnClick } from '../../utils/helpers/accessibleOnClick';
 
 const slides = [
   <img src={SliderImage1} alt="1" />,

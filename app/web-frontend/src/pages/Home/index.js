@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import LatestNewsCard from '../../components/cards/LatestNews';
 import TopAuthorCard from '../../components/cards/TopAuthorCard';
 import './index.css';
-import Slider from './slider/Slider';
+import Slider from '../../components/slider';
 import useStore from './store';
 import TrendingCard from '../../components/cards/TrendingCard';
 import useUserInfo from '../../hooks/user/userInfo';
