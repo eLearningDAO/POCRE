@@ -8,7 +8,7 @@ function TopAuthorCard({ author, handleAuthorCardClick }) {
       {...accessibleOnClick(handleAuthorCardClick, author.user_id)}
     >
       <div className="topauthor-image">
-        <img alt="author" src={author.avatar} />
+        <img alt="author" src={author.userDetail.avatar} />
       </div>
       <div className="topauthor-body">
         <h6>

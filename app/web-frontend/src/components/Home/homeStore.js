@@ -12,13 +12,25 @@ const useStore = create((set) => ({
   topAuthorList: [],
   materialList: [],
   fetchAuthor: async () => {
-    const response = await fetch(topAuthorUrl);
-    const author = await response.json();
-    const usersWithAvatar = author.results.map((x) => ({
-      ...x,
-      avatar: `https://i.pravatar.cc/50?img=${Math.random()}`,
-    }));
-    set({ topAuthorList: usersWithAvatar });
+    let authorResponse = await fetch(topAuthorUrl).then((response) => response.json());
+    if (authorResponse.code >= 400) throw new Error('Failed to fetch material');
+
+    authorResponse = {
+      ...authorResponse,
+      results: await Promise.all(authorResponse?.results?.map(async (response) => {
+        const creation = { ...response };
+        const source = await fetch(
+          `${API_BASE_URL}/user/${response.user_id}`,
+        ).then((y) => y.json()).catch(() => null);
+        delete creation.source_id;
+        const userDetail = { ...source, avatar: `https://i.pravatar.cc/50?img=${Math.random()}` };
+        return {
+          ...creation,
+          userDetail,
+        };
+      })),
+    };
+    set({ topAuthorList: authorResponse.results });
   },
   fetchMaterial: async () => {
     let materialResponse = await fetch(materialsUrl).then((response) => response.json());

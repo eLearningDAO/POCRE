@@ -28,7 +28,10 @@ function Home() {
   const handleAuthorCardClick = (userId) => {
     const authors = topAuthorList.filter((author) => author.user_id === userId);
     if (authors.length > 0) {
-      setUser((previousS) => ({ user: authors[0] ? { ...previousS } : null, login: authors[0] }));
+      setUser((previousS) => ({
+        user: authors[0].userDetail ? { ...previousS } : null,
+        login: authors[0].userDetail,
+      }));
       navigate('/wallet');
     }
   };
