@@ -11,7 +11,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Wallet.css';
 // eslint-disable-next-line import/no-unresolved, no-unused-vars
-import useUserInfo from '../../hooks/user/userInfo';
+import useUserInfo from '../../../hooks/user/userInfo';
 
 // eslint-disable-next-line import/no-unresolved, unicorn/prefer-module
 const { Buffer } = require('buffer/');

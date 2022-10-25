@@ -7,7 +7,7 @@ import InvitationHome from '../components/Invitation/Home';
 import LitigationHome from '../components/Litigation/Home';
 import LitigationCreate from '../components/Litigation/Create';
 import LitigationDetails from '../components/Litigation/Details';
-import Wallet from '../components/Wallet';
+import WalletHome from '../components/Wallet/Home';
 import Layout from '../components/Layout';
 import CreditHome from '../components/Credit/Home';
 import Protected from './Protected';
@@ -107,7 +107,7 @@ function AppRoutes() {
           path="/wallet"
           element={(
             <Layout displaySidebar>
-              <Wallet />
+              <WalletHome />
             </Layout>
           )}
         />
