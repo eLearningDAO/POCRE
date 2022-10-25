@@ -5,8 +5,8 @@ import {
 import React, { useState } from 'react';
 // import FormControlLabel from '@mui/material/FormControlLabel';
 // import Checkbox from '@mui/material/Checkbox';
-import LeftIcon from '../../../../assets/left.png';
-import RightIcon from '../../../../assets/right.png';
+import LeftIcon from '../../../../assets/images/left.png';
+import RightIcon from '../../../../assets/images/right.png';
 import UserCard from '../../../cards/UserCard';
 
 export default function StepOne({

@@ -1,8 +1,8 @@
 import { Grid, Typography } from '@mui/material';
-import TrandingNewsImage from '../../assets/TrandingNewsImage.png';
-import PencilIcon from '../../assets/pencil.png';
-import DownloadIcon from '../../assets/download.png';
-import ShareIcon from '../../assets/share.png';
+import TrandingNewsImage from '../../assets/images/TrandingNewsImage.png';
+import PencilIcon from '../../assets/images/pencil.png';
+import DownloadIcon from '../../assets/images/download.png';
+import ShareIcon from '../../assets/images/share.png';
 
 function TrandingNews() {
   return (

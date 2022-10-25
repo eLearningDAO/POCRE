@@ -2,7 +2,7 @@ import {
   Button, Grid, Typography,
 } from '@mui/material';
 import React, { useState } from 'react';
-import InviteIcon from '../../../../assets/invite-icon.png';
+import InviteIcon from '../../../../assets/images/invite-icon.png';
 import MaterialCard from '../../../cards/MaterialCard';
 import Input from '../../../uicore/Input';
 import Select from '../../../uicore/Select';

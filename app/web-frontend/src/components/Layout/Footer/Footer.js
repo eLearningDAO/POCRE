@@ -1,7 +1,7 @@
 import { Grid, Typography } from '@mui/material';
-import TwitterIcon from '../../../assets/twitter2.png';
-import GithubIcon from '../../../assets/github.svg';
-import GlobeIcon from '../../../assets/globe.png';
+import TwitterIcon from '../../../assets/images/twitter2.png';
+import GithubIcon from '../../../assets/svgs/github.svg';
+import GlobeIcon from '../../../assets/images/globe.png';
 import './Footer.css';
 
 function Footer() {

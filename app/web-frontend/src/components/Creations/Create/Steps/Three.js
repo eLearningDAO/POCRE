@@ -9,7 +9,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import QrCode from '../../../../assets/qr.png';
+import QrCode from '../../../../assets/images/qr.png';
 import SaveIcon from '../../../../assets/svgs/save.svg';
 import PreviewIcon from '../../../../assets/svgs/preview.svg';
 import CloseIcon from '../../../../assets/svgs/close.svg';

@@ -7,8 +7,8 @@ import {
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import LeftIcon from '../../../assets/left.png';
-import RightIcon from '../../../assets/right.png';
+import LeftIcon from '../../../assets/images/left.png';
+import RightIcon from '../../../assets/images/right.png';
 import { ReactComponent as DislikeIcon } from '../../../assets/svgs/dislike.svg';
 import { ReactComponent as LikeIcon } from '../../../assets/svgs/like.svg';
 import { ReactComponent as ThumbPinIcon } from '../../../assets/svgs/thumb-pin.svg';

@@ -1,15 +1,15 @@
 import { Link, useLocation } from 'react-router-dom';
-import MenuIcon4 from '../../../assets/bank-icon.png';
-import MenuIcon2 from '../../../assets/book-icon.png';
-import MenuIcon6 from '../../../assets/credit.png';
-import MenuIcon3 from '../../../assets/envelope-icon.png';
-import MenuIcon5 from '../../../assets/wallet-icon.png';
-import MenuIcon4Active from '../../../assets/bank-icon-2.png';
-import MenuIcon2Active from '../../../assets/book-icon-2.png';
-import MenuIcon6Active from '../../../assets/credit-icon-2.png';
-import MenuIcon3Active from '../../../assets/envelope-icon-2.png';
-import MenuIcon5Active from '../../../assets/wallet-icon-2.png';
-import HomeIcon from '../../../assets/homeicon.png';
+import MenuIcon4 from '../../../assets/images/bank-icon.png';
+import MenuIcon2 from '../../../assets/images/book-icon.png';
+import MenuIcon6 from '../../../assets/images/credit.png';
+import MenuIcon3 from '../../../assets/images/envelope-icon.png';
+import MenuIcon5 from '../../../assets/images/wallet-icon.png';
+import MenuIcon4Active from '../../../assets/images/bank-icon-2.png';
+import MenuIcon2Active from '../../../assets/images/book-icon-2.png';
+import MenuIcon6Active from '../../../assets/images/credit-icon-2.png';
+import MenuIcon3Active from '../../../assets/images/envelope-icon-2.png';
+import MenuIcon5Active from '../../../assets/images/wallet-icon-2.png';
+import HomeIcon from '../../../assets/images/homeicon.png';
 
 import './Sidebar.css';
 import useUserInfo from '../../../hooks/user/userInfo';
