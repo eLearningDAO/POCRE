@@ -20,7 +20,7 @@ import '../responsive-menu-transition.css';
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import logo from '../../../assets/logo-1.png';
+import logo from '../../../assets/images/logo-1.png';
 import LoginButton from '../../styled/btns/LoginButton';
 import SideBar from '../Sidebar/Sidebar';
 import './Header.css';
@@ -82,17 +82,17 @@ function HomeHeader({ displayNav = false }) {
               <li className={location.pathname === '/creations' ? 'activeSidebarMenu' : ''}>
                 <Link to="/creations">Creations</Link>
               </li>
-              <li className={location.pathname === '/invitation' ? 'activeSidebarMenu' : ''}>
-                <Link to="/invitation">Recognitions</Link>
+              <li className={location.pathname === '/recognitions' ? 'activeSidebarMenu' : ''}>
+                <Link to="/recognitions">Recognitions</Link>
               </li>
-              <li className={location.pathname === '/litigation' ? 'activeSidebarMenu' : ''}>
-                <Link to="/litigation">Litigations</Link>
+              <li className={location.pathname === '/litigations' ? 'activeSidebarMenu' : ''}>
+                <Link to="/litigations">Litigations</Link>
               </li>
               <li className={location.pathname === '/wallet' ? 'activeSidebarMenu' : ''}>
                 <Link to="/wallet">Wallet</Link>
               </li>
-              <li className={location.pathname === '/credit' ? 'activeSidebarMenu' : ''}>
-                <Link to="/credit">Credits</Link>
+              <li className={location.pathname === '/credits' ? 'activeSidebarMenu' : ''}>
+                <Link to="/credits">Credits</Link>
               </li>
             </ul>
           </nav>
@@ -226,11 +226,11 @@ function HomeHeader({ displayNav = false }) {
                   <span>Creations</span>
                 </Link>
               </li>
-              <li className={location.pathname === '/invitation' ? 'activeSidebarMenu' : ''} >
-                <Link onClick={() => setDisplayResponsiveMenu(false)} to='/invitation'>
+              <li className={location.pathname === '/recognitions' ? 'activeSidebarMenu' : ''} >
+                <Link onClick={() => setDisplayResponsiveMenu(false)} to='/recognitions'>
                   <img
                   alt="menu-icon"
-                   src={location.pathname === '/invitation' ? MenuIcon3Active : MenuIcon3} />
+                   src={location.pathname === '/recognitions' ? MenuIcon3Active : MenuIcon3} />
                    <span>Recognition</span>
                 </Link>
               </li>

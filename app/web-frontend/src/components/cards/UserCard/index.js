@@ -1,8 +1,8 @@
 import { Chip, Typography, Button } from '@mui/material';
 import React from 'react';
-import PlaceholderImage from '../../../assets/top-learner-user.png';
-import './index.css';
+import PlaceholderImage from '../../../assets/images/top-learner-user.png';
 import FingerPrintIcon from '../../../assets/svgs/fingerprint.svg';
+import './index.css';
 
 function UserCard({
   variant = 'secondary  ',
