@@ -54,6 +54,15 @@
     color: #32363C;
 }
 
+.news-card-media {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: 100% !important;
+    object-fit: fill;
+    border-top-left-radius: 17.8743px;
+    border-bottom-left-radius: 17.8743px;
+}
+
 @media only screen and (max-width: 480px),
 only screen and (max-device-width: 600px) {
     .latest-news-card {
@@ -75,6 +84,7 @@ only screen and (max-device-width: 600px) {
     }
 
     .latest-news-image-container {
+        width: 132px;
         height: 114px;
         border-top-left-radius: 15px;
         border-bottom-left-radius: 15px;

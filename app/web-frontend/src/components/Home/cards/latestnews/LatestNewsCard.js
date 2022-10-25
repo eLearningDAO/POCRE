@@ -28,11 +28,11 @@ function LatestNewsCard({
       >
         <div className="latest-news-image-container">
           {mediaType === 'image' && (
-            <img className="treding-card-media" alt="collection-card-hero" src={mediaUrl} />
+            <img className="news-card-media" alt="collection-card-hero" src={mediaUrl} />
           )}
           {mediaType === 'video' && (
             <video
-              className="treding-card-media"
+              className="news-card-media"
               preload="metadata"
             >
               <source src={`${mediaUrl}#t=0.5`} type="video/mp4" />
@@ -40,10 +40,10 @@ function LatestNewsCard({
             </video>
           )}
           {mediaType === 'audio' && (
-            <div className="treding-card-media creation-card-media-overlay" />
+            <div className="news-card-media creation-card-media-overlay" />
           )}
           {(mediaType === 'document' || mediaType === null) && (
-            <div className="treding-card-media creation-card-media-overlay" />
+            <div className="news-card-media creation-card-media-overlay" />
           )}
         </div>
         <div className="latest-news-body">
