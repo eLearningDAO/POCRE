@@ -28,6 +28,7 @@
   font-weight: 700;
   src: local('Gliroy'), url(../../assets/fonts/Gilroy-Semibold.ttf) format('opentype');
 }
+
 /* base Image */
 .base-image {
   width: 100% !important;
@@ -276,7 +277,7 @@ a {
 .front__bkg-photo {
   position: relative;
   height: 300px;
-  background: url('../../assets/wallet-banner.png') no-repeat;
+  background: url('../../assets/images/wallet-banner.png') no-repeat;
   background-size: cover;
   backface-visibility: hidden;
   overflow: hidden;
@@ -621,7 +622,7 @@ a {
   background-color: transparent;
   border: none;
   top: 40%;
-  right: 1.5%;
+  right: -2%;
   cursor: pointer;
 }
 
@@ -630,7 +631,7 @@ a {
   background-color: transparent;
   border: none;
   top: 40%;
-  left: 2%;
+  left: -4%;
   cursor: pointer;
 }
 
@@ -1680,7 +1681,7 @@ a {
     min-width: 100%;
   }
 
-  .carousel .carousel-item > img {
+  .carousel .carousel-item>img {
     width: 63%;
     height: 83%;
   }
@@ -1697,7 +1698,7 @@ a {
 
   .rightIcon,
   .leftIcon {
-    top: 32%;
+    top: 41%;
   }
 
   .leftIcon {
@@ -2289,7 +2290,7 @@ a {
     left: -5%;
   }
 
-  .carousel .carousel-item > img {
+  .carousel .carousel-item>img {
     width: 60%;
     height: 83%;
   }

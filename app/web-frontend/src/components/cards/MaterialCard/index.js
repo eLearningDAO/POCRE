@@ -5,8 +5,8 @@ import {
   Box, Button, Chip, Grid, Typography,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
-import CreationCardImg from '../../../assets/creation-card.png';
-import PencilIcon from '../../../assets/pencil.png';
+import CreationCardImg from '../../../assets/images/creation-card.png';
+import PencilIcon from '../../../assets/images/pencil.png';
 import CheckMarkIcon from '../../../assets/svgs/checkmark.svg';
 import DownloadIconSVG from '../../../assets/svgs/download.svg';
 import DeleteIcon from '../../../assets/svgs/delete.svg';
