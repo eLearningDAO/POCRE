@@ -38,11 +38,11 @@ function SideBar() {
             <span>Creations</span>
           </Link>
         </li>
-        <li className={location.pathname.includes('/invitation') ? 'activeSidebarMenu' : ''}>
-          <Link to="/invitation">
+        <li className={location.pathname.includes('/recognitions') ? 'activeSidebarMenu' : ''}>
+          <Link to="/recognitions">
             <img
               alt="menu-icon"
-              src={location.pathname.includes('/invitation') ? MenuIcon3Active : MenuIcon3}
+              src={location.pathname.includes('/recognitions') ? MenuIcon3Active : MenuIcon3}
             />
             <span>Recognitions</span>
           </Link>

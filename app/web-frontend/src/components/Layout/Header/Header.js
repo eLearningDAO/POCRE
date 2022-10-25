@@ -82,8 +82,8 @@ function HomeHeader({ displayNav = false }) {
               <li className={location.pathname === '/creations' ? 'activeSidebarMenu' : ''}>
                 <Link to="/creations">Creations</Link>
               </li>
-              <li className={location.pathname === '/invitation' ? 'activeSidebarMenu' : ''}>
-                <Link to="/invitation">Recognitions</Link>
+              <li className={location.pathname === '/recognitions' ? 'activeSidebarMenu' : ''}>
+                <Link to="/recognitions">Recognitions</Link>
               </li>
               <li className={location.pathname === '/litigations' ? 'activeSidebarMenu' : ''}>
                 <Link to="/litigations">Litigations</Link>
@@ -226,11 +226,11 @@ function HomeHeader({ displayNav = false }) {
                   <span>Creations</span>
                 </Link>
               </li>
-              <li className={location.pathname === '/invitation' ? 'activeSidebarMenu' : ''} >
-                <Link onClick={() => setDisplayResponsiveMenu(false)} to='/invitation'>
+              <li className={location.pathname === '/recognitions' ? 'activeSidebarMenu' : ''} >
+                <Link onClick={() => setDisplayResponsiveMenu(false)} to='/recognitions'>
                   <img
                   alt="menu-icon"
-                   src={location.pathname === '/invitation' ? MenuIcon3Active : MenuIcon3} />
+                   src={location.pathname === '/recognitions' ? MenuIcon3Active : MenuIcon3} />
                    <span>Recognition</span>
                 </Link>
               </li>

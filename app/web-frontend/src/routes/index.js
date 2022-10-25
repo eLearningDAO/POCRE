@@ -3,7 +3,7 @@ import CreationsHome from '../components/Creations/Home';
 import CreateCreation from '../components/Creations/Create';
 import UpdateCreation from '../components/Creations/Update';
 import CreationDetails from '../components/Creations/Details';
-import InvitationHome from '../components/Invitation/Home';
+import RecognitionsHome from '../components/Recognitions/Home';
 import LitigationsHome from '../components/Litigations/Home';
 import LitigationsCreate from '../components/Litigations/Create';
 import LitigationsDetails from '../components/Litigations/Details';
@@ -66,10 +66,10 @@ function AppRoutes() {
           )}
         />
         <Route
-          path="/invitation"
+          path="/recognitions"
           element={(
             <Layout displaySidebar>
-              <InvitationHome />
+              <RecognitionsHome />
             </Layout>
           )}
         />

@@ -5,8 +5,8 @@ import {
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import moment from 'moment';
-import InvitationCard from '../../cards/InvitationCard';
-import useInvitation from './useInvitation';
+import RecognitionCard from '../../cards/RecognitionCard';
+import useRecognition from './useRecognition';
 import './index.css';
 import Loader from '../../uicore/Loader';
 
@@ -26,7 +26,7 @@ function Invitation() {
     declineInvitationStatus,
     setAcceptInvitationStatus,
     setDeclineInvitationStatus,
-  } = useInvitation();
+  } = useRecognition();
 
   const [activeTab, setActiveTab] = useState('co-author-recognition');
 
@@ -128,7 +128,7 @@ function Invitation() {
             >
               {invitations?.results?.map(
                 (x) => x?.material && x?.invite_to?.user_id === authUser?.user_id && (
-                  <InvitationCard
+                  <RecognitionCard
                     title={x?.material?.material_title}
                     mediaUrl={x?.material?.material_link}
                     description={x?.material?.material_description}
@@ -182,7 +182,7 @@ function Invitation() {
             >
               {invitations?.results?.map((x) => x?.material
                 && x?.invite_from?.user_id === authUser?.user_id && (
-                  <InvitationCard
+                  <RecognitionCard
                     title={x?.material?.material_title}
                     mediaUrl={x?.material?.material_link}
                     description={x?.material?.material_description}

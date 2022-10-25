@@ -129,7 +129,7 @@ function CreationPreview({
   );
 }
 
-function InvitationCard({
+function RecognitionCard({
   creation = {
     id: '',
     title: '',
@@ -375,4 +375,4 @@ function InvitationCard({
   );
 }
 
-export default InvitationCard;
+export default RecognitionCard;
