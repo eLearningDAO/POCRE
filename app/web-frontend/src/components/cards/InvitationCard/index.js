@@ -5,10 +5,12 @@ import {
   Box, Button, Grid, Typography, Chip,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DownloadIconSVG from '../../../assets/svgs/download.svg';
 import './index.css';
 import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
-import EyeImage from '../../../assets/eye.webp';
+// import EyeImage from '../../../assets/eye.webp';
+import CloseIcon from '../../../assets/svgs/close.svg';
 
 function MediaPreview({ mediaType, mediaUrl, onClose }) {
   return (
@@ -51,27 +53,120 @@ function MediaPreview({ mediaType, mediaUrl, onClose }) {
   );
 }
 
+function CreationPreview({
+  title = '',
+  description = '',
+  source = '',
+  date = '',
+  author = '',
+  materials = [{
+    title: '',
+    fileType: '',
+    link: '',
+    author: '',
+  }],
+  onClose = () => {},
+}) {
+  return (
+    <div
+      className="creation-preview-container"
+      onClick={(event) => event.target === event.currentTarget && onClose()}
+    >
+      <div className="creation-preview">
+        <div className="creation-preview-header">
+          <Typography className="heading h4">Preview</Typography>
+          <Button padding="0" minWidth="0" onClick={() => onClose(false)}>
+            <img src={CloseIcon} height="24" width="24" alt="" />
+          </Button>
+        </div>
+        <div className="creation-preview-content">
+          <div className="creation-preview-grid">
+            <span className="heading">Title</span>
+            <span>{title}</span>
+
+            <span className="heading">Description</span>
+            <span>{description}</span>
+
+            <span className="heading">Source</span>
+            <span>{source}</span>
+
+            <span className="heading">Date</span>
+            <span>{date}</span>
+
+            <span className="heading">Author</span>
+            <span>{author}</span>
+
+            {/* <span className="heading">Tags</span>
+            <span className="creation-tags">
+              {tags.map((x, index) => <Chip key={index} label={x} />)}
+            </span> */}
+          </div>
+
+          {materials && (
+          <>
+            <h4 className="heading h4">Materials Submitted</h4>
+            <table>
+              <tr>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Link</th>
+                <th>Author</th>
+              </tr>
+              {materials?.map((x) => (
+                <tr>
+                  <td>{x.title}</td>
+                  <td className="capitalize">{x.fileType}</td>
+                  <td><a href={x.link}>{x.link}</a></td>
+                  <td>{x.author}</td>
+                </tr>
+              ))}
+            </table>
+          </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function InvitationCard({
+  creation = {
+    id: '',
+    title: '',
+    description: '',
+    source: '',
+    date: '',
+    materials: [],
+  },
   creationDate = '2022-01-01 00:00:00',
   title = 'Mobile App Design',
   description = '1000+ free files you can duplicate, remix, and reuse 1000+ free files',
   mediaUrl = 'https://images.pexels.com/photos/415071/pexels-photo-415071.jpeg?cs=srgb&dl=pexels-pixabay-415071.jpg&fm=jpg',
   recognizedByUserName = 'jack 58',
-  isPending = true,
+  awaitingRecognitionByUserName = '',
+  isPending = false,
+  isAccepted = false,
+  isDeclined = false,
   acceptedOn = null,
-  canAccept = true,
+  canAccept = false,
   onAccept = () => {},
   declinedOn = null,
-  canDecline = true,
+  canDecline = false,
   onDecline = () => {},
 }) {
+  const navigate = useNavigate();
   const [mediaType, setMediaType] = useState(null);
   const [showMediaPreview, setShowMediaPreview] = useState(null);
+  const [creationPreview, showCreationPreview] = useState(false);
 
   useEffect(() => {
     const x = getUrlFileType(mediaUrl);
     setMediaType(x);
   }, []);
+
+  const redirectToCreationDetailsPage = () => {
+    navigate(`/creations/${creation.id}`);
+  };
 
   return (
     <>
@@ -80,6 +175,17 @@ function InvitationCard({
         mediaType={mediaType}
         mediaUrl={mediaUrl}
         onClose={() => setShowMediaPreview(false)}
+      />
+      )}
+      {creationPreview && (
+      <CreationPreview
+        title={creation?.title}
+        description={creation?.description}
+        source={creation?.source}
+        date={creation?.date}
+        author={creation?.author}
+        materials={creation?.materials}
+        onClose={() => showCreationPreview(false)}
       />
       )}
       <Grid
@@ -160,18 +266,26 @@ function InvitationCard({
             <Typography variant="p" component="p">
               {description}
             </Typography>
-            <Chip
+            <Button
+              style={{ fontSize: '16px' }}
+              className="bg-blue color-white"
+              onClick={() => showCreationPreview(true)}
+            >
+              Preview
+            </Button>
+            <Button
+              style={{ fontSize: '16px' }}
+              className="bg-orange-dark color-white"
+              onClick={redirectToCreationDetailsPage}
+            >
+              View Creation Details
+            </Button>
+            {/* <Chip
               label="Creation preview"
               className="bg-blue color-white"
-              onClick={() => {}}
+              onClick={() => showCreationPreview(true)}
               avatar={<img alt="eye" src={EyeImage} />}
-            />
-            {isPending && (
-            <Chip
-              label="Creation authorship pending"
-              className="bg-orange-dark color-white"
-            />
-            )}
+            /> */}
           </Box>
         </Grid>
 
@@ -186,23 +300,31 @@ function InvitationCard({
           borderLeft={{ md: '1px solid #EEF0F3' }}
           paddingLeft={{ md: '12px' }}
         >
-          {recognizedByUserName && (
+          {(isPending || isAccepted || isDeclined) && (
+            <Chip
+              style={{ fontSize: '16px' }}
+              label={`Creation authorship 
+              ${(isPending && 'pending') || (isAccepted && 'accepted') || (isDeclined && 'declined')}`}
+              className={`color-white ${isPending && 'bg-black'} ${isAccepted && 'bg-green'} ${isDeclined && 'bg-red'}`}
+            />
+          )}
+          {(recognizedByUserName || awaitingRecognitionByUserName) && (
             <div className="collection-member-images">
               <img src={`https://i.pravatar.cc/50?img=${Math.random()}`} alt="" />
               <p>
-                Recognized by
+                {recognizedByUserName ? 'Recognized by' : ((isPending && 'Awaiting recognition by') || (isAccepted && 'Recognized by') || (isDeclined && 'Rejected by'))}
                 {' '}
                 <span className="heading">
-                  {recognizedByUserName}
+                  {recognizedByUserName || awaitingRecognitionByUserName}
                 </span>
               </p>
             </div>
           )}
-          <Box alignItems={!recognizedByUserName ? 'center' : 'flex-start'} display="flex" flexDirection="column" justifyContent="center" gap="12px">
-            <Typography variant="h6" fontSize={{ xs: '16px', lg: '18px' }} {...(!recognizedByUserName && { margin: 'auto' })}>
+          <Box alignItems={!(recognizedByUserName || awaitingRecognitionByUserName) ? 'center' : 'flex-start'} display="flex" flexDirection="column" justifyContent="center" gap="12px">
+            <Typography variant="h6" fontSize={{ xs: '16px', lg: '18px' }} {...(!(recognizedByUserName || awaitingRecognitionByUserName) && { margin: 'auto' })}>
               Date Created
             </Typography>
-            <Typography variant="p" fontSize={{ xs: '14px', lg: '16px' }} {...(!recognizedByUserName && { margin: 'auto' })}>
+            <Typography variant="p" fontSize={{ xs: '14px', lg: '16px' }} {...(!(recognizedByUserName || awaitingRecognitionByUserName) && { margin: 'auto' })}>
               {creationDate}
             </Typography>
             {acceptedOn && (

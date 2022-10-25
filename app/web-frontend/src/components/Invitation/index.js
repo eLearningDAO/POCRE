@@ -95,7 +95,7 @@ function Invitation() {
         </Grid>
 
         {invitations?.results?.filter(
-          (x) => x.material && x.invite_to.user_id === authUser.user_id,
+          (x) => x?.material && x?.invite_to.user_id === authUser?.user_id,
         ).length > 0
         && (
         <Grid item xs={12} style={{ marginTop: '10px' }}>
@@ -104,7 +104,7 @@ function Invitation() {
         )}
 
         {invitations?.results?.filter(
-          (x) => x.material && x.invite_to.user_id === authUser.user_id,
+          (x) => x?.material && x?.invite_to?.user_id === authUser?.user_id,
         ).length > 0 && (
           <Grid
             xs={12}
@@ -118,21 +118,35 @@ function Invitation() {
             padding={{ xs: '12px', md: '0' }}
           >
             {invitations?.results?.map(
-              (x) => x.material && x.invite_to.user_id === authUser.user_id && (
+              (x) => x?.material && x?.invite_to?.user_id === authUser?.user_id && (
               <Grid item xs={12} style={{ marginTop: '10px' }}>
                 <InvitationCard
-                  title={x.material?.material_title}
-                  mediaUrl={x.material?.material_link}
-                  description={x.material?.material_description}
-                  recognizedByUserName={x.invite_from?.user_name}
+                  title={x?.material?.material_title}
+                  mediaUrl={x?.material?.material_link}
+                  description={x?.material?.material_description}
+                  recognizedByUserName={x?.invite_from?.user_name}
+                  creation={{
+                    id: x?.creation?.creation_id,
+                    title: x?.creation?.creation_title,
+                    description: x?.creation?.creation_description,
+                    source: x?.creation?.source?.site_url,
+                    author: x?.creation?.author?.user_name,
+                    date: moment(x?.creation?.creation_date).format('Do MMMM YYYY'),
+                    materials: x?.creation?.materials?.map((y) => ({
+                      title: y?.material_title,
+                      fileType: y?.type?.type_name,
+                      link: y?.material_link,
+                      author: y?.author?.user_name,
+                    })),
+                  }}
                   creationDate={moment(x?.invite_issued).format('Do MMMM YYYY')}
-                  acceptedOn={x.status.status_name !== 'accepted' ? null : moment(x.status?.action_made).format('Do MMMM YYYY')}
-                  declinedOn={x.status.status_name !== 'declined' ? null : moment(x.status?.action_made).format('Do MMMM YYYY')}
-                  isPending={x.status.status_name === 'pending'}
-                  canAccept={x.status.status_name === 'pending'}
-                  canDecline={x.status.status_name === 'pending'}
-                  onAccept={async () => await acceptInvitation(x.invite_id)}
-                  onDecline={async () => await declineInvitation(x.invite_id)}
+                  acceptedOn={x?.status?.status_name !== 'accepted' ? null : moment(x?.status?.action_made).format('Do MMMM YYYY')}
+                  declinedOn={x?.status?.status_name !== 'declined' ? null : moment(x?.status?.action_made).format('Do MMMM YYYY')}
+                  isPending={x?.status?.status_name === 'pending'}
+                  canAccept={x?.status?.status_name === 'pending'}
+                  canDecline={x?.status?.status_name === 'pending'}
+                  onAccept={async () => await acceptInvitation(x?.invite_id)}
+                  onDecline={async () => await declineInvitation(x?.invite_id)}
                 />
               </Grid>
               ),
@@ -141,7 +155,7 @@ function Invitation() {
         )}
 
         {invitations?.results?.filter(
-          (x) => x.material && x.invite_from.user_id === authUser.user_id,
+          (x) => x?.material && x?.invite_from.user_id === authUser?.user_id,
         ).length > 0
         && (
         <Grid item xs={12} className="invitationSentSection">
@@ -160,18 +174,21 @@ function Invitation() {
           className="hidden-scrollbar"
           padding={{ xs: '12px', md: '0' }}
         >
-          {invitations?.results?.map((x) => x.material
-          && x.invite_from.user_id === authUser.user_id && (
+          {invitations?.results?.map((x) => x?.material
+          && x?.invite_from.user_id === authUser?.user_id && (
           <Grid item xs={12} style={{ marginTop: '10px' }}>
             <InvitationCard
-              title={x.material?.material_title}
-              mediaUrl={x.material?.material_link}
-              description={x.material?.material_description}
+              title={x?.material?.material_title}
+              mediaUrl={x?.material?.material_link}
+              description={x?.material?.material_description}
+              recognizedByUserName={null}
+              awaitingRecognitionByUserName={x?.invite_to?.user_name}
               creationDate={moment(x?.invite_issued).format('Do MMMM YYYY')}
-              isPending={x.status.status_name === 'pending'}
+              isPending={x?.status?.status_name === 'pending'}
+              isAccepted={x?.status?.status_name === 'accepted'}
+              isDeclined={x?.status?.status_name === 'declined'}
               canAccept={false}
               canDecline={false}
-              recognizedByUserName={null}
             />
           </Grid>
           ))}
