@@ -412,7 +412,8 @@
 
 .wallet-detail-container {
     height: 425px;
-    border-radius: 25px;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
     background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
     display: flex;
     flex-direction: row;
@@ -431,7 +432,7 @@
     height: 238px;
     border-radius: 56px;
     background-color: white;
-    margin-top: 10%;
+    margin-top: 16%;
 }
 
 .wallete-detail-right-container {
@@ -611,6 +612,70 @@
 
 }
 
+.css-ryrseu-MuiRating-root {
+    color: #FFFF00 !important;
+}
+
 .css-1c99szj-MuiRating-icon {
     color: #FFFF00 !important
+}
+
+.wallet-collection-container {
+    position: relative;
+    text-align: center;
+    display: flex;
+    background: #fff;
+    gap: 50px;
+    padding: 50px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.wallet-collection-button {
+    width: 328px;
+    height: 195px;
+    background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%);
+    box-shadow: 0px 13px 39px rgb(247 143 138 / 47%);
+    border-radius: 24px !important;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 16px;
+
+    font-family: 'Gilroy-SemiBold';
+    font-size: 22px !important;
+    line-height: 30px !important;
+    text-align: center !important;
+    color: #FFFFFF !important;
+}
+
+.wallet-collection-button-unselected {
+    width: 328px;
+    height: 195px;
+    background: rgba(247, 143, 138, 0.08);
+    border: 2px dashed #f78f8a !important;
+    color: #f78f8a !important;
+    margin-left: 40px !important;
+    border-radius: 24px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 16px;
+
+    font-family: 'Gilroy-SemiBold';
+    font-size: 22px !important;
+    line-height: 30px !important;
+    text-align: center !important;
+
+}
+
+.wallet-collection-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 16px;
 }

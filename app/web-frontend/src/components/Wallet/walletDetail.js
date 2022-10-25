@@ -10,7 +10,7 @@ import phoneIcon from '../../assets/svgs/phoneIcon.svg';
 import emailicon from '../../assets/svgs/emailIcon.svg';
 
 function WalletDetail() {
-    const [ratingValue, setRatingValue] = React.useState(2);
+    const [ratingValue, setRatingValue] = React.useState(3);
 
     return (
         <div className="wallet-detail-container">
@@ -27,6 +27,7 @@ function WalletDetail() {
                         <Rating
                             name="simple-controlled"
                             color="red"
+                            readOnly
                             value={ratingValue}
                             onChange={(newValue) => {
                                 setRatingValue(newValue);
