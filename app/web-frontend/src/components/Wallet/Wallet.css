@@ -398,3 +398,14 @@
     top: -1px;
     left: -2px;
 }
+
+
+/* new design  */
+
+.wallet-container {
+    width: 1451px;
+    height: 682px;
+    background: #FFFFFF;
+    border: 2px solid #EBEFF0;
+    border-radius: 25px;
+}

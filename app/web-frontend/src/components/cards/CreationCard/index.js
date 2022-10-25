@@ -58,7 +58,7 @@ function CreationDetailsPreviewDialog(
         },
       ],
     },
-    onClose = () => {},
+    onClose = () => { },
   },
 ) {
   return (
@@ -118,7 +118,7 @@ function CreationDetailsPreviewDialog(
   );
 }
 
-function MediaPreview({ mediaType, mediaUrl, onClose }) {
+export function MediaPreview({ mediaType, mediaUrl, onClose }) {
   return (
     <div
       className="media-preview-container"
@@ -126,10 +126,10 @@ function MediaPreview({ mediaType, mediaUrl, onClose }) {
     >
       <div
         className={`media-preview-content ${mediaType === 'audio' && 'media-preview-content-audio'
-        } ${mediaType === 'document'
+          } ${mediaType === 'document'
           && !mediaUrl.includes('.pdf')
           && 'media-preview-content-unsupported'
-        }`}
+          }`}
       >
         {mediaType === 'image' && <img src={mediaUrl} alt="" />}
         {mediaType === 'video' && <video src={mediaUrl} controls />}
@@ -174,8 +174,8 @@ function CollectionCard({
   mediaUrl = 'https://images.pexels.com/photos/415071/pexels-photo-415071.jpeg?cs=srgb&dl=pexels-pixabay-415071.jpg&fm=jpg',
   canEdit = true,
   canDelete = true,
-  onEditClick = () => {},
-  onDeleteClick = () => {},
+  onEditClick = () => { },
+  onDeleteClick = () => { },
 }) {
   const [mediaType, setMediaType] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(null);
@@ -193,7 +193,7 @@ function CollectionCard({
       parameters.set('preview', creationId);
       const sanitizedNewParameters = parameters.toString().length > 0 ? `?${parameters.toString()}` : '';
       const newRelativePathQuery = window.location.origin
-      + window.location.pathname + sanitizedNewParameters;
+        + window.location.pathname + sanitizedNewParameters;
       window.history.replaceState(null, '', newRelativePathQuery);
     } else {
       window.history.replaceState(null, '', window.location.origin + window.location.pathname);
