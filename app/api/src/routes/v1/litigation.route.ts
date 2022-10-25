@@ -210,6 +210,31 @@ export default router;
  *           minimum: 1
  *           default: 1
  *         description: Page number
+ *       - in: query
+ *         name: query
+ *         schema:
+ *           type: string
+ *         description: String to search
+ *       - in: query
+ *         name: search_fields
+ *         schema:
+ *           type: string[]
+ *         description: list of fields to query search
+ *       - in: query
+ *         name: ascend_fields
+ *         schema:
+ *           type: string[]
+ *         description: list of fields to order by ascending
+ *       - in: query
+ *         name: descend_fields
+ *         schema:
+ *           type: string[]
+ *         description: list of fields to order by descending
+ *       - in: query
+ *         name: judged_by
+ *         schema:
+ *           type: bool
+ *         description: when present, returns litigations that are to be judged by the specified user
  *     responses:
  *       "200":
  *         description: OK

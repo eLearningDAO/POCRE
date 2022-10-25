@@ -26,6 +26,7 @@ interface ILitigationQuery {
   search_fields: string[];
   ascend_fields: string[];
   descend_fields: string[];
+  judged_by: string;
 }
 interface ILitigationQueryResult {
   results: Array<ILitigationDoc>;
@@ -215,13 +216,62 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
           } ${descendOrder}`
         : '';
 
-    const result = await db.query(`SELECT * FROM litigation ${search} ${order} OFFSET $1 LIMIT $2;`, [
+    // list of queries
+    const queryModes = {
+      default: {
+        query: `SELECT * FROM litigation ${search} ${order} OFFSET $1 LIMIT $2;`,
+        count: `SELECT COUNT(*) as total_results FROM litigation ${search};`,
+      },
+      judged: {
+        query: `SELECT 
+                * 
+                FROM 
+                litigation l 
+                ${search} 
+                ${search ? ' AND ' : ' WHERE '} 
+                EXISTS 
+                (
+                  SELECT 
+                  invite_id,
+                  invite_to 
+                  FROM 
+                  invitation 
+                  WHERE 
+                  invite_to = '${options.judged_by}' 
+                  AND 
+                  invite_id = ANY(l.invitations)
+                ) 
+                ${order} 
+                OFFSET $1 
+                LIMIT $2;`,
+        count: `SELECT 
+                COUNT(*) as total_results 
+                FROM 
+                litigation l 
+                ${search} 
+                ${search ? ' AND ' : ' WHERE '} 
+                EXISTS 
+                (
+                  SELECT 
+                  invite_id,
+                  invite_to 
+                  FROM 
+                  invitation 
+                  WHERE 
+                  invite_to = '${options.judged_by}' 
+                  AND 
+                  invite_id = ANY(l.invitations)
+                )`,
+      },
+    };
+
+    const result = await db.query(options.judged_by ? queryModes.judged.query : queryModes.default.query, [
       options.page === 1 ? '0' : (options.page - 1) * options.limit,
       options.limit,
     ]);
     const litigations = result.rows;
 
-    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM litigation ${search};`, [])).rows[0];
+    const count = await (await db.query(options.judged_by ? queryModes.judged.count : queryModes.default.count, [])).rows[0];
 
     return {
       results: litigations,
