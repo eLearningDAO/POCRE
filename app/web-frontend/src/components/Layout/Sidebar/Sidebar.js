@@ -48,13 +48,13 @@ function SideBar() {
           </Link>
         </li>
         {login && (
-          <li className={location.pathname.includes('/litigation') ? 'activeSidebarMenu' : ''}>
+          <li className={location.pathname.includes('/litigations') ? 'activeSidebarMenu' : ''}>
             {/* {login ? (
-            <Link to="/litigation">
+            <Link to="/litigations">
               <img
                 alt="menu-icon"
                 src={
-                  location.pathname.includes("/litigation")
+                  location.pathname.includes("/litigations")
                     ? MenuIcon4Active
                     : MenuIcon4
                 }
@@ -66,7 +66,7 @@ function SideBar() {
               <img
                 alt="menu-icon"
                 src={
-                  location.pathname.includes("/litigation")
+                  location.pathname.includes("/litigations")
                     ? MenuIcon4Active
                     : MenuIcon4
                 }
@@ -75,10 +75,10 @@ function SideBar() {
             </a>
           )} */}
 
-            <Link to="/litigation">
+            <Link to="/litigations">
               <img
                 alt="menu-icon"
-                src={location.pathname.includes('/litigation') ? MenuIcon4Active : MenuIcon4}
+                src={location.pathname.includes('/litigations') ? MenuIcon4Active : MenuIcon4}
               />
               <span>Litigations</span>
             </Link>

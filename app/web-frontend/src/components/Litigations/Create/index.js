@@ -34,7 +34,7 @@ function CreateLitigation() {
     }
 
     if (step === 2) {
-      navigate('/litigation');
+      navigate('/litigations');
     }
   };
 

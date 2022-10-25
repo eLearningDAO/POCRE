@@ -165,7 +165,7 @@ function LitigationCard({
             jury members
           </h3>
         )}
-        <a className="litigation-details-link" href={`/litigation/${id}`}>
+        <a className="litigation-details-link" href={`/litigations/${id}`}>
           <h4>
             View Details
             {' '}
@@ -217,7 +217,7 @@ function Litigation() {
   };
 
   const redirectToCreateLitigation = () => {
-    navigate('/litigation/create');
+    navigate('/litigations/create');
   };
 
   if (isFetchingLitigations) return <Loader />;

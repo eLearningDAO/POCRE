@@ -4,9 +4,9 @@ import CreateCreation from '../components/Creations/Create';
 import UpdateCreation from '../components/Creations/Update';
 import CreationDetails from '../components/Creations/Details';
 import InvitationHome from '../components/Invitation/Home';
-import LitigationHome from '../components/Litigation/Home';
-import LitigationCreate from '../components/Litigation/Create';
-import LitigationDetails from '../components/Litigation/Details';
+import LitigationsHome from '../components/Litigations/Home';
+import LitigationsCreate from '../components/Litigations/Create';
+import LitigationsDetails from '../components/Litigations/Details';
 import WalletHome from '../components/Wallet/Home';
 import Layout from '../components/Layout';
 import CreditsHome from '../components/Credits/Home';
@@ -74,31 +74,31 @@ function AppRoutes() {
           )}
         />
         <Route
-          path="/litigation"
+          path="/litigations"
           element={(
             <Protected>
               <Layout displaySidebar>
-                <LitigationHome />
+                <LitigationsHome />
               </Layout>
             </Protected>
           )}
         />
         <Route
-          path="/litigation/create"
+          path="/litigations/create"
           element={(
             <Protected>
               <Layout displaySidebar>
-                <LitigationCreate />
+                <LitigationsCreate />
               </Layout>
             </Protected>
           )}
         />
         <Route
-          path="/litigation/:id"
+          path="/litigations/:id"
           element={(
             <Protected>
               <Layout displaySidebar>
-                <LitigationDetails />
+                <LitigationsDetails />
               </Layout>
             </Protected>
           )}
