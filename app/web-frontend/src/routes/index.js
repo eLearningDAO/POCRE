@@ -9,7 +9,7 @@ import LitigationCreate from '../components/Litigation/Create';
 import LitigationDetails from '../components/Litigation/Details';
 import Wallet from '../components/Wallet';
 import Layout from '../components/Layout';
-import Credit from '../components/Credit';
+import Credit from '../components/Credit/Home';
 import Protected from './Protected';
 import Home from '../components/Home';
 
