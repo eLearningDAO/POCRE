@@ -58,7 +58,7 @@ function CreationDetailsPreviewDialog(
         },
       ],
     },
-    onClose = () => { },
+    onClose = () => {},
   },
 ) {
   return (
@@ -118,7 +118,7 @@ function CreationDetailsPreviewDialog(
   );
 }
 
-export function MediaPreview({ mediaType, mediaUrl, onClose }) {
+function MediaPreview({ mediaType, mediaUrl, onClose }) {
   return (
     <div
       className="media-preview-container"
