@@ -3,10 +3,10 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LatestNewsCard from '../cards/LatestNews';
 import TopAuthorCard from '../cards/TopAuthorCard';
-import './home.css';
+import './index.css';
 import Slider from './slider/Slider';
-import useStore from './homeStore';
-import TrendingCard from './cards/trending/TrendingCard';
+import useStore from './store';
+import TrendingCard from '../cards/TrendingCard';
 import useUserInfo from '../../hooks/user/userInfo';
 
 function Home() {
