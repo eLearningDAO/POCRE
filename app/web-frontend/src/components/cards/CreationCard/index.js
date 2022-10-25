@@ -118,7 +118,7 @@ function CreationDetailsPreviewDialog(
   );
 }
 
-function MediaPreview({ mediaType, mediaUrl, onClose }) {
+export function MediaPreview({ mediaType, mediaUrl, onClose }) {
   return (
     <div
       className="media-preview-container"
