@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Creations from '../components/Creations';
+import CreationsHome from '../components/Creations/Home';
 import CreateCreation from '../components/Creations/Create';
 import UpdateCreation from '../components/Creations/Update';
 import CreationDetails from '../components/Creations/Details';
@@ -37,7 +37,7 @@ function AppRoutes() {
           path="/creations"
           element={(
             <Layout displaySidebar>
-              <Creations />
+              <CreationsHome />
             </Layout>
           )}
         />

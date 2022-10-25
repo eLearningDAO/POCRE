@@ -4,11 +4,11 @@ import {
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CreationCard from '../cards/CreationCard';
+import CreationCard from '../../cards/CreationCard';
 import './index.css';
 import useCreations from './useCreations';
-import Loader from '../uicore/Loader';
-import useUserInfo from '../../hooks/user/userInfo';
+import Loader from '../../uicore/Loader';
+import useUserInfo from '../../../hooks/user/userInfo';
 
 function Creations() {
   const navigate = useNavigate();
