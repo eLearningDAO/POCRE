@@ -9,7 +9,6 @@ import LitigationCreate from './components/Litigation/Create';
 import LitigationDetails from './components/Litigation/Details';
 import Wallet from './components/Wallet';
 import Layout from './components/Layout';
-import CreateCollection2 from './components/Creations/Scenario2/CreateCollection';
 import Credit from './components/Credit';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Home from './components/Home';
@@ -118,16 +117,6 @@ function App() {
             <Layout displaySidebar>
               <Credit />
             </Layout>
-          )}
-        />
-        <Route
-          path="/scenario-2/create-collection"
-          element={(
-            <ProtectedRoute>
-              <Layout displaySidebar>
-                <CreateCollection2 />
-              </Layout>
-            </ProtectedRoute>
           )}
         />
       </Routes>
