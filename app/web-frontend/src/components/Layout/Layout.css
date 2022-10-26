@@ -277,7 +277,7 @@ a {
 .front__bkg-photo {
   position: relative;
   height: 300px;
-  background: url('../../assets/wallet-banner.png') no-repeat;
+  background: url('../../assets/images/wallet-banner.png') no-repeat;
   background-size: cover;
   backface-visibility: hidden;
   overflow: hidden;
