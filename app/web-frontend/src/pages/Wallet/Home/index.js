@@ -1,10 +1,9 @@
 import React from 'react';
 import './Wallet.css';
-import WalletCollections from './walletCollections';
-import WalletDetail from './detail/walletDetail';
+import WalletCollections from '../walletCollections';
+import WalletDetail from '../detail/walletDetail';
 
 function Wallet() {
-
   return (
     <div className="wallet-container">
       <WalletDetail />

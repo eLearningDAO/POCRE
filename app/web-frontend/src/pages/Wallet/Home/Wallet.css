@@ -424,6 +424,7 @@
 .wallete-detail-left-container {
     width: 49%;
     text-align: -webkit-center;
+    position: relative;
 
 }
 
@@ -433,6 +434,8 @@
     border-radius: 56px;
     background-color: white;
     margin-top: 16%;
+
+    position: relative;
 }
 
 .wallete-detail-right-container {
@@ -441,16 +444,18 @@
 
 .author-collection {
     width: 245px;
-    height: 50px;
     font-family: 'Gilroy-SemiBold';
     font-size: 18px;
     line-height: 150%;
     color: #FFFFFF;
-    padding: 7px;
+    padding: 12px;
     background: rgba(255, 255, 255, 0.2);
     box-shadow: 0px 5px 25px rgba(247, 143, 138, 0.47);
-    position: relative;
-    top: 21.2%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
 }
@@ -469,7 +474,31 @@
     flex-direction: row;
 }
 
+.wallet-detail-right-container-edit {
+    width: 49%;
+    box-sizing: border-box;
+    width: 663px;
+    height: 391px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px dashed #FFFFFF;
+    border-radius: 20px;
+    margin-top: 2%;
+    margin-right: 1%;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}
+
+
 .wallet-detail-right-container-left {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+}
+
+.wallet-detail-right-container-left-edit {
+    width: 52%;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -494,6 +523,14 @@
 
 .wallet-detail-status {
     height: 60.3%;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 18px;
+}
+
+.wallet-detail-status-edit {
+    height: 20.3%;
     display: flex;
     flex-direction: column;
     gap: 18px;
@@ -548,6 +585,16 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
+
+}
+
+.wallet-detail-right-container-right-edit {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+    align-items: center;
 }
 
 .detail-info-container {
@@ -678,4 +725,132 @@
     align-items: center;
     flex-direction: row;
     gap: 16px;
+}
+
+.edit-camera {
+    background-color: white;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 206px;
+    margin: 0 auto;
+    margin-top: 8px;
+    cursor: pointer;
+}
+
+.edit-camera:hover {
+    background-image: linear-gradient(to top, #adf, #8bf);
+}
+
+.edit-camera>img {
+    width: 40px;
+    height: 40px;
+    margin-top: 5px;
+}
+
+.edit-identy .css-1692xeg-MuiTypography-root {
+    width: 167px;
+    height: 30px;
+    font-family: 'Gilroy';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 25px;
+    line-height: 30px;
+    color: #FFFFFF;
+}
+
+.edit-identy .css-1f2kvjf-MuiFormControlLabel-root {
+    margin-left: 0px !important
+}
+
+.edit-available-wallet {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.edit-available-wallet>input {
+    height: 50px;
+    background: #FFFFFF;
+    border-radius: 15px;
+}
+
+select.wallet-select {
+    height: 50px;
+    background: #FFFFFF;
+    border-radius: 15px;
+    padding-right: 4px;
+
+}
+
+select.wallet-select option {
+    padding: 20px;
+    max-height: 150px;
+}
+
+.edit-available-wallet>span {
+    height: 30px;
+    font-family: 'Gilroy';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 30px;
+    color: #FFFFFF;
+}
+
+.wallet-edit-input {
+    height: 50px;
+    background: #FFFFFF;
+    border-radius: 15px;
+    font-family: 'Gilroy';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 150%;
+    color: #606060;
+}
+
+.wallet-edit-input .css-i4bv87-MuiSvgIcon-root {
+    width: 2em !important;
+}
+
+.wallet-edit-input .css-1x51dt5-MuiInputBase-input-MuiInput-input {
+    width: 177px;
+    height: 21px;
+    font-family: 'Gilroy';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 150%;
+    color: #606060;
+}
+
+.wallet-edit-input-area {
+    height: 95px;
+    background: #FFFFFF;
+    border-radius: 15px;
+}
+
+.wallet-edit-input-area .css-ittuaa-MuiInputAdornment-root {
+    width: 2em !important;
+}
+
+.edit-submit {
+    box-sizing: border-box;
+    width: 240px;
+    height: 50px;
+    background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%);
+    border: 1px solid #FFFFFF !important;
+    box-shadow: 0px 13px 39px rgba(247, 143, 138, 0.47);
+    border-radius: 15px !important;
+    font-family: 'Gilroy';
+    font-style: normal;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    line-height: 150% !important;
+    color: #FFFFFF !important;
 }
