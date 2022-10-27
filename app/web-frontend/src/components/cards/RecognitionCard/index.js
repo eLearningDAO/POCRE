@@ -1,14 +1,14 @@
+/* eslint-disable max-len */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/media-has-caption */
 import {
-  Box, Button, Grid, Typography, Chip,
+  Box, Button, Chip, Grid, Typography,
 } from '@mui/material';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import DownloadIconSVG from '../../../assets/svgs/download.svg';
-import './index.css';
 import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
+import './index.css';
 // import EyeImage from '../../../assets/eye.webp';
 import CloseIcon from '../../../assets/svgs/close.svg';
 
@@ -130,6 +130,7 @@ function CreationPreview({
 }
 
 function RecognitionCard({
+  id = '',
   creation = {
     id: '',
     title: '',
@@ -149,12 +150,9 @@ function RecognitionCard({
   isDeclined = false,
   acceptedOn = null,
   canAccept = false,
-  onAccept = () => {},
   declinedOn = null,
   canDecline = false,
-  onDecline = () => {},
 }) {
-  const navigate = useNavigate();
   const [mediaType, setMediaType] = useState(null);
   const [showMediaPreview, setShowMediaPreview] = useState(null);
   const [creationPreview, showCreationPreview] = useState(false);
@@ -163,10 +161,6 @@ function RecognitionCard({
     const x = getUrlFileType(mediaUrl);
     setMediaType(x);
   }, []);
-
-  const redirectToCreationDetailsPage = () => {
-    navigate(`/creations/${creation.id}`);
-  };
 
   return (
     <>
@@ -266,26 +260,14 @@ function RecognitionCard({
             <Typography variant="p" component="p">
               {description}
             </Typography>
-            <Button
-              style={{ fontSize: '16px' }}
-              className="bg-blue color-white"
-              onClick={() => showCreationPreview(true)}
-            >
-              Preview
-            </Button>
-            <Button
-              style={{ fontSize: '16px' }}
-              className="bg-orange-dark color-white"
-              onClick={redirectToCreationDetailsPage}
-            >
-              View Creation Details
-            </Button>
-            {/* <Chip
-              label="Creation preview"
-              className="bg-blue color-white"
-              onClick={() => showCreationPreview(true)}
-              avatar={<img alt="eye" src={EyeImage} />}
-            /> */}
+            <a className="recognition-card-link" href={`/recognitions/${id}`}>
+              <h4>
+                View Details
+                {canAccept || canDecline ? ' to respond' : ''}
+              </h4>
+              {' '}
+              <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M869 487.8L491.2 159.9c-2.9-2.5-6.6-3.9-10.5-3.9h-88.5c-7.4 0-10.8 9.2-5.2 14l350.2 304H152c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h585.1L386.9 854c-5.6 4.9-2.2 14 5.2 14h91.5c1.9 0 3.8-.7 5.2-2L869 536.2a32.07 32.07 0 0 0 0-48.4z" /></svg>
+            </a>
           </Box>
         </Grid>
 
@@ -341,7 +323,7 @@ function RecognitionCard({
               <span className="heading color-red">{declinedOn}</span>
             </p>
             )}
-            {(canAccept || canDecline) && (
+            {/* {(canAccept || canDecline) && (
             <Box
               display="flex"
               gap="12px"
@@ -367,7 +349,7 @@ function RecognitionCard({
               </Button>
               )}
             </Box>
-            )}
+            )} */}
           </Box>
         </Grid>
       </Grid>

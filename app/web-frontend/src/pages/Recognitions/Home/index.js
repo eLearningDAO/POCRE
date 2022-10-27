@@ -129,24 +129,11 @@ function Invitation() {
               {invitations?.results?.map(
                 (x) => x?.material && x?.invite_to?.user_id === authUser?.user_id && (
                   <RecognitionCard
+                    id={x.invite_id}
                     title={x?.material?.material_title}
                     mediaUrl={x?.material?.material_link}
                     description={x?.material?.material_description}
                     recognizedByUserName={x?.invite_from?.user_name}
-                    creation={{
-                      id: x?.creation?.creation_id,
-                      title: x?.creation?.creation_title,
-                      description: x?.creation?.creation_description,
-                      source: x?.creation?.source?.site_url,
-                      author: x?.creation?.author?.user_name,
-                      date: moment(x?.creation?.creation_date).format('Do MMMM YYYY'),
-                      materials: x?.creation?.materials?.map((y) => ({
-                        title: y?.material_title,
-                        fileType: y?.type?.type_name,
-                        link: y?.material_link,
-                        author: y?.author?.user_name,
-                      })),
-                    }}
                     creationDate={moment(x?.invite_issued).format('Do MMMM YYYY')}
                     acceptedOn={x?.status?.status_name !== 'accepted' ? null : moment(x?.status?.action_made).format('Do MMMM YYYY')}
                     declinedOn={x?.status?.status_name !== 'declined' ? null : moment(x?.status?.action_made).format('Do MMMM YYYY')}
@@ -183,6 +170,7 @@ function Invitation() {
               {invitations?.results?.map((x) => x?.material
                 && x?.invite_from?.user_id === authUser?.user_id && (
                   <RecognitionCard
+                    id={x.invite_id}
                     title={x?.material?.material_title}
                     mediaUrl={x?.material?.material_link}
                     description={x?.material?.material_description}

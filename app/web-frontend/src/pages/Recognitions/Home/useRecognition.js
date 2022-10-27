@@ -29,7 +29,7 @@ const useInvitation = () => {
       setIsLoadingInvitations(true);
 
       // get invitations (throw error if not found)
-      const response = await fetch(`${API_BASE_URL}/invitations?query=${user.user_id}&search_fields[]=invite_from&search_fields[]=invite_to`).then((x) => x.json());
+      const response = await fetch(`${API_BASE_URL}/invitations?limit=1000&query=${user.user_id}&search_fields[]=invite_from&search_fields[]=invite_to`).then((x) => x.json());
       if (response.code >= 400) throw new Error('Failed to get invitations');
 
       // transform results
@@ -77,77 +77,12 @@ const useInvitation = () => {
             return temporaryMaterial;
           })();
 
-          // get details of creation of material
-          const creation = await (async () => {
-            if (!material) return null;
-
-            const creationResponse = await fetch(`${API_BASE_URL}/creations?query=${material?.material_id}&search_fields[]=material_id`).then((x) => x.json());
-            if (creationResponse?.code >= 400) throw new Error('Failed to get invitations');
-            const temporaryCreation = creationResponse?.results?.[0] || null;
-            if (!temporaryCreation) return null;
-
-            // get details of creation author
-            const creationAuthor = await fetch(`${API_BASE_URL}/users/${temporaryCreation.author_id}`).then((x) => x.json());
-            if (creationAuthor?.code >= 400) throw new Error('Failed to get invitations');
-
-            // get details of creation source
-            const creationSource = await fetch(`${API_BASE_URL}/source/${temporaryCreation.source_id}`).then((x) => x.json());
-            if (creationSource?.code >= 400) throw new Error('Failed to get invitations');
-
-            // get details of creation materials
-            const materials = await Promise.all(
-              temporaryCreation.materials.map(async (materialId) => {
-                const materialsResponse = await fetch(`${API_BASE_URL}/materials/${materialId}`).then((x) => x.json());
-                if (materialsResponse?.code >= 400) throw new Error('Failed to get invitations');
-                const temporaryMaterial = materialsResponse || null;
-                if (!temporaryMaterial) return null;
-
-                // get details of material author
-                const materialAuthor = await fetch(`${API_BASE_URL}/users/${temporaryMaterial.author_id}`).then((x) => x.json());
-                if (materialAuthor?.code >= 400) throw new Error('Failed to get invitations');
-
-                // get details of material source
-                const materialSource = await fetch(`${API_BASE_URL}/source/${temporaryMaterial.source_id}`).then((x) => x.json());
-                if (materialSource?.code >= 400) throw new Error('Failed to get invitations');
-
-                // get details of material type
-                const materialType = await fetch(`${API_BASE_URL}/material-type/${temporaryMaterial.type_id}`).then((x) => x.json());
-                if (materialType?.code >= 400) throw new Error('Failed to get invitations');
-
-                // update temporary material
-                delete temporaryMaterial.author_id;
-                delete temporaryMaterial.source_id;
-                delete temporaryMaterial.type_id;
-                temporaryMaterial.author = materialAuthor;
-                temporaryMaterial.source = materialSource;
-                temporaryMaterial.type = materialType;
-
-                return temporaryMaterial;
-              }),
-            );
-
-            // get details of creation tags
-            // eslint-disable-next-line no-return-await
-            const tags = await Promise.all(temporaryCreation.tags.map(async (tagId) => await fetch(`${API_BASE_URL}/tags/${tagId}`).then((x) => x.json())));
-
-            // update temporary creation
-            delete temporaryCreation.author_id;
-            delete temporaryCreation.source_id;
-            temporaryCreation.author = creationAuthor;
-            temporaryCreation.source = creationSource;
-            temporaryCreation.materials = materials;
-            temporaryCreation.tags = tags;
-
-            return temporaryCreation;
-          })();
-
           const transformedInvitation = {
             ...invitation,
             invite_from: inviteFromUser,
             invite_to: inviteToUser,
             status,
             material,
-            creation,
           };
 
           delete transformedInvitation.status_id;
