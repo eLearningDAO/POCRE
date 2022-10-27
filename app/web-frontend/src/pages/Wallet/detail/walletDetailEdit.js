@@ -4,8 +4,11 @@ import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import { Button } from '@mui/material';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
+import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 
 function WalletDetailEdit() {
   const [ratingValue, setRatingValue] = useState(3);
@@ -51,7 +54,7 @@ function WalletDetailEdit() {
           placeholder="Name"
           startAdornment={(
             <InputAdornment position="start">
-              <AccountCircle />
+              <PersonOutlineIcon />
             </InputAdornment>
           )}
         />
@@ -60,7 +63,7 @@ function WalletDetailEdit() {
           placeholder="Email Address"
           startAdornment={(
             <InputAdornment position="start">
-              <AccountCircle />
+              <MailOutlineIcon />
             </InputAdornment>
           )}
         />
@@ -69,7 +72,7 @@ function WalletDetailEdit() {
           placeholder="Phone"
           startAdornment={(
             <InputAdornment position="start">
-              <AccountCircle />
+              <LocalPhoneOutlinedIcon />
             </InputAdornment>
           )}
         />
@@ -80,7 +83,7 @@ function WalletDetailEdit() {
           maxRows={4}
           startAdornment={(
             <InputAdornment position="start">
-              <AccountCircle />
+              <BorderColorOutlinedIcon />
             </InputAdornment>
           )}
         />

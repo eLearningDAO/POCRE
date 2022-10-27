@@ -14,6 +14,16 @@ function WalletDisplay({ setDetailEdit }) {
       <div className="wallet-detail-right-container-left">
         <div className="wallet-detail-status">
           <span className="wallet-rating-title">Wallet Rating</span>
+          <div className="wallet-mobile-screen-only">
+            <span className="wallet-rating-title-mobile-screen-title">Wallet Rating</span>
+            <Button
+              className="wallet-edit-btn-mobile-screen"
+              startIcon={<EditIcon />}
+              onClick={() => setDetailEdit(true)}
+            >
+              Edit
+            </Button>
+          </div>
           <Rating
             name="simple-controlled"
             color="red"
