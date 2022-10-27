@@ -474,9 +474,7 @@
 }
 
 .wallet-detail-right-container-edit {
-    width: 49%;
     box-sizing: border-box;
-    width: 663px;
     height: 391px;
     background: rgba(255, 255, 255, 0.2);
     border: 1px dashed #FFFFFF;
@@ -488,6 +486,10 @@
     gap: 16px;
 }
 
+.wallet-detail-right-container-edit>* {
+    flex: 1;
+    padding-right: 16px;
+}
 
 .wallet-detail-right-container-left {
     display: flex;
@@ -497,7 +499,6 @@
 }
 
 .wallet-detail-right-container-left-edit {
-    width: 52%;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -588,7 +589,6 @@
 }
 
 .wallet-detail-right-container-right-edit {
-    width: 40%;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -988,4 +988,33 @@ select.wallet-select option {
     .detail-info-container>div {
         margin-left: -78px;
     }
+
+    /* collection */
+    .wallet-collection-right {
+        flex-wrap: wrap;
+    }
+
+    .wallet-collection-button-unselected {
+
+        margin-left: 0px !important;
+    }
+
+    /* Edit mode mobile screen */
+    .wallet-detail-right-container-edit {
+        flex-wrap: wrap;
+        height: 70%;
+        gap: 1px;
+        margin-top: 0px;
+    }
+
+    .wallet-detail-right-container-right-edit {
+        margin-top: 0px !important;
+        align-items: inherit;
+        padding-left: 8px;
+    }
+
+    .edit-submit {
+        width: 286px;
+    }
+
 }
