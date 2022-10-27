@@ -1,0 +1,108 @@
+.litigation-vote-container {
+    background-color: white;
+    padding: 24px 48px;
+    border-radius: 24px;
+    width: fit-content;
+    margin-left: auto;
+}
+
+.carousel-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 24px;
+    position: relative;
+}
+
+.carousel-slide-btns-container {
+    position: absolute;
+    width: calc(100% + 54px);
+    margin-left: -27px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.carousel-slide-btns-container>button {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-width: initial !important;
+}
+
+.creation-media {
+    width: 100%;
+}
+
+.creation-media>img,
+.creation-media>video {
+    aspect-ratio: 16/ 9;
+}
+
+.creation-media>img,
+.creation-media>video,
+.creation-media>audio,
+.creation-media>embed {
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 12px;
+}
+
+.creation-media>embed {
+    min-height: 800px;
+}
+
+.creation-author img {
+    border-radius: 12px;
+}
+
+.creation-author p {
+    height: fit-content;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.creation-author-wallet {
+    background-color: lightgray;
+    width: fit-content;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.header-lines {
+    overflow: hidden;
+    text-align: center;
+}
+
+.header-lines>span {
+    position: relative;
+    display: inline-block;
+}
+
+.header-lines>span:before,
+.header-lines>span:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    border-bottom: 2px solid;
+    width: 100vw;
+    margin: 0 20px;
+}
+
+.header-lines>span:before {
+    right: 100%;
+}
+
+.header-lines>span:after {
+    left: 100%;
+}
+
+.unsupported-file-type {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 16px;
+    width: 100%;
+    padding: 24px;
+  }

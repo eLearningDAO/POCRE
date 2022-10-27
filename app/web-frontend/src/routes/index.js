@@ -4,6 +4,7 @@ import CreateCreation from '../pages/Creations/Create';
 import UpdateCreation from '../pages/Creations/Update';
 import CreationDetails from '../pages/Creations/Details';
 import RecognitionsHome from '../pages/Recognitions/Home';
+import RecognitionsDetails from '../pages/Recognitions/Details';
 import LitigationsHome from '../pages/Litigations/Home';
 import LitigationsCreate from '../pages/Litigations/Create';
 import LitigationsDetails from '../pages/Litigations/Details';
@@ -70,6 +71,14 @@ function AppRoutes() {
           element={(
             <Layout displaySidebar>
               <RecognitionsHome />
+            </Layout>
+          )}
+        />
+        <Route
+          path="/recognitions/:id"
+          element={(
+            <Layout displaySidebar>
+              <RecognitionsDetails />
             </Layout>
           )}
         />
