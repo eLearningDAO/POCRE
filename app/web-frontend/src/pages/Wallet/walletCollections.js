@@ -6,7 +6,7 @@ import {
 function WalletCollections() {
     return (
         <Grid container className="wallet-collection-container">
-            <Grid item md={12} spacing={5} className="wallet-collection-right">
+            <Grid item md={12} sm={12} xs={12} spacing={2} className="wallet-collection-right">
                 <Button className="wallet-collection-button">
                     <svg
                         width="62"
