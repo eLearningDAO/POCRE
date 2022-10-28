@@ -37,6 +37,15 @@
                     "linkedinUrl": "https://www.linkedin.com/in/mithunray/",
                     "twitterUrl": "https://twitter.com/mithunrayy",
                     "githubUrl": ""
+                },
+                {
+                    "name": "Shujaat Ali",
+                    "job": "Software Engineer",
+                    "bio": "Java and React at Lamstan Technologies",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/26273225?v=4",
+                    "linkedinUrl": "http://www.lamstan.org/",
+                    "twitterUrl": "https://twitter.com/shujaatCraft",
+                    "githubUrl": "https://github.com/SHUJAAT-DEV"
                 }
             ]
         },
@@ -53,13 +62,13 @@
                     "job": "Full Stack Developer",
                     "avatarUrl": "https://avatars.githubusercontent.com/u/106480299?v=4",
                     "profileUrl": "https://github.com/kostic0510"
-                },                
+                },
                 {
-                    "name": "Shujaat Ali",
-                    "job": "Software Engineer",
-                    "avatarUrl": "https://avatars.githubusercontent.com/u/26273225?v=4",
-                    "profileUrl": "https://github.com/mrron313"
-                },                
+                    "name": "Nemo Breukhoven",
+                    "job": "Indie Dev",
+                    "avatarUrl": "https://i.postimg.cc/Pr2L07Ww/Screenshot-2022-07-22-212720.png",
+                    "profileUrl": "https://twitter.com/nota_codeur"
+                },
                 {
                     "name": "Arif Ul Islam",
                     "job": "Web developer",
