@@ -139,7 +139,7 @@ export default function CreationDetails() {
           >
             <img
               className="creation-user-image"
-              src={`https://i.pravatar.cc/100?img=${Math.random()}`}
+              src={`https://i.pravatar.cc/150?img=${Math.random()}`}
               alt=""
             />
             <Box
@@ -151,10 +151,11 @@ export default function CreationDetails() {
               marginLeft="0"
               marginRight="auto"
             >
-              <Typography className="inviationSectionTitle" variant="h6">
+              <h4 className="h4">
                 {creation?.author?.user_name}
-              </Typography>
-              <Chip className="mr-auto bg-orange color-white" label={`Created on ${moment(creation?.creation_date).format('DD/MM/YYYY')}`} />
+              </h4>
+              <Chip className="mr-auto bg-orange-dark color-white" label={`Created on ${moment(creation?.creation_date).format('DD/MM/YYYY')}`} />
+              <Chip className="mr-auto bg-black color-white" label={`Unique ID: ${creation?.creation_id}`} />
             </Box>
           </Box>
           {creation?.creation_description && (
@@ -208,7 +209,7 @@ export default function CreationDetails() {
         width="100%"
       >
         {creation?.tags?.map((x, index) => (
-          <Chip className="bg-orange color-white w-fit" style={{ paddingLeft: '8px', paddingRight: '8px' }} key={index} label={x?.tag_name} />
+          <Chip className="bg-orange-dark color-white w-fit" style={{ paddingLeft: '8px', paddingRight: '8px' }} key={index} label={x?.tag_name} />
         ))}
       </Grid>
     </Grid>

@@ -114,10 +114,11 @@
 }
 
 .creation-user-image {
-    width: 100px !important;
-    min-width: 100px !important;
-    max-width: 100px !important;
-    height: 100px !important;
-    min-height: 100px !important;
-    max-height: 100px !important;
+    width: 150px !important;
+    min-width: 150px !important;
+    max-width: 150px !important;
+    height: 150px !important;
+    min-height: 150px !important;
+    max-height: 150px !important;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
 }
