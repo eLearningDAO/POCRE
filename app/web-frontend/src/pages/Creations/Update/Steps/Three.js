@@ -6,9 +6,9 @@ import {
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Cookies from 'js-cookie';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import QrCode from '../../../../assets/images/qr.png';
+import QRCode from 'qrcode';
 import PreviewIcon from '../../../../assets/svgs/preview.svg';
 import SaveIcon from '../../../../assets/svgs/save.svg';
 import CreationPreview from '../../../../components/previews/CreationPreview';
@@ -27,7 +27,12 @@ function generateId(length_) {
 }
 
 export default function StepThree({
-  onBack = () => {}, onComplete = () => {}, status = {}, loading = false, creationDraft = {},
+  creationId = '',
+  onBack = () => {},
+  onComplete = () => {},
+  status = {},
+  loading = false,
+  creationDraft = {},
 }) {
   const navigate = useNavigate();
 
@@ -35,8 +40,25 @@ export default function StepThree({
   const [showPreview, setShowPreview] = useState(false);
 
   const generateDummyURL = () => {
-    setDummyURL(`https://example.com/${generateId()}`);
+    setDummyURL(`https://ipfs.url.example.com/${generateId()}`);
   };
+
+  const [qrcodeBase64, setQrcodeBase64] = useState(null);
+
+  const generateQRCodeBase64 = async (text) => {
+    const code = await QRCode.toDataURL(`${window.location.origin}/creations/${text}`, {
+      width: 250,
+      height: 250,
+      margin: 2,
+      scale: 8,
+    });
+
+    setQrcodeBase64(code);
+  };
+
+  useEffect(() => {
+    if (creationId) generateQRCodeBase64(creationId);
+  }, [creationId]);
 
   return (
     <>
@@ -65,30 +87,7 @@ export default function StepThree({
             </Grid>
             <Grid md={8} xs={12} height="fit-content">
               <span>{new Date().toLocaleDateString()}</span>
-              {/* <Button className="transparentGreenButton">
-              <img src={GreenRightIcon} alt="green-right" />
-              {' '}
-              Filled
-            </Button> */}
             </Grid>
-
-            {/* <Grid md={3} xs={12}
-          marginTop={{ xs: '12px', md: '18px' }} display="flex"
-          flexDirection="row" alignItems="center">
-            <Typography className="heading">Self Sign</Typography>
-          </Grid>
-          <Grid md={9} xs={12}
-          marginTop={{ xs: '12px', md: '18px' }} display="flex"
-          flexDirection="row" alignItems="center">
-            <Button className="nextCollectionButton signInCollectionButton">
-              Signin
-            </Button>
-            <Button className="transparentGreenButton transparentGreenVerificationButton">
-              <img src={GreenRightIcon} alt="green-right" />
-              {' '}
-              <span> Verification </span>
-            </Button>
-          </Grid> */}
 
             <Grid md={4} xs={12} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="flex-start">
               <Typography className="heading">Store optionally on IPFS</Typography>
@@ -108,18 +107,6 @@ export default function StepThree({
                   fullWidth
                   placeholder="IPFS"
                 />
-
-                {/* <TextField
-              style={{ marginTop: '18px' }}
-              variant="standard"
-              InputProps={{
-                disableUnderline: true,
-              }}
-              className="input input-dark"
-              fullWidth
-              placeholder="Youtube"
-            /> */}
-
               </Grid>
               <div className="create-collection-verify-box" style={{ marginTop: '18px' }}>
                 <FormControlLabel control={<Checkbox defaultChecked />} label="I’m human" />
@@ -137,18 +124,13 @@ export default function StepThree({
               >
                 <img src={PreviewIcon} height="36" width="36" alt="" />
               </Button>
-              {/* <Button className="transparentGreenButton">
-              <img src={GreenRightIcon} alt="green-right" />
-              {' '}
-              Filled
-            </Button> */}
             </Grid>
           </Grid>
 
           <Grid item md={5} xs={12} padding={4} display="flex" flexDirection="column" gap="8px" alignItems="center">
             <Typography variant="h4" className="heading h4">Current QR Code</Typography>
             <div className="create-collection-qrcode">
-              <img alt="qr" src={QrCode} />
+              <img alt="qr" src={qrcodeBase64} />
             </div>
           </Grid>
 
