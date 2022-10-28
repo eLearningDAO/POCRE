@@ -1,8 +1,8 @@
 import { Typography } from '@mui/material';
 import React, { useState, useEffect } from 'react';
-import LinkedinIcon from '../../../assets/images/linkedin.png';
-import TwitterIcon from '../../../assets/images/twitter.png';
-import GithubIcon from '../../../assets/svgs/github.svg';
+import LinkedinIcon from 'assets/images/linkedin.png';
+import TwitterIcon from 'assets/images/twitter.png';
+import GithubIcon from 'assets/svgs/github.svg';
 import './index.css';
 
 export default function CreditCard(

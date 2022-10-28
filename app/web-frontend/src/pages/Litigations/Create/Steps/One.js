@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import {
   Grid, Typography, Button, Box,
 } from '@mui/material';
-import Form from '../../../../components/uicore/Form';
-import Input from '../../../../components/uicore/Input';
-import Loader from '../../../../components/uicore/Loader';
-import Select from '../../../../components/uicore/Select';
+import Form from 'components/uicore/Form';
+import Input from 'components/uicore/Input';
+import Loader from 'components/uicore/Loader';
+import Select from 'components/uicore/Select';
+import { API_BASE_URL } from 'config';
 import { stepOneValidation } from './validation';
-import { API_BASE_URL } from '../../../../config';
 
 export default function StepOne({
   onComplete = () => {},

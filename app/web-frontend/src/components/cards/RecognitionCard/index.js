@@ -2,15 +2,12 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/media-has-caption */
 import {
-  Box, Button, Grid, Typography, Chip,
+  Box, Button, Chip, Grid, Typography,
 } from '@mui/material';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import DownloadIconSVG from '../../../assets/svgs/download.svg';
+import { useEffect, useState } from 'react';
+import DownloadIconSVG from 'assets/svgs/download.svg';
+import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import './index.css';
-import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
-// import EyeImage from '../../../assets/eye.webp';
-import CloseIcon from '../../../assets/svgs/close.svg';
 
 function MediaPreview({ mediaType, mediaUrl, onClose }) {
   return (
@@ -53,91 +50,8 @@ function MediaPreview({ mediaType, mediaUrl, onClose }) {
   );
 }
 
-function CreationPreview({
-  title = '',
-  description = '',
-  source = '',
-  date = '',
-  author = '',
-  materials = [{
-    title: '',
-    fileType: '',
-    link: '',
-    author: '',
-  }],
-  onClose = () => {},
-}) {
-  return (
-    <div
-      className="creation-preview-container"
-      onClick={(event) => event.target === event.currentTarget && onClose()}
-    >
-      <div className="creation-preview">
-        <div className="creation-preview-header">
-          <Typography className="heading h4">Preview</Typography>
-          <Button padding="0" minWidth="0" onClick={() => onClose(false)}>
-            <img src={CloseIcon} height="24" width="24" alt="" />
-          </Button>
-        </div>
-        <div className="creation-preview-content">
-          <div className="creation-preview-grid">
-            <span className="heading">Title</span>
-            <span>{title}</span>
-
-            <span className="heading">Description</span>
-            <span>{description}</span>
-
-            <span className="heading">Source</span>
-            <span>{source}</span>
-
-            <span className="heading">Date</span>
-            <span>{date}</span>
-
-            <span className="heading">Author</span>
-            <span>{author}</span>
-
-            {/* <span className="heading">Tags</span>
-            <span className="creation-tags">
-              {tags.map((x, index) => <Chip key={index} label={x} />)}
-            </span> */}
-          </div>
-
-          {materials && (
-          <>
-            <h4 className="heading h4">Materials Submitted</h4>
-            <table>
-              <tr>
-                <th>Title</th>
-                <th>Type</th>
-                <th>Link</th>
-                <th>Author</th>
-              </tr>
-              {materials?.map((x) => (
-                <tr>
-                  <td>{x.title}</td>
-                  <td className="capitalize">{x.fileType}</td>
-                  <td><a href={x.link}>{x.link}</a></td>
-                  <td>{x.author}</td>
-                </tr>
-              ))}
-            </table>
-          </>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function RecognitionCard({
-  creation = {
-    id: '',
-    title: '',
-    description: '',
-    source: '',
-    date: '',
-    materials: [],
-  },
+  id = '',
   creationDate = '2022-01-01 00:00:00',
   title = 'Mobile App Design',
   description = '1000+ free files you can duplicate, remix, and reuse 1000+ free files',
@@ -149,24 +63,16 @@ function RecognitionCard({
   isDeclined = false,
   acceptedOn = null,
   canAccept = false,
-  onAccept = () => {},
   declinedOn = null,
   canDecline = false,
-  onDecline = () => {},
 }) {
-  const navigate = useNavigate();
   const [mediaType, setMediaType] = useState(null);
   const [showMediaPreview, setShowMediaPreview] = useState(null);
-  const [creationPreview, showCreationPreview] = useState(false);
 
   useEffect(() => {
     const x = getUrlFileType(mediaUrl);
     setMediaType(x);
   }, []);
-
-  const redirectToCreationDetailsPage = () => {
-    navigate(`/creations/${creation.id}`);
-  };
 
   return (
     <>
@@ -175,17 +81,6 @@ function RecognitionCard({
         mediaType={mediaType}
         mediaUrl={mediaUrl}
         onClose={() => setShowMediaPreview(false)}
-      />
-      )}
-      {creationPreview && (
-      <CreationPreview
-        title={creation?.title}
-        description={creation?.description}
-        source={creation?.source}
-        date={creation?.date}
-        author={creation?.author}
-        materials={creation?.materials}
-        onClose={() => showCreationPreview(false)}
       />
       )}
       <Grid
@@ -266,26 +161,14 @@ function RecognitionCard({
             <Typography variant="p" component="p">
               {description}
             </Typography>
-            <Button
-              style={{ fontSize: '16px' }}
-              className="bg-blue color-white"
-              onClick={() => showCreationPreview(true)}
-            >
-              Preview
-            </Button>
-            <Button
-              style={{ fontSize: '16px' }}
-              className="bg-orange-dark color-white"
-              onClick={redirectToCreationDetailsPage}
-            >
-              View Creation Details
-            </Button>
-            {/* <Chip
-              label="Creation preview"
-              className="bg-blue color-white"
-              onClick={() => showCreationPreview(true)}
-              avatar={<img alt="eye" src={EyeImage} />}
-            /> */}
+            <a className="recognition-card-link" href={`/recognitions/${id}`}>
+              <h4>
+                View Details
+                {canAccept || canDecline ? ' to respond' : ''}
+              </h4>
+              {' '}
+              <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M869 487.8L491.2 159.9c-2.9-2.5-6.6-3.9-10.5-3.9h-88.5c-7.4 0-10.8 9.2-5.2 14l350.2 304H152c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h585.1L386.9 854c-5.6 4.9-2.2 14 5.2 14h91.5c1.9 0 3.8-.7 5.2-2L869 536.2a32.07 32.07 0 0 0 0-48.4z" /></svg>
+            </a>
           </Box>
         </Grid>
 
@@ -341,7 +224,7 @@ function RecognitionCard({
               <span className="heading color-red">{declinedOn}</span>
             </p>
             )}
-            {(canAccept || canDecline) && (
+            {/* {(canAccept || canDecline) && (
             <Box
               display="flex"
               gap="12px"
@@ -367,7 +250,7 @@ function RecognitionCard({
               </Button>
               )}
             </Box>
-            )}
+            )} */}
           </Box>
         </Grid>
       </Grid>

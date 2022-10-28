@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import Cookies from 'js-cookie';
-import { API_BASE_URL } from '../../../config';
+import { API_BASE_URL } from 'config';
 
 // get auth user
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');

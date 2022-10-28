@@ -4,11 +4,11 @@ import {
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CreationCard from '../../../components/cards/CreationCard';
+import CreationCard from 'components/cards/CreationCard';
 import './index.css';
+import Loader from 'components/uicore/Loader';
+import useUserInfo from 'hooks/user/userInfo';
 import useCreations from './useCreations';
-import Loader from '../../../components/uicore/Loader';
-import useUserInfo from '../../../hooks/user/userInfo';
 
 function Creations() {
   const navigate = useNavigate();
@@ -116,6 +116,7 @@ function Creations() {
                   creationDate={moment(x?.creation_date).format('Do MMMM YYYY')}
                   interactionBtns
                   mediaUrl={x?.source?.site_url}
+                  author={x?.author?.user_name}
                   materials={x.materials?.map((m) => ({
                     title: m?.material_title,
                     link: m?.material_link,

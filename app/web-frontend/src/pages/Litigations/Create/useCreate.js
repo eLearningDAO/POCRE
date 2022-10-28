@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import { useCallback, useState } from 'react';
-import { API_BASE_URL } from '../../../config';
+import { API_BASE_URL } from 'config';
 
 let debounceTagInterval = null;
 let debounceAuthorInterval = null;

@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import { useCallback, useState } from 'react';
 import moment from 'moment';
-import { API_BASE_URL } from '../../../config';
+import { API_BASE_URL } from 'config';
 
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 

@@ -1,19 +1,16 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useState } from 'react';
 import {
-  Button, Grid, TextField, Typography, Box,
-  // Chip,
+  Box, Button, Grid, TextField, Typography,
 } from '@mui/material';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import { useNavigate } from 'react-router-dom';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Cookies from 'js-cookie';
-import QrCode from '../../../../assets/images/qr.png';
-import SaveIcon from '../../../../assets/svgs/save.svg';
-import PreviewIcon from '../../../../assets/svgs/preview.svg';
-import CloseIcon from '../../../../assets/svgs/close.svg';
-// import GreenRightIcon from '../../../../assets/green-right.png';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import PreviewIcon from 'assets/svgs/preview.svg';
+import SaveIcon from 'assets/svgs/save.svg';
+import CreationPreview from 'components/previews/CreationPreview';
 
 // get auth user
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
@@ -37,113 +34,44 @@ export default function StepThree({
   const [showPreview, setShowPreview] = useState(false);
 
   const generateDummyURL = () => {
-    setDummyURL(`https://example.com/${generateId()}`);
+    setDummyURL(`https://ipfs.url.example.com/${generateId()}`);
   };
 
   return (
     <>
-      {showPreview && (
-      <div
-        className="creation-preview-container"
-        onClick={(event) => event.target === event.currentTarget && setShowPreview(false)}
-      >
-        <div className="creation-preview">
-          <div className="creation-preview-header">
-            <Typography className="heading h4">Preview</Typography>
-            <Button padding="0" minWidth="0" onClick={() => setShowPreview(false)}>
-              <img src={CloseIcon} height="24" width="24" alt="" />
-            </Button>
-          </div>
-          <div className="creation-preview-content">
-            <div className="creation-preview-grid">
-              <span className="heading">Title</span>
-              <span>{creationDraft.title}</span>
-
-              <span className="heading">Description</span>
-              <span>{creationDraft.description}</span>
-
-              <span className="heading">Source</span>
-              <span>{creationDraft.source}</span>
-
-              <span className="heading">Date</span>
-              <span>{creationDraft.date}</span>
-
-              <span className="heading">Author</span>
-              <span>{authUser?.user_name}</span>
-
-              {/* <span className="heading">Tags</span>
-<span className="creation-tags">
-{creationDraft.tags.map((x, index) => <Chip key={index} label={x} />)}
-</span> */}
-            </div>
-
-            {creationDraft?.materials && (
-              <>
-                <h4 className="heading h4">Materials Submitted</h4>
-                <table>
-                  <tr>
-                    <th>Title</th>
-                    <th>Type</th>
-                    <th>Link</th>
-                    <th>Author</th>
-                  </tr>
-                  {creationDraft.materials?.map((x) => (
-                    <tr>
-                      <td>{x.title}</td>
-                      <td className="capitalize">{x.fileType}</td>
-                      <td><a href={x.link}>{x.link}</a></td>
-                      <td>{x.author}</td>
-                    </tr>
-                  ))}
-                </table>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-      )}
+      {showPreview
+       && (
+       <CreationPreview
+         title={creationDraft?.title}
+         description={creationDraft?.description}
+         link={creationDraft?.source}
+         authorName={authUser?.user_name}
+         date={creationDraft?.date}
+         materials={creationDraft?.materials?.map((x) => ({
+           title: x?.title,
+           fileType: x?.fileType,
+           link: x?.link,
+           authorName: x?.author,
+         }))}
+         onClose={() => setShowPreview(false)}
+       />
+       )}
       <Grid item xs={12}>
         <Grid container className="create-collection" justifyContent="flex-start" height="fit-content">
 
-          <Grid container item md={7} xs={12}>
-            <Grid md={4} xs={12} paddingRight="12px" height="fit-content">
+          <Grid container item xs={12}>
+            <Grid md={3} xs={12} paddingRight="12px" height="fit-content">
               <span className="heading">Creation Date</span>
             </Grid>
-            <Grid md={8} xs={12} height="fit-content">
+            <Grid md={9} xs={12} height="fit-content">
               <span>{new Date().toLocaleDateString()}</span>
-              {/* <Button className="transparentGreenButton">
-              <img src={GreenRightIcon} alt="green-right" />
-              {' '}
-              Filled
-            </Button> */}
             </Grid>
 
-            {/* <Grid md={3} xs={12}
-          marginTop={{ xs: '12px', md: '18px' }} display="flex"
-          flexDirection="row" alignItems="center">
-            <Typography className="heading">Self Sign</Typography>
-          </Grid>
-          <Grid md={9} xs={12}
-          marginTop={{ xs: '12px', md: '18px' }} display="flex"
-          flexDirection="row" alignItems="center">
-            <Button className="nextCollectionButton signInCollectionButton">
-              Signin
-            </Button>
-            <Button className="transparentGreenButton transparentGreenVerificationButton">
-              <img src={GreenRightIcon} alt="green-right" />
-              {' '}
-              <span> Verification </span>
-            </Button>
-          </Grid> */}
-
-            <Grid md={4} xs={12} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="flex-start">
+            <Grid md={3} xs={12} marginTop={{ xs: '12px', md: '36px' }} display="flex" flexDirection="row" alignItems="flex-start">
               <Typography className="heading">Store optionally on IPFS</Typography>
             </Grid>
-            <Grid md={8} xs={12} marginTop={{ xs: '12px', md: '18px' }}>
+            <Grid md={9} xs={12} marginTop={{ xs: '12px', md: '36px' }}>
               <Grid display="flex" alignItems="flex-start" gap="12px">
-                <Button padding="0" minWidth="0" onClick={generateDummyURL}>
-                  <img src={SaveIcon} height="36" width="36" alt="" />
-                </Button>
                 <TextField
                   value={dummyURL}
                   variant="standard"
@@ -154,28 +82,16 @@ export default function StepThree({
                   fullWidth
                   placeholder="IPFS"
                 />
-
-                {/* <TextField
-              style={{ marginTop: '18px' }}
-              variant="standard"
-              InputProps={{
-                disableUnderline: true,
-              }}
-              className="input input-dark"
-              fullWidth
-              placeholder="Youtube"
-            /> */}
-
+                <Button padding="0" minWidth="0" onClick={generateDummyURL}>
+                  <img src={SaveIcon} height="36" width="36" alt="" />
+                </Button>
               </Grid>
-              <div className="create-collection-verify-box" style={{ marginTop: '18px' }}>
-                <FormControlLabel control={<Checkbox defaultChecked />} label="I’m human" />
-              </div>
             </Grid>
 
-            <Grid md={4} xs={12} paddingRight="12px" height="fit-content">
+            <Grid md={3} xs={12} paddingRight="12px" height="fit-content" marginTop={{ xs: '12px', md: '24px' }}>
               <span className="heading">Preview</span>
             </Grid>
-            <Grid md={8} xs={12} height="fit-content">
+            <Grid md={9} xs={12} height="fit-content" marginTop={{ xs: '12px', md: '24px' }}>
               <Button
                 padding="0"
                 minWidth="0"
@@ -183,19 +99,14 @@ export default function StepThree({
               >
                 <img src={PreviewIcon} height="36" width="36" alt="" />
               </Button>
-              {/* <Button className="transparentGreenButton">
-              <img src={GreenRightIcon} alt="green-right" />
-              {' '}
-              Filled
-            </Button> */}
             </Grid>
-          </Grid>
 
-          <Grid item md={5} xs={12} padding={4} display="flex" flexDirection="column" gap="8px" alignItems="center">
-            <Typography variant="h4" className="heading h4">Current QR Code</Typography>
-            <div className="create-collection-qrcode">
-              <img alt="qr" src={QrCode} />
-            </div>
+            <Grid md={3} xs={12} paddingRight="12px" height="fit-content" marginTop={{ xs: '12px', md: '18px' }} />
+            <Grid md={9} xs={12} height="fit-content" marginTop={{ xs: '12px', md: '18px' }}>
+              <div className="create-collection-verify-box" style={{ marginTop: '18px' }}>
+                <FormControlLabel control={<Checkbox defaultChecked />} label="I’m human" />
+              </div>
+            </Grid>
           </Grid>
 
           <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center" />
