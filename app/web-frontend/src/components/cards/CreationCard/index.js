@@ -141,6 +141,7 @@ function CollectionCard({
       )}
       {showCreationDetailsPreview && (
         <CreationPreview
+          id={creationId}
           title={title}
           description={description}
           link={mediaUrl}

@@ -3,11 +3,13 @@
 import {
   Button, Typography,
 } from '@mui/material';
-import React from 'react';
+import QRCode from 'qrcode';
+import React, { useState, useEffect } from 'react';
 import CloseIcon from '../../../assets/svgs/close.svg';
 import './index.css';
 
 function CreationPreview({
+  id = '',
   title = '',
   description = '',
   link = '',
@@ -21,6 +23,23 @@ function CreationPreview({
   }],
   onClose = () => {},
 }) {
+  const [qrcodeBase64, setQrcodeBase64] = useState(null);
+
+  const generateQRCodeBase64 = async (text) => {
+    const code = await QRCode.toDataURL(`${window.location.origin}/creations/${text}`, {
+      width: 150,
+      height: 150,
+      margin: 2,
+      scale: 8,
+    });
+
+    setQrcodeBase64(code);
+  };
+
+  useEffect(() => {
+    if (id) generateQRCodeBase64(id);
+  }, [id]);
+
   return (
     <div
       className="creation-preview-container"
@@ -34,26 +53,35 @@ function CreationPreview({
           </Button>
         </div>
         <div className="creation-preview-content">
-          <div className="creation-preview-grid">
-            <span className="heading">Title</span>
-            <span>{title}</span>
+          <div className={`creation-preview-grid-container ${id && 'creation-preview-grid-container-cols'}`}>
+            <div className="creation-preview-grid">
+              <span className="heading">Title</span>
+              <span>{title}</span>
 
-            <span className="heading">Description</span>
-            <span>{description}</span>
+              <span className="heading">Description</span>
+              <span>{description}</span>
 
-            <span className="heading">Source</span>
-            <span>{link}</span>
+              <span className="heading">Source</span>
+              <span>{link}</span>
 
-            <span className="heading">Date</span>
-            <span>{date}</span>
+              <span className="heading">Date</span>
+              <span>{date}</span>
 
-            <span className="heading">Author</span>
-            <span>{authorName}</span>
+              <span className="heading">Author</span>
+              <span>{authorName}</span>
 
-            {/* <span className="heading">Tags</span>
+              {/* <span className="heading">Tags</span>
             <span className="creation-tags">
               {tags.map((x, index) => <Chip key={index} label={x} />)}
             </span> */}
+            </div>
+            {id && (
+            <div className="creation-preview-codes">
+              <img className="creation-preview-qr-code" src={qrcodeBase64} alt="Qr Code" />
+              <h2>Unique ID</h2>
+              <p className="creation-preview-qr-code-id">{id}</p>
+            </div>
+            )}
           </div>
 
           {materials && materials?.length > 0 && (

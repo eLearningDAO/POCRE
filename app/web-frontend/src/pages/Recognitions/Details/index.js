@@ -87,6 +87,7 @@ export default function CreationDetails() {
     <>
       {showPreview && (
       <CreationPreview
+        id={recognition?.creation?.creation_id}
         title={recognition?.creation?.creation_title}
         description={recognition?.creation?.creation_description}
         link={recognition?.creation?.source?.site_url}
