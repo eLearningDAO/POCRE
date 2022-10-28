@@ -1,15 +1,12 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/media-has-caption */
-import Cookies from 'js-cookie';
 import {
-  Chip,
-  Grid,
-  Typography,
-  //  Box,
-  Button,
-  Snackbar,
   Alert,
+  //  Box,
+  Button, Chip,
+  Grid, Snackbar, Typography,
 } from '@mui/material';
+import Cookies from 'js-cookie';
 import moment from 'moment';
 import React, {
   useEffect,
@@ -17,13 +14,13 @@ import React, {
 } from 'react';
 import { useParams } from 'react-router-dom';
 // import MaterialCard from '../../../components/cards/MaterialCard';
-import Loader from '../../../components/uicore/Loader';
-import './index.css';
-import useDetails from './useDetails';
-import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
 import DownloadIconSVG from '../../../assets/svgs/download.svg';
 import PreviewIcon from '../../../assets/svgs/preview.svg';
-import CloseIcon from '../../../assets/svgs/close.svg';
+import CreationPreview from '../../../components/previews/CreationPreview';
+import Loader from '../../../components/uicore/Loader';
+import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
+import './index.css';
+import useDetails from './useDetails';
 
 // get auth user
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
@@ -89,60 +86,21 @@ export default function CreationDetails() {
   return (
     <>
       {showPreview && (
-      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-      <div
-        className="creation-preview-container"
-        onClick={(event) => event.target === event.currentTarget && setShowPreview(false)}
-      >
-        <div className="creation-preview">
-          <div className="creation-preview-header">
-            <Typography className="heading h4">Preview</Typography>
-            <Button padding="0" minWidth="0" onClick={() => setShowPreview(false)}>
-              <img src={CloseIcon} height="24" width="24" alt="" />
-            </Button>
-          </div>
-          <div className="creation-preview-content">
-            <div className="creation-preview-grid">
-              <span className="heading">Title</span>
-              <span>{recognition?.creation?.creation_title}</span>
-
-              <span className="heading">Description</span>
-              <span>{recognition?.creation?.creation_description}</span>
-
-              <span className="heading">Source</span>
-              <span>{recognition?.creation?.source?.site_url}</span>
-
-              <span className="heading">Date</span>
-              <span>{moment(recognition?.creation?.creation_date).format('DD/MM/YYYY')}</span>
-
-              <span className="heading">Author</span>
-              <span>{recognition?.creation?.author?.user_name}</span>
-            </div>
-
-            {recognition?.creation?.materials && (
-              <>
-                <h4 className="heading h4">Materials Submitted</h4>
-                <table>
-                  <tr>
-                    <th>Title</th>
-                    <th>Type</th>
-                    <th>Link</th>
-                    <th>Author</th>
-                  </tr>
-                  {recognition?.creation?.materials?.map((x) => (
-                    <tr>
-                      <td>{x.material_title}</td>
-                      <td className="capitalize">{x?.type?.type_name}</td>
-                      <td><a href={x?.material_link}>{x?.material_link}</a></td>
-                      <td>{x.author?.user_name}</td>
-                    </tr>
-                  ))}
-                </table>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
+      <CreationPreview
+        id={recognition?.creation?.creation_id}
+        title={recognition?.creation?.creation_title}
+        description={recognition?.creation?.creation_description}
+        link={recognition?.creation?.source?.site_url}
+        authorName={recognition?.creation?.author?.user_name}
+        date={moment(recognition?.creation?.creation_date).format('DD/MM/YYYY')}
+        materials={recognition?.creation?.materials?.map((x) => ({
+          title: x?.material_title,
+          fileType: x?.type?.type_name,
+          link: x?.material_link,
+          authorName: x?.author?.user_name,
+        }))}
+        onClose={() => setShowPreview(false)}
+      />
       )}
       {(isAcceptingRecognition || isDecliningRecognition) && <Loader withBackdrop size="large" />}
 

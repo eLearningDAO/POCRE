@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/media-has-caption */
@@ -10,7 +9,6 @@ import DownloadIconSVG from '../../../assets/svgs/download.svg';
 import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
 import './index.css';
 // import EyeImage from '../../../assets/eye.webp';
-import CloseIcon from '../../../assets/svgs/close.svg';
 
 function MediaPreview({ mediaType, mediaUrl, onClose }) {
   return (
@@ -53,92 +51,8 @@ function MediaPreview({ mediaType, mediaUrl, onClose }) {
   );
 }
 
-function CreationPreview({
-  title = '',
-  description = '',
-  source = '',
-  date = '',
-  author = '',
-  materials = [{
-    title: '',
-    fileType: '',
-    link: '',
-    author: '',
-  }],
-  onClose = () => {},
-}) {
-  return (
-    <div
-      className="creation-preview-container"
-      onClick={(event) => event.target === event.currentTarget && onClose()}
-    >
-      <div className="creation-preview">
-        <div className="creation-preview-header">
-          <Typography className="heading h4">Preview</Typography>
-          <Button padding="0" minWidth="0" onClick={() => onClose(false)}>
-            <img src={CloseIcon} height="24" width="24" alt="" />
-          </Button>
-        </div>
-        <div className="creation-preview-content">
-          <div className="creation-preview-grid">
-            <span className="heading">Title</span>
-            <span>{title}</span>
-
-            <span className="heading">Description</span>
-            <span>{description}</span>
-
-            <span className="heading">Source</span>
-            <span>{source}</span>
-
-            <span className="heading">Date</span>
-            <span>{date}</span>
-
-            <span className="heading">Author</span>
-            <span>{author}</span>
-
-            {/* <span className="heading">Tags</span>
-            <span className="creation-tags">
-              {tags.map((x, index) => <Chip key={index} label={x} />)}
-            </span> */}
-          </div>
-
-          {materials && (
-          <>
-            <h4 className="heading h4">Materials Submitted</h4>
-            <table>
-              <tr>
-                <th>Title</th>
-                <th>Type</th>
-                <th>Link</th>
-                <th>Author</th>
-              </tr>
-              {materials?.map((x) => (
-                <tr>
-                  <td>{x.title}</td>
-                  <td className="capitalize">{x.fileType}</td>
-                  <td><a href={x.link}>{x.link}</a></td>
-                  <td>{x.author}</td>
-                </tr>
-              ))}
-            </table>
-          </>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function RecognitionCard({
   id = '',
-  creation = {
-    id: '',
-    title: '',
-    description: '',
-    source: '',
-    date: '',
-    materials: [],
-  },
   creationDate = '2022-01-01 00:00:00',
   title = 'Mobile App Design',
   description = '1000+ free files you can duplicate, remix, and reuse 1000+ free files',
@@ -155,7 +69,6 @@ function RecognitionCard({
 }) {
   const [mediaType, setMediaType] = useState(null);
   const [showMediaPreview, setShowMediaPreview] = useState(null);
-  const [creationPreview, showCreationPreview] = useState(false);
 
   useEffect(() => {
     const x = getUrlFileType(mediaUrl);
@@ -169,17 +82,6 @@ function RecognitionCard({
         mediaType={mediaType}
         mediaUrl={mediaUrl}
         onClose={() => setShowMediaPreview(false)}
-      />
-      )}
-      {creationPreview && (
-      <CreationPreview
-        title={creation?.title}
-        description={creation?.description}
-        source={creation?.source}
-        date={creation?.date}
-        author={creation?.author}
-        materials={creation?.materials}
-        onClose={() => showCreationPreview(false)}
       />
       )}
       <Grid

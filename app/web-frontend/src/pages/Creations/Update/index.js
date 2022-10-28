@@ -118,6 +118,7 @@ function CreateCollection() {
         )}
         {step === 3 && (
           <StepThree
+            creationId={id}
             onBack={handleBack}
             onComplete={handleValues}
             status={updateCreationStatus}

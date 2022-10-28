@@ -2,17 +2,17 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/media-has-caption */
 import {
-  Box, Button, Grid, Typography, Chip,
+  Box, Button, Chip, Grid, Typography,
 } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import DownloadIconSVG from '../../../assets/svgs/download.svg';
+import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
+import CreationPreview from '../../previews/CreationPreview';
 import DownloadButton from './btns/DownloadButton';
 import EditButton from './btns/EditButton';
 import RemoveButton from './btns/RemoveButton';
 import ShareButton from './btns/ShareButton';
 import './index.css';
-import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
-import CloseIcon from '../../../assets/svgs/close.svg';
 
 function DeleteCofirmationDialog({ onClose, onConfirm }) {
   return (
@@ -33,85 +33,6 @@ function DeleteCofirmationDialog({ onClose, onConfirm }) {
           <Button className="btn btn-primary icon-btn" onClick={onConfirm}>
             Confirm
           </Button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function CreationDetailsPreviewDialog(
-  {
-    creation = {
-      title: 'First Creation',
-      description: 'Lorem Ipsum',
-      source: 'https://example.com',
-      date: '4/4/22',
-      author: {
-        user_name: 'ninja',
-      },
-      materials: [
-        {
-          title: 'First Material',
-          fileType: 'image',
-          link: 'https://example.com',
-          author: 'turtle',
-        },
-      ],
-    },
-    onClose = () => {},
-  },
-) {
-  return (
-    <div
-      className="creation-preview-container"
-      onClick={(event) => event.target === event.currentTarget && onClose()}
-    >
-      <div className="creation-preview">
-        <div className="creation-preview-header">
-          <Typography className="heading h4">Preview</Typography>
-          <Button padding="0" minWidth="0" onClick={() => onClose()}>
-            <img src={CloseIcon} height="24" width="24" alt="" />
-          </Button>
-        </div>
-        <div className="creation-preview-content">
-          <div className="creation-preview-grid">
-            <span className="heading">Title</span>
-            <span>{creation?.title}</span>
-
-            <span className="heading">Description</span>
-            <span>{creation?.description}</span>
-
-            <span className="heading">Source</span>
-            <span>{creation?.source}</span>
-
-            <span className="heading">Date</span>
-            <span>{creation?.date}</span>
-
-            <span className="heading">Author</span>
-            <span>{creation?.author?.user_name}</span>
-          </div>
-
-          {creation?.materials && creation?.materials?.length > 0 && (
-            <>
-              <h4 className="heading h4">Materials Submitted</h4>
-              <table>
-                <tr>
-                  <th>Title</th>
-                  <th>Type</th>
-                  <th>Link</th>
-                  <th>Author</th>
-                </tr>
-                {creation?.materials?.map((x) => (
-                  <tr>
-                    <td>{x?.title}</td>
-                    <td className="capitalize">{x?.fileType}</td>
-                    <td><a href={x?.link}>{x?.link}</a></td>
-                    <td>{x?.author}</td>
-                  </tr>
-                ))}
-              </table>
-            </>
-          )}
         </div>
       </div>
     </div>
@@ -171,6 +92,7 @@ function CollectionCard({
   }],
   title = 'Mobile App Design',
   description = '1000+ free files you can duplicate, remix, and reuse 1000+ free files',
+  author = 'author',
   mediaUrl = 'https://images.pexels.com/photos/415071/pexels-photo-415071.jpeg?cs=srgb&dl=pexels-pixabay-415071.jpg&fm=jpg',
   canEdit = true,
   canDelete = true,
@@ -218,14 +140,19 @@ function CollectionCard({
         />
       )}
       {showCreationDetailsPreview && (
-        <CreationDetailsPreviewDialog
-          creation={{
-            title,
-            description,
-            source: mediaUrl,
-            date: creationDate,
-            materials,
-          }}
+        <CreationPreview
+          id={creationId}
+          title={title}
+          description={description}
+          link={mediaUrl}
+          date={creationDate}
+          authorName={author}
+          materials={materials?.map((x) => ({
+            title: x?.title,
+            fileType: x?.fileType,
+            link: x?.link,
+            authorName: x?.author,
+          }))}
           onClose={() => setShowCreationDetailsPreview(false)}
         />
       )}

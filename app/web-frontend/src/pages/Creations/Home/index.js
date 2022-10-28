@@ -116,6 +116,7 @@ function Creations() {
                   creationDate={moment(x?.creation_date).format('Do MMMM YYYY')}
                   interactionBtns
                   mediaUrl={x?.source?.site_url}
+                  author={x?.author?.user_name}
                   materials={x.materials?.map((m) => ({
                     title: m?.material_title,
                     link: m?.material_link,
