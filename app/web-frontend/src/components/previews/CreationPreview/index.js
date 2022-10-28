@@ -47,7 +47,7 @@ function CreationPreview({
     >
       <div className="creation-preview">
         <div className="creation-preview-header">
-          <Typography className="heading h4">Preview</Typography>
+          <Typography className="heading h4">Proof Of co-CREation - Status pending</Typography>
           <Button padding="0" minWidth="0" onClick={onClose}>
             <img src={CloseIcon} height="24" width="24" alt="" />
           </Button>
@@ -56,19 +56,19 @@ function CreationPreview({
           <div className={`creation-preview-grid-container ${id && 'creation-preview-grid-container-cols'}`}>
             <div className="creation-preview-grid">
               <span className="heading">Title</span>
-              <span>{title}</span>
+              <span>{title || '-'}</span>
 
               <span className="heading">Description</span>
-              <span>{description}</span>
+              <span>{description || '-'}</span>
 
               <span className="heading">Source</span>
-              <span>{link}</span>
+              <span>{link || '-'}</span>
 
               <span className="heading">Date</span>
-              <span>{date}</span>
+              <span>{date || '-'}</span>
 
               <span className="heading">Author</span>
-              <span>{authorName}</span>
+              <span>{authorName || '-'}</span>
 
               {/* <span className="heading">Tags</span>
             <span className="creation-tags">
@@ -96,10 +96,10 @@ function CreationPreview({
               </tr>
               {materials?.map((x) => (
                 <tr>
-                  <td>{x.title}</td>
-                  <td className="capitalize">{x.fileType}</td>
-                  <td><a href={x.link}>{x.link}</a></td>
-                  <td>{x.authorName}</td>
+                  <td>{x.title || '-'}</td>
+                  <td className="capitalize">{x.fileType || '-'}</td>
+                  <td><a href={x.link}>{x.link || '-'}</a></td>
+                  <td>{x.authorName || '-'}</td>
                 </tr>
               ))}
             </table>
