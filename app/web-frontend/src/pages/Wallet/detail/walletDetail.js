@@ -1,9 +1,9 @@
 /* eslint-disable indent */
 import React, { useState } from 'react';
-import profileImg from '../../../assets/svgs/profile.svg';
+import profileImg from 'assets/svgs/profile.svg';
+import CameraIcon from 'assets/svgs/cameraIcon.svg';
 import WalletDetailEdit from './walletDetailEdit';
 import WalletDisplay from './walletDisplay';
-import CameraIcon from '../../../assets/svgs/cameraIcon.svg';
 
 function WalletDetail() {
   const [isDetailEdit, setDetailEdit] = useState(false);

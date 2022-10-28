@@ -5,9 +5,9 @@ import {
   Box, Button, Chip, Grid, Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import DownloadIconSVG from '../../../assets/svgs/download.svg';
-import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
-import CreationPreview from '../../previews/CreationPreview';
+import DownloadIconSVG from 'assets/svgs/download.svg';
+import { getUrlFileType } from 'utils/helpers/getUrlFileType';
+import CreationPreview from 'components/previews/CreationPreview';
 import DownloadButton from './btns/DownloadButton';
 import EditButton from './btns/EditButton';
 import RemoveButton from './btns/RemoveButton';

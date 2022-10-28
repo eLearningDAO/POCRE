@@ -8,12 +8,12 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import QRCode from 'qrcode';
-import MaterialCard from '../../../components/cards/MaterialCard';
-import Loader from '../../../components/uicore/Loader';
+import MaterialCard from 'components/cards/MaterialCard';
+import Loader from 'components/uicore/Loader';
 import './index.css';
+import { getUrlFileType } from 'utils/helpers/getUrlFileType';
+import DownloadIconSVG from 'assets/svgs/download.svg';
 import useDetails from './useDetails';
-import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
-import DownloadIconSVG from '../../../assets/svgs/download.svg';
 
 export default function CreationDetails() {
   const { id } = useParams();

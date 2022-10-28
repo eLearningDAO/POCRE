@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import useUserInfo from '../hooks/user/userInfo';
+import useUserInfo from 'hooks/user/userInfo';
 
 function ProtectedRoute({ children }) {
   const login = useUserInfo((s) => s.login);

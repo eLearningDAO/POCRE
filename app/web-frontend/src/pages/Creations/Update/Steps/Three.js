@@ -9,9 +9,9 @@ import Cookies from 'js-cookie';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode';
-import PreviewIcon from '../../../../assets/svgs/preview.svg';
-import SaveIcon from '../../../../assets/svgs/save.svg';
-import CreationPreview from '../../../../components/previews/CreationPreview';
+import PreviewIcon from 'assets/svgs/preview.svg';
+import SaveIcon from 'assets/svgs/save.svg';
+import CreationPreview from 'components/previews/CreationPreview';
 
 // get auth user
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');

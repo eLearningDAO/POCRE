@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import QRCode from 'qrcode';
 import React, { useState, useEffect } from 'react';
-import CloseIcon from '../../../assets/svgs/close.svg';
+import CloseIcon from 'assets/svgs/close.svg';
 import './index.css';
 
 function CreationPreview({
