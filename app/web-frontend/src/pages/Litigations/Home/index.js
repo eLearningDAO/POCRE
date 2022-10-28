@@ -5,10 +5,10 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ApproveIcon from '../../../assets/images/approve-icon.png';
-import WithdrawIcon from '../../../assets/images/withdraw-icon.png';
+import ApproveIcon from 'assets/images/approve-icon.png';
+import WithdrawIcon from 'assets/images/withdraw-icon.png';
+import Loader from 'components/uicore/Loader';
 import './index.css';
-import Loader from '../../../components/uicore/Loader';
 import useHome from './useHome';
 
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');

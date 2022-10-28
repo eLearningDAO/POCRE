@@ -4,9 +4,9 @@ import {
   Typography,
   Button,
 } from '@mui/material';
-import Input from '../../../../components/uicore/Input';
-import Form from '../../../../components/uicore/Form';
-import TagInput from '../../../../components/uicore/TagInput';
+import Input from 'components/uicore/Input';
+import Form from 'components/uicore/Form';
+import TagInput from 'components/uicore/TagInput';
 import { stepOneValidation } from './validation';
 
 export default function StepOne({

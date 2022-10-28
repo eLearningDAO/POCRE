@@ -5,10 +5,9 @@ import {
   Box, Button, Chip, Grid, Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import DownloadIconSVG from '../../../assets/svgs/download.svg';
-import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
+import DownloadIconSVG from 'assets/svgs/download.svg';
+import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import './index.css';
-// import EyeImage from '../../../assets/eye.webp';
 
 function MediaPreview({ mediaType, mediaUrl, onClose }) {
   return (

@@ -3,9 +3,9 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
-import Form from '../../../../components/uicore/Form';
-import Input from '../../../../components/uicore/Input';
-import TagInput from '../../../../components/uicore/TagInput';
+import Form from 'components/uicore/Form';
+import Input from 'components/uicore/Input';
+import TagInput from 'components/uicore/TagInput';
 import { stepOneValidation } from './validation';
 
 export default function StepOne({

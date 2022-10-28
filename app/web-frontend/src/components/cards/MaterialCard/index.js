@@ -5,18 +5,18 @@ import {
   Box, Button, Chip, Grid, Typography,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
-import CreationCardImg from '../../../assets/images/creation-card.png';
-import PencilIcon from '../../../assets/images/pencil.png';
-import CheckMarkIcon from '../../../assets/svgs/checkmark.svg';
-import DownloadIconSVG from '../../../assets/svgs/download.svg';
-import DeleteIcon from '../../../assets/svgs/delete.svg';
-import EyeOffIcon from '../../../assets/svgs/eye-off.svg';
-import PendingIcon from '../../../assets/svgs/pending.svg';
-import RequestAcceptFilledIcon from '../../../assets/svgs/request-accept-filled.svg';
-import RequestAcceptOutlinedIcon from '../../../assets/svgs/request-accept-outlined.svg';
-import RequestDeclineFilledIcon from '../../../assets/svgs/request-decline-filled.svg';
-import RequestDeclineOutlinedIcon from '../../../assets/svgs/request-decline-outlined.svg';
-import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
+import CreationCardImg from 'assets/images/creation-card.png';
+import PencilIcon from 'assets/images/pencil.png';
+import CheckMarkIcon from 'assets/svgs/checkmark.svg';
+import DownloadIconSVG from 'assets/svgs/download.svg';
+import DeleteIcon from 'assets/svgs/delete.svg';
+import EyeOffIcon from 'assets/svgs/eye-off.svg';
+import PendingIcon from 'assets/svgs/pending.svg';
+import RequestAcceptFilledIcon from 'assets/svgs/request-accept-filled.svg';
+import RequestAcceptOutlinedIcon from 'assets/svgs/request-accept-outlined.svg';
+import RequestDeclineFilledIcon from 'assets/svgs/request-decline-filled.svg';
+import RequestDeclineOutlinedIcon from 'assets/svgs/request-decline-outlined.svg';
+import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import './index.css';
 
 function MediaPreview({ mediaType, mediaUrl, onClose }) {

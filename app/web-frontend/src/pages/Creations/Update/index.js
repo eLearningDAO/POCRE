@@ -1,12 +1,12 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { Grid, Typography, Button } from '@mui/material';
 import React, { useState, useEffect } from 'react';
+import Loader from 'components/uicore/Loader';
 import StepOne from './Steps/One';
 import StepTwo from './Steps/Two';
 import StepThree from './Steps/Three';
 import './index.css';
 import useUpdate from './useUpdate';
-import Loader from '../../../components/uicore/Loader';
 
 const stepInfo = [
   'What, when and where it is',
