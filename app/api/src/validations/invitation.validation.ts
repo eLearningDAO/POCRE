@@ -21,12 +21,44 @@ export const queryInvitations = {
     }),
     ascend_fields: Joi.array().items(Joi.string().valid('invite_issued')).optional(),
     descend_fields: Joi.array().items(Joi.string().valid('invite_issued')).optional(),
+    populate: Joi.alternatives()
+      .try(
+        Joi.string().valid('invite_from', 'invite_to', 'status_id'),
+        Joi.array().items(
+          Joi.alternatives().try(
+            Joi.string().valid('invite_from', 'invite_to', 'status_id'),
+            Joi.array()
+              .items(Joi.string())
+              .ordered(Joi.string().valid('invite_from', 'invite_to', 'status_id'), Joi.string())
+              .min(2)
+              .max(2)
+          )
+        )
+      )
+      .optional(),
   }),
 };
 
 export const getInvitation = {
   params: Joi.object().keys({
     invite_id: Joi.string().uuid().required(),
+  }),
+  query: Joi.object().keys({
+    populate: Joi.alternatives()
+      .try(
+        Joi.string().valid('invite_from', 'invite_to', 'status_id'),
+        Joi.array().items(
+          Joi.alternatives().try(
+            Joi.string().valid('invite_from', 'invite_to', 'status_id'),
+            Joi.array()
+              .items(Joi.string())
+              .ordered(Joi.string().valid('invite_from', 'invite_to', 'status_id'), Joi.string())
+              .min(2)
+              .max(2)
+          )
+        )
+      )
+      .optional(),
   }),
 };
 
