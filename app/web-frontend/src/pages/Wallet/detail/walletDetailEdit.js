@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import Rating from '@mui/material/Rating';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -9,11 +9,38 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
+import { formReducer } from '../../../utils/helpers/formReducer';
+
+const initialFormState = {
+  name: '',
+  email: '',
+  phone: '',
+  bio: '',
+  walletAddress: '',
+  walletType: '',
+};
 
 function WalletDetailEdit() {
   const [ratingValue, setRatingValue] = useState(3);
+  const [eventValue, setEventValue] = useState('');
+  const [formState, dispatch] = useReducer(formReducer, initialFormState);
+
+  const handleWalletData = (event) => {
+    event.stopPropagation();
+    setTimeout(() => { setEventValue('sdsd'); }, 1000);
+    console.log('eventValue', event, eventValue, formState);
+  };
+
+  const handleTextChange = (event) => {
+    dispatch({
+      type: 'HANDLE INPUT TEXT',
+      field: event.target.name,
+      payload: event.target.value,
+    });
+  };
+
   return (
-    <div className="wallet-detail-right-container-edit">
+    <form className="wallet-detail-right-container-edit">
       <div className="wallet-detail-right-container-left-edit">
         <div className="wallet-detail-status-edit">
           <span className="wallet-rating-title">Wallet Rating</span>
@@ -37,7 +64,12 @@ function WalletDetailEdit() {
         </div>
         <div className="edit-available-wallet">
           <span>Available Wallet</span>
-          <select className="wallet-select">
+          <select
+            className="wallet-select"
+            name="walletType"
+            value={formState.walletType}
+            onChange={(event) => handleTextChange(event)}
+          >
             <option className="wallete-option" value="1">Wallet 1</option>
             <option value="2">Wallet 3</option>
             <option value="3">Wallet 4</option>
@@ -45,51 +77,67 @@ function WalletDetailEdit() {
         </div>
         <div className="edit-available-wallet">
           <span>Wallet Address</span>
-          <input />
+          <input
+            name="walletAddress"
+            value={formState.walletAddress}
+            onChange={(event) => handleTextChange(event)}
+          />
         </div>
       </div>
       <div className="wallet-detail-right-container-right-edit">
         <Input
           className="wallet-edit-input"
           placeholder="Name"
+          name="name"
           startAdornment={(
             <InputAdornment position="start">
               <PersonOutlineIcon />
             </InputAdornment>
           )}
+          value={formState.name}
+          onChange={(event) => handleTextChange(event)}
         />
         <Input
           className="wallet-edit-input"
           placeholder="Email Address"
+          name="email"
           startAdornment={(
             <InputAdornment position="start">
               <MailOutlineIcon />
             </InputAdornment>
           )}
+          value={formState.email}
+          onChange={(event) => handleTextChange(event)}
         />
         <Input
           className="wallet-edit-input"
           placeholder="Phone"
+          name="phone"
           startAdornment={(
             <InputAdornment position="start">
               <LocalPhoneOutlinedIcon />
             </InputAdornment>
           )}
+          value={formState.phone}
+          onChange={(event) => handleTextChange(event)}
         />
         <Input
           className="wallet-edit-input-area"
           placeholder="Bio"
           multiline
+          name="bio"
           maxRows={4}
           startAdornment={(
             <InputAdornment position="start">
               <BorderColorOutlinedIcon />
             </InputAdornment>
           )}
+          value={formState.bio}
+          onChange={(event) => handleTextChange(event)}
         />
-        <Button className="edit-submit">Save</Button>
+        <Button onClick={handleWalletData} className="edit-submit">Save</Button>
       </div>
-    </div>
+    </form>
   );
 }
 
