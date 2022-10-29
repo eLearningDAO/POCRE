@@ -1,12 +1,18 @@
 /* eslint-disable indent */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import profileImg from '../../../assets/svgs/profile.svg';
 import WalletDetailEdit from './walletDetailEdit';
 import WalletDisplay from './walletDisplay';
 import CameraIcon from '../../../assets/svgs/cameraIcon.svg';
+import useWalletStore from '../../../hooks/userWalletService';
 
 function WalletDetail() {
   const [isDetailEdit, setDetailEdit] = useState(false);
+  const getUserById = useWalletStore((state) => state.getUserById);
+  const userData = useWalletStore((state) => state.userData);
+  useEffect(() => {
+    getUserById('43704731-d816-4f1f-a599-eb290f67c3f4');
+  }, []);
 
   return (
     <div className="wallet-detail-container">
@@ -23,9 +29,9 @@ function WalletDetail() {
         <span className="author-collection">Author of 10 collections</span>
       </div>
       {isDetailEdit ? (
-        <WalletDetailEdit />
+        <WalletDetailEdit setDetailEdit={setDetailEdit} />
       ) : (
-        <WalletDisplay setDetailEdit={setDetailEdit} />
+        <WalletDisplay setDetailEdit={setDetailEdit} user={userData} />
       )}
     </div>
   );
