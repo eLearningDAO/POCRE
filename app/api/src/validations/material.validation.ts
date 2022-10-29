@@ -25,12 +25,44 @@ export const queryMaterials = {
     }),
     is_recognized: Joi.bool().optional(),
     is_claimed: Joi.bool().optional(),
+    populate: Joi.alternatives()
+      .try(
+        Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'),
+        Joi.array().items(
+          Joi.alternatives().try(
+            Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'),
+            Joi.array()
+              .items(Joi.string())
+              .ordered(Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'), Joi.string())
+              .min(2)
+              .max(2)
+          )
+        )
+      )
+      .optional(),
   }),
 };
 
 export const getMaterial = {
   params: Joi.object().keys({
     material_id: Joi.string().uuid().required(),
+  }),
+  query: Joi.object().keys({
+    populate: Joi.alternatives()
+      .try(
+        Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'),
+        Joi.array().items(
+          Joi.alternatives().try(
+            Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'),
+            Joi.array()
+              .items(Joi.string())
+              .ordered(Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'), Joi.string())
+              .min(2)
+              .max(2)
+          )
+        )
+      )
+      .optional(),
   }),
 };
 
