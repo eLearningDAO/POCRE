@@ -29,7 +29,6 @@ function WalletDetail() {
       getUserCollectionCount(userId);
     }
   }, [user]);
-  console.log('userProfileImageUrl', userProfileImageUrl);
   return (
     <div className="wallet-detail-container">
       <div className="wallete-detail-left-container">
@@ -53,7 +52,12 @@ function WalletDetail() {
         </span>
       </div>
       {isDetailEdit ? (
-        <WalletDetailEdit setDetailEdit={setDetailEdit} user={userData} userId={userId} />
+        <WalletDetailEdit
+          setDetailEdit={setDetailEdit}
+          user={userData}
+          userId={userId}
+          imageUrl={userProfileImageUrl}
+        />
       ) : (
         <WalletDisplay setDetailEdit={setDetailEdit} user={userData} />
       )}
