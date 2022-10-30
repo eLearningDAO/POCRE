@@ -27,7 +27,17 @@ const useWalletStore = create((set) => ({
     const url = `https://pocre-api.herokuapp.com/v1/users/${userId}`;
     const userResponse = await fetch(url).then((response) => response.json());
     if (userResponse.code >= 400) throw new Error('Failed to fetch material');
-    set({ userData: userResponse });
+
+    const user = {
+      name: userResponse.user_name,
+      email: userResponse.email_address,
+      phone: userResponse.phone,
+      bio: userResponse.user_bio,
+      walletAddress: userResponse.wallet_address,
+      walletType: userResponse.verified_id,
+      reputationStars: userResponse.reputation_stars,
+    };
+    set({ userData: user });
   },
 }));
 

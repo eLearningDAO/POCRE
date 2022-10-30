@@ -11,25 +11,25 @@ import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import { formReducer } from '../../../utils/helpers/formReducer';
 import useWalletStore from '../../../hooks/userWalletService';
+// const initialFormState = {
+//   name: '',
+//   email: '',
+//   phone: '',
+//   bio: '',
+//   walletAddress: '',
+//   walletType: '',
+// };
 
-const initialFormState = {
-  name: '',
-  email: '',
-  phone: '',
-  bio: '',
-  walletAddress: '',
-  walletType: '',
-};
-
-function WalletDetailEdit({ setDetailEdit }) {
+function WalletDetailEdit({ setDetailEdit, user, userId }) {
   const [ratingValue, setRatingValue] = useState(3);
-  const [formState, dispatch] = useReducer(formReducer, initialFormState);
+  const [formState, dispatch] = useReducer(formReducer, user);
   const updateUser = useWalletStore((s) => s.updateUser);
+  const getUserById = useWalletStore((state) => state.getUserById);
 
   const handleWalletData = async (event) => {
     event.stopPropagation();
-    console.log('eventValue', event, formState);
-    await updateUser(formState, '43704731-d816-4f1f-a599-eb290f67c3f4');
+    await updateUser(formState, userId);
+    getUserById(userId);
     setDetailEdit(false);
   };
 

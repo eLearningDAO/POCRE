@@ -27,7 +27,7 @@ function WalletDisplay({ setDetailEdit, user }) {
             name="simple-controlled"
             color="red"
             readOnly
-            value={user && user.reputation_stars ? user.reputation_stars : 0}
+            value={user && user.reputationStars ? user.reputationStars : 0}
           />
           <div className="wallet-detail-info">
             <img src={framImg} alt="alt" />
@@ -35,7 +35,7 @@ function WalletDisplay({ setDetailEdit, user }) {
         </div>
         <div className="wallet-detail-address">
           <span>Wallet Address</span>
-          <span>{user && user.wallet_address ? user.wallet_address : ''}</span>
+          <span>{user && user.walletAddress}</span>
         </div>
       </div>
       <div className="wallet-detail-right-container-right">
@@ -49,21 +49,21 @@ function WalletDisplay({ setDetailEdit, user }) {
         <div className="detail-info-container">
           <div className="info-name">
             <img src={nameIcon} alt="name" />
-            <span>{user && user.user_name}</span>
+            <span>{user && user.name}</span>
           </div>
           <div className="info-email">
             <img src={emailicon} alt="name" />
-            <span>{user && user.email_address}</span>
+            <span>{user && user.email}</span>
           </div>
           <div className="info-phone">
             <img src={phoneIcon} alt="name" />
-            <span>{user && user.email_address}</span>
+            <span>{user && user.phone}</span>
           </div>
         </div>
         <div className="biograph-conainter">
           <h2>Biography</h2>
           <p>
-            {user && user.user_bio}
+            {user && user.bio}
           </p>
         </div>
       </div>
