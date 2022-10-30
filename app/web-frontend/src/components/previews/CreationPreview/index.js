@@ -86,7 +86,7 @@ function CreationPreview({
 
           {materials && materials?.length > 0 && (
           <>
-            <h4 className="heading h4">Materials Submitted</h4>
+            <h4 className="heading h4">External materials used</h4>
             <table>
               <tr>
                 <th>Title</th>

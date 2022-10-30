@@ -7,7 +7,7 @@ import '../responsive-menu-transition.css';
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import logo from 'assets/images/logo-1.png';
+import logo from 'assets/images/logo-beta.png';
 import LoginButton from 'components/styled/btns/LoginButton';
 import SideBar from '../Sidebar/Sidebar';
 import './Header.css';
