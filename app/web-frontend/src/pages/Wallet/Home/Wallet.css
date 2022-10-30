@@ -745,11 +745,19 @@
     cursor: pointer;
 }
 
-.edit-camera:hover {
-    background-image: linear-gradient(to top, #adf, #8bf);
+.edit-camera>label>input {
+    display: none;
 }
 
-.edit-camera>img {
+.edit-camera>input {
+    visibility: hidden;
+}
+
+.edit-camera:hover {
+    background-image: linear-gradient(to top, #adf, rgb(200, 202, 205));
+}
+
+.edit-camera>label>img {
     width: 40px;
     height: 40px;
     margin-top: 5px;

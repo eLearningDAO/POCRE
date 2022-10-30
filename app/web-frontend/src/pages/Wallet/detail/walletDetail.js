@@ -16,7 +16,12 @@ function WalletDetail() {
   const user = useUserInfo((state) => state.user);
   const getUserCollectionCount = useWalletStore((state) => state.getUserCollectionCount);
   const userCollectionCount = useWalletStore((state) => state.userCollectionCount);
-
+  const uploadUserImage = useWalletStore((state) => state.uploadUserImage);
+  const userProfileImageUrl = useWalletStore((state) => state.userProfileImageUrl);
+  async function handleUploadImage(event) {
+    const file = event.target.files[0];
+    await uploadUserImage(file);
+  }
   useEffect(() => {
     if (user && user.user_id) {
       userId = user.user_id;
@@ -24,6 +29,7 @@ function WalletDetail() {
       getUserCollectionCount(userId);
     }
   }, [user]);
+  console.log('userProfileImageUrl', userProfileImageUrl);
   return (
     <div className="wallet-detail-container">
       <div className="wallete-detail-left-container">
@@ -31,7 +37,11 @@ function WalletDetail() {
           <img src={profileImg} alt="alt" loading="lazy" />
           {isDetailEdit && (
             <div className="edit-camera">
-              <img src={CameraIcon} alt="camera" loading="lazy" />
+              <label htmlFor="file-input">
+                <img src={CameraIcon} alt="camera" loading="lazy" />
+                <input />
+              </label>
+              <input type="file" id="file-input" inputProps={{ accept: 'image/*' }} onChange={(file) => handleUploadImage(file)} />
             </div>
           )}
         </div>
