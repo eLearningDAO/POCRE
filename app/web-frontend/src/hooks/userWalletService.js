@@ -3,6 +3,7 @@ import create from 'zustand';
 const useWalletStore = create((set) => ({
   userUpdatedResult: [],
   userData: {},
+  userCollectionCount: 0,
   updateUser: async (user, userId) => {
     const url = `https://pocre-api.herokuapp.com/v1/users/${userId}`;
     const requestOptions = {
@@ -39,6 +40,14 @@ const useWalletStore = create((set) => ({
     };
     set({ userData: user });
   },
+
+  getUserCollectionCount: async (userId) => {
+    const url = `https://pocre-api.herokuapp.com/v1//creations?page=1&limit=100&descend_fields[]=creation_date&query=${userId}&search_fields[]=author_id`;
+    const userCollectionResponse = await fetch(url).then((response) => response.json());
+    if (userCollectionResponse.code >= 400) throw new Error('Failed to fetch material');
+    set({ userCollectionCount: userCollectionResponse.results.length });
+  },
+
 }));
 
 export default useWalletStore;
