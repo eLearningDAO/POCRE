@@ -142,6 +142,17 @@ export default router;
  *         schema:
  *           type: string[]
  *         description: list of fields to order by descending
+ *       - in: query
+ *         name: populate
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum:
+ *               - invite_from
+ *               - invite_to
+ *               - status_id
+ *         description: list of fields to populate
  *     responses:
  *       "200":
  *         description: OK
@@ -184,6 +195,17 @@ export default router;
  *         schema:
  *           type: string
  *         description: Invite id
+ *       - in: query
+ *         name: populate
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum:
+ *               - invite_from
+ *               - invite_to
+ *               - status_id
+ *         description: list of fields to populate
  *     responses:
  *       "200":
  *         description: OK

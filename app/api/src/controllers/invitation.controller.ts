@@ -9,7 +9,10 @@ export const queryInvitations = catchAsync(async (req, res): Promise<void> => {
 });
 
 export const getInvitationById = catchAsync(async (req, res): Promise<void> => {
-  const invitation = await invitationService.getInvitationById(req.params.invite_id);
+  const invitation = await invitationService.getInvitationById(
+    req.params.invite_id,
+    req.query.populate as string | (string | string[])[]
+  );
   res.send(invitation);
 });
 

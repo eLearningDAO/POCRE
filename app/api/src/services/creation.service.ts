@@ -3,6 +3,7 @@ import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 import statusTypes from '../constants/statusTypes';
+import { populator } from '../db/plugins/populator';
 
 interface ICreation {
   creation_title: string;
@@ -25,6 +26,7 @@ interface ICreationQuery {
   is_trending?: boolean;
   is_partially_assigned?: boolean;
   is_fully_assigned?: boolean;
+  populate?: string | (string | string[])[];
 }
 interface ICreationQueryResult {
   results: Array<ICreationDoc>;
@@ -199,13 +201,20 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
     // list of queries
     const queryModes = {
       default: {
-        query: `SELECT * FROM creation ${search} ${order} OFFSET $1 LIMIT $2;`,
+        query: `SELECT * ${populator({
+          tableAlias: 'c',
+          fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+        })} FROM creation c ${search} ${order} OFFSET $1 LIMIT $2;`,
         count: `SELECT COUNT(*) as total_results FROM creation ${search};`,
       },
       trending: {
         // opened creations without any litigation
         query: `SELECT 
-                * 
+                *
+                ${populator({
+                  tableAlias: 'c',
+                  fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+                })} 
                 FROM 
                 creation c 
                 ${search} 
@@ -227,6 +236,10 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
         // opened creations that are partially or fully recognized by co-authors
         query: `SELECT 
                 * 
+                ${populator({
+                  tableAlias: 'c',
+                  fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+                })} 
                 FROM 
                 creation c 
                 ${search} 
@@ -340,10 +353,19 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
  * @param {string} id
  * @returns {Promise<ICreationDoc|null>}
  */
-export const getCreationById = async (id: string): Promise<ICreationDoc | null> => {
+export const getCreationById = async (
+  id: string,
+  populate?: string | (string | string[])[]
+): Promise<ICreationDoc | null> => {
   const creation = await (async () => {
     try {
-      const result = await db.query(`SELECT * FROM creation WHERE creation_id = $1;`, [id]);
+      const result = await db.query(
+        `SELECT * ${populator({
+          tableAlias: 'c',
+          fields: typeof populate === 'string' ? [populate] : populate,
+        })} FROM creation c WHERE creation_id = $1;`,
+        [id]
+      );
       return result.rows[0];
     } catch {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');

@@ -75,6 +75,15 @@ export default router;
  *         schema:
  *           type: string
  *         description: Decision id
+ *       - in: query
+ *         name: populate
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum:
+ *               - maker_id
+ *         description: list of fields to populate
  *     responses:
  *       "200":
  *         description: OK

@@ -16,7 +16,10 @@ export const queryLitigations = catchAsync(async (req, res): Promise<void> => {
 });
 
 export const getLitigationById = catchAsync(async (req, res): Promise<void> => {
-  const litigation = await litigationService.getLitigationById(req.params.litigation_id);
+  const litigation = await litigationService.getLitigationById(
+    req.params.litigation_id,
+    req.query.populate as string | (string | string[])[]
+  );
   res.send(litigation);
 });
 

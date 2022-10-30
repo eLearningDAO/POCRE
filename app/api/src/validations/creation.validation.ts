@@ -37,12 +37,44 @@ export const queryCreations = {
       then: Joi.forbidden(),
       otherwise: Joi.optional(),
     }),
+    populate: Joi.alternatives()
+      .try(
+        Joi.string().valid('source_id', 'author_id', 'tags', 'materials'),
+        Joi.array().items(
+          Joi.alternatives().try(
+            Joi.string().valid('source_id', 'author_id', 'tags', 'materials'),
+            Joi.array()
+              .items(Joi.string())
+              .ordered(Joi.string().valid('source_id', 'author_id', 'tags', 'materials'), Joi.string())
+              .min(2)
+              .max(2)
+          )
+        )
+      )
+      .optional(),
   }),
 };
 
 export const getCreation = {
   params: Joi.object().keys({
     creation_id: Joi.string().uuid().required(),
+  }),
+  query: Joi.object().keys({
+    populate: Joi.alternatives()
+      .try(
+        Joi.string().valid('source_id', 'author_id', 'tags', 'materials'),
+        Joi.array().items(
+          Joi.alternatives().try(
+            Joi.string().valid('source_id', 'author_id', 'tags', 'materials'),
+            Joi.array()
+              .items(Joi.string())
+              .ordered(Joi.string().valid('source_id', 'author_id', 'tags', 'materials'), Joi.string())
+              .min(2)
+              .max(2)
+          )
+        )
+      )
+      .optional(),
   }),
 };
 

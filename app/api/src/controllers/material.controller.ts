@@ -11,7 +11,10 @@ export const queryMaterials = catchAsync(async (req, res): Promise<void> => {
 });
 
 export const getMaterialById = catchAsync(async (req, res): Promise<void> => {
-  const material = await materialService.getMaterialById(req.params.material_id);
+  const material = await materialService.getMaterialById(
+    req.params.material_id,
+    req.query.populate as string | (string | string[])[]
+  );
   res.send(material);
 });
 
