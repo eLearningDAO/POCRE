@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
-import { API_BASE_URL } from '../../../config';
+import { API_BASE_URL } from 'config';
 
 // get auth user
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');

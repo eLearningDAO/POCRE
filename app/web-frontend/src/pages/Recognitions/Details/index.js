@@ -13,12 +13,11 @@ import React, {
   useState,
 } from 'react';
 import { useParams } from 'react-router-dom';
-// import MaterialCard from '../../../components/cards/MaterialCard';
-import DownloadIconSVG from '../../../assets/svgs/download.svg';
-import PreviewIcon from '../../../assets/svgs/preview.svg';
-import CreationPreview from '../../../components/previews/CreationPreview';
-import Loader from '../../../components/uicore/Loader';
-import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
+import DownloadIconSVG from 'assets/svgs/download.svg';
+import PreviewIcon from 'assets/svgs/preview.svg';
+import CreationPreview from 'components/previews/CreationPreview';
+import Loader from 'components/uicore/Loader';
+import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import './index.css';
 import useDetails from './useDetails';
 

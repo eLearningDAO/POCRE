@@ -7,17 +7,19 @@ import {
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import MaterialCard from '../../../components/cards/MaterialCard';
-import Loader from '../../../components/uicore/Loader';
+import QRCode from 'qrcode';
+import MaterialCard from 'components/cards/MaterialCard';
+import Loader from 'components/uicore/Loader';
 import './index.css';
+import { getUrlFileType } from 'utils/helpers/getUrlFileType';
+import DownloadIconSVG from 'assets/svgs/download.svg';
 import useDetails from './useDetails';
-import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
-import DownloadIconSVG from '../../../assets/svgs/download.svg';
 
 export default function CreationDetails() {
   const { id } = useParams();
 
   const [mediaType, setMediaType] = useState(null);
+  const [qrcodeBase64, setQrcodeBase64] = useState(null);
 
   const {
     creation,
@@ -26,6 +28,17 @@ export default function CreationDetails() {
     isFetchingCreation,
   } = useDetails();
 
+  const generateQRCodeBase64 = async (text) => {
+    const code = await QRCode.toDataURL(`${window.location.origin}/creations/${text}`, {
+      width: 150,
+      height: 150,
+      margin: 2,
+      scale: 8,
+    });
+
+    setQrcodeBase64(code);
+  };
+
   useEffect(() => {
     if (id) fetchCreationDetails(id);
   }, [id]);
@@ -33,6 +46,7 @@ export default function CreationDetails() {
   useEffect(() => {
     const x = getUrlFileType(creation?.source?.site_url);
     setMediaType(x);
+    if (creation?.creation_id) generateQRCodeBase64(creation?.creation_id);
   }, [creation]);
 
   if (isFetchingCreation) return <Loader />;
@@ -110,44 +124,47 @@ export default function CreationDetails() {
       >
         <Box
           display="flex"
+          flexDirection="column"
           gap="12px"
-          alignItem="center"
-          justifyContent="center"
           width="100%"
           className="creation-author"
         >
-          <img src={`https://i.pravatar.cc/100?img=${Math.random()}`} alt="" />
           <Box
             display="flex"
-            flexDirection="column"
-            gap="5px"
+            gap="12px"
             alignItem="center"
+            justifyContent="space-between"
             width="100%"
+            className="creation-author"
           >
-            <Typography className="inviationSectionTitle" variant="h6">
-              {creation?.author?.user_name}
-            </Typography>
-            {/* <Typography className="creation-author-wallet" variant="p">
-              {creation?.author?.wallet_address?.slice(0, 48)}
-            </Typography> */}
+            <img
+              className="creation-user-image"
+              src={`https://i.pravatar.cc/150?img=${Math.random()}`}
+              alt=""
+            />
+            <Box
+              display="flex"
+              flexDirection="column"
+              gap="5px"
+              alignItem="center"
+              width="fit-content"
+              marginLeft="0"
+              marginRight="auto"
+            >
+              <h4 className="h4">
+                {creation?.author?.user_name}
+              </h4>
+              <Chip className="mr-auto bg-orange-dark color-white" label={`Created on ${moment(creation?.creation_date).format('DD/MM/YYYY')}`} />
+              <Chip className="mr-auto bg-black color-white" label={`Unique ID: ${creation?.creation_id}`} />
+            </Box>
           </Box>
+          {creation?.creation_description && (
+            <Typography variant="p">
+              {creation?.creation_description}
+            </Typography>
+          )}
         </Box>
-        <Chip className="mr-auto bg-orange color-white" label={`Created on ${moment(creation?.creation_date).format('DD/MM/YYYY')}`} />
-      </Grid>
-
-      <Grid
-        display="flex"
-        flexDirection="column"
-        gap="12px"
-        alignItem="flex-top"
-        marginTop="18px"
-        width="100%"
-      >
-        {creation?.creation_description && (
-        <Typography variant="p">
-          {creation?.creation_description}
-        </Typography>
-        )}
+        <img className="creation-qr-code" src={qrcodeBase64} alt="QR Code" />
       </Grid>
 
       {creation?.materials.length > 0 && (
@@ -192,7 +209,7 @@ export default function CreationDetails() {
         width="100%"
       >
         {creation?.tags?.map((x, index) => (
-          <Chip className="bg-orange color-white w-fit" style={{ paddingLeft: '8px', paddingRight: '8px' }} key={index} label={x?.tag_name} />
+          <Chip className="bg-orange-dark color-white w-fit" style={{ paddingLeft: '8px', paddingRight: '8px' }} key={index} label={x?.tag_name} />
         ))}
       </Grid>
     </Grid>

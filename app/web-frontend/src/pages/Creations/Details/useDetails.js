@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { API_BASE_URL } from '../../../config';
+import { API_BASE_URL } from 'config';
 
 const useDetails = () => {
   const [isFetchingCreation, setIsFetchingCreation] = useState(false);

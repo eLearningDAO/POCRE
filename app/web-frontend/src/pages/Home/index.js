@@ -1,13 +1,13 @@
 import { Grid } from '@mui/material';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import LatestNewsCard from '../../components/cards/LatestNews';
-import TopAuthorCard from '../../components/cards/TopAuthorCard';
+import LatestNewsCard from 'components/cards/LatestNews';
+import TopAuthorCard from 'components/cards/TopAuthorCard';
 import './index.css';
-import Slider from '../../components/slider';
+import Slider from 'components/slider';
+import TrendingCard from 'components/cards/TrendingCard';
+import useUserInfo from 'hooks/user/userInfo';
 import useStore from './store';
-import TrendingCard from '../../components/cards/TrendingCard';
-import useUserInfo from '../../hooks/user/userInfo';
 
 function Home() {
   const navigate = useNavigate();

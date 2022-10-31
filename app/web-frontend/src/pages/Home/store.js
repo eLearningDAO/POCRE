@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import create from 'zustand';
-import { API_BASE_URL } from '../../config';
+import { API_BASE_URL } from 'config';
 
 const trendingUrl = 'https://pocre-api.herokuapp.com/v1/creations?is_trending=true';
 const topAuthorUrl = 'https://pocre-api.herokuapp.com/v1/users?top_authors=true';

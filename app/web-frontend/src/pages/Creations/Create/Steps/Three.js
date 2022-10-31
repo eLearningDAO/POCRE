@@ -8,10 +8,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Cookies from 'js-cookie';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import PreviewIcon from '../../../../assets/svgs/preview.svg';
-import SaveIcon from '../../../../assets/svgs/save.svg';
-// import GreenRightIcon from '../../../../assets/green-right.png';
-import CreationPreview from '../../../../components/previews/CreationPreview';
+import PreviewIcon from 'assets/svgs/preview.svg';
+import SaveIcon from 'assets/svgs/save.svg';
+import CreationPreview from 'components/previews/CreationPreview';
 
 // get auth user
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
