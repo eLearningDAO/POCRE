@@ -1,5 +1,6 @@
 /* eslint-disable indent */
 import React, { useEffect, useState } from 'react';
+import { Alert } from '@mui/material';
 import profileImg from '../../../assets/svgs/profile.svg';
 import WalletDetailEdit from './walletDetailEdit';
 import WalletDisplay from './walletDisplay';
@@ -18,6 +19,8 @@ function WalletDetail() {
   const userCollectionCount = useWalletStore((state) => state.userCollectionCount);
   const uploadUserImage = useWalletStore((state) => state.uploadUserImage);
   const userProfileImageUrl = useWalletStore((state) => state.userProfileImageUrl);
+  const userUpdateError = useWalletStore((state) => state.userUpdateError);
+  console.error('userUpdateError', userUpdateError);
   async function handleUploadImage(event) {
     const file = event.target.files[0];
     await uploadUserImage(file);
@@ -30,38 +33,49 @@ function WalletDetail() {
     }
   }, [user]);
   return (
-    <div className="wallet-detail-container">
-      <div className="wallete-detail-left-container">
-        <div className="front-face-photo">
-          <img src={profileImg} alt="alt" loading="lazy" />
-          {isDetailEdit && (
-            <div className="edit-camera">
-              <label htmlFor="file-input">
-                <img src={CameraIcon} alt="camera" loading="lazy" />
-                <input />
-              </label>
-              <input type="file" id="file-input" inputProps={{ accept: 'image/*' }} onChange={(file) => handleUploadImage(file)} />
-            </div>
-          )}
-        </div>
+    <>
+      <div className="wallet-detail-container">
+        <div className="wallete-detail-left-container">
+          <div className="front-face-photo">
+            <img src={profileImg} alt="alt" loading="lazy" />
+            {isDetailEdit && (
+              <div className="edit-camera">
+                <label htmlFor="file-input">
+                  <img src={userData && userData.imageUrl ? userData.imageUrl : CameraIcon} alt="camera" loading="lazy" />
+                  <input />
+                </label>
+                <input type="file" id="file-input" inputProps={{ accept: 'image/*' }} onChange={(file) => handleUploadImage(file)} />
+              </div>
+            )}
+          </div>
 
-        <span className="author-collection">
-          Author of
-          <span style={{ marginLeft: '4px', marginRight: '4px' }}>{userCollectionCount}</span>
-          collections
-        </span>
+          <span className="author-collection">
+            Author of
+            <span style={{ marginLeft: '4px', marginRight: '4px' }}>{userCollectionCount}</span>
+            collections
+          </span>
+        </div>
+        {isDetailEdit ? (
+          <WalletDetailEdit
+            setDetailEdit={setDetailEdit}
+            user={userData}
+            userId={userId}
+            imageUrl={userProfileImageUrl}
+          />
+        ) : (
+          <WalletDisplay setDetailEdit={setDetailEdit} user={userData} />
+        )}
       </div>
-      {isDetailEdit ? (
-        <WalletDetailEdit
-          setDetailEdit={setDetailEdit}
-          user={userData}
-          userId={userId}
-          imageUrl={userProfileImageUrl}
-        />
-      ) : (
-        <WalletDisplay setDetailEdit={setDetailEdit} user={userData} />
-      )}
-    </div>
+      {userUpdateError && userUpdateError.error
+        && (
+          <Alert
+            severity="error"
+            sx={{ width: '50%' }}
+          >
+            {userUpdateError.message}
+          </Alert>
+        )}
+    </>
   );
 }
 export default WalletDetail;

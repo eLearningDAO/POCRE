@@ -11,6 +11,7 @@ import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import { formReducer } from '../../../utils/helpers/formReducer';
 import useWalletStore from '../../../hooks/userWalletService';
+import Loader from '../../../components/uicore/Loader';
 
 function WalletDetailEdit({
   setDetailEdit,
@@ -20,8 +21,9 @@ function WalletDetailEdit({
 }) {
   const [ratingValue, setRatingValue] = useState(3);
   const [formState, dispatch] = useReducer(formReducer, user);
-  const updateUser = useWalletStore((s) => s.updateUser);
+  const updateUser = useWalletStore((state) => state.updateUser);
   const getUserById = useWalletStore((state) => state.getUserById);
+  const isUserDataUpdating = useWalletStore((state) => state.isUserDataUpdating);
 
   const handleWalletData = async (event) => {
     event.stopPropagation();
@@ -138,7 +140,10 @@ function WalletDetailEdit({
           value={formState.bio}
           onChange={(event) => handleTextChange(event)}
         />
-        <Button onClick={handleWalletData} className="edit-submit">Save</Button>
+        <Button onClick={handleWalletData} className="edit-submit" disabled={isUserDataUpdating}>
+          {isUserDataUpdating && <Loader />}
+          {!isUserDataUpdating && ' Save'}
+        </Button>
       </div>
     </form>
   );

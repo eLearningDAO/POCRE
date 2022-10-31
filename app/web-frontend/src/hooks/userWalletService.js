@@ -5,8 +5,11 @@ const useWalletStore = create((set) => ({
   userData: {},
   userCollectionCount: 0,
   userProfileImageUrl: '',
+  isUserDataUpdating: false,
+  userUpdateError: {},
   updateUser: async (user, userId, imageUrl) => {
     const url = `https://pocre-api.herokuapp.com/v1/users/${userId}`;
+    set({ isUserDataUpdating: true });
     const requestOptions = {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -23,13 +26,19 @@ const useWalletStore = create((set) => ({
     };
 
     const userResponse = await fetch(url, requestOptions).then((response) => response.json());
-    if (userResponse.code >= 400) throw new Error('Failed to fetch material');
-    set({ userUpdatedResult: userResponse.results });
+    if (userResponse.code >= 400) {
+      set({ isUserDataUpdating: false, userUpdateError: { isError: true, message: 'Failed to update user' } });
+    }
+    set({
+      userUpdatedResult: userResponse.results,
+      isUserDataUpdating: false,
+      userUpdateError: {},
+    });
   },
   getUserById: async (userId) => {
     const url = `https://pocre-api.herokuapp.com/v1/users/${userId}`;
     const userResponse = await fetch(url).then((response) => response.json());
-    if (userResponse.code >= 400) throw new Error('Failed to fetch material');
+    if (userResponse.code >= 400) throw new Error('Failed to fetch user');
 
     const user = {
       name: userResponse.user_name,
@@ -39,6 +48,7 @@ const useWalletStore = create((set) => ({
       walletAddress: userResponse.wallet_address,
       walletType: userResponse.verified_id,
       reputationStars: userResponse.reputation_stars,
+      imageUrl: userResponse.image_url,
     };
     set({ userData: user });
   },
