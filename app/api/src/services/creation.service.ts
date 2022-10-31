@@ -4,6 +4,7 @@ import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 import statusTypes from '../constants/statusTypes';
 import { populator } from '../db/plugins/populator';
+import { populator as populatorNested } from '../db/plugins/populatorNested';
 
 interface ICreation {
   creation_title: string;
@@ -373,6 +374,44 @@ export const getCreationById = async (
   })();
 
   if (!creation) throw new ApiError(httpStatus.NOT_FOUND, 'creation not found');
+
+  return creation;
+};
+
+/**
+ * Get creation proof by id
+ * @param {string} id
+ * @returns {Promise<ICreationDoc|null>}
+ */
+export const getCreationProofById = async (id: string): Promise<ICreationDoc | null> => {
+  const creation = await (async () => {
+    try {
+      const result = await db.query(
+        `SELECT * ${populatorNested({
+          tableAlias: 'c',
+          fields: [
+            'source_id',
+            'author_id',
+            'tags',
+            'materials',
+            'materials.type_id',
+            'materials.source_id',
+            'materials.author_id',
+            'materials.invite_id',
+            'materials.invite_id.invite_from',
+            'materials.invite_id.invite_to',
+            'materials.invite_id.status_id',
+          ],
+        })} FROM creation c WHERE creation_id = $1;`,
+        [id]
+      );
+      return result.rows[0];
+    } catch {
+      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
+    }
+  })();
+
+  if (!creation) throw new ApiError(httpStatus.NOT_FOUND, 'creation proof not found');
 
   return creation;
 };

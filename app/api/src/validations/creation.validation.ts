@@ -78,6 +78,19 @@ export const getCreation = {
   }),
 };
 
+export const getCreationProof = {
+  params: Joi.object().keys({
+    creation_id: Joi.string().uuid().required(),
+  }),
+  query: Joi.object().keys({
+    response_format: Joi.string().when('with_proof', {
+      is: Joi.bool().exist(),
+      then: Joi.string().valid('document', 'json').default('json'),
+      otherwise: Joi.forbidden(),
+    }),
+  }),
+};
+
 export const updateCreation = {
   params: Joi.object().keys({
     creation_id: Joi.string().uuid().required(),
