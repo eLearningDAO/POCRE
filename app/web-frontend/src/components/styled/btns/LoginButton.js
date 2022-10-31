@@ -10,9 +10,9 @@ function LoginButton() {
 
   function handleUserAuth(pram) {
     setUser((previousS) => ({ user: pram ? { ...previousS } : null, login: pram }));
-    if (pram === false) {
-      window.location.reload();
-    }
+    // if (pram === false) {
+    window.location.reload();
+    // }
   }
   return (
     <Button
