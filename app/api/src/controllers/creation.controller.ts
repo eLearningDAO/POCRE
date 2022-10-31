@@ -18,6 +18,11 @@ export const getCreationById = catchAsync(async (req, res): Promise<void> => {
   res.send(creation);
 });
 
+export const getCreationProofById = catchAsync(async (req, res): Promise<void> => {
+  const creation = await creationService.getCreationProofById(req.params.creation_id);
+  res.send(creation);
+});
+
 export const createCreation = catchAsync(async (req, res): Promise<void> => {
   // check if reference docs exist
   await getSourceById(req.body.source_id as string); // verify source, will throw an error if source not found

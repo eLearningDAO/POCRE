@@ -16,6 +16,10 @@ router
   .patch(validate(creationValidation.updateCreation), creationController.updateCreationById)
   .delete(validate(creationValidation.deleteCreation), creationController.deleteCreationById);
 
+router
+  .route('/:creation_id/proof')
+  .get(validate(creationValidation.getCreationProof), creationController.getCreationProofById);
+
 export default router;
 
 /**
