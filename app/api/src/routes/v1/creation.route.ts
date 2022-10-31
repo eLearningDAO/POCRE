@@ -195,6 +195,18 @@ export default router;
  *         schema:
  *           type: bool
  *         description: when true, returns opened creations of which all materials are recognized by co-authors (invitation accepted by co-authors)
+ *       - in: query
+ *         name: populate
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum:
+ *               - source_id
+ *               - author_id
+ *               - tags
+ *               - materials
+ *         description: list of fields to populate
  *     responses:
  *       "200":
  *         description: OK
@@ -237,6 +249,18 @@ export default router;
  *         schema:
  *           type: string
  *         description: Creation id
+ *       - in: query
+ *         name: populate
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum:
+ *               - source_id
+ *               - author_id
+ *               - tags
+ *               - materials
+ *         description: list of fields to populate
  *     responses:
  *       "200":
  *         description: OK

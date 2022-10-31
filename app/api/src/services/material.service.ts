@@ -3,6 +3,7 @@ import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 import statusTypes from '../constants/statusTypes';
+import { populator } from '../db/plugins/populator';
 
 interface IMaterial {
   material_title: string;
@@ -21,6 +22,7 @@ interface IMaterialQuery {
   search_fields: string[];
   is_recognized: boolean;
   is_claimed: boolean;
+  populate?: string | (string | string[])[];
 }
 interface IMaterialQueryResult {
   results: Array<IMaterialDoc>;
@@ -117,12 +119,19 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
     // list of queries
     const queryModes = {
       default: {
-        query: `SELECT * FROM material ${search} OFFSET $1 LIMIT $2;`,
+        query: `SELECT * ${populator({
+          tableAlias: 'm',
+          fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+        })} FROM material m ${search} OFFSET $1 LIMIT $2;`,
         count: `SELECT COUNT(*) as total_results FROM material ${search};`,
       },
       recognizedOrClaimed: {
         query: `SELECT 
                 *
+                ${populator({
+                  tableAlias: 'm',
+                  fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+                })}
                 FROM
                 material m
                 ${search} 
@@ -260,10 +269,19 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
  * @param {string} id
  * @returns {Promise<IMaterialDoc|null>}
  */
-export const getMaterialById = async (id: string): Promise<IMaterialDoc | null> => {
+export const getMaterialById = async (
+  id: string,
+  populate?: string | (string | string[])[]
+): Promise<IMaterialDoc | null> => {
   const material = await (async () => {
     try {
-      const result = await db.query(`SELECT * FROM material WHERE material_id = $1;`, [id]);
+      const result = await db.query(
+        `SELECT * ${populator({
+          tableAlias: 'm',
+          fields: typeof populate === 'string' ? [populate] : populate,
+        })} FROM material m WHERE material_id = $1;`,
+        [id]
+      );
       return result.rows[0];
     } catch {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');

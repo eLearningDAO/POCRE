@@ -3,6 +3,7 @@ import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 import { getCreationById } from './creation.service';
+import { populator } from '../db/plugins/populator';
 
 interface ILitigation {
   litigation_title: string;
@@ -27,6 +28,7 @@ interface ILitigationQuery {
   ascend_fields: string[];
   descend_fields: string[];
   judged_by: string;
+  populate?: string | (string | string[])[];
 }
 interface ILitigationQueryResult {
   results: Array<ILitigationDoc>;
@@ -219,12 +221,19 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
     // list of queries
     const queryModes = {
       default: {
-        query: `SELECT * FROM litigation ${search} ${order} OFFSET $1 LIMIT $2;`,
+        query: `SELECT * ${populator({
+          tableAlias: 'l',
+          fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+        })} FROM litigation l ${search} ${order} OFFSET $1 LIMIT $2;`,
         count: `SELECT COUNT(*) as total_results FROM litigation ${search};`,
       },
       judged: {
         query: `SELECT 
                 * 
+                ${populator({
+                  tableAlias: 'l',
+                  fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+                })}
                 FROM 
                 litigation l 
                 ${search} 
@@ -290,10 +299,19 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
  * @param {string} id
  * @returns {Promise<ILitigationDoc|null>}
  */
-export const getLitigationById = async (id: string): Promise<ILitigationDoc | null> => {
+export const getLitigationById = async (
+  id: string,
+  populate?: string | (string | string[])[]
+): Promise<ILitigationDoc | null> => {
   const litigation = await (async () => {
     try {
-      const result = await db.query(`SELECT * FROM litigation WHERE litigation_id = $1;`, [id]);
+      const result = await db.query(
+        `SELECT * ${populator({
+          tableAlias: 'l',
+          fields: typeof populate === 'string' ? [populate] : populate,
+        })} FROM litigation l WHERE litigation_id = $1;`,
+        [id]
+      );
       return result.rows[0];
     } catch {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');

@@ -2,6 +2,7 @@ import httpStatus from 'http-status';
 import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
+import { populator } from '../db/plugins/populator';
 
 interface IInvitation {
   invite_from: string;
@@ -16,6 +17,7 @@ interface IInvitationQuery {
   search_fields: string[];
   ascend_fields: string[];
   descend_fields: string[];
+  populate?: string | (string | string[])[];
 }
 interface IInvitationQueryResult {
   results: Array<IInvitationDoc>;
@@ -92,10 +94,13 @@ export const queryInvitations = async (options: IInvitationQuery): Promise<IInvi
           } ${descendOrder}`
         : '';
 
-    const result = await db.query(`SELECT * FROM invitation ${search} ${order} OFFSET $1 LIMIT $2;`, [
-      options.page === 1 ? '0' : (options.page - 1) * options.limit,
-      options.limit,
-    ]);
+    const result = await db.query(
+      `SELECT * ${populator({
+        tableAlias: 'i',
+        fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+      })} FROM invitation i ${search} ${order} OFFSET $1 LIMIT $2;`,
+      [options.page === 1 ? '0' : (options.page - 1) * options.limit, options.limit]
+    );
     const invitations = result.rows;
 
     const count = await (await db.query(`SELECT COUNT(*) as total_results FROM invitation ${search};`, [])).rows[0];
@@ -117,10 +122,19 @@ export const queryInvitations = async (options: IInvitationQuery): Promise<IInvi
  * @param {string} id
  * @returns {Promise<IInvitationDoc|null>}
  */
-export const getInvitationById = async (id: string): Promise<IInvitationDoc | null> => {
+export const getInvitationById = async (
+  id: string,
+  populate?: string | (string | string[])[]
+): Promise<IInvitationDoc | null> => {
   const invitation = await (async () => {
     try {
-      const result = await db.query(`SELECT * FROM invitation WHERE invite_id = $1;`, [id]);
+      const result = await db.query(
+        `SELECT * ${populator({
+          tableAlias: 'i',
+          fields: typeof populate === 'string' ? [populate] : populate,
+        })} FROM invitation i WHERE invite_id = $1;`,
+        [id]
+      );
       return result.rows[0];
     } catch {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');

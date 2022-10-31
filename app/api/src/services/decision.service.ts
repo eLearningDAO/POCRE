@@ -1,6 +1,7 @@
 import httpStatus from 'http-status';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
+import { populator } from '../db/plugins/populator';
 
 interface IDecision {
   decision_status: boolean;
@@ -35,10 +36,19 @@ export const createDecision = async (decisionBody: IDecision): Promise<IDecision
  * @param {string} id
  * @returns {Promise<IDecisionDoc|null>}
  */
-export const getDecisionById = async (id: string): Promise<IDecisionDoc | null> => {
+export const getDecisionById = async (
+  id: string,
+  populate?: string | (string | string[])[]
+): Promise<IDecisionDoc | null> => {
   const decision = await (async () => {
     try {
-      const result = await db.query(`SELECT * FROM decision WHERE decision_id = $1;`, [id]);
+      const result = await db.query(
+        `SELECT * ${populator({
+          tableAlias: 'd',
+          fields: typeof populate === 'string' ? [populate] : populate,
+        })} FROM decision d WHERE decision_id = $1;`,
+        [id]
+      );
       return result.rows[0];
     } catch {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');

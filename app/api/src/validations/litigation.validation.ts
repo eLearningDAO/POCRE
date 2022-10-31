@@ -29,12 +29,98 @@ export const queryLitigations = {
     ascend_fields: Joi.array().items(Joi.string().valid('litigation_start', 'litigation_end')).optional(),
     descend_fields: Joi.array().items(Joi.string().valid('litigation_start', 'litigation_end')).optional(),
     judged_by: Joi.string().uuid().optional(),
+    populate: Joi.alternatives()
+      .try(
+        Joi.string().valid(
+          'creation_id',
+          'material_id',
+          'assumed_author',
+          'issuer_id',
+          'winner',
+          'invitations',
+          'decisions'
+        ),
+        Joi.array().items(
+          Joi.alternatives().try(
+            Joi.string().valid(
+              'creation_id',
+              'material_id',
+              'assumed_author',
+              'issuer_id',
+              'winner',
+              'invitations',
+              'decisions'
+            ),
+            Joi.array()
+              .items(Joi.string())
+              .ordered(
+                Joi.string().valid(
+                  'creation_id',
+                  'material_id',
+                  'assumed_author',
+                  'issuer_id',
+                  'winner',
+                  'invitations',
+                  'decisions'
+                ),
+                Joi.string()
+              )
+              .min(2)
+              .max(2)
+          )
+        )
+      )
+      .optional(),
   }),
 };
 
 export const getLitigation = {
   params: Joi.object().keys({
     litigation_id: Joi.string().uuid().required(),
+  }),
+  query: Joi.object().keys({
+    populate: Joi.alternatives()
+      .try(
+        Joi.string().valid(
+          'creation_id',
+          'material_id',
+          'assumed_author',
+          'issuer_id',
+          'winner',
+          'invitations',
+          'decisions'
+        ),
+        Joi.array().items(
+          Joi.alternatives().try(
+            Joi.string().valid(
+              'creation_id',
+              'material_id',
+              'assumed_author',
+              'issuer_id',
+              'winner',
+              'invitations',
+              'decisions'
+            ),
+            Joi.array()
+              .items(Joi.string())
+              .ordered(
+                Joi.string().valid(
+                  'creation_id',
+                  'material_id',
+                  'assumed_author',
+                  'issuer_id',
+                  'winner',
+                  'invitations',
+                  'decisions'
+                ),
+                Joi.string()
+              )
+              .min(2)
+              .max(2)
+          )
+        )
+      )
+      .optional(),
   }),
 };
 
