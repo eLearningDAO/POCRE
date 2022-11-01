@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useReducer } from 'react';
 import Rating from '@mui/material/Rating';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -11,16 +11,45 @@ import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import { Address } from '@emurgo/cardano-serialization-lib-asmjs';
 import useUserInfo from '../../../hooks/user/userInfo';
+import { formReducer } from 'utils/helpers/formReducer';
+import useWalletStore from 'hooks/userWalletService';
 // eslint-disable-next-line import/no-unresolved, unicorn/prefer-module
 const { Buffer } = require('buffer/');
-
-function WalletDetailEdit() {
-  const { login, flag } = useUserInfo();
+function WalletDetailEdit({
+  setDetailEdit,
+  user,
+  userId,
+  imageUrl,
+}) {
   const [ratingValue, setRatingValue] = useState(3);
+  const [formState, dispatch] = useReducer(formReducer, user);
+  const updateUser = useWalletStore((state) => state.updateUser);
+  const getUserById = useWalletStore((state) => state.getUserById);
+  const isUserDataUpdating = useWalletStore((state) => state.isUserDataUpdating);
+  const { login, flag } = useUserInfo();
   const [wallets, setWallets] = useState([]);
   const [walletAddress, setWalletAddress] = useState('');
   const [selectKey, setSelectKey] = useState(0);
   const selectElement = useRef();
+
+  const handleWalletData = async (event) => {
+    event.stopPropagation();
+    await updateUser(
+      formState,
+      userId,
+      imageUrl,
+    );
+    getUserById(userId);
+    setDetailEdit(false);
+  };
+
+  const handleTextChange = (event) => {
+    dispatch({
+      type: 'HANDLE INPUT TEXT',
+      field: event.target.name,
+      payload: event.target.value,
+    });
+  };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const getUsedAddress = async (walletKey) => {
@@ -29,7 +58,6 @@ function WalletDetailEdit() {
       const raw = await API.getUsedAddresses();
       const rawFirst = raw[0];
       return Address.from_bytes(Buffer.from(rawFirst, 'hex')).to_bech32();
-      // console.log(rewardAddress)
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);
@@ -59,26 +87,17 @@ function WalletDetailEdit() {
     }
   };
 
-  useEffect(async () => {
-    await pollWallets();
+  useEffect(() => {
+    pollWallets();
   }, []);
 
   useEffect(() => {
-    // window.location.reload();
-    // document.getElementById('walletAddr').value = '';
     setSelectKey((previous) => (previous + 1));
     setWalletAddress('');
   }, [flag]);
 
-  // useEffect(async () => {
-  //   console.log(wallets[0]);
-  //   let initialAddr = await getUsedAddress(wallets[0]);
-  //   initialAddr = `${initialAddr.slice(0, 10)}.....${initialAddr.slice(93, 103)}`;
-  //   setWalletAddress(initialAddr);
-  // }, [wallets]);
-
   return (
-    <div className="wallet-detail-right-container-edit">
+    <form className="wallet-detail-right-container-edit">
       <div className="wallet-detail-right-container-left-edit">
         <div className="wallet-detail-status-edit">
           <span className="wallet-rating-title">Wallet Rating</span>
@@ -105,7 +124,11 @@ function WalletDetailEdit() {
             Available Wallet
             {flag}
           </span>
-          <select className="wallet-select" onChange={(event) => handleWallectSelect(event)} key={selectKey}>
+          <select
+            className="wallet-select"
+            onChange={(event) => handleWallectSelect(event)}
+            key={selectKey}
+          >
             <option value="" ref={selectElement}>
               Select Wallet
             </option>
@@ -116,13 +139,15 @@ function WalletDetailEdit() {
                 </option>
               ))
             }
-            {/* <option className="wallete-option" value="1">Wallet 1</option> */}
-            {/* <option value="2">Wallet 3</option> */}
-            {/* <option value="3">Wallet 4</option> */}
           </select>
         </div>
         <div className="edit-available-wallet">
           <span>Wallet Address</span>
+          <input
+            name="walletAddress"
+            value={formState.walletAddress}
+            onChange={(event) => handleTextChange(event)}
+          />
           <input value={walletAddress} id="walletAddr" />
         </div>
       </div>
@@ -130,44 +155,59 @@ function WalletDetailEdit() {
         <Input
           className="wallet-edit-input"
           placeholder="Name"
+          name="name"
           startAdornment={(
             <InputAdornment position="start">
               <PersonOutlineIcon />
             </InputAdornment>
           )}
+          value={formState.name}
+          onChange={(event) => handleTextChange(event)}
         />
         <Input
           className="wallet-edit-input"
           placeholder="Email Address"
+          name="email"
           startAdornment={(
             <InputAdornment position="start">
               <MailOutlineIcon />
             </InputAdornment>
           )}
+          value={formState.email}
+          onChange={(event) => handleTextChange(event)}
         />
         <Input
           className="wallet-edit-input"
           placeholder="Phone"
+          name="phone"
           startAdornment={(
             <InputAdornment position="start">
               <LocalPhoneOutlinedIcon />
             </InputAdornment>
           )}
+          value={formState.phone}
+          onChange={(event) => handleTextChange(event)}
         />
         <Input
           className="wallet-edit-input-area"
           placeholder="Bio"
           multiline
+          name="bio"
           maxRows={4}
           startAdornment={(
             <InputAdornment position="start">
               <BorderColorOutlinedIcon />
             </InputAdornment>
           )}
+          value={formState.bio}
+          onChange={(event) => handleTextChange(event)}
         />
-        <Button className="edit-submit">Save</Button>
+        <Button onClick={handleWalletData} className="edit-submit" disabled={isUserDataUpdating}>
+          {isUserDataUpdating && <Loader />}
+          {!isUserDataUpdating && ' Save'}
+        </Button>
       </div>
-    </div>
+    </form>
   );
 }
 
