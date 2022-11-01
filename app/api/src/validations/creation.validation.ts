@@ -60,11 +60,7 @@ export const getCreationProof = {
     creation_id: Joi.string().uuid().required(),
   }),
   query: Joi.object().keys({
-    response_format: Joi.string().when('with_proof', {
-      is: Joi.bool().exist(),
-      then: Joi.string().valid('document', 'json').default('json'),
-      otherwise: Joi.forbidden(),
-    }),
+    format: Joi.string().valid('web', 'json').default('web'),
   }),
 };
 

@@ -375,44 +375,6 @@ export const getCreationById = async (id: string, populate?: string | string[]):
 };
 
 /**
- * Get creation proof by id
- * @param {string} id
- * @returns {Promise<ICreationDoc|null>}
- */
-export const getCreationProofById = async (id: string): Promise<ICreationDoc | null> => {
-  const creation = await (async () => {
-    try {
-      const result = await db.query(
-        `SELECT * ${populator({
-          tableAlias: 'c',
-          fields: [
-            'source_id',
-            'author_id',
-            'tags',
-            'materials',
-            'materials.type_id',
-            'materials.source_id',
-            'materials.author_id',
-            'materials.invite_id',
-            'materials.invite_id.invite_from',
-            'materials.invite_id.invite_to',
-            'materials.invite_id.status_id',
-          ],
-        })} FROM creation c WHERE creation_id = $1;`,
-        [id]
-      );
-      return result.rows[0];
-    } catch {
-      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
-    }
-  })();
-
-  if (!creation) throw new ApiError(httpStatus.NOT_FOUND, 'creation proof not found');
-
-  return creation;
-};
-
-/**
  * Update creation by id
  * @param {string} id
  * @param {Partial<ICreation>} updateBody
