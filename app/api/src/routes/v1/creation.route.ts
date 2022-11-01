@@ -210,7 +210,14 @@ export default router;
  *               - author_id
  *               - tags
  *               - materials
- *         description: list of fields to populate
+ *               - materials.source_id
+ *               - materials.type_id
+ *               - materials.invite_id
+ *               - materials.invite_id.invite_from
+ *               - materials.invite_id.invite_to
+ *               - materials.invite_id.status_id
+ *               - materials.author_id
+ *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
  *       "200":
  *         description: OK
@@ -264,7 +271,14 @@ export default router;
  *               - author_id
  *               - tags
  *               - materials
- *         description: list of fields to populate
+ *               - materials.source_id
+ *               - materials.type_id
+ *               - materials.invite_id
+ *               - materials.invite_id.invite_from
+ *               - materials.invite_id.invite_to
+ *               - materials.invite_id.status_id
+ *               - materials.author_id
+ *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
  *       "200":
  *         description: OK

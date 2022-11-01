@@ -117,6 +117,64 @@ const tableNameMap: ITableNameMap = {
  */
 const arrayFields: string[] = ['invitations', 'decisions', 'tags', 'materials'];
 
+/**
+ * List of deep fields that can be populated in decision
+ */
+const decisionDeepFields: string[] = ['maker_id'];
+
+/**
+ * List of deep fields that can be populated in invitation
+ */
+const invitationDeepFields: string[] = ['invite_from', 'invite_to', 'status_id'];
+
+/**
+ * List of deep fields that can be populated in material
+ */
+const materialDeepFields: string[] = [
+  'source_id',
+  'type_id',
+  'invite_id',
+  ...invitationDeepFields.map((x) => `invite_id.${x}`),
+  'author_id',
+];
+
+/**
+ * List of deep fields that can be populated in creation
+ */
+const creationDeepFields: string[] = [
+  'source_id',
+  'author_id',
+  'tags',
+  'materials',
+  ...materialDeepFields.map((x) => `materials.${x}`),
+];
+
+/**
+ * List of deep fields that can be populated in litigation
+ */
+const litigationDeepFields: string[] = [
+  'assumed_author',
+  'issuer_id',
+  'winner',
+  'creation_id',
+  ...creationDeepFields.map((x) => `creation_id.${x}`),
+  'material_id',
+  ...materialDeepFields.map((x) => `material_id.${x}`),
+  'invitations',
+  ...invitationDeepFields.map((x) => `invitations.${x}`),
+  'decisions',
+  ...decisionDeepFields.map((x) => `decisions.${x}`),
+];
+
 export type { IPkMap, ITableNameMap };
 
-export { pkMap, tableNameMap, arrayFields };
+export {
+  pkMap,
+  tableNameMap,
+  arrayFields,
+  decisionDeepFields,
+  invitationDeepFields,
+  materialDeepFields,
+  creationDeepFields,
+  litigationDeepFields,
+};

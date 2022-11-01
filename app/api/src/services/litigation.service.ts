@@ -28,7 +28,7 @@ interface ILitigationQuery {
   ascend_fields: string[];
   descend_fields: string[];
   judged_by: string;
-  populate?: string | (string | string[])[];
+  populate?: string | string[];
 }
 interface ILitigationQueryResult {
   results: Array<ILitigationDoc>;
@@ -299,10 +299,7 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
  * @param {string} id
  * @returns {Promise<ILitigationDoc|null>}
  */
-export const getLitigationById = async (
-  id: string,
-  populate?: string | (string | string[])[]
-): Promise<ILitigationDoc | null> => {
+export const getLitigationById = async (id: string, populate?: string | string[]): Promise<ILitigationDoc | null> => {
   const litigation = await (async () => {
     try {
       const result = await db.query(

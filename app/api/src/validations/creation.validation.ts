@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { creationDeepFields } from '../db/map';
 
 export const createCreation = {
   body: Joi.object().keys({
@@ -38,19 +39,7 @@ export const queryCreations = {
       otherwise: Joi.optional(),
     }),
     populate: Joi.alternatives()
-      .try(
-        Joi.string().valid('source_id', 'author_id', 'tags', 'materials'),
-        Joi.array().items(
-          Joi.alternatives().try(
-            Joi.string().valid('source_id', 'author_id', 'tags', 'materials'),
-            Joi.array()
-              .items(Joi.string())
-              .ordered(Joi.string().valid('source_id', 'author_id', 'tags', 'materials'), Joi.string())
-              .min(2)
-              .max(2)
-          )
-        )
-      )
+      .try(Joi.string().valid(...creationDeepFields), Joi.array().items(Joi.string().valid(...creationDeepFields)))
       .optional(),
   }),
 };
@@ -61,19 +50,7 @@ export const getCreation = {
   }),
   query: Joi.object().keys({
     populate: Joi.alternatives()
-      .try(
-        Joi.string().valid('source_id', 'author_id', 'tags', 'materials'),
-        Joi.array().items(
-          Joi.alternatives().try(
-            Joi.string().valid('source_id', 'author_id', 'tags', 'materials'),
-            Joi.array()
-              .items(Joi.string())
-              .ordered(Joi.string().valid('source_id', 'author_id', 'tags', 'materials'), Joi.string())
-              .min(2)
-              .max(2)
-          )
-        )
-      )
+      .try(Joi.string().valid(...creationDeepFields), Joi.array().items(Joi.string().valid(...creationDeepFields)))
       .optional(),
   }),
 };
