@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { decisionDeepFields } from '../db/map';
 
 export const createDecision = {
   body: Joi.object().keys({
@@ -13,7 +14,7 @@ export const getDecision = {
   }),
   query: Joi.object().keys({
     populate: Joi.alternatives()
-      .try(Joi.string().valid('maker_id'), Joi.array().items(Joi.string().valid('maker_id')))
+      .try(Joi.string().valid(...decisionDeepFields), Joi.array().items(Joi.string().valid(...decisionDeepFields)))
       .optional(),
   }),
 };

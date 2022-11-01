@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { litigationDeepFields } from '../db/map';
 
 export const createLitigation = {
   body: Joi.object().keys({
@@ -30,28 +31,7 @@ export const queryLitigations = {
     descend_fields: Joi.array().items(Joi.string().valid('litigation_start', 'litigation_end')).optional(),
     judged_by: Joi.string().uuid().optional(),
     populate: Joi.alternatives()
-      .try(
-        Joi.string().valid(
-          'creation_id',
-          'material_id',
-          'assumed_author',
-          'issuer_id',
-          'winner',
-          'invitations',
-          'decisions'
-        ),
-        Joi.array().items(
-          Joi.string().valid(
-            'creation_id',
-            'material_id',
-            'assumed_author',
-            'issuer_id',
-            'winner',
-            'invitations',
-            'decisions'
-          )
-        )
-      )
+      .try(Joi.string().valid(...litigationDeepFields), Joi.array().items(Joi.string().valid(...litigationDeepFields)))
       .optional(),
   }),
 };
@@ -62,28 +42,7 @@ export const getLitigation = {
   }),
   query: Joi.object().keys({
     populate: Joi.alternatives()
-      .try(
-        Joi.string().valid(
-          'creation_id',
-          'material_id',
-          'assumed_author',
-          'issuer_id',
-          'winner',
-          'invitations',
-          'decisions'
-        ),
-        Joi.array().items(
-          Joi.string().valid(
-            'creation_id',
-            'material_id',
-            'assumed_author',
-            'issuer_id',
-            'winner',
-            'invitations',
-            'decisions'
-          )
-        )
-      )
+      .try(Joi.string().valid(...litigationDeepFields), Joi.array().items(Joi.string().valid(...litigationDeepFields)))
       .optional(),
   }),
 };

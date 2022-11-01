@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { invitationDeepFields } from '../db/map';
 
 export const createInvitation = {
   body: Joi.object().keys({
@@ -22,10 +23,7 @@ export const queryInvitations = {
     ascend_fields: Joi.array().items(Joi.string().valid('invite_issued')).optional(),
     descend_fields: Joi.array().items(Joi.string().valid('invite_issued')).optional(),
     populate: Joi.alternatives()
-      .try(
-        Joi.string().valid('invite_from', 'invite_to', 'status_id'),
-        Joi.array().items(Joi.string().valid('invite_from', 'invite_to', 'status_id'))
-      )
+      .try(Joi.string().valid(...invitationDeepFields), Joi.array().items(Joi.string().valid(...invitationDeepFields)))
       .optional(),
   }),
 };
@@ -36,10 +34,7 @@ export const getInvitation = {
   }),
   query: Joi.object().keys({
     populate: Joi.alternatives()
-      .try(
-        Joi.string().valid('invite_from', 'invite_to', 'status_id'),
-        Joi.array().items(Joi.string().valid('invite_from', 'invite_to', 'status_id'))
-      )
+      .try(Joi.string().valid(...invitationDeepFields), Joi.array().items(Joi.string().valid(...invitationDeepFields)))
       .optional(),
   }),
 };

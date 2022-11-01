@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { materialDeepFields } from '../db/map';
 
 export const createMaterial = {
   body: Joi.object().keys({
@@ -26,10 +27,7 @@ export const queryMaterials = {
     is_recognized: Joi.bool().optional(),
     is_claimed: Joi.bool().optional(),
     populate: Joi.alternatives()
-      .try(
-        Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'),
-        Joi.array().items(Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'))
-      )
+      .try(Joi.string().valid(...materialDeepFields), Joi.array().items(Joi.string().valid(...materialDeepFields)))
       .optional(),
   }),
 };
@@ -40,10 +38,7 @@ export const getMaterial = {
   }),
   query: Joi.object().keys({
     populate: Joi.alternatives()
-      .try(
-        Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'),
-        Joi.array().items(Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'))
-      )
+      .try(Joi.string().valid(...materialDeepFields), Joi.array().items(Joi.string().valid(...materialDeepFields)))
       .optional(),
   }),
 };
