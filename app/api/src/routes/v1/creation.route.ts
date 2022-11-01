@@ -210,6 +210,13 @@ export default router;
  *               - author_id
  *               - tags
  *               - materials
+ *               - materials.source_id
+ *               - materials.type_id
+ *               - materials.invite_id
+ *               - materials.invite_id.invite_from
+ *               - materials.invite_id.invite_to
+ *               - materials.invite_id.status_id
+ *               - materials.author_id
  *         description: list of fields to populate
  *     responses:
  *       "200":
@@ -264,6 +271,13 @@ export default router;
  *               - author_id
  *               - tags
  *               - materials
+ *               - materials.source_id
+ *               - materials.type_id
+ *               - materials.invite_id
+ *               - materials.invite_id.invite_from
+ *               - materials.invite_id.invite_to
+ *               - materials.invite_id.status_id
+ *               - materials.author_id
  *         description: list of fields to populate
  *     responses:
  *       "200":
