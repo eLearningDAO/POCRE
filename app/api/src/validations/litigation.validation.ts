@@ -41,32 +41,14 @@ export const queryLitigations = {
           'decisions'
         ),
         Joi.array().items(
-          Joi.alternatives().try(
-            Joi.string().valid(
-              'creation_id',
-              'material_id',
-              'assumed_author',
-              'issuer_id',
-              'winner',
-              'invitations',
-              'decisions'
-            ),
-            Joi.array()
-              .items(Joi.string())
-              .ordered(
-                Joi.string().valid(
-                  'creation_id',
-                  'material_id',
-                  'assumed_author',
-                  'issuer_id',
-                  'winner',
-                  'invitations',
-                  'decisions'
-                ),
-                Joi.string()
-              )
-              .min(2)
-              .max(2)
+          Joi.string().valid(
+            'creation_id',
+            'material_id',
+            'assumed_author',
+            'issuer_id',
+            'winner',
+            'invitations',
+            'decisions'
           )
         )
       )
@@ -91,32 +73,14 @@ export const getLitigation = {
           'decisions'
         ),
         Joi.array().items(
-          Joi.alternatives().try(
-            Joi.string().valid(
-              'creation_id',
-              'material_id',
-              'assumed_author',
-              'issuer_id',
-              'winner',
-              'invitations',
-              'decisions'
-            ),
-            Joi.array()
-              .items(Joi.string())
-              .ordered(
-                Joi.string().valid(
-                  'creation_id',
-                  'material_id',
-                  'assumed_author',
-                  'issuer_id',
-                  'winner',
-                  'invitations',
-                  'decisions'
-                ),
-                Joi.string()
-              )
-              .min(2)
-              .max(2)
+          Joi.string().valid(
+            'creation_id',
+            'material_id',
+            'assumed_author',
+            'issuer_id',
+            'winner',
+            'invitations',
+            'decisions'
           )
         )
       )

@@ -13,15 +13,7 @@ export const getDecision = {
   }),
   query: Joi.object().keys({
     populate: Joi.alternatives()
-      .try(
-        Joi.string().valid('maker_id'),
-        Joi.array().items(
-          Joi.alternatives().try(
-            Joi.string().valid('maker_id'),
-            Joi.array().items(Joi.string()).ordered(Joi.string().valid('maker_id'), Joi.string()).min(2).max(2)
-          )
-        )
-      )
+      .try(Joi.string().valid('maker_id'), Joi.array().items(Joi.string().valid('maker_id')))
       .optional(),
   }),
 };

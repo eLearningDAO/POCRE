@@ -4,7 +4,6 @@ import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 import statusTypes from '../constants/statusTypes';
 import { populator } from '../db/plugins/populator';
-import { populator as populatorNested } from '../db/plugins/populatorNested';
 
 interface ICreation {
   creation_title: string;
@@ -27,7 +26,7 @@ interface ICreationQuery {
   is_trending?: boolean;
   is_partially_assigned?: boolean;
   is_fully_assigned?: boolean;
-  populate?: string | (string | string[])[];
+  populate?: string | string[];
 }
 interface ICreationQueryResult {
   results: Array<ICreationDoc>;
@@ -354,10 +353,7 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
  * @param {string} id
  * @returns {Promise<ICreationDoc|null>}
  */
-export const getCreationById = async (
-  id: string,
-  populate?: string | (string | string[])[]
-): Promise<ICreationDoc | null> => {
+export const getCreationById = async (id: string, populate?: string | string[]): Promise<ICreationDoc | null> => {
   const creation = await (async () => {
     try {
       const result = await db.query(
@@ -387,7 +383,7 @@ export const getCreationProofById = async (id: string): Promise<ICreationDoc | n
   const creation = await (async () => {
     try {
       const result = await db.query(
-        `SELECT * ${populatorNested({
+        `SELECT * ${populator({
           tableAlias: 'c',
           fields: [
             'source_id',

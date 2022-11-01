@@ -28,16 +28,7 @@ export const queryMaterials = {
     populate: Joi.alternatives()
       .try(
         Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'),
-        Joi.array().items(
-          Joi.alternatives().try(
-            Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'),
-            Joi.array()
-              .items(Joi.string())
-              .ordered(Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'), Joi.string())
-              .min(2)
-              .max(2)
-          )
-        )
+        Joi.array().items(Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'))
       )
       .optional(),
   }),
@@ -51,16 +42,7 @@ export const getMaterial = {
     populate: Joi.alternatives()
       .try(
         Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'),
-        Joi.array().items(
-          Joi.alternatives().try(
-            Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'),
-            Joi.array()
-              .items(Joi.string())
-              .ordered(Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'), Joi.string())
-              .min(2)
-              .max(2)
-          )
-        )
+        Joi.array().items(Joi.string().valid('source_id', 'type_id', 'invite_id', 'author_id'))
       )
       .optional(),
   }),

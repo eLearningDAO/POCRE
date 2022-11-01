@@ -24,16 +24,7 @@ export const queryInvitations = {
     populate: Joi.alternatives()
       .try(
         Joi.string().valid('invite_from', 'invite_to', 'status_id'),
-        Joi.array().items(
-          Joi.alternatives().try(
-            Joi.string().valid('invite_from', 'invite_to', 'status_id'),
-            Joi.array()
-              .items(Joi.string())
-              .ordered(Joi.string().valid('invite_from', 'invite_to', 'status_id'), Joi.string())
-              .min(2)
-              .max(2)
-          )
-        )
+        Joi.array().items(Joi.string().valid('invite_from', 'invite_to', 'status_id'))
       )
       .optional(),
   }),
@@ -47,16 +38,7 @@ export const getInvitation = {
     populate: Joi.alternatives()
       .try(
         Joi.string().valid('invite_from', 'invite_to', 'status_id'),
-        Joi.array().items(
-          Joi.alternatives().try(
-            Joi.string().valid('invite_from', 'invite_to', 'status_id'),
-            Joi.array()
-              .items(Joi.string())
-              .ordered(Joi.string().valid('invite_from', 'invite_to', 'status_id'), Joi.string())
-              .min(2)
-              .max(2)
-          )
-        )
+        Joi.array().items(Joi.string().valid('invite_from', 'invite_to', 'status_id'))
       )
       .optional(),
   }),

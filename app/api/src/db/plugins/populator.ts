@@ -2,7 +2,7 @@ import { IPkMap, pkMap, ITableNameMap, tableNameMap, arrayFields } from '../map'
 
 interface IPopulator {
   tableAlias: string;
-  fields: string[];
+  fields: string[] | undefined;
 }
 
 interface IDeepPopulate {
@@ -154,7 +154,7 @@ const fieldPopulateObjectsGenerator = (fields: string[]) => {
  * @returns query string with population queries calculated by parameters
  */
 const populator = ({ tableAlias, fields }: IPopulator): string => {
-  if (fields.length === 0) return '';
+  if (!fields || fields.length === 0) return '';
 
   const fieldsPopulateObjects = fieldPopulateObjectsGenerator(fields);
 

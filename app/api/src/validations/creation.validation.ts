@@ -40,16 +40,7 @@ export const queryCreations = {
     populate: Joi.alternatives()
       .try(
         Joi.string().valid('source_id', 'author_id', 'tags', 'materials'),
-        Joi.array().items(
-          Joi.alternatives().try(
-            Joi.string().valid('source_id', 'author_id', 'tags', 'materials'),
-            Joi.array()
-              .items(Joi.string())
-              .ordered(Joi.string().valid('source_id', 'author_id', 'tags', 'materials'), Joi.string())
-              .min(2)
-              .max(2)
-          )
-        )
+        Joi.array().items(Joi.string().valid('source_id', 'author_id', 'tags', 'materials'))
       )
       .optional(),
   }),
@@ -63,16 +54,7 @@ export const getCreation = {
     populate: Joi.alternatives()
       .try(
         Joi.string().valid('source_id', 'author_id', 'tags', 'materials'),
-        Joi.array().items(
-          Joi.alternatives().try(
-            Joi.string().valid('source_id', 'author_id', 'tags', 'materials'),
-            Joi.array()
-              .items(Joi.string())
-              .ordered(Joi.string().valid('source_id', 'author_id', 'tags', 'materials'), Joi.string())
-              .min(2)
-              .max(2)
-          )
-        )
+        Joi.array().items(Joi.string().valid('source_id', 'author_id', 'tags', 'materials'))
       )
       .optional(),
   }),

@@ -36,10 +36,7 @@ export const createDecision = async (decisionBody: IDecision): Promise<IDecision
  * @param {string} id
  * @returns {Promise<IDecisionDoc|null>}
  */
-export const getDecisionById = async (
-  id: string,
-  populate?: string | (string | string[])[]
-): Promise<IDecisionDoc | null> => {
+export const getDecisionById = async (id: string, populate?: string | string[]): Promise<IDecisionDoc | null> => {
   const decision = await (async () => {
     try {
       const result = await db.query(

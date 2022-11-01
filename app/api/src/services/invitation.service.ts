@@ -17,7 +17,7 @@ interface IInvitationQuery {
   search_fields: string[];
   ascend_fields: string[];
   descend_fields: string[];
-  populate?: string | (string | string[])[];
+  populate?: string | string[];
 }
 interface IInvitationQueryResult {
   results: Array<IInvitationDoc>;
@@ -122,10 +122,7 @@ export const queryInvitations = async (options: IInvitationQuery): Promise<IInvi
  * @param {string} id
  * @returns {Promise<IInvitationDoc|null>}
  */
-export const getInvitationById = async (
-  id: string,
-  populate?: string | (string | string[])[]
-): Promise<IInvitationDoc | null> => {
+export const getInvitationById = async (id: string, populate?: string | string[]): Promise<IInvitationDoc | null> => {
   const invitation = await (async () => {
     try {
       const result = await db.query(
