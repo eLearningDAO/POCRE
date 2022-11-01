@@ -83,7 +83,7 @@ export default router;
  *             type: string
  *             enum:
  *               - maker_id
- *         description: list of fields to populate
+ *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
  *       "200":
  *         description: OK
