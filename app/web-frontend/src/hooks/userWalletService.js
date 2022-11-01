@@ -7,7 +7,7 @@ const useWalletStore = create((set) => ({
   userProfileImageUrl: '',
   isUserDataUpdating: false,
   userUpdateError: {},
-  updateUser: async (user, userId, imageUrl) => {
+  updateUser: async (user, userId) => {
     const url = `https://pocre-api.herokuapp.com/v1/users/${userId}`;
     set({ isUserDataUpdating: true });
     const requestOptions = {
@@ -15,13 +15,13 @@ const useWalletStore = create((set) => ({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         user_name: user.name,
-        wallet_address: user.walletAddress,
+        wallet_address: user.wallet_address,
         user_bio: user.bio,
         phone: user.phone,
         email_address: user.email,
         verified_id: '28y9gd27g2g237g80hnibhi',
         reputation_stars: 0,
-        image_url: imageUrl,
+        image_url: user.image_url,
       }),
     };
 

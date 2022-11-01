@@ -437,6 +437,11 @@
     position: relative;
 }
 
+.front-face-photo>img {
+    width: 190px;
+    height: 210px;
+}
+
 .wallete-detail-right-container {
     width: 50%;
 }

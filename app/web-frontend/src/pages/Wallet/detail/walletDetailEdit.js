@@ -1,4 +1,9 @@
-import React, { useEffect, useState, useRef, useReducer } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useReducer,
+} from 'react';
 import Rating from '@mui/material/Rating';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -10,11 +15,13 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import { Address } from '@emurgo/cardano-serialization-lib-asmjs';
-import useUserInfo from '../../../hooks/user/userInfo';
 import { formReducer } from 'utils/helpers/formReducer';
 import useWalletStore from 'hooks/userWalletService';
+import Loader from 'components/uicore/Loader';
+import useUserInfo from '../../../hooks/user/userInfo';
 // eslint-disable-next-line import/no-unresolved, unicorn/prefer-module
 const { Buffer } = require('buffer/');
+
 function WalletDetailEdit({
   setDetailEdit,
   user,
@@ -34,10 +41,10 @@ function WalletDetailEdit({
 
   const handleWalletData = async (event) => {
     event.stopPropagation();
+    const userData = { ...formState, wallet_address: walletAddress, image_url: imageUrl };
     await updateUser(
-      formState,
+      userData,
       userId,
-      imageUrl,
     );
     getUserById(userId);
     setDetailEdit(false);
@@ -143,11 +150,6 @@ function WalletDetailEdit({
         </div>
         <div className="edit-available-wallet">
           <span>Wallet Address</span>
-          <input
-            name="walletAddress"
-            value={formState.walletAddress}
-            onChange={(event) => handleTextChange(event)}
-          />
           <input value={walletAddress} id="walletAddr" />
         </div>
       </div>
