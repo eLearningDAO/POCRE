@@ -235,6 +235,21 @@ export default router;
  *         schema:
  *           type: bool
  *         description: when present, returns litigations that are to be judged by the specified user
+ *       - in: query
+ *         name: populate
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum:
+ *               - creation_id
+ *               - material_id
+ *               - assumed_author
+ *               - issuer_id
+ *               - winner
+ *               - invitations
+ *               - decisions
+ *         description: list of fields to populate
  *     responses:
  *       "200":
  *         description: OK
@@ -277,6 +292,21 @@ export default router;
  *         schema:
  *           type: string
  *         description: litigation id
+ *       - in: query
+ *         name: populate
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum:
+ *               - creation_id
+ *               - material_id
+ *               - assumed_author
+ *               - issuer_id
+ *               - winner
+ *               - invitations
+ *               - decisions
+ *         description: list of fields to populate
  *     responses:
  *       "200":
  *         description: OK

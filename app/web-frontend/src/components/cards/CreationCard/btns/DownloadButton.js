@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '@mui/material/Button';
-import DownloadIcon from '../../../../assets/images/download.png';
+import DownloadIcon from 'assets/images/download.png';
 
 function DownloadButton({ onClick }) {
   return (

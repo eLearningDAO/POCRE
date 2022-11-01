@@ -1,8 +1,8 @@
 import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { getUrlFileType } from '../../../utils/helpers/getUrlFileType';
+import { getUrlFileType } from 'utils/helpers/getUrlFileType';
+import { accessibleOnClick } from 'utils/helpers/accessibleOnClick';
 import { MediaPreview } from '../CreationCard';
-import { accessibleOnClick } from '../../../utils/helpers/accessibleOnClick';
 import './index.css';
 
 function TrendingCard({

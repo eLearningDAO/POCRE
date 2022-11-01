@@ -1,9 +1,9 @@
 import {
   Box, Button, Grid, Typography,
 } from '@mui/material';
-import CreationCardImg from '../../../assets/images/creation-card.png';
-import EyeIcon from '../../../assets/svgs/eye.svg';
-import LinkedInIcon from '../../../assets/images/linkedin.png';
+import CreationCardImg from 'assets/images/creation-card.png';
+import EyeIcon from 'assets/svgs/eye.svg';
+import LinkedInIcon from 'assets/images/linkedin.png';
 import './index.css';
 
 function LitigationCard({

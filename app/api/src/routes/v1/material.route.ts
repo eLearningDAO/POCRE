@@ -179,6 +179,18 @@ export default router;
  *         schema:
  *           type: bool
  *         description: when true, returns materials that are claimed by original authors (in litigation process)
+ *       - in: query
+ *         name: populate
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum:
+ *               - source_id
+ *               - type_id
+ *               - invite_id
+ *               - author_id
+ *         description: list of fields to populate
  *     responses:
  *       "200":
  *         description: OK
@@ -221,6 +233,18 @@ export default router;
  *         schema:
  *           type: string
  *         description: Material id
+ *       - in: query
+ *         name: populate
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum:
+ *               - source_id
+ *               - type_id
+ *               - invite_id
+ *               - author_id
+ *         description: list of fields to populate
  *     responses:
  *       "200":
  *         description: OK

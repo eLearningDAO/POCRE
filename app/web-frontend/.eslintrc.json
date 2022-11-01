@@ -53,6 +53,7 @@
     "sonarjs/no-duplicate-string": "off",
     "no-restricted-syntax": "off",
     "react/no-array-index-key": "off",
-    "security/detect-unsafe-regex": "off"
+    "security/detect-unsafe-regex": "off",
+    "import/no-unresolved": "off"
   }
 }

@@ -50,6 +50,7 @@ function Input(
                 fullWidth={fullWidth}
                 placeholder={placeholder}
                 {...(hookToForm ? formContext.register(name) : {})}
+                onChange={onChange}
                 className={`input input-${variant} ${hookToForm && formContext?.formState?.errors?.[name]?.message ? 'input-error' : ''}`}
               />
             )}

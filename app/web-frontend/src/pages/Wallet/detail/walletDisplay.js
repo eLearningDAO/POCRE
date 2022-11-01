@@ -2,10 +2,10 @@ import React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import Rating from '@mui/material/Rating';
 import { Button } from '@mui/material';
-import framImg from '../../../assets/svgs/frame.svg';
-import nameIcon from '../../../assets/svgs/nameIcon.svg';
-import phoneIcon from '../../../assets/svgs/phoneIcon.svg';
-import emailicon from '../../../assets/svgs/emailIcon.svg';
+import framImg from 'assets/svgs/frame.svg';
+import nameIcon from 'assets/svgs/nameIcon.svg';
+import phoneIcon from 'assets/svgs/phoneIcon.svg';
+import emailicon from 'assets/svgs/emailIcon.svg';
 
 function WalletDisplay({ setDetailEdit, user }) {
   return (

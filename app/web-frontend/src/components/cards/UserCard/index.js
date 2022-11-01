@@ -1,7 +1,7 @@
 import { Chip, Typography, Button } from '@mui/material';
 import React from 'react';
-import PlaceholderImage from '../../../assets/images/top-learner-user.png';
-import FingerPrintIcon from '../../../assets/svgs/fingerprint.svg';
+import PlaceholderImage from 'assets/images/top-learner-user.png';
+import FingerPrintIcon from 'assets/svgs/fingerprint.svg';
 import './index.css';
 
 function UserCard({

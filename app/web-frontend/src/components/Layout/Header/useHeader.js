@@ -1,13 +1,14 @@
 import Cookies from 'js-cookie';
 import React, { useCallback, useState } from 'react';
-import { API_BASE_URL } from '../../../config';
-import useUserInfo from '../../../hooks/user/userInfo';
+import { API_BASE_URL } from 'config';
+import useUserInfo from 'hooks/user/userInfo';
 
 // get auth user
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 
 const useHeader = () => {
-  const { setUser: setUserContext, login, user: { userId } = {} } = useUserInfo();
+  const { setUser: setUserContext, login, setFlag } = useUserInfo();
+  const userId = 0;
 
   const [users, setUsers] = useState([]);
   const [activeUser, setActiveUser] = useState(null);
@@ -57,6 +58,7 @@ const useHeader = () => {
 
     // set User gollably at our app
     setUserContext((previousS) => ({ ...previousS, user: temporaryUser }));
+    setFlag();
   };
   React.useEffect(() => {
     fetchUsers();

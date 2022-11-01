@@ -11,7 +11,10 @@ export const queryCreations = catchAsync(async (req, res): Promise<void> => {
 });
 
 export const getCreationById = catchAsync(async (req, res): Promise<void> => {
-  const creation = await creationService.getCreationById(req.params.creation_id);
+  const creation = await creationService.getCreationById(
+    req.params.creation_id,
+    req.query.populate as string | (string | string[])[]
+  );
   res.send(creation);
 });
 
