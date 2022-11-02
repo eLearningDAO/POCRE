@@ -56,7 +56,7 @@ const useWalletStore = create((set) => ({
   getUserCollectionCount: async (userId) => {
     const url = `https://pocre-api.herokuapp.com/v1//creations?page=1&limit=100&descend_fields[]=creation_date&query=${userId}&search_fields[]=author_id`;
     const userCollectionResponse = await fetch(url).then((response) => response.json());
-    if (userCollectionResponse.code >= 400) throw new Error('Failed to fetch material');
+    if (userCollectionResponse.code >= 400) throw new Error('Failed to fetch user collections');
     set({ userCollectionCount: userCollectionResponse.results.length });
   },
 
@@ -70,7 +70,7 @@ const useWalletStore = create((set) => ({
     };
     const userProfileImageUpload = await fetch('https://api.cloudinary.com/v1_1/dia0ztihb/image/upload', requestOptions)
       .then((response) => response.json());
-    if (userProfileImageUpload.code >= 400) throw new Error('Failed to fetch material');
+    if (userProfileImageUpload.code >= 400) throw new Error('Failed to upload user profile image');
     set({ userProfileImageUrl: userProfileImageUpload.url });
   },
 
