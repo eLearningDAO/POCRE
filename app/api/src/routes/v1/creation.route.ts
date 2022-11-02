@@ -429,3 +429,39 @@ export default router;
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  */
+
+/**
+ * @swagger
+ * /creations/{creation_id}/proof:
+ *   get:
+ *     summary: Get a creation proof by id
+ *     description: Get a creation proof by id in various formats
+ *     tags: [Creation]
+ *     parameters:
+ *       - in: path
+ *         name: creation_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Creation id
+ *       - in: query
+ *         name: format
+ *         default: web
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - web
+ *             - json
+ *         description: The required format for proof of creation. When format is web, an html document will be returned instead of json
+ *     responses:
+ *       "200":
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/CreationProof'
+ *       "404":
+ *         $ref: '#/components/responses/CreationNotFound'
+ *       "500":
+ *         $ref: '#/components/responses/InternalServerError'
+ */
