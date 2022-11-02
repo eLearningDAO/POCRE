@@ -11,6 +11,7 @@ import useUserInfo from '../../../hooks/user/userInfo';
 let userId = '43704731-d816-4f1f-a599-eb290f67c3f4';
 
 function WalletDetail() {
+  const [initialValues, setInitialValues] = useState({});
   const [isDetailEdit, setDetailEdit] = useState(false);
   const getUserById = useWalletStore((state) => state.getUserById);
   const userData = useWalletStore((state) => state.userData);
@@ -41,6 +42,17 @@ function WalletDetail() {
     return profileImg;
   };
 
+  useEffect(() => {
+    // eslint-disable-next-line  no-param-reassign
+    if (userData) {
+      const init = { ...userData };
+      // delete init.walletAddress;
+      delete init.walletType;
+      delete init.reputationStars;
+      setInitialValues(init);
+    }
+  }, [userData]);
+
   return (
     <>
       <div className="wallet-detail-container">
@@ -67,7 +79,7 @@ function WalletDetail() {
         {isDetailEdit ? (
           <WalletDetailEdit
             setDetailEdit={setDetailEdit}
-            user={userData}
+            initialValues={initialValues}
             userId={userId}
             imageUrl={userProfileImageUrl}
           />
