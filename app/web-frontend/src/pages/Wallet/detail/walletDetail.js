@@ -46,7 +46,7 @@ function WalletDetail() {
     // eslint-disable-next-line  no-param-reassign
     if (userData) {
       const init = { ...userData };
-      // delete init.walletAddress;
+      delete init.walletAddress;
       delete init.walletType;
       delete init.reputationStars;
       setInitialValues(init);

@@ -17,7 +17,6 @@ import useWalletStore from 'hooks/userWalletService';
 import Loader from 'components/uicore/Loader';
 import Form from 'components/uicore/Form';
 import Input from 'components/uicore/Input';
-import { useFormContext } from 'react-hook-form';
 import useUserInfo from '../../../hooks/user/userInfo';
 import { walletValidation } from './validation';
 // eslint-disable-next-line import/no-unresolved, unicorn/prefer-module
@@ -29,7 +28,6 @@ function WalletDetailEdit({
   userId,
   imageUrl,
 }) {
-  const formContext = useFormContext();
   const [ratingValue, setRatingValue] = useState(3);
   const updateUser = useWalletStore((state) => state.updateUser);
   const getUserById = useWalletStore((state) => state.getUserById);
@@ -69,7 +67,6 @@ function WalletDetailEdit({
     const walletKey = event.target.value;
     let usedAddress = await getUsedAddress(walletKey);
     usedAddress = `${usedAddress.slice(0, 10)}.....${usedAddress.slice(93, 103)}`;
-    formContext.setValue('walletAddress', usedAddress);
     setWalletAddress(usedAddress);
   };
   const pollWallets = () => {
@@ -146,8 +143,9 @@ function WalletDetailEdit({
         </div>
         <div className="edit-available-wallet">
           <span>Wallet Address</span>
-          <Input
+          <input
             name="walletAddress"
+            value={walletAddress}
           />
         </div>
       </div>
