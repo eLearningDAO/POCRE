@@ -231,6 +231,130 @@ components:
         is_draft: false
         is_claimable: true
 
+    CreationProof:
+      type: object
+      properties:
+        creation_id:
+          type: string
+          format: uuid
+        creation_title:
+          type: string
+        creation_description:
+          type: string
+        source_id:
+          type: string
+          format: uuid
+        source:
+          $ref: '#/components/schemas/Source'
+        author_id:
+          type: string
+          format: uuid
+        user:
+          $ref: '#/components/schemas/User'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        materials:
+          type: array
+          items:
+            $ref: '#/components/schemas/Material'
+        creation_date:
+          type: string
+          format: date-time
+        is_draft:
+          type: bool
+        is_claimable:
+          type: bool
+      example:
+        creation_id: b1171878-797e-4f8a-a726-961f761bb8fc
+        creation_title: my first creation
+        creation_description: an example creation
+        source_id: d91f005d-2037-41b9-b706-0e70c651e4e2
+        source: 
+          source_id: 04588cf9-09c3-446c-828c-609390c66b29
+          source_title: turtle
+          source_description: turtle walks
+          site_url: https://google.com
+        author_id: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
+        author: 
+          user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
+          user_name: john
+          wallet_address: 28y9gd27g2g237g80hnibhi
+          user_bio: ready to explore
+          phone: '+92313555544'
+          email_addres: 'example@example.com'
+          verified_id: 28y9gd27g2g237g80hnibhi
+          reputation_stars: 0
+          date_joined: 2022-09-05T19:00:00.000Z
+        tags: 
+          - tag_id: fb018e05-5792-48a4-bee3-4518453443d3
+            tag_name: enhancement
+            tag_description: improvement tag
+            tag_created: 2022-09-06T19:00:00.000Z
+        materials: 
+          - material_id: 5d6ad369-55d8-469d-bf26-4a90017861dd
+            material_title: plastic
+            material_description: dangerous
+            material_link: https://example.com
+            source_id: 12ed7a55-a1ba-4895-83e9-7aa615247390
+            source:
+              source_id: 04588cf9-09c3-446c-828c-609390c66b29
+              source_title: turtle
+              source_description: turtle walks
+              site_url: https://google.com
+            type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
+            type: 
+              type_id: 670be025-7c46-4890-8348-b5ad620ad9a7
+              type_name: plastic
+              type_description: dangerous to environment
+            invite_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
+            invite: 
+              invite_id: 8d098580-1e4c-40c8-95f3-9c78de09a121
+              invite_from: 
+                user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
+                user_name: john
+                wallet_address: 28y9gd27g2g237g80hnibhi
+                user_bio: ready to explore
+                phone: '+92313555544'
+                email_addres: 'example@example.com'
+                verified_id: 28y9gd27g2g237g80hnibhi
+                reputation_stars: 0
+                date_joined: 2022-09-05T19:00:00.000Z
+              invite_to: 
+                user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
+                user_name: john
+                wallet_address: 28y9gd27g2g237g80hnibhi
+                user_bio: ready to explore
+                phone: '+92313555544'
+                email_addres: 'example@example.com'
+                verified_id: 28y9gd27g2g237g80hnibhi
+                reputation_stars: 0
+                date_joined: 2022-09-05T19:00:00.000Z
+              invite_description: invitation to john
+              invite_issued: 2022-09-07T19:00:00.000Z
+              status_id: 865b3cff-d24e-4ec7-8873-f9634c5f2245
+              status: 
+                status_id: 2cc874d2-9f7d-48a8-a416-ec19e9462da9
+                status_name: pending
+                status_description: invitaion to john
+                action_made: 2022-09-05T19:00:00.000Z
+            author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
+            author: 
+              user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
+              user_name: john
+              wallet_address: 28y9gd27g2g237g80hnibhi
+              user_bio: ready to explore
+              phone: '+92313555544'
+              email_addres: 'example@example.com'
+              verified_id: 28y9gd27g2g237g80hnibhi
+              reputation_stars: 0
+              date_joined: 2022-09-05T19:00:00.000Z
+            is_claimable: true
+        creation_date: 2022-09-16T19:00:00.000Z
+        is_draft: false
+        is_claimable: true
+
     Litigation:
       type: object
       properties:
