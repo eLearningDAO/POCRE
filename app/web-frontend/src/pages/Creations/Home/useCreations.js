@@ -23,63 +23,20 @@ const useCreations = () => {
       setIsLoadingCreations(true);
 
       // get creations
-      let creationResponse = await fetch(
-        `${API_BASE_URL}/creations?page=${1}&limit=100&descend_fields[]=creation_date&query=${user.user_id}&search_fields[]=author_id`,
+      const toPopulate = [
+        'source_id',
+        'author_id',
+        'materials',
+        'materials.source_id',
+        'materials.type_id',
+        'materials.author_id',
+      ];
+      const creationResponse = await fetch(
+        `${API_BASE_URL}/creations?page=${1}&limit=100&descend_fields[]=creation_date&query=${user.user_id}&search_fields[]=author_id&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       )
         .then((x) => x.json());
 
       if (creationResponse.code >= 400) throw new Error('Failed to fetch creations');
-
-      // get source for each creation
-      creationResponse = {
-        ...creationResponse,
-        results: await Promise.all(creationResponse?.results?.map(async (x) => {
-          const creation = { ...x };
-
-          // get details about creation source
-          const source = await fetch(
-            `${API_BASE_URL}/source/${x.source_id}`,
-          ).then((y) => y.json()).catch(() => null);
-          delete creation.source_id;
-
-          // get details about the creation materials
-          const materials = creation?.materials?.length > 0
-            ? await Promise.all(creation.materials.map(async (materialId) => {
-              // get material detail
-              const material = await fetch(
-                `${API_BASE_URL}/materials/${materialId}`,
-              ).then((y) => y.json()).catch(() => null);
-
-              // get type detail
-              const materialType = await fetch(
-                `${API_BASE_URL}/material-type/${material?.type_id}`,
-              ).then((y) => y.json()).catch(() => null);
-              delete material.type_id;
-              material.type = materialType;
-
-              // get author detail
-              const author = await fetch(
-                `${API_BASE_URL}/users/${material?.author_id}`,
-              ).then((y) => y.json()).catch(() => null);
-              delete material.author_id;
-              material.author = author;
-
-              return material;
-            })) : [];
-          delete creation.materials;
-          creation.materials = materials;
-
-          // get details about the creation author
-          delete creation.author_id;
-          creation.author = user;
-
-          return {
-            ...creation,
-            title: creation.title + creation.creation_id,
-            source,
-          };
-        })),
-      };
 
       setFetchCreationStatus({
         success: true,

@@ -25,125 +25,26 @@ const useDetails = () => {
       setIsFetchingRecognition(true);
 
       // get recognition details
-      const recognitionResponse = await fetch(`${API_BASE_URL}/invitations/${id}`).then((x) => x.json());
+      const recognitionToPopulate = ['invite_from', 'invite_to', 'status_id'];
+      const recognitionResponse = await fetch(`${API_BASE_URL}/invitations/${id}?${recognitionToPopulate.map((x) => `populate=${x}`).join('&')}`).then((x) => x.json());
       if (recognitionResponse.code >= 400) throw new Error('Failed to get invitation');
 
-      // get details of inviteFrom user
-      const inviteFromUser = await fetch(`${API_BASE_URL}/users/${recognitionResponse.invite_from}`).then((x) => x.json());
-      if (inviteFromUser?.code >= 400) throw new Error('Failed to get invitation');
-
-      // get details of inviteTo user
-      const inviteToUser = await fetch(`${API_BASE_URL}/users/${recognitionResponse.invite_to}`).then((x) => x.json());
-      if (inviteToUser?.code >= 400) throw new Error('Failed to get invitation');
-
-      // get details of invitation status
-      const status = await fetch(`${API_BASE_URL}/status/${recognitionResponse.status_id}`).then((x) => x.json());
-      if (status?.code >= 400) throw new Error('Failed to get invitation');
-
       // get details of material for this invitation
-      const material = await (async () => {
-        const materials = await fetch(`${API_BASE_URL}/materials?query=${recognitionResponse.invite_id}&search_fields[]=invite_id`).then((x) => x.json());
-        if (materials?.code >= 400) throw new Error('Failed to get invitation');
-        const temporaryMaterial = materials?.results?.[0] || null;
-        if (!temporaryMaterial) return null;
-
-        // get details of material author
-        const materialAuthor = await fetch(`${API_BASE_URL}/users/${temporaryMaterial.author_id}`).then((x) => x.json());
-        if (materialAuthor?.code >= 400) throw new Error('Failed to get invitation');
-
-        // get details of material source
-        const materialSource = await fetch(`${API_BASE_URL}/source/${temporaryMaterial.source_id}`).then((x) => x.json());
-        if (materialSource?.code >= 400) throw new Error('Failed to get invitation');
-
-        // get details of material type
-        const materialType = await fetch(`${API_BASE_URL}/material-type/${temporaryMaterial.type_id}`).then((x) => x.json());
-        if (materialType?.code >= 400) throw new Error('Failed to get invitation');
-
-        // update temporary material
-        delete temporaryMaterial.author_id;
-        delete temporaryMaterial.source_id;
-        delete temporaryMaterial.type_id;
-        temporaryMaterial.author = materialAuthor;
-        temporaryMaterial.source = materialSource;
-        temporaryMaterial.type = materialType;
-
-        return temporaryMaterial;
-      })();
+      const materialToPopulate = ['source_id', 'type_id', 'author_id'];
+      const materials = await fetch(`${API_BASE_URL}/materials?limit=1&query=${recognitionResponse.invite_id}&search_fields[]=invite_id&${materialToPopulate.map((x) => `populate=${x}`).join('&')}`).then((x) => x.json());
+      if (materials?.code >= 400) throw new Error('Failed to get invitation');
+      const material = materials?.results?.[0] || null;
 
       // get details of creation of material
-      const creation = await (async () => {
-        if (!material) return null;
-
-        const creationResponse = await fetch(`${API_BASE_URL}/creations?query=${material?.material_id}&search_fields[]=material_id`).then((x) => x.json());
-        if (creationResponse?.code >= 400) throw new Error('Failed to get invitation');
-        const temporaryCreation = creationResponse?.results?.[0] || null;
-        if (!temporaryCreation) return null;
-
-        // get details of creation author
-        const creationAuthor = await fetch(`${API_BASE_URL}/users/${temporaryCreation.author_id}`).then((x) => x.json());
-        if (creationAuthor?.code >= 400) throw new Error('Failed to get invitation');
-
-        // get details of creation source
-        const creationSource = await fetch(`${API_BASE_URL}/source/${temporaryCreation.source_id}`).then((x) => x.json());
-        if (creationSource?.code >= 400) throw new Error('Failed to get invitation');
-
-        // get details of creation materials
-        const materials = await Promise.all(
-          temporaryCreation.materials.map(async (materialId) => {
-            const materialsResponse = await fetch(`${API_BASE_URL}/materials/${materialId}`).then((x) => x.json());
-            if (materialsResponse?.code >= 400) throw new Error('Failed to get invitation');
-            const temporaryMaterial = materialsResponse || null;
-            if (!temporaryMaterial) return null;
-
-            // get details of material author
-            const materialAuthor = await fetch(`${API_BASE_URL}/users/${temporaryMaterial.author_id}`).then((x) => x.json());
-            if (materialAuthor?.code >= 400) throw new Error('Failed to get invitation');
-
-            // get details of material source
-            const materialSource = await fetch(`${API_BASE_URL}/source/${temporaryMaterial.source_id}`).then((x) => x.json());
-            if (materialSource?.code >= 400) throw new Error('Failed to get invitation');
-
-            // get details of material type
-            const materialType = await fetch(`${API_BASE_URL}/material-type/${temporaryMaterial.type_id}`).then((x) => x.json());
-            if (materialType?.code >= 400) throw new Error('Failed to get invitation');
-
-            // update temporary material
-            delete temporaryMaterial.author_id;
-            delete temporaryMaterial.source_id;
-            delete temporaryMaterial.type_id;
-            temporaryMaterial.author = materialAuthor;
-            temporaryMaterial.source = materialSource;
-            temporaryMaterial.type = materialType;
-
-            return temporaryMaterial;
-          }),
-        );
-
-        // get details of creation tags
-        // eslint-disable-next-line no-return-await
-        const tags = await Promise.all(temporaryCreation.tags.map(async (tagId) => await fetch(`${API_BASE_URL}/tags/${tagId}`).then((x) => x.json())));
-
-        // update temporary creation
-        delete temporaryCreation.author_id;
-        delete temporaryCreation.source_id;
-        temporaryCreation.author = creationAuthor;
-        temporaryCreation.source = creationSource;
-        temporaryCreation.materials = materials;
-        temporaryCreation.tags = tags;
-
-        return temporaryCreation;
-      })();
+      const creationToPopulate = ['source_id', 'author_id', 'materials', 'tags', 'materials.source_id', 'materials.type_id', 'materials.author_id'];
+      const creation = material ? await fetch(`${API_BASE_URL}/creations?limit=1&query=${material?.material_id}&search_fields[]=material_id&${creationToPopulate.map((x) => `populate=${x}`).join('&')}`).then((x) => x.json()).catch(() => null) : null;
+      if (material && !creation) throw new Error('Failed to get invitation');
 
       const transformedInvitation = {
         ...recognitionResponse,
-        invite_from: inviteFromUser,
-        invite_to: inviteToUser,
-        status,
         material,
-        creation,
+        creation: creation ? creation?.results?.[0] : null,
       };
-
-      delete transformedInvitation.status_id;
 
       setFetchRecognitionStatus({
         success: true,
