@@ -1,6 +1,8 @@
 import Cookies from 'js-cookie';
 import { useCallback, useState } from 'react';
-import { API_BASE_URL } from 'config';
+import {
+  Creation, Invitation, Litigation, Material, User,
+} from 'api/requests';
 
 let debounceTagInterval = null;
 let debounceAuthorInterval = null;
@@ -26,11 +28,7 @@ const useCreate = () => {
   // get creation suggestions
   const findCreationSuggestions = useCallback(async (searchText = '') => {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/creations?query=${searchText}&search_fields[]=creation_title`,
-      ).then((x) => x.json());
-
-      if (response.code >= 400) throw new Error('Failed to get creation suggestion');
+      const response = await Creation.getAll(`query=${searchText}&search_fields[]=creation_title`);
 
       setFetchCreationsStatus({
         success: true,
@@ -54,13 +52,7 @@ const useCreate = () => {
   // get creation suggestions
   const getMaterialDetail = useCallback(async (id = '') => {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/materials/${id}`,
-      ).then((x) => x.json());
-
-      if (response.code >= 400) throw new Error('Failed to get material details');
-
-      return response;
+      return await Material.getById(id);
     } catch (error) {
       return error?.message;
     }
@@ -93,11 +85,7 @@ const useCreate = () => {
   // get author suggestions
   const findAuthorSuggestions = useCallback(async (searchText = '') => {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/users?query=${searchText}&search_fields[]=user_name`,
-      ).then((x) => x.json());
-
-      if (response.code >= 400) throw new Error('Failed to get user suggestion');
+      const response = await User.getAll(`query=${searchText}&search_fields[]=user_name`);
 
       setFindAuthorsStatus({
         success: true,
@@ -149,25 +137,16 @@ const useCreate = () => {
       const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 
       // make a new litigation
-      const response = await fetch(`${API_BASE_URL}/litigations`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          litigation_title: litigationBody.title.trim(),
-          litigation_description: litigationBody.description?.trim(),
-          creation_id: litigationBody.creation,
-          material_id: litigationBody.material,
-          issuer_id: authUser.user_id,
-          litigation_start: new Date(litigationBody.publicDate).toISOString(),
-          litigation_end: new Date(litigationBody.endDate).toISOString(),
-          reconcilate: litigationBody.inviteAuthors,
-        }),
-      }).then((x) => x.json());
-
-      if (response.code >= 400) throw new Error(response.message);
+      const response = await Litigation.create({
+        litigation_title: litigationBody.title.trim(),
+        litigation_description: litigationBody.description?.trim(),
+        creation_id: litigationBody.creation,
+        material_id: litigationBody.material,
+        issuer_id: authUser.user_id,
+        litigation_start: new Date(litigationBody.publicDate).toISOString(),
+        litigation_end: new Date(litigationBody.endDate).toISOString(),
+        reconcilate: litigationBody.inviteAuthors,
+      });
 
       setNewLitigationStatus({
         success: true,
@@ -176,14 +155,8 @@ const useCreate = () => {
 
       // get data about invited judges
       response.invitations = await Promise.all(response.invitations.map(async (inviteId) => {
-        const invitation = await fetch(
-          `${API_BASE_URL}/invitations/${inviteId}`,
-        ).then((x) => x.json());
-
-        invitation.invite_to = await fetch(
-          `${API_BASE_URL}/users/${invitation.invite_to}`,
-        ).then((x) => x.json());
-
+        const invitation = await Invitation.getById(inviteId);
+        invitation.invite_to = await User.getById(invitation.invite_to);
         return invitation;
       }));
       setNewLitigation(response);

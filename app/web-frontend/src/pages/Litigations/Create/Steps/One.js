@@ -6,7 +6,7 @@ import Form from 'components/uicore/Form';
 import Input from 'components/uicore/Input';
 import Loader from 'components/uicore/Loader';
 import Select from 'components/uicore/Select';
-import { API_BASE_URL } from 'config';
+import { Creation, User } from 'api/requests';
 import { stepOneValidation } from './validation';
 
 export default function StepOne({
@@ -48,7 +48,7 @@ export default function StepOne({
         setMaterialsDetails(claimableMaterials);
       } else {
         // get details of creation author
-        const creationAuthor = await fetch(`${API_BASE_URL}/users/${foundCreation.author_id}`).then((x) => x.json());
+        const creationAuthor = await User.getById(foundCreation.author_id);
         setCreationOrMaterialAuthor(creationAuthor);
       }
     } else {
@@ -107,11 +107,10 @@ export default function StepOne({
         setLoading(true);
 
         // get creation details
-        const creationDetail = await fetch(`${API_BASE_URL}/creations/${creationId}`).then((x) => x.json());
-        if (creationDetail?.code >= 400) throw new Error('Invalid Creation Link. Please make sure the link is correct');
+        const creationDetail = await Creation.getById(creationId);
 
         // get details of creation author
-        const creationAuthor = await fetch(`${API_BASE_URL}/users/${creationDetail.author_id}`).then((x) => x.json());
+        const creationAuthor = await User.getById(creationDetail.author_id);
         setCreationOrMaterialAuthor(creationAuthor);
 
         // get material details of creation

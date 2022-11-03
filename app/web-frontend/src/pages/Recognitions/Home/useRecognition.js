@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import { useCallback, useState } from 'react';
-import { API_BASE_URL } from 'config';
+import { Invitation, Material, Status } from 'api/requests';
 
 // get auth user
 const user = JSON.parse(Cookies.get('activeUser') || '{}');
@@ -30,16 +30,14 @@ const useInvitation = () => {
 
       // get invitations (throw error if not found)
       const recognitionToPopulate = ['invite_from', 'invite_to', 'status_id'];
-      const response = await fetch(`${API_BASE_URL}/invitations?limit=1000&query=${user.user_id}&search_fields[]=invite_from&search_fields[]=invite_to&${recognitionToPopulate.map((x) => `populate=${x}`).join('&')}`).then((x) => x.json());
-      if (response.code >= 400) throw new Error('Failed to get invitations');
+      const response = await Invitation.getAll(`limit=1000&query=${user.user_id}&search_fields[]=invite_from&search_fields[]=invite_to&${recognitionToPopulate.map((x) => `populate=${x}`).join('&')}`);
 
       // transform results
       response.results = await Promise.all(
         response.results.map(async (invitation) => {
           // fields to populate
           const materialToPopulate = ['source_id', 'type_id', 'author_id'];
-          const materials = await fetch(`${API_BASE_URL}/materials?limit=1&query=${invitation.invite_id}&search_fields[]=invite_id&${materialToPopulate.map((x) => `populate=${x}`).join('&')}`).then((x) => x.json());
-          if (materials?.code >= 400) throw new Error('Failed to get invitations');
+          const materials = await Material.getAll(`limit=1&query=${invitation.invite_id}&search_fields[]=invite_id&${materialToPopulate.map((x) => `populate=${x}`).join('&')}`);
           const temporaryMaterial = materials?.results?.[0] || null;
 
           return {
@@ -68,19 +66,14 @@ const useInvitation = () => {
   }, [invitations, setInvitations]);
 
   // update a status linked to invitation
-  const updateInvitationStatus = useCallback(async (statusId, statusBody = {}) => {
-    const response = await fetch(`${API_BASE_URL}/status/${statusId}`, {
-      method: 'PATCH',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(statusBody),
-    }).then((x) => x.json());
-
-    if (response.code >= 400) throw new Error('Failed to update status');
-    return response;
-  }, []);
+  const updateInvitationStatus = useCallback(
+    async (
+      statusId,
+      statusBody = {},
+    ) => await
+    Status.update(statusId, statusBody),
+    [],
+  );
 
   // accepts an invitation
   const acceptInvitation = useCallback(async (inviteId) => {
