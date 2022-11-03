@@ -804,12 +804,12 @@
 
                     <span class="text-xl font-semibold">Author</span>
                     <span class="col-span-2 text-xl font-normal">{{author.user_name}}</span>
+
+                    <span class="text-xl font-semibold">Published at</span>
+                    <span class="col-span-2 text-xl font-normal"><a href="{{published_at}}" class="text-blue-700 underline cursor-pointer break-all">{{published_at}}</a></span>
                 </div>
                 <div class="col-span-1 flex flex-col items-center gap-2">
-                    <!-- <img class="h-[200px] w-[200px]" src="{{qr_code}}" alt="Qr Code" /> -->
-                    <img class="h-[200px] w-[200px]"
-                        src="data:image/png;base64,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"
-                        alt="Qr Code" />
+                    <img class="h-[200px] w-[200px]" src="{{qr_code}}" alt="Qr Code" />
 
                     <h3 class="font-semibold text-xl">Unique ID</h3>
                     <p class="-mt-2 tracking-wide text-center">{{unique_id}}</p>
