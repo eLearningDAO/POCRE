@@ -33,8 +33,20 @@ const useHome = () => {
       setIsFetchingLitigations(true);
 
       // get litigations
+      const toPopulate = [
+        'assumed_author',
+        'winner',
+        'issuer_id',
+        'creation_id',
+        'creation_id.author_id',
+        'decisions',
+        'invitations.invite_to',
+        'invitations.status_id',
+        'material_id.author_id',
+        'material_id.author_id',
+      ];
       let litigationResponse = await fetch(
-        `${API_BASE_URL}/litigations?query=${authUser?.user_id}&search_fields[]=issuer_id&search_fields[]=assumed_author&page=${1}&limit=1000`,
+        `${API_BASE_URL}/litigations?query=${authUser?.user_id}&search_fields[]=issuer_id&search_fields[]=assumed_author&page=${1}&limit=1000&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       )
         .then((x) => x.json());
 
@@ -42,7 +54,7 @@ const useHome = () => {
 
       // get litigations to judge
       const litigationToJudgeResponse = await fetch(
-        `${API_BASE_URL}/litigations?judged_by=${authUser?.user_id}`,
+        `${API_BASE_URL}/litigations?judged_by=${authUser?.user_id}&limit=1000&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       )
         .then((x) => x.json());
       if (litigationToJudgeResponse.code >= 400) throw new Error('Failed to fetch litigations');
@@ -51,104 +63,6 @@ const useHome = () => {
         ...litigationResponse.results,
         ...(litigationToJudgeResponse?.results?.map((x) => ({ ...x, toJudge: true })) || []),
       ];
-
-      // get details for each litigation
-      litigationResponse = {
-        ...litigationResponse,
-        results: await Promise.all(litigationResponse?.results?.map(async (x) => {
-          const litigation = { ...x };
-
-          // get issuer details
-          const issuer = x.issuer_id === authUser?.user_id ? authUser : await fetch(
-            `${API_BASE_URL}/users/${x.issuer_id}`,
-          ).then((y) => y.json()).catch(() => null);
-          delete litigation.issuer_id;
-
-          // get assumed author details
-          const assumedAuthor = x.assumed_author === authUser?.user_id ? authUser : await fetch(
-            `${API_BASE_URL}/users/${x.assumed_author}`,
-          ).then((y) => y.json()).catch(() => null);
-          delete litigation.assumed_author;
-
-          const winner = x.winner === x.issuer_id ? issuer : assumedAuthor;
-
-          // get creation details
-          const creation = await fetch(
-            `${API_BASE_URL}/creations/${x.creation_id}`,
-          ).then((y) => y.json()).catch(() => null);
-          delete litigation.creation_id;
-
-          // get creation author
-          creation.author = creation.author_id === authUser?.user_id ? authUser : await fetch(
-            `${API_BASE_URL}/users/${creation.author_id}`,
-          ).then((y) => y.json()).catch(() => null);
-          delete creation.author_id;
-
-          // get creation details
-          let material = null;
-          if (litigation.material_id) {
-            // get material details
-            material = await fetch(
-              `${API_BASE_URL}/materials/${x.material_id}`,
-            ).then((y) => y.json()).catch(() => null);
-
-            // get material author
-            material.author = material.author_id === authUser?.user_id ? authUser : await fetch(
-              `${API_BASE_URL}/users/${material.author_id}`,
-            ).then((y) => y.json()).catch(() => null);
-            delete material.author_id;
-          }
-          delete litigation.material_id;
-
-          // fill details of to judge litigations
-          if (litigation.toJudge) {
-            // get litigation invitation details
-            litigation.invitations = await Promise.all(
-              litigation.invitations.map(async (inviteId) => {
-                // get invite details
-                const invite = await fetch(
-                  `${API_BASE_URL}/invitations/${inviteId}`,
-                ).then((y) => y.json()).catch(() => null);
-
-                // get invite status details
-                const status = await fetch(
-                  `${API_BASE_URL}/status/${invite.status_id}`,
-                ).then((y) => y.json()).catch(() => null);
-
-                // get invited user details
-                const inviteTo = await fetch(
-                  `${API_BASE_URL}/users/${invite.invite_to}`,
-                ).then((y) => y.json()).catch(() => null);
-
-                // update keys
-                delete invite.status_id;
-                delete invite.invite_to;
-                invite.status = status;
-                invite.invite_to = inviteTo;
-
-                return invite;
-              }),
-            );
-
-            // get litigation decisions details
-            litigation.decisions = await Promise.all(
-              // eslint-disable-next-line no-return-await
-              litigation.decisions.map(async (decisionId) => await fetch(
-                `${API_BASE_URL}/decision/${decisionId}`,
-              ).then((y) => y.json()).catch(() => null)),
-            );
-          }
-
-          return {
-            ...litigation,
-            issuer,
-            assumed_author: assumedAuthor,
-            creation,
-            material,
-            winner,
-          };
-        })),
-      };
 
       // calculate open/closed and in progress litigations
       litigationResponse = {

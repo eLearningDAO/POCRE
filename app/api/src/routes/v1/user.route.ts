@@ -60,6 +60,9 @@ export default router;
  *                 description: can be null
  *               reputation_stars:
  *                 type: integer
+ *               image_url:
+ *                 type: string
+ *                 description: can be null
  *             example:
  *                user_name: john
  *                wallet_address: 28y9gd27g2g237g80hnibhi
@@ -68,6 +71,7 @@ export default router;
  *                email_address: 'example@example.com'
  *                verified_id: 28y9gd27g2g237g80hnibhi 
  *                reputation_stars: 0
+ *                image_url: https://cryptologos.cc/logos/cardano-ada-logo.png
  *     responses:
  *       "201":
  *         description: Created
@@ -202,7 +206,10 @@ export default router;
  *                 type: string
  *                 description: can be null
  *               reputation_stars:
- *                 type: integer    
+ *                 type: integer  
+ *               image_url:
+ *                 type: string
+ *                 description: can be null  
  *             example:
  *                user_name: john
  *                wallet_address: 28y9gd27g2g237g80hnibhi
@@ -211,6 +218,7 @@ export default router;
  *                email_address: 'example@example.com'
  *                verified_id: 28y9gd27g2g237g80hnibhi  
  *                reputation_stars: 0
+ *                image_url: https://cryptologos.cc/logos/cardano-ada-logo.png
  *     responses:
  *       "200":
  *         description: OK

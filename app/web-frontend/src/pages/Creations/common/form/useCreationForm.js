@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
+import moment from 'moment';
 import { API_BASE_URL } from 'config';
 
 // get auth user
@@ -9,11 +10,21 @@ const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 let debounceTagInterval = null;
 let debounceAuthorInterval = null;
 
-const useCreate = () => {
+const useCreationForm = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [newCreationStatus, setNewCreationStatus] = useState({
+    success: false,
+    error: null,
+  });
+  const [isFetchingCreation, setIsFetchingCreation] = useState(false);
+  const [isUpdatingCreation, setIsUpdatingCreation] = useState(false);
+  const [fetchCreationStatus, setFetchCreationStatus] = useState({
+    success: false,
+    error: true,
+  });
+  const [updateCreationStatus, setUpdateCreationStatus] = useState({
     success: false,
     error: null,
   });
@@ -27,6 +38,9 @@ const useCreate = () => {
     error: null,
   });
   const [authorSuggestions, setAuthorSuggestions] = useState([]);
+
+  const [originalCreation, setOriginalCreation] = useState(null);
+  const [transformedCreation, setTransformedCreation] = useState(null);
 
   // get tag suggestions
   const findTagSuggestions = useCallback(async (searchText = '') => {
@@ -393,17 +407,237 @@ const useCreate = () => {
     }
   }, [tagSuggestions, authorSuggestions]);
 
+  // creates new new creation
+  const updateCreation = useCallback(async (updateBody = {}) => {
+    try {
+      setIsUpdatingCreation(true);
+
+      // updated creation body
+      const updatedCreation = {
+        creation_title: updateBody.title,
+        creation_description: updateBody.description,
+        creation_date: new Date(updateBody.date).toISOString(),
+        ...(originalCreation.materials.length > 0 && { materials: originalCreation.materials }),
+        tags: originalCreation.tags,
+        source_id: originalCreation.source_id,
+        is_draft: false,
+      };
+
+      // make new source
+      const source = await makeNewSource({
+        source_title: updatedCreation.creation_title,
+        site_url: updateBody.source,
+      });
+      updatedCreation.source_id = source.source_id;
+
+      // make new tags
+      const tags = await (async () => {
+        const temporaryTags = [];
+
+        // eslint-disable-next-line sonarjs/no-identical-functions
+        await Promise.all(updateBody.tags.map(async (x) => {
+          const foundTag = tagSuggestions.find(
+            (tag) => tag.tag_name.toLowerCase().trim() === x.toLowerCase().trim(),
+          );
+
+          if (foundTag) {
+            temporaryTags.push(foundTag);
+            return;
+          }
+
+          // else create a new tag
+          const newTag = await makeNewTag({
+            tag_name: x,
+            tag_description: null,
+          });
+          temporaryTags.push(newTag);
+        }));
+
+        return temporaryTags;
+      })();
+      updatedCreation.tags = tags.map((x) => x.tag_id);
+
+      // make new materials (if creation has materials)
+      let materials = [];
+      if (updateBody.materials && updateBody.materials.length > 0) {
+        materials = await Promise.all(updateBody.materials.map(async (x) => {
+          // get author for material
+          // eslint-disable-next-line sonarjs/no-identical-functions
+          const author = await (async () => {
+            let temporaryAuthor = null;
+
+            // return if author found from suggestions
+            temporaryAuthor = authorSuggestions.find(
+              (suggestion) => suggestion.user_name.trim() === x.author.trim(),
+            );
+            if (temporaryAuthor) return temporaryAuthor;
+
+            // find if the author exists in db
+            temporaryAuthor = await fetch(`${API_BASE_URL}/users?query=${x?.author?.trim()}&search_fields[]=user_name`).then((y) => y.json());
+            temporaryAuthor = temporaryAuthor?.results?.[0] || null;
+            if (temporaryAuthor) return temporaryAuthor;
+
+            // make new author
+            temporaryAuthor = await makeNewAuthor({
+              user_name: x.author,
+            });
+
+            return temporaryAuthor;
+          })();
+
+          // make a new source for material
+          const materialSource = await makeNewSource({
+            source_title: x.title,
+            site_url: updateBody.source,
+          });
+
+          // make new material type
+          const materialType = await makeNewMaterialType({
+            type_name: x.fileType,
+            type_description: x.title,
+          });
+
+          // make new material
+          return makeNewMaterial({
+            material_title: x.title,
+            material_link: x.link,
+            source_id: materialSource.source_id,
+            type_id: materialType.type_id,
+            author_id: author.user_id,
+          });
+        }));
+      }
+      updatedCreation.materials = (
+        (updateBody.materials || []).length === 0
+      ) ? [] : materials.map((x) => x.material_id);
+
+      // update creation
+      const response = await fetch(`${API_BASE_URL}/creations/${originalCreation.creation_id}`, {
+        method: 'PATCH',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...updatedCreation }),
+      }).then((x) => x.json());
+
+      if (response.code >= 400) throw new Error('Failed to update creation');
+
+      // sent invitation to material authors
+      if (materials.length > 0) {
+        await Promise.all(materials.map(async (x) => {
+          // make new status
+          const status = await makeNewStatus({
+            status_name: 'pending',
+            status_description: x.material_description,
+          });
+
+          // make new invite
+          const invitation = await makeNewInvitation({
+            invite_from: originalCreation.author_id,
+            invite_to: x.author_id,
+            invite_description: x.material_description,
+            status_id: status.status_id,
+          });
+
+          // update material with invitation id
+          await updateMaterial(x.material_id, {
+            invite_id: invitation.invite_id,
+          });
+        }));
+      }
+
+      // delete extra source
+      await fetch(`${API_BASE_URL}/source/${originalCreation.source_id}`, {
+        method: 'DELETE',
+      }).then(() => null);
+
+      // delete extra materials
+      await Promise.all(originalCreation.materials.map((materialId) => fetch(`${API_BASE_URL}/materials/${materialId}`, {
+        method: 'DELETE',
+      }).then(() => null)));
+
+      setUpdateCreationStatus({
+        success: true,
+        error: null,
+      });
+
+      // redirect user to creations page
+      setTimeout(() => navigate('/creations'), 3000);
+    } catch {
+      setUpdateCreationStatus({
+        success: false,
+        error: 'Failed to update creation',
+      });
+    } finally {
+      setIsUpdatingCreation(false);
+    }
+  }, [originalCreation, transformedCreation, tagSuggestions, authorSuggestions]);
+
+  const getCreationDetails = async (id) => {
+    try {
+      setIsFetchingCreation(true);
+
+      // get creation
+      const toPopulate = ['source_id', 'author_id', 'materials', 'materials.type_id', 'materials.source_id', 'materials.author_id', 'tags'];
+      const responseCreation = await fetch(`${API_BASE_URL}/creations/${id}?${toPopulate.map((x) => `populate=${x}`).join('&')}`).then((x) => x.json());
+      if (responseCreation?.code >= 400) throw new Error(responseCreation.message);
+
+      // transform creation
+      const temporaryTransformedCreation = {
+        id: responseCreation.creation_id,
+        date: moment(responseCreation.creation_date).format('YYYY-MM-DD'),
+        description: responseCreation.creation_description,
+        title: responseCreation.creation_title,
+        is_draft: responseCreation.is_draft,
+        author: responseCreation.author.user_name,
+        source: responseCreation.source.site_url,
+        tags: responseCreation.tags.map((tag) => tag.tag_name),
+        materials: responseCreation.materials.map((material) => (
+          {
+            id: material.material_id,
+            author: material.author.user_name,
+            link: material.material_link,
+            fileType: material.type.type_name,
+            title: material.material_title,
+          }
+        )),
+      };
+
+      setOriginalCreation(responseCreation);
+      setTransformedCreation(temporaryTransformedCreation);
+      setFetchCreationStatus({
+        success: true,
+        error: null,
+      });
+    } catch {
+      setFetchCreationStatus({
+        success: false,
+        error: 'Creation Not Found',
+      });
+    } finally {
+      setIsFetchingCreation(false);
+    }
+  };
+
   return {
     loading,
     newCreationStatus,
     makeNewCreation,
+    isFetchingCreation,
+    isUpdatingCreation,
     tagSuggestions,
     findTagsStatus,
     findAuthorsStatus,
     authorSuggestions,
     handleTagInputChange,
+    getCreationDetails,
+    transformedCreation,
+    updateCreation,
+    updateCreationStatus,
+    fetchCreationStatus,
     handleAuthorInputChange,
   };
 };
 
-export default useCreate;
+export default useCreationForm;
