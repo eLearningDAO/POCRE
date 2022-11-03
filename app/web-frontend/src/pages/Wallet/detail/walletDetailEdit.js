@@ -1,8 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+} from 'react';
 import Rating from '@mui/material/Rating';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 import { Button } from '@mui/material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
@@ -10,18 +13,40 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import { Address } from '@emurgo/cardano-serialization-lib-asmjs';
+import useWalletStore from 'hooks/userWalletService';
+import Loader from 'components/uicore/Loader';
+import Form from 'components/uicore/Form';
+import Input from 'components/uicore/Input';
 import useUserInfo from '../../../hooks/user/userInfo';
+import { walletValidation } from './validation';
 // eslint-disable-next-line import/no-unresolved, unicorn/prefer-module
 const { Buffer } = require('buffer/');
 
-function WalletDetailEdit() {
-  const { login, flag } = useUserInfo();
+function WalletDetailEdit({
+  setDetailEdit,
+  initialValues,
+  userId,
+  imageUrl,
+}) {
   const [ratingValue, setRatingValue] = useState(3);
+  const updateUser = useWalletStore((state) => state.updateUser);
+  const getUserById = useWalletStore((state) => state.getUserById);
+  const isUserDataUpdating = useWalletStore((state) => state.isUserDataUpdating);
+  const { login, flag } = useUserInfo();
   const [wallets, setWallets] = useState([]);
   const [walletAddress, setWalletAddress] = useState('');
   const [selectKey, setSelectKey] = useState(0);
   const selectElement = useRef();
 
+  const handleSubmit = async (values) => {
+    const userData = { ...values, wallet_address: walletAddress, image_url: imageUrl };
+    await updateUser(
+      userData,
+      userId,
+    );
+    getUserById(userId);
+    setDetailEdit(false);
+  };
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const getUsedAddress = async (walletKey) => {
     try {
@@ -29,14 +54,12 @@ function WalletDetailEdit() {
       const raw = await API.getUsedAddresses();
       const rawFirst = raw[0];
       return Address.from_bytes(Buffer.from(rawFirst, 'hex')).to_bech32();
-      // console.log(rewardAddress)
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);
       return 0;
     }
   };
-
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleWallectSelect = async (event) => {
     event.preventDefault();
@@ -46,7 +69,6 @@ function WalletDetailEdit() {
     usedAddress = `${usedAddress.slice(0, 10)}.....${usedAddress.slice(93, 103)}`;
     setWalletAddress(usedAddress);
   };
-
   const pollWallets = () => {
     if (login) {
       const keys = [];
@@ -58,34 +80,30 @@ function WalletDetailEdit() {
       setWallets(keys);
     }
   };
-
-  useEffect(async () => {
-    await pollWallets();
+  useEffect(() => {
+    pollWallets();
   }, []);
 
   useEffect(() => {
-    // window.location.reload();
-    // document.getElementById('walletAddr').value = '';
     setSelectKey((previous) => (previous + 1));
     setWalletAddress('');
   }, [flag]);
-
-  // useEffect(async () => {
-  //   console.log(wallets[0]);
-  //   let initialAddr = await getUsedAddress(wallets[0]);
-  //   initialAddr = `${initialAddr.slice(0, 10)}.....${initialAddr.slice(93, 103)}`;
-  //   setWalletAddress(initialAddr);
-  // }, [wallets]);
-
   return (
-    <div className="wallet-detail-right-container-edit">
+    <Form
+      id="walletForm"
+      className="wallet-detail-right-container-edit"
+      onSubmit={handleSubmit}
+      validationSchema={walletValidation}
+      initialValues={initialValues}
+      preventSubmitOnEnter
+    >
       <div className="wallet-detail-right-container-left-edit">
         <div className="wallet-detail-status-edit">
           <span className="wallet-rating-title">Wallet Rating</span>
           <Rating
-            name="simple-controlled"
             color="red"
             readOnly
+            name="reputationStars"
             value={ratingValue}
             onChange={(newValue) => {
               setRatingValue(newValue);
@@ -105,7 +123,12 @@ function WalletDetailEdit() {
             Available Wallet
             {flag}
           </span>
-          <select className="wallet-select" onChange={(event) => handleWallectSelect(event)} key={selectKey}>
+          <select
+            className="wallet-select"
+            name="walletType"
+            onChange={(event) => handleWallectSelect(event)}
+            key={selectKey}
+          >
             <option value="" ref={selectElement}>
               Select Wallet
             </option>
@@ -116,20 +139,22 @@ function WalletDetailEdit() {
                 </option>
               ))
             }
-            {/* <option className="wallete-option" value="1">Wallet 1</option> */}
-            {/* <option value="2">Wallet 3</option> */}
-            {/* <option value="3">Wallet 4</option> */}
           </select>
         </div>
         <div className="edit-available-wallet">
           <span>Wallet Address</span>
-          <input value={walletAddress} id="walletAddr" />
+          <input
+            name="walletAddress"
+            value={walletAddress}
+          />
         </div>
       </div>
       <div className="wallet-detail-right-container-right-edit">
         <Input
           className="wallet-edit-input"
           placeholder="Name"
+          name="name"
+          hookToForm
           startAdornment={(
             <InputAdornment position="start">
               <PersonOutlineIcon />
@@ -139,6 +164,8 @@ function WalletDetailEdit() {
         <Input
           className="wallet-edit-input"
           placeholder="Email Address"
+          name="email"
+          hookToForm
           startAdornment={(
             <InputAdornment position="start">
               <MailOutlineIcon />
@@ -148,6 +175,8 @@ function WalletDetailEdit() {
         <Input
           className="wallet-edit-input"
           placeholder="Phone"
+          name="phone"
+          hookToForm
           startAdornment={(
             <InputAdornment position="start">
               <LocalPhoneOutlinedIcon />
@@ -158,16 +187,25 @@ function WalletDetailEdit() {
           className="wallet-edit-input-area"
           placeholder="Bio"
           multiline
-          maxRows={4}
+          hookToForm
+          name="bio"
+          minRows={3}
           startAdornment={(
             <InputAdornment position="start">
               <BorderColorOutlinedIcon />
             </InputAdornment>
           )}
         />
-        <Button className="edit-submit">Save</Button>
+        <Button
+          type="submit"
+          form="walletForm"
+          className="edit-submit"
+        >
+          {isUserDataUpdating && <Loader />}
+          {!isUserDataUpdating && ' Save'}
+        </Button>
       </div>
-    </div>
+    </Form>
   );
 }
 

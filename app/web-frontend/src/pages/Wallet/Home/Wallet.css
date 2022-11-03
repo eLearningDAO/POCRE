@@ -437,6 +437,11 @@
     position: relative;
 }
 
+.front-face-photo>img {
+    width: 190px;
+    height: 210px;
+}
+
 .wallete-detail-right-container {
     width: 50%;
 }
@@ -557,6 +562,7 @@
 
 .wallet-detail-address> :nth-child(2) {
     width: 285px;
+    max-width: 285px;
     height: 21px;
     font-family: 'Gilroy';
     font-style: normal;
@@ -564,6 +570,9 @@
     font-size: 16px;
     line-height: 150%;
     color: #FFFFFF;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .wallet-edit-btn {
@@ -741,11 +750,19 @@
     cursor: pointer;
 }
 
-.edit-camera:hover {
-    background-image: linear-gradient(to top, #adf, #8bf);
+.edit-camera>label>input {
+    display: none;
 }
 
-.edit-camera>img {
+.edit-camera>input {
+    visibility: hidden;
+}
+
+.edit-camera:hover {
+    background-image: linear-gradient(to top, #adf, rgb(200, 202, 205));
+}
+
+.edit-camera>label>img {
     width: 40px;
     height: 40px;
     margin-top: 5px;
@@ -940,6 +957,11 @@ select.wallet-select option {
         line-height: 150%;
         color: #FFFFFF;
         padding: 4px;
+    }
+
+    .author-collection-span {
+        margin-left: 4px !important;
+        margin-right: 4px !important;
     }
 
     .wallet-rating-title {

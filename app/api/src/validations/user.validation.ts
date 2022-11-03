@@ -9,6 +9,7 @@ export const createUser = {
     email_address: Joi.string().optional().allow('').allow(null),
     verified_id: Joi.string().optional().allow('').allow(null),
     reputation_stars: Joi.number().optional().allow(0).allow(null),
+    image_url: Joi.string().optional().allow('').allow(null),
   }),
 };
 
@@ -45,6 +46,7 @@ export const updateUser = {
       email_address: Joi.string().optional().allow('').allow(null),
       verified_id: Joi.string().optional().allow('').allow(null),
       reputation_stars: Joi.number().optional().allow(0).allow(null),
+      image_url: Joi.string().optional().allow('').allow(null),
     })
     .min(1),
 };
