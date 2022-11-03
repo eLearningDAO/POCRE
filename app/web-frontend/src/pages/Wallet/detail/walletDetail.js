@@ -49,6 +49,7 @@ function WalletDetail() {
       delete init.walletAddress;
       delete init.walletType;
       delete init.reputationStars;
+      delete init.imageUrl;
       setInitialValues(init);
     }
   }, [userData]);
