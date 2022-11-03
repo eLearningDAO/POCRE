@@ -15,7 +15,9 @@ const proofTemplate = fs.readFileSync(path.join(`${__dirname}/../templates/proof
 export const generateProofOfCreation = async (creation: any): Promise<string> => {
   // generate qr code
   const qrCodeConfig = { height: 250, width: 250, margin: 2, scale: 8 };
-  const qrCode = await QRCode.toDataURL(`/creations/${creation.creation_id}/proof`, { ...qrCodeConfig });
+  const qrCode = await QRCode.toDataURL(creation.published_at, {
+    ...qrCodeConfig,
+  });
 
   // fill materials template
   const materialItems =
@@ -46,6 +48,8 @@ export const generateProofOfCreation = async (creation: any): Promise<string> =>
     .replace('{{source.site_url}}', creation.source.site_url)
     .replace('{{creation_date}}', moment(creation.creation_date).format('Do MMMM YYYY'))
     .replace('{{author.user_name}}', creation.author.user_name)
+    .replace('{{published_at}}', creation.published_at)
+    .replace('{{published_at}}', creation.published_at)
     .replace('{{unique_id}}', creation.creation_id)
     .replace('{{unique_id}}', creation.creation_id)
     .replace('{{qr_code}}', qrCode)
