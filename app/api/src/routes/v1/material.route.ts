@@ -189,8 +189,11 @@ export default router;
  *               - source_id
  *               - type_id
  *               - invite_id
+ *               - invite_id.invite_from
+ *               - invite_id.invite_to
+ *               - invite_id.status_id
  *               - author_id
- *         description: list of fields to populate
+ *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
  *       "200":
  *         description: OK
@@ -243,8 +246,11 @@ export default router;
  *               - source_id
  *               - type_id
  *               - invite_id
+ *               - invite_id.invite_from
+ *               - invite_id.invite_to
+ *               - invite_id.status_id
  *               - author_id
- *         description: list of fields to populate
+ *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
  *       "200":
  *         description: OK

@@ -4,6 +4,7 @@ import { getSourceById } from '../services/source.service';
 import { getUserById } from '../services/user.service';
 import { getTagById } from '../services/tag.service';
 import { getMaterialById } from '../services/material.service';
+import { generateProofOfCreation } from '../utils/generateProofOfCreation';
 
 export const queryCreations = catchAsync(async (req, res): Promise<void> => {
   const creation = await creationService.queryCreations(req.query as any);
@@ -11,11 +12,33 @@ export const queryCreations = catchAsync(async (req, res): Promise<void> => {
 });
 
 export const getCreationById = catchAsync(async (req, res): Promise<void> => {
-  const creation = await creationService.getCreationById(
-    req.params.creation_id,
-    req.query.populate as string | (string | string[])[]
-  );
+  const creation = await creationService.getCreationById(req.params.creation_id, req.query.populate as string | string[]);
   res.send(creation);
+});
+
+export const getCreationProofById = catchAsync(async (req, res): Promise<void | any> => {
+  const creation = await creationService.getCreationById(req.params.creation_id, [
+    'source_id',
+    'author_id',
+    'tags',
+    'materials',
+    'materials.type_id',
+    'materials.source_id',
+    'materials.author_id',
+    'materials.invite_id',
+    'materials.invite_id.invite_from',
+    'materials.invite_id.invite_to',
+    'materials.invite_id.status_id',
+  ]);
+
+  // when json is required
+  if (req.query.format === 'json') return res.send(creation);
+
+  // when document/web format is required
+  if (req.query.format === 'web') {
+    const document = await generateProofOfCreation(creation);
+    return res.send(document);
+  }
 });
 
 export const createCreation = catchAsync(async (req, res): Promise<void> => {

@@ -26,7 +26,7 @@ interface ICreationQuery {
   is_trending?: boolean;
   is_partially_assigned?: boolean;
   is_fully_assigned?: boolean;
-  populate?: string | (string | string[])[];
+  populate?: string | string[];
 }
 interface ICreationQueryResult {
   results: Array<ICreationDoc>;
@@ -353,10 +353,7 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
  * @param {string} id
  * @returns {Promise<ICreationDoc|null>}
  */
-export const getCreationById = async (
-  id: string,
-  populate?: string | (string | string[])[]
-): Promise<ICreationDoc | null> => {
+export const getCreationById = async (id: string, populate?: string | string[]): Promise<ICreationDoc | null> => {
   const creation = await (async () => {
     try {
       const result = await db.query(

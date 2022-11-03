@@ -22,7 +22,7 @@ interface IMaterialQuery {
   search_fields: string[];
   is_recognized: boolean;
   is_claimed: boolean;
-  populate?: string | (string | string[])[];
+  populate?: string | string[];
 }
 interface IMaterialQueryResult {
   results: Array<IMaterialDoc>;
@@ -269,10 +269,7 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
  * @param {string} id
  * @returns {Promise<IMaterialDoc|null>}
  */
-export const getMaterialById = async (
-  id: string,
-  populate?: string | (string | string[])[]
-): Promise<IMaterialDoc | null> => {
+export const getMaterialById = async (id: string, populate?: string | string[]): Promise<IMaterialDoc | null> => {
   const material = await (async () => {
     try {
       const result = await db.query(

@@ -16,6 +16,10 @@ router
   .patch(validate(creationValidation.updateCreation), creationController.updateCreationById)
   .delete(validate(creationValidation.deleteCreation), creationController.deleteCreationById);
 
+router
+  .route('/:creation_id/proof')
+  .get(validate(creationValidation.getCreationProof), creationController.getCreationProofById);
+
 export default router;
 
 /**
@@ -206,7 +210,14 @@ export default router;
  *               - author_id
  *               - tags
  *               - materials
- *         description: list of fields to populate
+ *               - materials.source_id
+ *               - materials.type_id
+ *               - materials.invite_id
+ *               - materials.invite_id.invite_from
+ *               - materials.invite_id.invite_to
+ *               - materials.invite_id.status_id
+ *               - materials.author_id
+ *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
  *       "200":
  *         description: OK
@@ -260,7 +271,14 @@ export default router;
  *               - author_id
  *               - tags
  *               - materials
- *         description: list of fields to populate
+ *               - materials.source_id
+ *               - materials.type_id
+ *               - materials.invite_id
+ *               - materials.invite_id.invite_from
+ *               - materials.invite_id.invite_to
+ *               - materials.invite_id.status_id
+ *               - materials.author_id
+ *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
  *       "200":
  *         description: OK
@@ -406,6 +424,42 @@ export default router;
  *     responses:
  *       "200":
  *         description: OK
+ *       "404":
+ *         $ref: '#/components/responses/CreationNotFound'
+ *       "500":
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+
+/**
+ * @swagger
+ * /creations/{creation_id}/proof:
+ *   get:
+ *     summary: Get a creation proof by id
+ *     description: Get a creation proof by id in various formats
+ *     tags: [Creation]
+ *     parameters:
+ *       - in: path
+ *         name: creation_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Creation id
+ *       - in: query
+ *         name: format
+ *         default: web
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - web
+ *             - json
+ *         description: The required format for proof of creation. When format is web, an html document will be returned instead of json
+ *     responses:
+ *       "200":
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/CreationProof'
  *       "404":
  *         $ref: '#/components/responses/CreationNotFound'
  *       "500":

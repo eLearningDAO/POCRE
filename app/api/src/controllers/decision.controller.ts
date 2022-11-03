@@ -3,10 +3,7 @@ import { getUserById } from '../services/user.service';
 import * as decisionService from '../services/decision.service';
 
 export const getDecisionById = catchAsync(async (req, res): Promise<void> => {
-  const decision = await decisionService.getDecisionById(
-    req.params.decision_id,
-    req.query.populate as string | (string | string[])[]
-  );
+  const decision = await decisionService.getDecisionById(req.params.decision_id, req.query.populate as string | string[]);
   res.send(decision);
 });
 
