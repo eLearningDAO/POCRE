@@ -41,7 +41,6 @@ interface IUserDoc {
   authorship_duration?: string;
   date_joined: string;
   total_creations?: string;
-  image_url?: string;
 }
 interface IUserCriteria {
   required_users: number;
