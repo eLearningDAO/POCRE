@@ -1,11 +1,22 @@
 import React from 'react';
 import { Button, Grid } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 function WalletCollections() {
+  const navigate = useNavigate();
+  const handleViewCreattion = () => {
+    navigate('/creations');
+  };
+  const handleCreateCreattion = () => {
+    navigate('/creations/create');
+  };
   return (
     <Grid container className="wallet-collection-container">
       <Grid item md={12} sm={12} xs={12} className="wallet-collection-right">
-        <Button className="wallet-collection-button">
+        <Button
+          className="wallet-collection-button"
+          onClick={handleViewCreattion}
+        >
           <svg
             width="62"
             height="63"
@@ -24,7 +35,10 @@ function WalletCollections() {
           </svg>
           View my creations
         </Button>
-        <Button className="wallet-collection-button-unselected">
+        <Button
+          className="wallet-collection-button-unselected"
+          onClick={handleCreateCreattion}
+        >
           <svg
             width="55"
             height="56"

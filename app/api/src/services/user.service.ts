@@ -12,7 +12,8 @@ export interface IUser {
   phone?: string;
   email_address?: string;
   verified_id?: string;
-  reputation_stars?: number
+  reputation_stars?: number;
+  image_url?: string;
 }
 interface IUserQuery {
   limit: number;
@@ -53,14 +54,15 @@ interface IUserCriteria {
  */
 export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
   try {
-    const result = await db.query(`INSERT INTO users (user_name,wallet_address,user_bio,phone,email_address, verified_id,  reputation_stars) values ($1,$2,$3,$4,$5,$6,$7) RETURNING *;`, [
+    const result = await db.query(`INSERT INTO users (user_name,wallet_address,user_bio,phone,email_address, verified_id,  reputation_stars,image_url) values ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *;`, [
       userBody.user_name,
       userBody.wallet_address,
       userBody.user_bio,
       userBody.phone,
       userBody.email_address,
       userBody.verified_id,
-      userBody.reputation_stars
+      userBody.reputation_stars,
+      userBody.image_url,
     ]);
     const user = result.rows[0];
     return user;
