@@ -12,12 +12,8 @@ import {
   Invitation,
   Status,
 } from 'api/requests';
-
-// get auth user
-const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
-
-let debounceTagInterval = null;
-let debounceAuthorInterval = null;
+import useTagSuggestions from 'hooks/useTagSuggestions';
+import useAuthorSuggestions from 'hooks/useAuthorSuggestions';
 
 const useCreationForm = () => {
   const navigate = useNavigate();
@@ -37,109 +33,12 @@ const useCreationForm = () => {
     success: false,
     error: null,
   });
-  const [findTagsStatus, setFindTagsStatus] = useState({
-    success: false,
-    error: null,
-  });
-  const [tagSuggestions, setTagSuggestions] = useState([]);
-  const [findAuthorsStatus, setFindAuthorsStatus] = useState({
-    success: false,
-    error: null,
-  });
-  const [authorSuggestions, setAuthorSuggestions] = useState([]);
 
   const [originalCreation, setOriginalCreation] = useState(null);
   const [transformedCreation, setTransformedCreation] = useState(null);
 
-  // get tag suggestions
-  const findTagSuggestions = useCallback(async (searchText = '') => {
-    try {
-      const response = await Tag.getAll(`query=${searchText}&search_fields[]=tag_name`);
-
-      setFindTagsStatus({
-        success: true,
-        error: null,
-      });
-      setTimeout(() => setFindTagsStatus({
-        success: false,
-        error: null,
-      }), 3000);
-
-      return response;
-    } catch {
-      setFindTagsStatus({
-        success: false,
-        error: 'Failed to get tag suggestion',
-      });
-    }
-    return null;
-  }, []);
-
-  // get tag suggestion on tag input change
-  const handleTagInputChange = async (event) => {
-    if (debounceTagInterval) clearTimeout(debounceTagInterval);
-
-    debounceTagInterval = await setTimeout(async () => {
-      const value = event.target.value.trim();
-      if (!value) return;
-
-      const suggestions = await findTagSuggestions(value);
-
-      const validSuggestions = [];
-
-      suggestions?.results?.map(
-        (x) => validSuggestions.findIndex((y) => y.tag_name === x.tag_name) <= -1
-          && validSuggestions.push(x),
-      );
-
-      setTagSuggestions([...tagSuggestions, ...validSuggestions]);
-    }, 500);
-  };
-
-  // get author suggestions
-  const findAuthorSuggestions = useCallback(async (searchText = '') => {
-    try {
-      const response = await User.getAll(`query=${searchText}&search_fields[]=user_name`);
-
-      setFindAuthorsStatus({
-        success: true,
-        error: null,
-      });
-      setTimeout(() => setFindAuthorsStatus({
-        success: false,
-        error: null,
-      }), 3000);
-
-      return response;
-    } catch {
-      setFindAuthorsStatus({
-        success: false,
-        error: 'Failed to get user suggestion',
-      });
-    }
-    return null;
-  }, []);
-
-  // get tag suggestion on tag input change
-  const handleAuthorInputChange = async (event) => {
-    if (debounceAuthorInterval) clearTimeout(debounceAuthorInterval);
-
-    debounceAuthorInterval = await setTimeout(async () => {
-      const value = event.target.value.trim();
-      if (!value) return;
-
-      const suggestions = await findAuthorSuggestions(value);
-
-      const validSuggestions = [];
-
-      suggestions?.results?.filter((x) => x.user_name.trim() !== authUser.user_name.trim()).map(
-        (x) => validSuggestions.findIndex((y) => y.user_id === x.user_id) <= -1
-          && validSuggestions.push(x),
-      );
-
-      setAuthorSuggestions([...authorSuggestions, ...validSuggestions]);
-    }, 500);
-  };
+  const { findTagsStatus, handleTagInputChange, tagSuggestions } = useTagSuggestions();
+  const { authorSuggestions, findAuthorsStatus, handleAuthorInputChange } = useAuthorSuggestions();
 
   // creates new new creation
   const makeNewCreation = useCallback(async (creationBody = {}) => {

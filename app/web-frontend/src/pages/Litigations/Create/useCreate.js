@@ -1,11 +1,10 @@
+import {
+  Invitation, Litigation, Material, User,
+} from 'api/requests';
+import useAuthorSuggestions from 'hooks/useAuthorSuggestions';
+import useCreationSuggestions from 'hooks/useCreationSuggestions';
 import Cookies from 'js-cookie';
 import { useCallback, useState } from 'react';
-import {
-  Creation, Invitation, Litigation, Material, User,
-} from 'api/requests';
-
-let debounceTagInterval = null;
-let debounceAuthorInterval = null;
 
 const useCreate = () => {
   const [isCreatingLitigation, setIsCreatingLitigation] = useState(false);
@@ -14,119 +13,13 @@ const useCreate = () => {
     success: false,
     error: null,
   });
-  const [fetchCreationsStatus, setFetchCreationsStatus] = useState({
-    success: false,
-    error: null,
-  });
-  const [creationSuggestions, setCreationSuggestions] = useState([]);
-  const [findAuthorsStatus, setFindAuthorsStatus] = useState({
-    success: false,
-    error: null,
-  });
-  const [authorSuggestions, setAuthorSuggestions] = useState([]);
 
-  // get creation suggestions
-  const findCreationSuggestions = useCallback(async (searchText = '') => {
-    try {
-      const response = await Creation.getAll(`query=${searchText}&search_fields[]=creation_title`);
-
-      setFetchCreationsStatus({
-        success: true,
-        error: null,
-      });
-      setTimeout(() => setFetchCreationsStatus({
-        success: false,
-        error: null,
-      }), 3000);
-
-      return response;
-    } catch {
-      setFetchCreationsStatus({
-        success: false,
-        error: 'Failed to get creation suggestion',
-      });
-    }
-    return null;
-  }, []);
-
-  // get creation suggestions
-  const getMaterialDetail = useCallback(async (id = '') => {
-    try {
-      return await Material.getById(id);
-    } catch (error) {
-      return error?.message;
-    }
-  }, []);
-
-  // get creation suggestion on creation input change
-  const handleCreationInputChange = async (event) => {
-    if (debounceTagInterval) clearTimeout(debounceTagInterval);
-
-    debounceTagInterval = await setTimeout(async () => {
-      const value = event.target.value.trim();
-      if (!value) return;
-
-      const suggestions = await findCreationSuggestions(value);
-
-      const validSuggestions = [];
-
-      suggestions?.results?.map(
-        (x) => validSuggestions.findIndex((y) => y.creation_title === x.creation_title) <= -1
-        && validSuggestions.push(x),
-      );
-
-      setCreationSuggestions([
-        ...creationSuggestions,
-        ...validSuggestions.filter((x) => x.is_claimable),
-      ]);
-    }, 500);
-  };
-
-  // get author suggestions
-  const findAuthorSuggestions = useCallback(async (searchText = '') => {
-    try {
-      const response = await User.getAll(`query=${searchText}&search_fields[]=user_name`);
-
-      setFindAuthorsStatus({
-        success: true,
-        error: null,
-      });
-      setTimeout(() => setFindAuthorsStatus({
-        success: false,
-        error: null,
-      }), 3000);
-
-      return response;
-    } catch {
-      setFindAuthorsStatus({
-        success: false,
-        error: 'Failed to get user suggestion',
-      });
-    }
-    return null;
-  }, []);
-
-  // get creation suggestion on author input change
-  const handleAuthorInputChange = async (event) => {
-    if (debounceAuthorInterval) clearTimeout(debounceAuthorInterval);
-
-    debounceAuthorInterval = await setTimeout(async () => {
-      const value = event.target.value.trim();
-      if (!value) return;
-
-      const suggestions = await findAuthorSuggestions(value);
-
-      const validSuggestions = [];
-
-      const user = JSON.parse(Cookies.get('activeUser') || '{}');
-      suggestions?.results?.filter((x) => x.user_name.trim() !== user?.user_name?.trim()).map(
-        (x) => validSuggestions.findIndex((y) => y.user_id === x.user_id) <= -1
-        && validSuggestions.push(x),
-      );
-
-      setAuthorSuggestions([...authorSuggestions, ...validSuggestions]);
-    }, 500);
-  };
+  const { authorSuggestions, findAuthorsStatus, handleAuthorInputChange } = useAuthorSuggestions();
+  const {
+    creationSuggestions,
+    fetchCreationsStatus,
+    handleCreationInputChange,
+  } = useCreationSuggestions();
 
   // creates new new creation
   const makeNewLitigation = useCallback(async (litigationBody = {}) => {
@@ -196,7 +89,7 @@ const useCreate = () => {
     authorSuggestions,
     handleCreationInputChange,
     handleAuthorInputChange,
-    getMaterialDetail,
+    getMaterialDetail: Material.getById,
   };
 };
 
