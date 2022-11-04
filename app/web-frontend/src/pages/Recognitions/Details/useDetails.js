@@ -1,5 +1,7 @@
 import { useCallback, useState } from 'react';
-import { API_BASE_URL } from 'config';
+import {
+  Invitation, Material, Creation, Status,
+} from 'api/requests';
 
 const useDetails = () => {
   const [isFetchingRecognition, setIsFetchingRecognition] = useState(false);
@@ -26,18 +28,17 @@ const useDetails = () => {
 
       // get recognition details
       const recognitionToPopulate = ['invite_from', 'invite_to', 'status_id'];
-      const recognitionResponse = await fetch(`${API_BASE_URL}/invitations/${id}?${recognitionToPopulate.map((x) => `populate=${x}`).join('&')}`).then((x) => x.json());
-      if (recognitionResponse.code >= 400) throw new Error('Failed to get invitation');
+      const recognitionResponse = await Invitation.getById(id, recognitionToPopulate.map((x) => `populate=${x}`).join('&'));
 
       // get details of material for this invitation
       const materialToPopulate = ['source_id', 'type_id', 'author_id'];
-      const materials = await fetch(`${API_BASE_URL}/materials?limit=1&query=${recognitionResponse.invite_id}&search_fields[]=invite_id&${materialToPopulate.map((x) => `populate=${x}`).join('&')}`).then((x) => x.json());
+      const materials = await Material.getAll(`limit=1&query=${recognitionResponse.invite_id}&search_fields[]=invite_id&${materialToPopulate.map((x) => `populate=${x}`).join('&')}`);
       if (materials?.code >= 400) throw new Error('Failed to get invitation');
       const material = materials?.results?.[0] || null;
 
       // get details of creation of material
       const creationToPopulate = ['source_id', 'author_id', 'materials', 'tags', 'materials.source_id', 'materials.type_id', 'materials.author_id'];
-      const creation = material ? await fetch(`${API_BASE_URL}/creations?limit=1&query=${material?.material_id}&search_fields[]=material_id&${creationToPopulate.map((x) => `populate=${x}`).join('&')}`).then((x) => x.json()).catch(() => null) : null;
+      const creation = material ? await Creation.getAll(`limit=1&query=${material?.material_id}&search_fields[]=material_id&${creationToPopulate.map((x) => `populate=${x}`).join('&')}`) : null;
       if (material && !creation) throw new Error('Failed to get invitation');
 
       const transformedInvitation = {
@@ -66,19 +67,13 @@ const useDetails = () => {
   }, []);
 
   // update a status linked to invitation
-  const updateInvitationStatus = useCallback(async (statusId, statusBody = {}) => {
-    const response = await fetch(`${API_BASE_URL}/status/${statusId}`, {
-      method: 'PATCH',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(statusBody),
-    }).then((x) => x.json());
-
-    if (response.code >= 400) throw new Error('Failed to update status');
-    return response;
-  }, []);
+  const updateInvitationStatus = useCallback(
+    async (
+      statusId,
+      statusBody = {},
+    ) => await Status.update(statusId, statusBody),
+    [],
+  );
 
   // accepts an recogniton
   const acceptRecognition = useCallback(async () => {

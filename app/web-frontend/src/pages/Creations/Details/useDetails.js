@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { API_BASE_URL } from 'config';
+import { Creation } from 'api/requests';
 
 const useDetails = () => {
   const [isFetchingCreation, setIsFetchingCreation] = useState(false);
@@ -27,8 +27,7 @@ const useDetails = () => {
         'materials.invite_id.status_id',
         'materials.author_id',
       ];
-      const creationResponse = await fetch(`${API_BASE_URL}/creations/${id}?${toPopulate.map((x) => `populate=${x}`).join('&')}`).then((x) => x.json());
-      if (creationResponse.code >= 400) throw new Error('Failed to fetch creation');
+      const creationResponse = await Creation.getById(id, toPopulate.map((x) => `populate=${x}`));
 
       setFetchCreationStatus({
         success: true,

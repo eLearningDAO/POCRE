@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import { useCallback, useState } from 'react';
-import { API_BASE_URL } from 'config';
+import { Creation, Material, Source } from 'api/requests';
 
 // get auth user
 const user = JSON.parse(Cookies.get('activeUser') || '{}');
@@ -31,12 +31,9 @@ const useCreations = () => {
         'materials.type_id',
         'materials.author_id',
       ];
-      const creationResponse = await fetch(
-        `${API_BASE_URL}/creations?page=${1}&limit=100&descend_fields[]=creation_date&query=${user.user_id}&search_fields[]=author_id&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
-      )
-        .then((x) => x.json());
-
-      if (creationResponse.code >= 400) throw new Error('Failed to fetch creations');
+      const creationResponse = await Creation.getAll(
+        `page=${1}&limit=100&descend_fields[]=creation_date&query=${user.user_id}&search_fields[]=author_id&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
+      );
 
       setFetchCreationStatus({
         success: true,
@@ -65,37 +62,19 @@ const useCreations = () => {
       setIsDeletingCreation(true);
 
       // delete creation
-      await fetch(
-        `${API_BASE_URL}/creations/${creation?.creation_id}`,
-        {
-          method: 'DELETE',
-        },
-      )
-        .then(() => {});
+      await Creation.delete(creation?.creation_id);
 
       // delete creation materials
       if ((creation?.materials || [])?.length > 0) {
         await Promise.all(
           creation?.materials?.map(
-            (materialId) => fetch(
-              `${API_BASE_URL}/materials/${materialId}`,
-              {
-                method: 'DELETE',
-              },
-            )
-              .then(() => {}),
+            async (materialId) => await Material.delete(materialId),
           ),
         );
       }
 
       // delete creation source
-      await fetch(
-        `${API_BASE_URL}/source/${creation?.source?.source_id}`,
-        {
-          method: 'DELETE',
-        },
-      )
-        .then(() => {});
+      await Source.delete(creation?.source?.source_id);
 
       setDeleteCreationStatus({
         success: true,
