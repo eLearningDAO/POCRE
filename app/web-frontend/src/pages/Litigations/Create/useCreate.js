@@ -1,10 +1,12 @@
 import {
   Invitation, Litigation, Material, User,
 } from 'api/requests';
-import useAuthorSuggestions from 'hooks/useAuthorSuggestions';
-import useCreationSuggestions from 'hooks/useCreationSuggestions';
+import useSuggestions from 'hooks/useSuggestions';
 import Cookies from 'js-cookie';
 import { useCallback, useState } from 'react';
+
+// get auth user
+const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 
 const useCreate = () => {
   const [isCreatingLitigation, setIsCreatingLitigation] = useState(false);
@@ -14,12 +16,22 @@ const useCreate = () => {
     error: null,
   });
 
-  const { authorSuggestions, findAuthorsStatus, handleAuthorInputChange } = useAuthorSuggestions();
   const {
-    creationSuggestions,
-    fetchCreationsStatus,
-    handleCreationInputChange,
-  } = useCreationSuggestions();
+    suggestions: authorSuggestions,
+    suggestionsStatus: findAuthorsStatus,
+    handleSuggestionInputChange: handleAuthorInputChange,
+  } = useSuggestions({
+    search: 'users',
+    filterSuggestion: authUser?.user_name?.trim(),
+  });
+
+  const {
+    suggestions: creationSuggestions,
+    suggestionsStatus: fetchCreationsStatus,
+    handleSuggestionInputChange: handleCreationInputChange,
+  } = useSuggestions({
+    search: 'creations',
+  });
 
   // creates new new creation
   const makeNewLitigation = useCallback(async (litigationBody = {}) => {
@@ -27,7 +39,7 @@ const useCreate = () => {
       setIsCreatingLitigation(true);
 
       // get auth user
-      const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
+      const user = JSON.parse(Cookies.get('activeUser') || '{}');
 
       // make a new litigation
       const response = await Litigation.create({
@@ -35,7 +47,7 @@ const useCreate = () => {
         litigation_description: litigationBody.description?.trim(),
         creation_id: litigationBody.creation,
         material_id: litigationBody.material,
-        issuer_id: authUser.user_id,
+        issuer_id: user.user_id,
         litigation_start: new Date(litigationBody.publicDate).toISOString(),
         litigation_end: new Date(litigationBody.endDate).toISOString(),
         reconcilate: litigationBody.inviteAuthors,

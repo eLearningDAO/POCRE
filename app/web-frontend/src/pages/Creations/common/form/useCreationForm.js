@@ -1,19 +1,14 @@
-import { useState, useCallback } from 'react';
-import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
-import moment from 'moment';
 import {
-  Source,
-  User,
-  Creation,
-  MaterialType,
-  Material,
-  Tag,
-  Invitation,
-  Status,
+  Creation, Invitation, Material, MaterialType, Source, Status, Tag, User,
 } from 'api/requests';
-import useTagSuggestions from 'hooks/useTagSuggestions';
-import useAuthorSuggestions from 'hooks/useAuthorSuggestions';
+import useSuggestions from 'hooks/useSuggestions';
+import Cookies from 'js-cookie';
+import moment from 'moment';
+import { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+// get auth user
+const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 
 const useCreationForm = () => {
   const navigate = useNavigate();
@@ -37,8 +32,22 @@ const useCreationForm = () => {
   const [originalCreation, setOriginalCreation] = useState(null);
   const [transformedCreation, setTransformedCreation] = useState(null);
 
-  const { findTagsStatus, handleTagInputChange, tagSuggestions } = useTagSuggestions();
-  const { authorSuggestions, findAuthorsStatus, handleAuthorInputChange } = useAuthorSuggestions();
+  const {
+    suggestions: tagSuggestions,
+    suggestionsStatus: findTagsStatus,
+    handleSuggestionInputChange: handleTagInputChange,
+  } = useSuggestions({
+    search: 'tags',
+  });
+
+  const {
+    suggestions: authorSuggestions,
+    suggestionsStatus: findAuthorsStatus,
+    handleSuggestionInputChange: handleAuthorInputChange,
+  } = useSuggestions({
+    search: 'users',
+    filterSuggestion: authUser?.user_name?.trim(),
+  });
 
   // creates new new creation
   const makeNewCreation = useCallback(async (creationBody = {}) => {
