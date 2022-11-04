@@ -1,13 +1,13 @@
 import {
-  Button, Grid, TextField, Typography, Snackbar, Alert,
+  Alert, Button, Grid, Snackbar, TextField, Typography,
 } from '@mui/material';
-import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import CreationCard from 'components/cards/CreationCard';
-import './index.css';
 import Loader from 'components/uicore/Loader';
 import useUserInfo from 'hooks/user/userInfo';
+import moment from 'moment';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './index.css';
 import useCreations from './useCreations';
 
 function Creations() {
@@ -15,39 +15,29 @@ function Creations() {
   const [search, setSearch] = useState('');
   const login = useUserInfo((s) => s.login);
   const {
-    fetchCreations,
     creations,
     isLoadingCreations,
-    deleteCreation,
     isDeletingCreation,
     deleteCreationStatus,
-    setDeleteCreationStatus,
+    deleteCreation,
+    resetDeletionErrors,
   } = useCreations();
 
   const add = () => {
     navigate('/creations/create');
   };
 
-  useEffect(() => {
-    fetchCreations();
-  }, []);
-
   const handleSearch = (event) => {
     setSearch(event.target.value.trim());
   };
-
-  const closeDeleteNotification = () => setDeleteCreationStatus({
-    success: false,
-    error: null,
-  });
 
   return (
     <Grid container spacing={2}>
       {isDeletingCreation && <Loader withBackdrop size="large" />}
       {(deleteCreationStatus.success || deleteCreationStatus.error) && (
-        <Snackbar open onClose={closeDeleteNotification}>
+        <Snackbar open onClose={resetDeletionErrors}>
           <Alert
-            onClose={closeDeleteNotification}
+            onClose={resetDeletionErrors}
             severity={deleteCreationStatus.success ? 'success' : 'error'}
             sx={{ width: '100%' }}
           >
@@ -126,7 +116,7 @@ function Creations() {
                   canEdit={x.is_draft}
                   onEditClick={() => navigate(`/creations/${x.creation_id}/update`)}
                   // eslint-disable-next-line no-return-await
-                  onDeleteClick={async () => await deleteCreation(x)}
+                  onDeleteClick={async () => await deleteCreation(x.creation_id)}
                 />
             ),
           )}
@@ -134,7 +124,6 @@ function Creations() {
             <Button
               style={{ margin: 'auto' }}
               className="nextCollectionButton"
-              onClick={fetchCreations}
             >
               Load More
             </Button>
