@@ -1,4 +1,5 @@
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
@@ -14,9 +15,14 @@ const theme = createTheme({
   },
 });
 
+// react query client
+const queryClient = new QueryClient();
+
 ReactDOM.render(
-  <ThemeProvider theme={theme}>
-    <App />
-  </ThemeProvider>,
+  <QueryClientProvider client={queryClient}>
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
+  </QueryClientProvider>,
   document.getElementById('root'),
 );

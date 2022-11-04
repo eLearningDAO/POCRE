@@ -13,6 +13,7 @@
     "@mui/system": "^5.10.8",
     "@popperjs/core": "^2.11.6",
     "@svgr/core": "^6.4.0",
+    "@tanstack/react-query": "^4.14.1",
     "@types/popper.js": "^1.11.0",
     "blakejs": "^1.1.1",
     "buffer": "^6.0.3",
