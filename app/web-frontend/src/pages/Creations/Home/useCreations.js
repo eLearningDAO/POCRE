@@ -68,7 +68,7 @@ const useCreations = () => {
       if ((creation?.materials || [])?.length > 0) {
         await Promise.all(
           creation?.materials?.map(
-            async (materialId) => await Material.getById(materialId),
+            async (materialId) => await Material.delete(materialId),
           ),
         );
       }
