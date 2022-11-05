@@ -6,20 +6,20 @@ import {
   Button, Chip,
   Grid, Snackbar, Typography,
 } from '@mui/material';
-import Cookies from 'js-cookie';
-import moment from 'moment';
-import React, {
-  useEffect,
-  useState,
-} from 'react';
-import { useParams } from 'react-router-dom';
 import DownloadIconSVG from 'assets/svgs/download.svg';
 import PreviewIcon from 'assets/svgs/preview.svg';
 import CreationPreview from 'components/previews/CreationPreview';
 import Loader from 'components/uicore/Loader';
+import Cookies from 'js-cookie';
+import moment from 'moment';
+import {
+  useEffect,
+  useState,
+} from 'react';
+import { useParams } from 'react-router-dom';
 import { getUrlFileType } from 'utils/helpers/getUrlFileType';
+import useRecognitions from '../common/hooks/useRecognitions';
 import './index.css';
-import useDetails from './useDetails';
 
 // get auth user
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
@@ -32,52 +32,34 @@ export default function CreationDetails() {
   const [showPreview, setShowPreview] = useState(false);
 
   const {
-    recognition,
+    recognitionDetails,
     fetchRecognitionDetails,
-    fetchRecognitionStatus,
-    isFetchingRecognition,
-    acceptRecognition,
-    declineRecognition,
-    isAcceptingRecognition,
-    isDecliningRecognition,
-    acceptRecognitionStatus,
-    declineRecognitionStatus,
-    setAcceptRecognitionStatus,
-    setDeclineRecognitionStatus,
-  } = useDetails();
+    fetchRecognitionDetailsStatus,
+    isFetchingRecognitionDetails,
+    updateRecognitionStatus,
+    isUpdatingRecognition,
+    updatedRecognitionStatus,
+    resetUpdateRecognitionStatus,
+  } = useRecognitions();
 
   useEffect(() => {
     if (id) fetchRecognitionDetails(id);
   }, [id]);
 
   useEffect(() => {
-    const invitationFileType = getUrlFileType(recognition?.material?.material_link);
+    const invitationFileType = getUrlFileType(recognitionDetails?.material?.material_link);
     setMediaType(invitationFileType);
 
-    const creationFileType = getUrlFileType(recognition?.material?.material_link);
+    const creationFileType = getUrlFileType(recognitionDetails?.material?.material_link);
     setCreationMediaType(creationFileType);
-  }, [recognition]);
+  }, [recognitionDetails]);
 
-  const onCloseAcceptNotificationPopup = () => {
-    setAcceptRecognitionStatus({
-      success: false,
-      error: null,
-    });
-  };
+  if (isFetchingRecognitionDetails) return <Loader />;
 
-  const onCloseDeclineNotificationPopup = () => {
-    setDeclineRecognitionStatus({
-      success: false,
-      error: null,
-    });
-  };
-
-  if (isFetchingRecognition) return <Loader />;
-
-  if (fetchRecognitionStatus.error) {
+  if (fetchRecognitionDetailsStatus.error) {
     return (
       <h2 className="color-red">
-        {fetchRecognitionStatus.error}
+        {fetchRecognitionDetailsStatus.error}
       </h2>
     );
   }
@@ -86,13 +68,13 @@ export default function CreationDetails() {
     <>
       {showPreview && (
       <CreationPreview
-        id={recognition?.creation?.creation_id}
-        title={recognition?.creation?.creation_title}
-        description={recognition?.creation?.creation_description}
-        link={recognition?.creation?.source?.site_url}
-        authorName={recognition?.creation?.author?.user_name}
-        date={moment(recognition?.creation?.creation_date).format('DD/MM/YYYY')}
-        materials={recognition?.creation?.materials?.map((x) => ({
+        id={recognitionDetails?.creation?.creation_id}
+        title={recognitionDetails?.creation?.creation_title}
+        description={recognitionDetails?.creation?.creation_description}
+        link={recognitionDetails?.creation?.source?.site_url}
+        authorName={recognitionDetails?.creation?.author?.user_name}
+        date={moment(recognitionDetails?.creation?.creation_date).format('DD/MM/YYYY')}
+        materials={recognitionDetails?.creation?.materials?.map((x) => ({
           title: x?.material_title,
           fileType: x?.type?.type_name,
           link: x?.material_link,
@@ -101,50 +83,35 @@ export default function CreationDetails() {
         onClose={() => setShowPreview(false)}
       />
       )}
-      {(isAcceptingRecognition || isDecliningRecognition) && <Loader withBackdrop size="large" />}
+      {isUpdatingRecognition && <Loader withBackdrop size="large" />}
 
-      {(acceptRecognitionStatus.success || acceptRecognitionStatus.error) && (
+      {(updatedRecognitionStatus.success || updatedRecognitionStatus.error) && (
       <Snackbar
         open
-        onClose={onCloseAcceptNotificationPopup}
+        onClose={resetUpdateRecognitionStatus}
       >
         <Alert
-          onClose={onCloseAcceptNotificationPopup}
+          onClose={resetUpdateRecognitionStatus}
           icon={false}
-          className={acceptRecognitionStatus.success ? 'bg-green color-white' : 'bg-red color-white'}
+          className={updatedRecognitionStatus.success ? 'bg-green color-white' : 'bg-red color-white'}
           sx={{ width: '100%' }}
         >
-          {acceptRecognitionStatus.success ? 'Invitation Accepted!' : acceptRecognitionStatus.error}
-        </Alert>
-      </Snackbar>
-      )}
-      {(declineRecognitionStatus.success || declineRecognitionStatus.error) && (
-      <Snackbar
-        open
-        onClose={onCloseDeclineNotificationPopup}
-      >
-        <Alert
-          onClose={onCloseDeclineNotificationPopup}
-          icon={false}
-          className={declineRecognitionStatus.success ? 'bg-green color-white' : 'bg-red color-white'}
-          sx={{ width: '100%' }}
-        >
-          {declineRecognitionStatus.success ? 'Invitation Declined!' : declineRecognitionStatus.error}
+          {updatedRecognitionStatus.success ? 'Status Accepted!' : updatedRecognitionStatus.error}
         </Alert>
       </Snackbar>
       )}
       <Grid item xs={12}>
         <Grid item xs={12}>
           <Typography className="litigationCloseTitle" variant="h6">
-            {authUser?.user_id === recognition?.invite_to?.user_id ? 'You were ' : recognition?.invite_to?.user_name}
+            {authUser?.user_id === recognitionDetails?.invite_to?.user_id ? 'You were ' : recognitionDetails?.invite_to?.user_name}
             {' '}
             recognized by
             {' '}
-            {recognition?.invite_from?.user_name}
+            {recognitionDetails?.invite_from?.user_name}
             {' '}
             for
             {' '}
-            {recognition?.material?.material_title}
+            {recognitionDetails?.material?.material_title}
           </Typography>
         </Grid>
 
@@ -160,30 +127,30 @@ export default function CreationDetails() {
             className="creation-media"
           >
             {mediaType === 'image' && (
-            <img alt="collection-card-hero" src={recognition?.material?.material_link} />
+            <img alt="collection-card-hero" src={recognitionDetails?.material?.material_link} />
             )}
             {mediaType === 'video' && (
             <video
-              src={recognition?.material?.material_link}
+              src={recognitionDetails?.material?.material_link}
               preload="metadata"
               controls
             />
             )}
             {mediaType === 'audio' && (
-            <audio src={recognition?.material?.material_link} controls />
+            <audio src={recognitionDetails?.material?.material_link} controls />
             )}
-            {(mediaType === 'document' && recognition?.material?.material_link?.includes('.pdf')) && (
-            <embed src={recognition?.material?.material_link} />
+            {(mediaType === 'document' && recognitionDetails?.material?.material_link?.includes('.pdf')) && (
+            <embed src={recognitionDetails?.material?.material_link} />
             )}
-            {mediaType === 'document' && !recognition?.material?.material_link?.includes('.pdf') && (
+            {mediaType === 'document' && !recognitionDetails?.material?.material_link?.includes('.pdf') && (
             <div className="unsupported-file-type">
               <h4 className="heading h4">Are you okay to download this file?</h4>
-              <a href={mediaType}>{recognition?.material?.material_link}</a>
+              <a href={mediaType}>{recognitionDetails?.material?.material_link}</a>
               <div className="media-preview-content-options">
                 <Button
                   className="btn btn-primary icon-btn"
                 // eslint-disable-next-line security/detect-non-literal-fs-filename
-                  onClick={() => window.open(recognition?.material?.material_link)}
+                  onClick={() => window.open(recognitionDetails?.material?.material_link)}
                 >
                   <img src={DownloadIconSVG} alt="" />
                   Download
@@ -207,10 +174,10 @@ export default function CreationDetails() {
             <p>
               Recognized by
               {' '}
-              {recognition?.invite_from?.user_name}
+              {recognitionDetails?.invite_from?.user_name}
             </p>
           </div>
-          <Chip style={{ fontSize: '16px', margin: 0 }} className="mr-auto bg-orange color-white" label={`Recognized on ${moment(recognition?.invite_issued).format('DD/MM/YYYY')}`} />
+          <Chip style={{ fontSize: '16px', margin: 0 }} className="mr-auto bg-orange color-white" label={`Recognized on ${moment(recognitionDetails?.invite_issued).format('DD/MM/YYYY')}`} />
         </Grid>
 
         <Grid
@@ -222,8 +189,8 @@ export default function CreationDetails() {
           width="100%"
           marginLeft="auto"
         >
-          {authUser?.user_id === recognition?.invite_to?.user_id
-           && recognition?.status?.status_name === 'pending'
+          {recognitionDetails?.status?.status_name === 'pending'
+          && authUser?.user_id === recognitionDetails?.invite_to?.user_id
             ? (
               <>
                 <Typography className="litigationCloseTitle" variant="h6">
@@ -231,13 +198,21 @@ export default function CreationDetails() {
                 </Typography>
                 <Button
                   className="btn bg-green color-white"
-                  onClick={acceptRecognition}
+                  onClick={async () => await updateRecognitionStatus(
+                    {
+                      inviteId: recognitionDetails.invite_id,
+                      updatedStatus: 'accepted',
+                    },
+                  )}
                 >
                   Accept Authorship
                 </Button>
                 <Button
                   className="btn bg-red color-white"
-                  onClick={declineRecognition}
+                  onClick={async () => await updateRecognitionStatus({
+                    inviteId: recognitionDetails.invite_id,
+                    updatedStatus: 'declined',
+                  })}
                 >
                   I&apos;m not the author
                 </Button>
@@ -246,8 +221,8 @@ export default function CreationDetails() {
             : (
               <Chip
                 style={{ fontSize: '16px', margin: 0, marginLeft: 'auto' }}
-                className={`mr-auto color-white ${recognition?.status?.status_name === 'accepted' ? 'bg-green' : 'bg-red'}`}
-                label={`${recognition?.status?.status_name === 'accepted' ? 'Accepted on' : 'Declined on'} ${moment(recognition?.status?.action_made).format('DD/MM/YYYY')}`}
+                className={`mr-auto color-white ${recognitionDetails?.status?.status_name === 'accepted' ? 'bg-green' : 'bg-red'}`}
+                label={`${recognitionDetails?.status?.status_name === 'accepted' ? 'Accepted on' : 'Declined on'} ${moment(recognitionDetails?.status?.action_made).format('DD/MM/YYYY')}`}
               />
             )}
         </Grid>
@@ -284,30 +259,30 @@ export default function CreationDetails() {
             className="creation-media"
           >
             {creationMediaType === 'image' && (
-            <img alt="collection-card-hero" src={recognition?.creation?.source?.site_url} />
+            <img alt="collection-card-hero" src={recognitionDetails?.creation?.source?.site_url} />
             )}
             {creationMediaType === 'video' && (
             <video
-              src={recognition?.creation?.source?.site_url}
+              src={recognitionDetails?.creation?.source?.site_url}
               preload="metadata"
               controls
             />
             )}
             {creationMediaType === 'audio' && (
-            <audio src={recognition?.creation?.source?.site_url} controls />
+            <audio src={recognitionDetails?.creation?.source?.site_url} controls />
             )}
-            {(creationMediaType === 'document' && recognition?.creation?.source?.site_url?.includes('.pdf')) && (
-            <embed src={recognition?.creation?.source?.site_url} />
+            {(creationMediaType === 'document' && recognitionDetails?.creation?.source?.site_url?.includes('.pdf')) && (
+            <embed src={recognitionDetails?.creation?.source?.site_url} />
             )}
-            {creationMediaType === 'document' && !recognition?.creation?.source?.site_url?.includes('.pdf') && (
+            {creationMediaType === 'document' && !recognitionDetails?.creation?.source?.site_url?.includes('.pdf') && (
             <div className="unsupported-file-type">
               <h4 className="heading h4">Are you okay to download this file?</h4>
-              <a href={creationMediaType}>{recognition?.creation?.source?.site_url}</a>
+              <a href={creationMediaType}>{recognitionDetails?.creation?.source?.site_url}</a>
               <div className="media-preview-content-options">
                 <Button
                   className="btn btn-primary icon-btn"
                 // eslint-disable-next-line security/detect-non-literal-fs-filename
-                  onClick={() => window.open(recognition?.creation?.source?.site_url)}
+                  onClick={() => window.open(recognitionDetails?.creation?.source?.site_url)}
                 >
                   <img src={DownloadIconSVG} alt="" />
                   Download
@@ -320,7 +295,7 @@ export default function CreationDetails() {
 
         <Grid item xs={12} marginTop="18px" marginLeft="auto">
           <a
-            href={`/creations/${recognition?.creation?.creation_id}`}
+            href={`/creations/${recognitionDetails?.creation?.creation_id}`}
             className="litigationCloseTitle"
             style={{
               display: 'flex',
