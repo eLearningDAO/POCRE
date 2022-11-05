@@ -354,6 +354,7 @@ components:
         creation_date: 2022-09-16T19:00:00.000Z
         is_draft: false
         is_claimable: true
+        published_at: https://pocre.netlify.app/creations/288524c3-0789-447e-a569-38b9fafaf775
 
     Litigation:
       type: object

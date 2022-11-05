@@ -14,6 +14,9 @@ const envVarsSchema = Joi.object()
     DATABASE_USERNAME: Joi.string().description('database username to be used by api').required(),
     DATABASE_PASSWORD: Joi.string().description('database password to be used by api').required(),
     DOCS_SERVER_URL: Joi.string().description('the server on which swagger docs live').required(),
+    CREATION_DETAILS_WEB_BASE_URL: Joi.string()
+      .description('the base url of web app where creation details are shown')
+      .required(),
     MIN_LITIGATORS: Joi.number().description('min litigators per litigation').required().min(1),
     MAX_LITIGATORS: Joi.number().description('max litigators per litigation').required().min(2),
   })
@@ -36,6 +39,7 @@ export default {
     password: envVars.DATABASE_PASSWORD,
   },
   docs_server_url: envVars.DOCS_SERVER_URL,
+  creation_details_web_base_url: envVars.CREATION_DETAILS_WEB_BASE_URL,
   litigators: {
     min: envVars.MIN_LITIGATORS,
     max: envVars.MAX_LITIGATORS,

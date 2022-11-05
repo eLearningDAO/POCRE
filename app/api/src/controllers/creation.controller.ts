@@ -1,3 +1,4 @@
+import config from '../config/config';
 import catchAsync from '../utils/catchAsync';
 import * as creationService from '../services/creation.service';
 import { getSourceById } from '../services/source.service';
@@ -31,12 +32,22 @@ export const getCreationProofById = catchAsync(async (req, res): Promise<void | 
     'materials.invite_id.status_id',
   ]);
 
+  // proof object
+  const creationProof = {
+    ...creation,
+    published_at: `${
+      (config.creation_details_web_base_url as string).endsWith('/')
+        ? config.creation_details_web_base_url.slice(0, -1)
+        : config.creation_details_web_base_url
+    }/${creation?.creation_id}`,
+  };
+
   // when json is required
-  if (req.query.format === 'json') return res.send(creation);
+  if (req.query.format === 'json') return res.send(creationProof);
 
   // when document/web format is required
   if (req.query.format === 'web') {
-    const document = await generateProofOfCreation(creation);
+    const document = await generateProofOfCreation(creationProof);
     return res.send(document);
   }
 });
