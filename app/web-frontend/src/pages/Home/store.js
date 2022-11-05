@@ -1,110 +1,48 @@
-import Cookies from 'js-cookie';
 import create from 'zustand';
-import { API_BASE_URL } from 'config';
+import { Material, User, Creation } from 'api/requests';
 
-const trendingUrl = 'https://pocre-api.herokuapp.com/v1/creations?is_trending=true';
-const topAuthorUrl = 'https://pocre-api.herokuapp.com/v1/users?top_authors=true';
-const materialsUrl = 'https://pocre-api.herokuapp.com/v1/materials?is_recognized=true&is_claimed=false';
-const user = JSON.parse(Cookies.get('activeUser') || '{}');
-
-const useStore = create((set) => ({
+const initialState = {
   trendingList: [],
   topAuthorList: [],
   materialList: [],
-  fetchAuthor: async () => {
-    let authorResponse = await fetch(topAuthorUrl).then((response) => response.json());
-    if (authorResponse.code >= 400) throw new Error('Failed to fetch material');
+  isTrendingListFeched: false,
+  isTopAuthorListFeched: false,
+  isMaterialListFeched: false,
+};
 
-    authorResponse = {
-      ...authorResponse,
-      results: await Promise.all(authorResponse?.results?.map(async (response) => {
-        const creation = { ...response };
-        const source = await fetch(
-          `${API_BASE_URL}/user/${response.user_id}`,
-        ).then((y) => y.json()).catch(() => null);
-        delete creation.source_id;
-        const userDetail = { ...source, avatar: `https://i.pravatar.cc/50?img=${Math.random()}` };
-        return {
-          ...creation,
-          userDetail,
-        };
-      })),
-    };
-    set({ topAuthorList: authorResponse.results });
+const useStore = create((set) => ({
+  ...initialState,
+  fetchAuthor: async () => {
+    set({ isTopAuthorListFeched: true });
+    const authorResponse = await User.getAll(
+      `limit=5&page=${1}&top_authors=true`,
+    );
+    const authorWithAvatarResponse = await Promise.all(
+      authorResponse?.results?.map(async (response) => ({ ...response, avatar: `https://i.pravatar.cc/50?img=${Math.random()}` })),
+    );
+    set({ isTopAuthorListFeched: false, topAuthorList: authorWithAvatarResponse });
   },
   fetchMaterial: async () => {
-    let materialResponse = await fetch(materialsUrl).then((response) => response.json());
-    if (materialResponse.code >= 400) throw new Error('Failed to fetch material');
-
-    materialResponse = {
-      ...materialResponse,
-      results: await Promise.all(materialResponse?.results?.map(async (response) => {
-        const creation = { ...response };
-        const source = await fetch(
-          `${API_BASE_URL}/source/${response.source_id}`,
-        ).then((y) => y.json()).catch(() => null);
-        delete creation.source_id;
-        return {
-          ...creation,
-          source,
-        };
-      })),
-    };
-
-    set({ materialList: materialResponse.results });
+    set({ isMaterialListFeched: true });
+    const materialResponse = await Material.getAll(
+      `limit=5&page=${1}&is_recognized=true&is_claimed=false`,
+    );
+    set({ isMaterialListFeched: false, materialList: materialResponse.results });
   },
   fetchTrending: async () => {
-    let creationResponse = await fetch(trendingUrl).then((response) => response.json());
-    if (creationResponse.code >= 400) throw new Error('Failed to fetch creations');
-    creationResponse = {
-      ...creationResponse,
-      results: await Promise.all(creationResponse?.results?.map(async (x) => {
-        const creation = { ...x };
-        // get details about creation source
-        const source = await fetch(
-          `${API_BASE_URL}/source/${x.source_id}`,
-        ).then((y) => y.json()).catch(() => null);
-        delete creation.source_id;
-
-        // get details about the creation materials
-        const materials = creation?.materials?.length > 0
-          ? await Promise.all(creation.materials.map(async (materialId) => {
-            // get material detail
-            const material = await fetch(
-              `${API_BASE_URL}/materials/${materialId}`,
-            ).then((y) => y.json()).catch(() => null);
-
-            // get type detail
-            const materialType = await fetch(
-              `${API_BASE_URL}/material-type/${material?.type_id}`,
-            ).then((y) => y.json()).catch(() => null);
-            delete material.type_id;
-            material.type = materialType;
-
-            // get author detail
-            const author = await fetch(
-              `${API_BASE_URL}/users/${material?.author_id}`,
-            ).then((y) => y.json()).catch(() => null);
-            delete material.author_id;
-            material.author = author;
-
-            return material;
-          })) : [];
-        delete creation.materials;
-        creation.materials = materials;
-
-        // get details about the creation author
-        delete creation.author_id;
-        creation.author = user;
-
-        return {
-          ...creation,
-          title: creation.title + creation.creation_id,
-          source,
-        };
-      })),
-    };
-    set({ trendingList: creationResponse.results });
+    set({ isTrendingListFeched: true });
+    const toPopulate = [
+      'source_id',
+      'author_id',
+      'materials',
+      'materials.source_id',
+      'materials.type_id',
+      'materials.author_id',
+    ];
+    const creationResponse = await Creation.getAll(
+      `page=${1}&limit=5&descend_fields[]=creation_date&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
+    );
+    set({ isTrendingListFeched: false, trendingList: creationResponse.results });
   },
 }));
 
