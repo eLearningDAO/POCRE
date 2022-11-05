@@ -224,33 +224,6 @@ function RecognitionCard({
               <span className="heading color-red">{declinedOn}</span>
             </p>
             )}
-            {/* {(canAccept || canDecline) && (
-            <Box
-              display="flex"
-              gap="12px"
-              justifyContent="flex-start"
-              alignItems="center"
-              width="100%"
-              flexWrap="wrap"
-            >
-              {canAccept && (
-              <Button
-                className="btn bg-green color-white"
-                onClick={onAccept}
-              >
-                Accept Authorship
-              </Button>
-              )}
-              {canDecline && (
-              <Button
-                className="btn bg-red color-white"
-                onClick={onDecline}
-              >
-                I&apos;m not the author
-              </Button>
-              )}
-            </Box>
-            )} */}
           </Box>
         </Grid>
       </Grid>
