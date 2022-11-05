@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import moment from 'moment';
 import { useCallback, useState } from 'react';
-import { API_BASE_URL } from 'config';
+import { Litigation } from 'api/requests';
 
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 
@@ -45,19 +45,14 @@ const useHome = () => {
         'material_id.author_id',
         'material_id.author_id',
       ];
-      let litigationResponse = await fetch(
-        `${API_BASE_URL}/litigations?query=${authUser?.user_id}&search_fields[]=issuer_id&search_fields[]=assumed_author&page=${1}&limit=1000&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
-      )
-        .then((x) => x.json());
-
-      if (litigationResponse.code >= 400) throw new Error('Failed to fetch litigations');
+      let litigationResponse = await Litigation.getAll(
+        `query=${authUser?.user_id}&search_fields[]=issuer_id&search_fields[]=assumed_author&page=${1}&limit=1000&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
+      );
 
       // get litigations to judge
-      const litigationToJudgeResponse = await fetch(
-        `${API_BASE_URL}/litigations?judged_by=${authUser?.user_id}&limit=1000&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
-      )
-        .then((x) => x.json());
-      if (litigationToJudgeResponse.code >= 400) throw new Error('Failed to fetch litigations');
+      const litigationToJudgeResponse = await Litigation.getAll(
+        `judged_by=${authUser?.user_id}&limit=1000&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
+      );
 
       litigationResponse.results = [
         ...litigationResponse.results,
@@ -116,18 +111,7 @@ const useHome = () => {
       setIsUpdatingReconcilateStatus(true);
 
       // make api call to update the litigation
-      const litigationResponse = await fetch(
-        `${API_BASE_URL}/litigations/${id}`,
-        {
-          method: 'PATCH',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ reconcilate }),
-        },
-      ).then((x) => x.json());
-      if (!litigationResponse || litigationResponse?.code >= 400) throw new Error('Failed to update litigation status');
+      await Litigation.update(id, { reconcilate });
 
       // update litigation
       const updatedLitigations = { ...litigations };
@@ -175,18 +159,7 @@ const useHome = () => {
       setIsTransferringOwnership(true);
 
       // make api call to edit the litigation
-      const litigationResponse = await fetch(
-        `${API_BASE_URL}/litigations/${id}`,
-        {
-          method: 'PATCH',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ ownership_transferred: true }),
-        },
-      ).then((x) => x.json());
-      if (!litigationResponse || litigationResponse?.code >= 400) throw new Error('Failed to transfer litigated item ownership!');
+      await Litigation.update(id, { ownership_transferred: true });
 
       // update litigation
       const updatedLitigations = { ...litigations };

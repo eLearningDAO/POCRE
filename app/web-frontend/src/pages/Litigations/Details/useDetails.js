@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import { useCallback, useState } from 'react';
 import moment from 'moment';
-import { API_BASE_URL } from 'config';
+import { Decision, Litigation } from 'api/requests';
 
 const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
 
@@ -30,7 +30,7 @@ const useDetails = () => {
 
       // get litigation details
       const toPopulate = ['issuer_id', 'assumed_author', 'winner', 'decisions', 'invitations', 'invitations.invite_to', 'invitations.status_id', 'material_id.invite_id.status_id', 'creation_id.source_id'];
-      const litigationResponse = await fetch(`${API_BASE_URL}/litigations/${id}?${toPopulate.map((x) => `populate=${x}`).join('&')}`).then((x) => x.json());
+      const litigationResponse = await Litigation.getById(id, toPopulate.map((x) => `populate=${x}`).join('&'));
       if (litigationResponse.code >= 400) throw new Error('Failed to fetch litigation');
 
       // calculate litigation status
@@ -100,9 +100,7 @@ const useDetails = () => {
         if (voteStatus === voteStatusTypes.IMPARTIAL) {
           if (myDecision?.decision_id) {
             // remove the vote
-            await fetch(`${API_BASE_URL}/decision/${myDecision?.decision_id}`, {
-              method: 'DELETE',
-            }).then(() => null);
+            await Decision.delete(myDecision?.decision_id);
           }
 
           return litigation.decisions.filter((x) => x.maker_id !== authUser.user_id);
@@ -111,47 +109,26 @@ const useDetails = () => {
         // update the vote
         if (myDecision) {
           myDecision.decision_status = voteStatus === voteStatusTypes.AGREED;
-          await fetch(`${API_BASE_URL}/decision/${myDecision.decision_id}`, {
-            method: 'PATCH',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              decision_status: myDecision.decision_status,
-            }),
-          }).then((x) => x.json());
+          await Decision.update(myDecision.decision_id, {
+            decision_status: myDecision.decision_status,
+          });
 
           return [...decisions];
         }
 
         // cast a new vote
-        const response = await fetch(`${API_BASE_URL}/decision`, {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            decision_status: voteStatus === voteStatusTypes.AGREED,
-            maker_id: authUser.user_id,
-          }),
-        }).then((x) => x.json());
+        const response = await Decision.create({
+          decision_status: voteStatus === voteStatusTypes.AGREED,
+          maker_id: authUser.user_id,
+        });
 
         return [...decisions, response];
       })();
 
       // update decision of litigation
-      await fetch(`${API_BASE_URL}/litigations/${litigation.litigation_id}`, {
-        method: 'PATCH',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          decisions: updatedDecisions.map((x) => x.decision_id),
-        }),
-      }).then((x) => x.json());
+      await Litigation.update(litigation.litigation_id, {
+        decisions: updatedDecisions.map((x) => x.decision_id),
+      });
 
       setVoteCastStatus({
         success: true,

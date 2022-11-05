@@ -1,137 +1,64 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Creation } from 'api/requests';
 import Cookies from 'js-cookie';
-import { useCallback, useState } from 'react';
-import { API_BASE_URL } from 'config';
 
 // get auth user
 const user = JSON.parse(Cookies.get('activeUser') || '{}');
 
 const useCreations = () => {
-  const [isLoadingCreations, setIsLoadingCreations] = useState(false);
-  const [isDeletingCreation, setIsDeletingCreation] = useState(false);
-  const [creations, setCreations] = useState({});
-  const [fetchCreationStatus, setFetchCreationStatus] = useState({
-    success: false,
-    error: null,
-  });
-  const [deleteCreationStatus, setDeleteCreationStatus] = useState({
-    success: false,
-    error: null,
-  });
+  const queryClient = useQueryClient();
 
-  const fetchCreations = useCallback(async () => {
-    try {
-      setIsLoadingCreations(true);
-
-      // get creations
-      const toPopulate = [
-        'source_id',
-        'author_id',
-        'materials',
-        'materials.source_id',
-        'materials.type_id',
-        'materials.author_id',
-      ];
-      const creationResponse = await fetch(
-        `${API_BASE_URL}/creations?page=${1}&limit=100&descend_fields[]=creation_date&query=${user.user_id}&search_fields[]=author_id&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
-      )
-        .then((x) => x.json());
-
-      if (creationResponse.code >= 400) throw new Error('Failed to fetch creations');
-
-      setFetchCreationStatus({
-        success: true,
-        error: null,
-      });
-      setCreations({ ...creationResponse });
-      // eslint-disable-next-line sonarjs/no-identical-functions
-      setTimeout(() => setFetchCreationStatus({
-        success: false,
-        error: null,
-      }), 3000);
-    } catch {
-      setFetchCreationStatus({
-        success: false,
-        error: 'Failed to fetch creations',
-      });
-    } finally {
-      setIsLoadingCreations(false);
-    }
-  }, []);
-
-  const deleteCreation = useCallback(async (creation) => {
-    try {
-      if (!creation) return;
-
-      setIsDeletingCreation(true);
-
-      // delete creation
-      await fetch(
-        `${API_BASE_URL}/creations/${creation?.creation_id}`,
-        {
-          method: 'DELETE',
-        },
-      )
-        .then(() => {});
-
-      // delete creation materials
-      if ((creation?.materials || [])?.length > 0) {
-        await Promise.all(
-          creation?.materials?.map(
-            (materialId) => fetch(
-              `${API_BASE_URL}/materials/${materialId}`,
-              {
-                method: 'DELETE',
-              },
-            )
-              .then(() => {}),
-          ),
-        );
-      }
-
-      // delete creation source
-      await fetch(
-        `${API_BASE_URL}/source/${creation?.source?.source_id}`,
-        {
-          method: 'DELETE',
-        },
-      )
-        .then(() => {});
-
-      setDeleteCreationStatus({
-        success: true,
-        error: null,
-      });
-      setCreations(
-        {
-          ...creations,
-          results: [
-            ...(creations?.results?.filter((x) => x?.creation_id !== creation?.creation_id) || []),
-          ],
-        },
+  // get creations
+  const {
+    data: creations,
+    isError: isFetchError,
+    isSuccess: isFetchSuccess,
+    isLoading: isLoadingCreations,
+  } = useQuery({
+    queryKey: ['creations'],
+    queryFn: async () => {
+      const toPopulate = ['source_id', 'author_id', 'materials', 'materials.source_id', 'materials.type_id', 'materials.author_id'];
+      return await Creation.getAll(
+        `page=${1}&limit=100&descend_fields[]=creation_date&query=${user.user_id}&search_fields[]=author_id&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       );
-      // eslint-disable-next-line sonarjs/no-identical-functions
-      setTimeout(() => setDeleteCreationStatus({
-        success: false,
-        error: null,
-      }), 3000);
-    } catch {
-      setDeleteCreationStatus({
-        success: false,
-        error: 'Failed to delete creation',
+    },
+    staleTime: 60_000, // cache for 60 seconds
+  });
+
+  // delete creation
+  const {
+    mutate: deleteCreation,
+    isError: isDeleteError,
+    isSuccess: isDeleteSuccess,
+    isLoading: isDeletingCreation,
+    reset: resetDeletionErrors,
+  } = useMutation({
+    mutationFn: async (creationId) => {
+      await Creation.delete(creationId);
+
+      // update queries
+      queryClient.cancelQueries({ queryKey: ['creations'] });
+      queryClient.setQueryData(['creations'], (data) => {
+        const temporaryCreations = data.results.filter((x) => x?.creation_id !== creationId);
+
+        return { ...data, results: [...temporaryCreations] };
       });
-    } finally {
-      setIsDeletingCreation(false);
-    }
-  }, [creations, setCreations]);
+    },
+  });
 
   return {
     isLoadingCreations,
     isDeletingCreation,
-    fetchCreationStatus,
-    deleteCreationStatus,
-    setDeleteCreationStatus,
-    fetchCreations,
+    fetchCreationStatus: {
+      success: isFetchSuccess,
+      error: isFetchError ? 'Failed to fetch creations' : null,
+    },
+    deleteCreationStatus: {
+      success: isDeleteSuccess,
+      error: isDeleteError ? 'Failed to delete creation' : null,
+    },
     deleteCreation,
+    resetDeletionErrors,
     creations,
   };
 };
