@@ -21,7 +21,6 @@ const useCreations = () => {
   const fetchCreations = useCallback(async () => {
     try {
       setIsLoadingCreations(true);
-
       // get creations
       const toPopulate = [
         'source_id',
