@@ -101,8 +101,6 @@ const useRecognitions = () => {
         updatedStatus, // can be accepted or declined
       },
     ) => {
-      console.log('inviteId =>', inviteId);
-      console.log('updatedStatus =>', updatedStatus);
       // find status for an recognition
       const temporaryRecognitions = { ...(recognitionId ? recognitionDetails : recognitions) };
       const foundRecognition = recognitionId
