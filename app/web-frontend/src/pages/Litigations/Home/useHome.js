@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Litigation } from 'api/requests';
-import Cookies from 'js-cookie';
 import moment from 'moment';
 import { useState } from 'react';
+import authUser from 'utils/helpers/authUser';
 
-const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
+const user = authUser.get();
 
 const useHome = () => {
   const queryClient = useQueryClient();
@@ -27,12 +27,12 @@ const useHome = () => {
 
       // get all litigations
       let litigationResponse = await Litigation.getAll(
-        `query=${authUser?.user_id}&search_fields[]=issuer_id&search_fields[]=assumed_author&page=${1}&limit=1000&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
+        `query=${user?.user_id}&search_fields[]=issuer_id&search_fields[]=assumed_author&page=${1}&limit=1000&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       );
 
       // get litigations to judge
       const litigationToJudgeResponse = await Litigation.getAll(
-        `judged_by=${authUser?.user_id}&limit=1000&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
+        `judged_by=${user?.user_id}&limit=1000&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       );
 
       // merge results
@@ -53,13 +53,13 @@ const useHome = () => {
           ...litigationResponse?.results?.filter(
             (x) => moment(x.litigation_start).isBefore(new Date().toISOString())
               && moment(x.litigation_end).isAfter(new Date().toISOString())
-              && x?.issuer?.user_id === authUser?.user_id && !x.reconcilate && !x.toJudge,
+              && x?.issuer?.user_id === user?.user_id && !x.reconcilate && !x.toJudge,
           ) || [],
         ],
         openedAgainstMe: litigationResponse?.results?.filter(
           (x) => moment(x.litigation_start).isBefore(new Date().toISOString())
             && moment(x.litigation_end).isAfter(new Date().toISOString())
-            && x?.assumed_author?.user_id === authUser?.user_id && !x.reconcilate && !x.toJudge,
+            && x?.assumed_author?.user_id === user?.user_id && !x.reconcilate && !x.toJudge,
         ),
         toJudge: litigationResponse?.results?.filter(
           (x) => moment(x.litigation_start).isBefore(new Date().toISOString())

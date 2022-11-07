@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Decision, Litigation } from 'api/requests';
-import Cookies from 'js-cookie';
 import moment from 'moment';
 import { useState } from 'react';
+import authUser from 'utils/helpers/authUser';
 
-const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
+const user = authUser.get();
 
 const voteStatusTypes = {
   AGREED: 'agreed',
@@ -46,8 +46,6 @@ const useDetails = () => {
         litigationResponse.isClosed = true;
       }
 
-      const user = JSON?.parse(Cookies?.get('activeUser') || '{}');
-
       // calculate if auth user is a judge
       litigationResponse.isJudging = !!litigationResponse.invitations.some(
         (x) => x.invite_to.user_id === user?.user_id,
@@ -85,7 +83,7 @@ const useDetails = () => {
         const decisions = [...litigation.decisions];
 
         // check if vote is already casted
-        const myDecision = decisions.find((x) => x.maker_id === authUser.user_id);
+        const myDecision = decisions.find((x) => x.maker_id === user.user_id);
 
         // check if vote is to be removed
         if (voteStatus === voteStatusTypes.IMPARTIAL) {
@@ -94,7 +92,7 @@ const useDetails = () => {
             await Decision.delete(myDecision?.decision_id).catch(() => null);
           }
 
-          return litigation.decisions.filter((x) => x.maker_id !== authUser.user_id);
+          return litigation.decisions.filter((x) => x.maker_id !== user.user_id);
         }
 
         // update the vote
@@ -110,7 +108,7 @@ const useDetails = () => {
         // cast a new vote
         const response = await Decision.create({
           decision_status: voteStatus === voteStatusTypes.AGREED,
-          maker_id: authUser.user_id,
+          maker_id: user.user_id,
         });
 
         return [...decisions, response];

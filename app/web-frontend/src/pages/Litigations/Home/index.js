@@ -2,15 +2,15 @@ import {
   Alert, Button, Grid, Snackbar, Typography,
 } from '@mui/material';
 import Loader from 'components/uicore/Loader';
-import Cookies from 'js-cookie';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './index.css';
 import LitigationCard from 'components/cards/LitigationCard';
+import authUser from 'utils/helpers/authUser';
 import useHome from './useHome';
 
-const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
+const user = authUser.get();
 
 function Litigation() {
   // get userInfo from the globale state with help of zustand store hook !
@@ -134,19 +134,19 @@ function Litigation() {
                 notVoted={
                   x?.toJudge
                   && (x?.decisions?.length === 0
-                  || !x?.decisions?.find((decision) => decision.maker_id === authUser.user_id))
+                  || !x?.decisions?.find((decision) => decision.maker_id === user.user_id))
                 }
                 votedInFavour={
                   x?.toJudge
                   && x?.decisions?.find(
-                    (decision) => decision.maker_id === authUser.user_id
+                    (decision) => decision.maker_id === user.user_id
                     && decision.decision_status,
                   )
                 }
                 votedInOpposition={
                   x?.toJudge
                   && x?.decisions?.find(
-                    (decision) => decision.maker_id === authUser.user_id
+                    (decision) => decision.maker_id === user.user_id
                     && !decision.decision_status,
                   )
                 }
@@ -165,10 +165,10 @@ function Litigation() {
                   reconcilate: false,
                 })}
                 canRedeem={!x?.toJudge
-                  ? x?.winner?.wallet_address === authUser?.wallet_address : null}
+                  ? x?.winner?.wallet_address === user?.wallet_address : null}
                 isRedeemed={!x?.toJudge ? x?.ownership_transferred : null}
                 lostClaim={!x?.toJudge
-                  ? x?.winner?.wallet_address !== authUser?.wallet_address : null}
+                  ? x?.winner?.wallet_address !== user?.wallet_address : null}
                 // eslint-disable-next-line no-return-await
                 onRedeem={async () => await transferLitigatedItemOwnership(x?.litigation_id)}
                 winner={{

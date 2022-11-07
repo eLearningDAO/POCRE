@@ -3,11 +3,11 @@ import {
   Invitation, Litigation, Material, User,
 } from 'api/requests';
 import useSuggestions from 'hooks/useSuggestions';
-import Cookies from 'js-cookie';
 import { useState } from 'react';
+import authUser from 'utils/helpers/authUser';
 
 // get auth user
-const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
+const user = authUser.get();
 
 const useCreate = () => {
   const queryClient = useQueryClient();
@@ -19,7 +19,7 @@ const useCreate = () => {
     handleSuggestionInputChange: handleAuthorInputChange,
   } = useSuggestions({
     search: 'users',
-    filterSuggestion: authUser?.user_name?.trim(),
+    filterSuggestion: user?.user_name?.trim(),
   });
 
   const {
@@ -38,9 +38,6 @@ const useCreate = () => {
     isLoading: isCreatingLitigation,
   } = useMutation({
     mutationFn: async (litigationBody = {}) => {
-      // get auth user
-      const user = JSON.parse(Cookies.get('activeUser') || '{}');
-
       // make a new litigation
       const response = await Litigation.create({
         litigation_title: litigationBody.title.trim(),

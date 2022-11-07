@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Cookies from 'js-cookie';
+import authUser from 'utils/helpers/authUser';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode';
@@ -14,7 +14,7 @@ import SaveIcon from 'assets/svgs/save.svg';
 import CreationPreview from 'components/previews/CreationPreview';
 
 // get auth user
-const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
+const user = authUser.get();
 
 function dec2hex(dec) {
   return dec.toString(16).padStart(2, '0');
@@ -68,7 +68,7 @@ export default function StepThree({
          title={creationDraft?.title}
          description={creationDraft?.description}
          link={creationDraft?.source}
-         authorName={authUser?.user_name}
+         authorName={user?.user_name}
          date={creationDraft?.date}
          materials={creationDraft?.materials?.map((x) => ({
            title: x?.title,
