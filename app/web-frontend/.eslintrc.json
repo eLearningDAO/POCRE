@@ -55,6 +55,7 @@
     "react/no-array-index-key": "off",
     "security/detect-unsafe-regex": "off",
     "import/no-unresolved": "off",
-    "no-return-await": "off"
+    "no-return-await": "off",
+    "no-unsafe-optional-chaining" : "off"
   }
 }

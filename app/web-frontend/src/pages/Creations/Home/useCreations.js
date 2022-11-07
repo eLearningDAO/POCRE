@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Creation } from 'api/requests';
-import Cookies from 'js-cookie';
+import authUser from 'utils/helpers/authUser';
 
 // get auth user
-const user = JSON.parse(Cookies.get('activeUser') || '{}');
+const user = authUser.get();
 
 const useCreations = () => {
   const queryClient = useQueryClient();

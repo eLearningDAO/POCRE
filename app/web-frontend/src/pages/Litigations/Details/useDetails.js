@@ -1,9 +1,10 @@
-import Cookies from 'js-cookie';
-import { useCallback, useState } from 'react';
-import moment from 'moment';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Decision, Litigation } from 'api/requests';
+import moment from 'moment';
+import { useState } from 'react';
+import authUser from 'utils/helpers/authUser';
 
-const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
+const user = authUser.get();
 
 const voteStatusTypes = {
   AGREED: 'agreed',
@@ -12,26 +13,21 @@ const voteStatusTypes = {
 };
 
 const useDetails = () => {
-  const [isFetchingLitigation, setIsFetchingLitigation] = useState(false);
-  const [isCastingVote, setIsCastingVote] = useState(false);
-  const [litigation, setLitigation] = useState(null);
-  const [fetchLitigationStatus, setFetchLitigationStatus] = useState({
-    success: false,
-    error: null,
-  });
-  const [voteCastStatus, setVoteCastStatus] = useState({
-    success: false,
-    error: null,
-  });
+  const queryClient = useQueryClient();
+  const [litigationId, setLitigationId] = useState(null);
 
-  const fetchLitigationDetails = useCallback(async (id) => {
-    try {
-      setIsFetchingLitigation(true);
-
+  // fetch all litigations
+  const {
+    data: litigation,
+    isError: isFetchLitigationError,
+    isSuccess: isFetchLitigationSuccess,
+    isLoading: isFetchingLitigation,
+  } = useQuery({
+    queryKey: [`litigation-${litigationId}`],
+    queryFn: async () => {
       // get litigation details
       const toPopulate = ['issuer_id', 'assumed_author', 'winner', 'decisions', 'invitations', 'invitations.invite_to', 'invitations.status_id', 'material_id.invite_id.status_id', 'creation_id.source_id'];
-      const litigationResponse = await Litigation.getById(id, toPopulate.map((x) => `populate=${x}`).join('&'));
-      if (litigationResponse.code >= 400) throw new Error('Failed to fetch litigation');
+      const litigationResponse = await Litigation.getById(litigationId, toPopulate.map((x) => `populate=${x}`).join('&'));
 
       // calculate litigation status
       litigationResponse.status = (() => {
@@ -52,58 +48,51 @@ const useDetails = () => {
 
       // calculate if auth user is a judge
       litigationResponse.isJudging = !!litigationResponse.invitations.some(
-        (x) => x.invite_to.user_id === authUser.user_id,
+        (x) => x.invite_to.user_id === user?.user_id,
       );
 
       // calculate vote status
-      const vote = litigationResponse.decisions.find((x) => x.maker_id === authUser.user_id);
+      const vote = litigationResponse?.decisions?.find((x) => x?.maker_id === user?.user_id);
       litigationResponse.voteStatus = !vote ? voteStatusTypes.IMPARTIAL
         : (vote.decision_status ? voteStatusTypes.AGREED : voteStatusTypes.DISAGREED);
 
-      setFetchLitigationStatus({
-        success: true,
-        error: null,
-      });
-      setLitigation({ ...litigationResponse });
-      setTimeout(() => setFetchLitigationStatus({
-        success: false,
-        error: null,
-      }), 3000);
-    } catch {
-      setFetchLitigationStatus({
-        success: false,
-        error: 'Failed to fetch litigation',
-      });
-    } finally {
-      setIsFetchingLitigation(false);
-    }
-  }, []);
+      return { ...litigationResponse, decisions: litigationResponse?.decisions || [] };
+    },
+    staleTime: 100_000, // delete cached data after 100 seconds
+    enabled: !!litigationId,
+  });
 
-  const castLitigationVote = useCallback(async (voteStatus) => {
-    try {
+  // update litigation vote
+  const {
+    mutate: castLitigationVote,
+    isError: isCastingVoteError,
+    isSuccess: isCastingVoteSuccess,
+    isLoading: isCastingVote,
+    reset: resetCastVoteStatus,
+  } = useMutation({
+    mutationFn: async (
+      voteStatus,
+    ) => {
       // check if litigation is closed
       if (litigation.isClosed) return;
 
       // check if vote is to be updated
       if (voteStatus === litigation.voteStatus) return;
 
-      // update loading state
-      setIsCastingVote(true);
-
       const updatedDecisions = await (async () => {
         const decisions = [...litigation.decisions];
 
         // check if vote is already casted
-        const myDecision = decisions.find((x) => x.maker_id === authUser.user_id);
+        const myDecision = decisions.find((x) => x.maker_id === user.user_id);
 
         // check if vote is to be removed
         if (voteStatus === voteStatusTypes.IMPARTIAL) {
           if (myDecision?.decision_id) {
             // remove the vote
-            await Decision.delete(myDecision?.decision_id);
+            await Decision.delete(myDecision?.decision_id).catch(() => null);
           }
 
-          return litigation.decisions.filter((x) => x.maker_id !== authUser.user_id);
+          return litigation.decisions.filter((x) => x.maker_id !== user.user_id);
         }
 
         // update the vote
@@ -119,7 +108,7 @@ const useDetails = () => {
         // cast a new vote
         const response = await Decision.create({
           decision_status: voteStatus === voteStatusTypes.AGREED,
-          maker_id: authUser.user_id,
+          maker_id: user.user_id,
         });
 
         return [...decisions, response];
@@ -130,34 +119,33 @@ const useDetails = () => {
         decisions: updatedDecisions.map((x) => x.decision_id),
       });
 
-      setVoteCastStatus({
-        success: true,
-        error: null,
-      });
-      setLitigation({ ...litigation, decisions: updatedDecisions, voteStatus });
-      setTimeout(() => setVoteCastStatus({
-        success: false,
-        error: null,
-      }), 3000);
-    } catch {
-      setVoteCastStatus({
-        success: false,
-        error: 'Failed to fetch litigation',
-      });
-    } finally {
-      setIsCastingVote(false);
-    }
-  }, [litigation]);
+      // update queries
+      const key = `litigation-${litigationId}`;
+      queryClient.cancelQueries({ queryKey: [key] });
+      queryClient.setQueryData([key], () => ({
+        ...litigation,
+        voteStatus,
+        decisions: updatedDecisions,
+      }));
+    },
+  });
 
   return {
-    isFetchingLitigation,
-    isCastingVote,
-    fetchLitigationStatus,
-    voteCastStatus,
+    fetchLitigationDetails: (id) => setLitigationId(id),
     litigation,
-    fetchLitigationDetails,
+    isFetchingLitigation,
+    fetchLitigationStatus: {
+      success: isFetchLitigationSuccess,
+      error: isFetchLitigationError ? 'Failed to fetch litigation' : null,
+    },
+    isCastingVote,
+    voteCastStatus: {
+      success: isCastingVoteSuccess,
+      error: isCastingVoteError ? 'Failed to cast your vote' : null,
+    },
     castLitigationVote,
     voteStatusTypes,
+    resetCastVoteStatus,
   };
 };
 

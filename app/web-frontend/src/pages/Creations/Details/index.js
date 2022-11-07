@@ -167,7 +167,7 @@ export default function CreationDetails() {
         <img className="creation-qr-code" src={qrcodeBase64} alt="QR Code" />
       </Grid>
 
-      {creation?.materials.length > 0 && (
+      {creation?.materials?.length > 0 && (
         <>
 
           <Grid item xs={12} marginTop="24px">

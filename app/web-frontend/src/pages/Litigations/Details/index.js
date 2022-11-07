@@ -172,7 +172,9 @@ export default function LitigationDetails() {
                   />
                   Agree
                   {' '}
-                  {litigation?.decisions?.filter((x) => x?.decision_status)?.length}
+                  {litigation?.decisions
+                    ? litigation?.decisions?.filter((x) => x?.decision_status)?.length
+                    : '0'}
                 </Button>
                 <Button
                   display="flex"
@@ -193,7 +195,9 @@ export default function LitigationDetails() {
                   />
                   Opposition
                   {' '}
-                  {litigation?.decisions?.filter((x) => !x?.decision_status)?.length}
+                  {litigation?.decisions
+                    ? litigation?.decisions?.filter((x) => !x?.decision_status)?.length
+                    : '0'}
                 </Button>
                 <Button
                   display="flex"
@@ -214,8 +218,9 @@ export default function LitigationDetails() {
                   />
                   Impartial
                   {' '}
-                  {/* eslint-disable-next-line no-unsafe-optional-chaining */}
-                  {litigation?.invitations?.length - litigation?.decisions?.length}
+                  {litigation?.decisions
+                    ? (litigation?.invitations?.length - litigation?.decisions?.length)
+                    : '0'}
                 </Button>
               </>
             )

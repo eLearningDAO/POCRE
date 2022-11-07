@@ -3,7 +3,7 @@ import {
   Creation, Invitation, Material, MaterialType, Source, Status, Tag, User,
 } from 'api/requests';
 import useSuggestions from 'hooks/useSuggestions';
-import Cookies from 'js-cookie';
+import authUser from 'utils/helpers/authUser';
 import moment from 'moment';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -123,7 +123,7 @@ const sendInvites = async (
 }));
 
 // get auth user
-const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
+const user = authUser.get();
 
 const useCreationForm = () => {
   const navigate = useNavigate();
@@ -147,7 +147,7 @@ const useCreationForm = () => {
     handleSuggestionInputChange: handleAuthorInputChange,
   } = useSuggestions({
     search: 'users',
-    filterSuggestion: authUser?.user_name?.trim(),
+    filterSuggestion: user?.user_name?.trim(),
   });
 
   // get creation details
@@ -200,9 +200,6 @@ const useCreationForm = () => {
     isLoading: isCreatingCreation,
   } = useMutation({
     mutationFn: async (creationBody) => {
-      // get auth user
-      const user = JSON.parse(Cookies.get('activeUser') || '{}');
-
       // create common data
       const { source, tags, materials } = await makeCommonResource(
         creationBody,

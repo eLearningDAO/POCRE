@@ -10,19 +10,19 @@ import DownloadIconSVG from 'assets/svgs/download.svg';
 import PreviewIcon from 'assets/svgs/preview.svg';
 import CreationPreview from 'components/previews/CreationPreview';
 import Loader from 'components/uicore/Loader';
-import Cookies from 'js-cookie';
 import moment from 'moment';
 import {
   useEffect,
   useState,
 } from 'react';
 import { useParams } from 'react-router-dom';
+import authUser from 'utils/helpers/authUser';
 import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import useRecognitions from '../common/hooks/useRecognitions';
 import './index.css';
 
 // get auth user
-const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
+const user = authUser.get();
 
 export default function CreationDetails() {
   const { id } = useParams();
@@ -103,7 +103,7 @@ export default function CreationDetails() {
       <Grid item xs={12}>
         <Grid item xs={12}>
           <Typography className="litigationCloseTitle" variant="h6">
-            {authUser?.user_id === recognitionDetails?.invite_to?.user_id ? 'You were ' : recognitionDetails?.invite_to?.user_name}
+            {user?.user_id === recognitionDetails?.invite_to?.user_id ? 'You were ' : recognitionDetails?.invite_to?.user_name}
             {' '}
             recognized by
             {' '}
@@ -190,7 +190,7 @@ export default function CreationDetails() {
           marginLeft="auto"
         >
           {recognitionDetails?.status?.status_name === 'pending'
-          && authUser?.user_id === recognitionDetails?.invite_to?.user_id
+          && user?.user_id === recognitionDetails?.invite_to?.user_id
             ? (
               <>
                 <Typography className="litigationCloseTitle" variant="h6">
