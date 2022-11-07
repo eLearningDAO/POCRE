@@ -1,127 +1,115 @@
-.litigation-card {
-  background: #FFFFFF;
-  border: 1px solid #EBEFF0;
-  box-shadow: 0px 10px 58px rgba(122, 97, 96, 0.31);
+.litigation-card1 {
+  padding: 24px 36px;
+  border-radius: 24px;
+  background-color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 100%;
+  border: 1px solid gainsboro;
+}
+
+.litigation-card-authors {
+  display: grid;
+  grid-template-columns: 1fr 50px 1fr;
+  gap: 36px;
+  width: 100%;
+  padding: 12px 0;
+  border-top: 1px solid var(--color-black);
+  border-bottom: 1px solid var(--color-black);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.litigation-card-author {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.litigation-card-author>h3 {
+  margin-bottom: 12px;
+}
+
+.litigation-times {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
 }
 
-.litigation-card-image {
+.mr-auto {
+  margin-right: auto;
+}
+
+.litigation-card-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
-  object-fit: cover;
 }
 
-.litigation-member-images>img {
-  display: inline;
-  object-fit: cover;
-  border: 1px solid #FFFFFF;
-  filter: drop-shadow(4.36946px 2.91297px 24.7603px rgba(200, 209, 216, 0.35));
-  border-radius: 50%;
+.litigation-details-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
 }
 
-.litigation-member-images>img:first-of-type {
-  margin-left: 0;
+.litigation-winner-label {
+  background-color: var(--color-black);
+  padding: 3px 5px;
+  color: var(--color-white);
+  transform: skew(-10deg, 0deg);
 }
 
-.litigation-social-icon {
-  fill: #F78F8A;
+.litigation-jury-members-count {
+  color: var(--color-orange-dark);
 }
 
-.litigation-social-icon.active {
-  color: #F78F8A;
+.toggle-bar {
+  width: 100%;
+  border-radius: 12px;
+  background-color: var(--color-orange-dark);
+  margin-bottom: 24px;
+  margin-top: 16px;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
-.litigation-card-action-btn {
-  width: fit-content !important;
-  min-width: initial !important;
-}
-.litigation-card-action-btn > img {
-  height: 24px !important;
-  width: 24px !important;
+.toggle-bar .btn {
+  color: var(--color-white) !important;
+  width: 100% !important;
 }
 
-.litigation-card-action-btn-gray {
-  background-color: #F5F9FD !important;
-  border: 1px solid #F5F9FD !important;
+.toggle-bar .btn-active {
+  color: var(--color-orange-dark) !important;
+  background-color: var(--color-white) !important;
 }
 
-.litigation-card-avatar {
-  height: 56px !important;
-  width: 56px !important;
-  border-radius: 18px;
+.m-auto {
+  margin: auto;
 }
 
-@media (max-width: 599px) {
-  .litigation-card {
-    padding: 18px;
-    border-radius: 24px;
-  }
-
-  .litigation-card-image {
-    border-radius: 24px;
-  }
-
-  .litigation-member-images>img {
-    width: 40px;
-    height: 40px;
-    margin-left: -14px;
-  }
-
-  .litigation-card-action-btn {
-    padding: 5px !important;
-    border-radius: 5px !important;
-  }
+.p-64 {
+  padding: 64px;
 }
 
-@media(min-width: 600px) {
-  .litigation-card {
-    padding: 18px;
-    border-radius: 18px;
-  }
-
-  .litigation-member-images>img {
-    width: 40px;
-    height: 40px;
-    margin-left: -17px;
-  }
-
-  .litigation-card-action-btn {
-    padding: 8px !important;
-    border-radius: 8px !important;
-  }
+.litigation-action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
 }
 
-@media(min-width: 900px) {
-  .litigation-card {
-    padding: 24px;
-    border-radius: 24px;
-  }
-
-  .litigation-card-image {
-    height: 160px;
-    max-height: 160px;
-    width: 196px;
-    max-width: 196px;
-    border-radius: 24px;
-  }
-
-  .litigation-card-action-btn {
-    padding: 12px !important;
-    border-radius: 12px !important;
-  }
-}
-
-@media(min-width: 1200px) {
-  .litigation-card-image {
-    width: 200px;
-    max-width: 200px;
-    height: 160px;
-    max-height: 160px;
-    border-radius: 24px;
-  }
-
-  .litigation-member-images>img {
-    width: 50px;
-    height: 50px;
-    margin-left: -24px;
-  }
+.litigation-action-buttons>.btn {
+  width: 100% !important;
+  border-radius: 8px !important;
 }
