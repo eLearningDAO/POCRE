@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  Creation, Invitation, Material, Status,
+  Creation, Recognition, Material, Status,
 } from 'api/requests';
 import { useState } from 'react';
 import authUser from 'utils/helpers/authUser';
@@ -12,7 +12,7 @@ const useRecognitions = () => {
   const queryClient = useQueryClient();
 
   const [shouldFetchRecognitions, setShouldFetchRecognitions] = useState(false);
-  const [recognitionId, setRecognitionId] = useState(null);
+  const [recognitionIdToFetch, setRecognitionIdToFetch] = useState(null);
 
   // fetch all recognitions
   const {
@@ -24,19 +24,19 @@ const useRecognitions = () => {
     queryKey: ['recognitions'],
     queryFn: async () => {
       // get recognitions (throw error if not found)
-      const recognitionToPopulate = ['invite_from', 'invite_to', 'status_id'];
-      const response = await Invitation.getAll(`limit=1000&query=${user.user_id}&search_fields[]=invite_from&search_fields[]=invite_to&${recognitionToPopulate.map((x) => `populate=${x}`).join('&')}`);
+      const recognitionToPopulate = ['recognition_by', 'recognition_for', 'status_id'];
+      const response = await Recognition.getAll(`limit=1000&query=${user.user_id}&search_fields[]=recognition_by&search_fields[]=recognition_for&${recognitionToPopulate.map((x) => `populate=${x}`).join('&')}`);
 
       // transform results
       response.results = await Promise.all(
-        response.results.map(async (invitation) => {
+        response.results.map(async (recognition) => {
           // fields to populate
           const materialToPopulate = ['source_id', 'type_id', 'author_id'];
-          const materials = await Material.getAll(`limit=1&query=${invitation.invite_id}&search_fields[]=invite_id&${materialToPopulate.map((x) => `populate=${x}`).join('&')}`);
+          const materials = await Material.getAll(`limit=1&query=${recognition.recognition_id}&search_fields[]=recognition_id&${materialToPopulate.map((x) => `populate=${x}`).join('&')}`);
           const temporaryMaterial = materials?.results?.[0] || null;
 
           return {
-            ...invitation,
+            ...recognition,
             material: temporaryMaterial,
           };
         }),
@@ -58,15 +58,15 @@ const useRecognitions = () => {
     isSuccess: isFetchRecognitionDetailsSuccess,
     isLoading: isFetchingRecognitionDetails,
   } = useQuery({
-    queryKey: [`recognition-${recognitionId}`],
+    queryKey: [`recognition-${recognitionIdToFetch}`],
     queryFn: async () => {
       // get recognition details
-      const recognitionToPopulate = ['invite_from', 'invite_to', 'status_id'];
-      const recognitionResponse = await Invitation.getById(recognitionId, recognitionToPopulate.map((x) => `populate=${x}`).join('&'));
+      const recognitionToPopulate = ['recognition_by', 'recognition_for', 'status_id'];
+      const recognitionResponse = await Recognition.getById(recognitionIdToFetch, recognitionToPopulate.map((x) => `populate=${x}`).join('&'));
 
       // get details of material for this recognition
       const materialToPopulate = ['source_id', 'type_id', 'author_id'];
-      const materials = await Material.getAll(`limit=1&query=${recognitionResponse.invite_id}&search_fields[]=invite_id&${materialToPopulate.map((x) => `populate=${x}`).join('&')}`);
+      const materials = await Material.getAll(`limit=1&query=${recognitionResponse.recognition_id}&search_fields[]=recognition_id&${materialToPopulate.map((x) => `populate=${x}`).join('&')}`);
       if (materials?.code >= 400) throw new Error('Failed to get recognition');
       const material = materials?.results?.[0] || null;
 
@@ -84,7 +84,7 @@ const useRecognitions = () => {
       return { ...transformedRecognition };
     },
     staleTime: 100_000, // delete cached data after 100 seconds
-    enabled: !!recognitionId,
+    enabled: !!recognitionIdToFetch,
   });
 
   // update recognition status
@@ -97,7 +97,7 @@ const useRecognitions = () => {
   } = useMutation({
     mutationFn: async (
       {
-        inviteId,
+        recognitionId,
         updatedStatus, // can be accepted or declined
       },
     ) => {
@@ -105,7 +105,7 @@ const useRecognitions = () => {
       const temporaryRecognitions = { ...(recognitionId ? recognitionDetails : recognitions) };
       const foundRecognition = recognitionId
         ? recognitionDetails
-        : (temporaryRecognitions.results || []).find((x) => x.invite_id === inviteId);
+        : (temporaryRecognitions.results || []).find((x) => x.recognition_id === recognitionId);
       if (!foundRecognition) return;
 
       // update recognition status
@@ -135,7 +135,7 @@ const useRecognitions = () => {
       error: isRecognitionUpdateError ? 'Failed to update recognition status' : null,
     },
     resetUpdateRecognitionStatus,
-    fetchRecognitionDetails: (id) => setRecognitionId(id),
+    fetchRecognitionDetails: (id) => setRecognitionIdToFetch(id),
     recognitionDetails,
     isFetchingRecognitionDetails,
     fetchRecognitionDetailsStatus: {

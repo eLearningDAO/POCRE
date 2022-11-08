@@ -189,7 +189,7 @@ export default function CreationDetails() {
                 username={x?.author?.user_name}
                 interactionBtns={false}
                 showReconcilateOptions={false}
-                recognitionStatus={x?.invite?.status?.status_name || null}
+                recognitionStatus={x?.recognition?.status?.status_name || null}
               />
             ))}
           </Grid>

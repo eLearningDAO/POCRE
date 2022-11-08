@@ -47,8 +47,8 @@ export default function CreationDetails() {
   }, [id]);
 
   useEffect(() => {
-    const invitationFileType = getUrlFileType(recognitionDetails?.material?.material_link);
-    setMediaType(invitationFileType);
+    const recognitionFileType = getUrlFileType(recognitionDetails?.material?.material_link);
+    setMediaType(recognitionFileType);
 
     const creationFileType = getUrlFileType(recognitionDetails?.material?.material_link);
     setCreationMediaType(creationFileType);
@@ -103,11 +103,11 @@ export default function CreationDetails() {
       <Grid item xs={12}>
         <Grid item xs={12}>
           <Typography className="litigationCloseTitle" variant="h6">
-            {user?.user_id === recognitionDetails?.invite_to?.user_id ? 'You were ' : recognitionDetails?.invite_to?.user_name}
+            {user?.user_id === recognitionDetails?.recognition_for?.user_id ? 'You were ' : recognitionDetails?.recognition_for?.user_name}
             {' '}
             recognized by
             {' '}
-            {recognitionDetails?.invite_from?.user_name}
+            {recognitionDetails?.recognition_by?.user_name}
             {' '}
             for
             {' '}
@@ -174,10 +174,10 @@ export default function CreationDetails() {
             <p>
               Recognized by
               {' '}
-              {recognitionDetails?.invite_from?.user_name}
+              {recognitionDetails?.recognition_by?.user_name}
             </p>
           </div>
-          <Chip style={{ fontSize: '16px', margin: 0 }} className="mr-auto bg-orange color-white" label={`Recognized on ${moment(recognitionDetails?.invite_issued).format('DD/MM/YYYY')}`} />
+          <Chip style={{ fontSize: '16px', margin: 0 }} className="mr-auto bg-orange color-white" label={`Recognized on ${moment(recognitionDetails?.recognition_issued).format('DD/MM/YYYY')}`} />
         </Grid>
 
         <Grid
@@ -190,7 +190,7 @@ export default function CreationDetails() {
           marginLeft="auto"
         >
           {recognitionDetails?.status?.status_name === 'pending'
-          && user?.user_id === recognitionDetails?.invite_to?.user_id
+          && user?.user_id === recognitionDetails?.recognition_for?.user_id
             ? (
               <>
                 <Typography className="litigationCloseTitle" variant="h6">
@@ -200,7 +200,7 @@ export default function CreationDetails() {
                   className="btn bg-green color-white"
                   onClick={async () => await updateRecognitionStatus(
                     {
-                      inviteId: recognitionDetails.invite_id,
+                      recognitionId: recognitionDetails.recognition_id,
                       updatedStatus: 'accepted',
                     },
                   )}
@@ -210,7 +210,7 @@ export default function CreationDetails() {
                 <Button
                   className="btn bg-red color-white"
                   onClick={async () => await updateRecognitionStatus({
-                    inviteId: recognitionDetails.invite_id,
+                    recognitionId: recognitionDetails.recognition_id,
                     updatedStatus: 'declined',
                   })}
                 >

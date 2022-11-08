@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import {
-  Creation, Invitation, Material, MaterialType, Source, Status, Tag, User,
+  Creation, Recognition, Material, MaterialType, Source, Status, Tag, User,
 } from 'api/requests';
 import useSuggestions from 'hooks/useSuggestions';
 import authUser from 'utils/helpers/authUser';
@@ -98,7 +98,7 @@ const makeCommonResource = async (
   return { source, tags, materials };
 };
 
-const sendInvites = async (
+const sendRecognitions = async (
   fromUserId,
   materials = [],
 ) => await Promise.all(materials.map(async (x) => {
@@ -108,17 +108,17 @@ const sendInvites = async (
     status_description: x.material_description,
   });
 
-  // make new invite
-  const invitation = await Invitation.create({
-    invite_from: fromUserId,
-    invite_to: x.author_id,
-    invite_description: x.material_description,
+  // make new recognition
+  const recognition = await Recognition.create({
+    recognition_by: fromUserId,
+    recognition_for: x.author_id,
+    recognition_description: x.material_description,
     status_id: status.status_id,
   });
 
-  // update material with invitation id
+  // update material with recognition id
   await Material.update(x.material_id, {
-    invite_id: invitation.invite_id,
+    recognition_id: recognition.recognition_id,
   });
 }));
 
@@ -219,9 +219,9 @@ const useCreationForm = () => {
         is_draft: creationBody.is_draft,
       });
 
-      // sent invitation to material authors (if creation is not draft)
+      // sent recognition to material authors (if creation is not draft)
       if (materials.length > 0 && !creationBody.is_draft) {
-        await sendInvites(user.user_id, materials);
+        await sendRecognitions(user.user_id, materials);
       }
 
       // remove queries cache
@@ -266,9 +266,9 @@ const useCreationForm = () => {
       // update creation
       await Creation.update(creation.original.creation_id, { ...updatedCreation });
 
-      // sent invitation to material authors
+      // sent recognition to material authors
       if (materials.length > 0) {
-        await sendInvites(creation.original.author_id, materials);
+        await sendRecognitions(creation.original.author_id, materials);
       }
 
       // remove queries cache
