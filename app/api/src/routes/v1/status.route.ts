@@ -44,8 +44,8 @@ export default router;
  *                 type: string
  *                 description: can be null
  *             example:
- *                status_name: invitation_created
- *                status_description: invitaion to john
+ *                status_name: recognition_created
+ *                status_description: recognition to john
  *     responses:
  *       "201":
  *         description: Created
@@ -109,8 +109,8 @@ export default router;
  *                 type: string
  *                 description: can be null
  *             example:
- *                status_name: invitation_created
- *                status_description: invitaion to john
+ *                status_name: recognition_created
+ *                status_description: recognition to john
  *     responses:
  *       "200":
  *         description: OK

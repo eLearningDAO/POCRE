@@ -58,7 +58,7 @@ export default router;
  *               type_id:
  *                 type: string
  *                 format: uuid
- *               invite_id:
+ *               recognition_id:
  *                 type: string
  *                 format: uuid
  *                 description: can be null
@@ -73,7 +73,7 @@ export default router;
  *                material_link: https://example.com
  *                source_id: 12ed7a55-a1ba-4895-83e9-7aa615247390
  *                type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
- *                invite_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
+ *                recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
  *                author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
  *                is_claimable: true
  *     responses:
@@ -91,7 +91,7 @@ export default router;
  *                 - $ref: '#/components/responses/SourceNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
  *                 - $ref: '#/components/responses/MaterialTypeNotFound'
- *                 - $ref: '#/components/responses/InvitationNotFound'
+ *                 - $ref: '#/components/responses/RecognitionNotFound'
  *             examples:
  *               SourceNotFound:
  *                 summary: source not found
@@ -108,11 +108,11 @@ export default router;
  *                 value:
  *                   code: 404
  *                   message: material type not found
- *               InvitationNotFound:
- *                 summary: invitation not found
+ *               RecognitionNotFound:
+ *                 summary: recognition not found
  *                 value:
  *                   code: 404
- *                   message: invitation not found
+ *                   message: recognition not found
  *       "409":
  *         content:
  *           application/json:
@@ -120,7 +120,7 @@ export default router;
  *               oneOf:
  *                 - $ref: '#/components/responses/SourceAlreadyAssignedToMaterial'
  *                 - $ref: '#/components/responses/MaterialTypeAlreadyAssignedToMaterial'
- *                 - $ref: '#/components/responses/InvitationAlreadyAssignedToMaterial'
+ *                 - $ref: '#/components/responses/RecognitionAlreadyAssignedToMaterial'
  *             examples:
  *               SourceAlreadyAssignedToMaterial:
  *                 summary: source already assigned to a material
@@ -132,11 +132,11 @@ export default router;
  *                 value:
  *                   code: 409
  *                   message: material type already assigned to a material
- *               InvitationAlreadyAssignedToMaterial:
- *                 summary: invitation already assigned to a material
+ *               RecognitionAlreadyAssignedToMaterial:
+ *                 summary: recognition already assigned to a material
  *                 value:
  *                   code: 409
- *                   message: invitation already assigned to a material
+ *                   message: recognition already assigned to a material
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *
@@ -173,7 +173,7 @@ export default router;
  *         name: is_recognized
  *         schema:
  *           type: bool
- *         description: when true, returns materials that are recognized by co-authors (invitation accepted by co-authors)
+ *         description: when true, returns materials that are recognized by co-authors (recognition accepted by co-authors)
  *       - in: query
  *         name: is_claimed
  *         schema:
@@ -188,10 +188,10 @@ export default router;
  *             enum:
  *               - source_id
  *               - type_id
- *               - invite_id
- *               - invite_id.invite_from
- *               - invite_id.invite_to
- *               - invite_id.status_id
+ *               - recognition_id
+ *               - recognition_id.recognition_by
+ *               - recognition_id.recognition_for
+ *               - recognition_id.status_id
  *               - author_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
@@ -245,10 +245,10 @@ export default router;
  *             enum:
  *               - source_id
  *               - type_id
- *               - invite_id
- *               - invite_id.invite_from
- *               - invite_id.invite_to
- *               - invite_id.status_id
+ *               - recognition_id
+ *               - recognition_id.recognition_by
+ *               - recognition_id.recognition_for
+ *               - recognition_id.status_id
  *               - author_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
@@ -294,7 +294,7 @@ export default router;
  *               type_id:
  *                 type: string
  *                 format: uuid
- *               invite_id:
+ *               recognition_id:
  *                 type: string
  *                 format: uuid
  *                 description: can be null
@@ -309,7 +309,7 @@ export default router;
  *                material_link: https://example.com
  *                source_id: 12ed7a55-a1ba-4895-83e9-7aa615247390
  *                type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
- *                invite_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
+ *                recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
  *                author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
  *                is_claimable: false
  *     responses:
@@ -328,7 +328,7 @@ export default router;
  *                 - $ref: '#/components/responses/SourceNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
  *                 - $ref: '#/components/responses/MaterialTypeNotFound'
- *                 - $ref: '#/components/responses/InvitationNotFound'
+ *                 - $ref: '#/components/responses/RecognitionNotFound'
  *             examples:
  *               MaterialNotFound:
  *                 summary: material not found
@@ -350,11 +350,11 @@ export default router;
  *                 value:
  *                   code: 404
  *                   message: material type not found
- *               InvitationNotFound:
- *                 summary: invitation not found
+ *               RecognitionNotFound:
+ *                 summary: recognition not found
  *                 value:
  *                   code: 404
- *                   message: invitation not found
+ *                   message: recognition not found
  *       "409":
  *         content:
  *           application/json:
@@ -362,7 +362,7 @@ export default router;
  *               oneOf:
  *                 - $ref: '#/components/responses/SourceAlreadyAssignedToMaterial'
  *                 - $ref: '#/components/responses/MaterialTypeAlreadyAssignedToMaterial'
- *                 - $ref: '#/components/responses/InvitationAlreadyAssignedToMaterial'
+ *                 - $ref: '#/components/responses/RecognitionAlreadyAssignedToMaterial'
  *             examples:
  *               SourceAlreadyAssignedToMaterial:
  *                 summary: source already assigned to a material
@@ -374,11 +374,11 @@ export default router;
  *                 value:
  *                   code: 409
  *                   message: material type already assigned to a material
- *               InvitationAlreadyAssignedToMaterial:
- *                 summary: invitation already assigned to a material
+ *               RecognitionAlreadyAssignedToMaterial:
+ *                 summary: recognition already assigned to a material
  *                 value:
  *                   code: 409
- *                   message: invitation already assigned to a material
+ *                   message: recognition already assigned to a material
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *

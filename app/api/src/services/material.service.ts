@@ -11,7 +11,7 @@ interface IMaterial {
   material_link?: string;
   source_id: string;
   type_id: string;
-  invite_id?: string;
+  recognition_id?: string;
   author_id: string;
   is_claimable: boolean;
 }
@@ -38,7 +38,7 @@ interface IMaterialDoc {
   material_link: string;
   source_id: string;
   type_id: string;
-  invite_id: string;
+  recognition_id: string;
   author_id: string;
   is_claimable: boolean;
 }
@@ -57,7 +57,7 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
         material_link,
         source_id,
         type_id,
-        invite_id,
+        recognition_id,
         author_id,
         is_claimable
       ) 
@@ -79,7 +79,7 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
         materialBody.material_link,
         materialBody.source_id,
         materialBody.type_id,
-        materialBody.invite_id,
+        materialBody.recognition_id,
         materialBody.author_id,
         materialBody.is_claimable,
       ]
@@ -92,8 +92,8 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
       if (err.message.includes('source_id'))
         throw new ApiError(httpStatus.CONFLICT, `source already assigned to a material`);
       if (err.message.includes('type_id')) throw new ApiError(httpStatus.CONFLICT, `type already assigned to a material`);
-      if (err.message.includes('invite_id'))
-        throw new ApiError(httpStatus.CONFLICT, `invitation already assigned to a material`);
+      if (err.message.includes('recognition_id'))
+        throw new ApiError(httpStatus.CONFLICT, `recognition already assigned to a material`);
     }
 
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
@@ -111,7 +111,8 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
       options.search_fields && options.search_fields.length > 0
         ? `WHERE ${options.search_fields
             .map(
-              (field) => `${field} ${['invite_id'].includes(field) ? `= '${options.query}'` : `LIKE '%${options.query}%'`}`
+              (field) =>
+                `${field} ${['recognition_id'].includes(field) ? `= '${options.query}'` : `LIKE '%${options.query}%'`}`
             )
             .join(' OR ')}`
         : '';
@@ -143,16 +144,16 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
                     EXISTS
                 (
                   SELECT 
-                  invite_id 
+                  recognition_id 
                   FROM 
-                  invitation 
+                  recognition 
                   INNER JOIN 
                   status 
                   ON 
-                  invitation.status_id = status.status_id 
+                  recognition.status_id = status.status_id 
                   WHERE 
                   status.status_name = '${statusTypes.ACCEPTED}' 
-                  AND invite_id = m.invite_id
+                  AND recognition_id = m.recognition_id
                 )`
                     : ''
                 }
@@ -191,16 +192,16 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
                     EXISTS
                 (
                   SELECT 
-                  invite_id 
+                  recognition_id 
                   FROM 
-                  invitation 
+                  recognition 
                   INNER JOIN 
                   status 
                   ON 
-                  invitation.status_id = status.status_id 
+                  recognition.status_id = status.status_id 
                   WHERE 
                   status.status_name = '${statusTypes.ACCEPTED}' 
-                  AND invite_id = m.invite_id
+                  AND recognition_id = m.recognition_id
                 )`
                     : ''
                 }
@@ -326,8 +327,8 @@ export const updateMaterialById = async (id: string, updateBody: Partial<IMateri
       if (err.message.includes('source_id'))
         throw new ApiError(httpStatus.CONFLICT, `source already assigned to a material`);
       if (err.message.includes('type_id')) throw new ApiError(httpStatus.CONFLICT, `type already assigned to a material`);
-      if (err.message.includes('invite_id'))
-        throw new ApiError(httpStatus.CONFLICT, `invitation already assigned to a material`);
+      if (err.message.includes('recognition_id'))
+        throw new ApiError(httpStatus.CONFLICT, `recognition already assigned to a material`);
     }
 
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);

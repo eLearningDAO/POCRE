@@ -12,7 +12,7 @@ interface ILitigation {
   material_id?: string;
   assumed_author: string;
   issuer_id: string;
-  invitations: string[];
+  recognitions: string[];
   decisions: string[];
   litigation_start: string;
   litigation_end: string;
@@ -45,7 +45,7 @@ interface ILitigationDoc {
   material_id: string;
   assumed_author: string;
   issuer_id: string;
-  invitations: string[];
+  recognitions: string[];
   decisions: string[];
   litigation_start: string;
   litigation_end: string;
@@ -146,7 +146,7 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         material_id,
         assumed_author,
         issuer_id,
-        invitations,
+        recognitions,
         decisions,
         litigation_start,
         litigation_end,
@@ -163,7 +163,7 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         litigationBody.material_id,
         litigationBody.assumed_author,
         litigationBody.issuer_id,
-        litigationBody.invitations,
+        litigationBody.recognitions,
         litigationBody.decisions,
         litigationBody.litigation_start,
         litigationBody.litigation_end,
@@ -241,14 +241,14 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
                 EXISTS 
                 (
                   SELECT 
-                  invite_id,
-                  invite_to 
+                  recognition_id,
+                  recognition_for 
                   FROM 
-                  invitation 
+                  recognition 
                   WHERE 
-                  invite_to = '${options.judged_by}' 
+                  recognition_for = '${options.judged_by}' 
                   AND 
-                  invite_id = ANY(l.invitations)
+                  recognition_id = ANY(l.recognitions)
                 ) 
                 ${order} 
                 OFFSET $1 
@@ -262,14 +262,14 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
                 EXISTS 
                 (
                   SELECT 
-                  invite_id,
-                  invite_to 
+                  recognition_id,
+                  recognition_for 
                   FROM 
-                  invitation 
+                  recognition 
                   WHERE 
-                  invite_to = '${options.judged_by}' 
+                  recognition_for = '${options.judged_by}' 
                   AND 
-                  invite_id = ANY(l.invitations)
+                  recognition_id = ANY(l.recognitions)
                 )`,
       },
     };
