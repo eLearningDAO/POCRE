@@ -103,7 +103,7 @@ export const queryRecognitions = async (options: IRecognitionQuery): Promise<IRe
 
     const result = await db.query(
       `SELECT * ${populator({
-        tableAlias: 'i',
+        tableAlias: 'r',
         fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
       })} FROM recognition r ${search} ${order} OFFSET $1 LIMIT $2;`,
       [options.page === 1 ? '0' : (options.page - 1) * options.limit, options.limit]
@@ -134,7 +134,7 @@ export const getRecognitionById = async (id: string, populate?: string | string[
     try {
       const result = await db.query(
         `SELECT * ${populator({
-          tableAlias: 'i',
+          tableAlias: 'r',
           fields: typeof populate === 'string' ? [populate] : populate,
         })} FROM recognition r WHERE recognition_id = $1;`,
         [id]
