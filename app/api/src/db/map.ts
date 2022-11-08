@@ -1,18 +1,18 @@
 interface IPkMap {
   maker_id: string;
-  invite_from: string;
-  invite_to: string;
+  recognition_by: string;
+  recognition_for: string;
   author_id: string;
   tags: string;
   materials: string;
   assumed_author: string;
   winner: string;
   issuer_id: string;
-  invitations: string;
+  recognitions: string;
   decisions: string;
   creation_id: string;
   material_id: string;
-  invite_id: string;
+  recognition_id: string;
   status_id: string;
   source_id: string;
   type_id: string;
@@ -24,19 +24,19 @@ interface IPkMap {
 
 interface ITableNameMap {
   maker_id: string;
-  invite_from: string;
-  invite_to: string;
+  recognition_by: string;
+  recognition_for: string;
   author_id: string;
   tags: string;
   materials: string;
   assumed_author: string;
   winner: string;
   issuer_id: string;
-  invitations: string;
+  recognitions: string;
   decisions: string;
   creation_id: string;
   material_id: string;
-  invite_id: string;
+  recognition_id: string;
   status_id: string;
   source_id: string;
   type_id: string;
@@ -52,9 +52,9 @@ interface ITableNameMap {
 const pkMap: IPkMap = {
   // decision table
   maker_id: 'user_id',
-  // invitation table
-  invite_from: 'user_id',
-  invite_to: 'user_id',
+  // recognition table
+  recognition_by: 'user_id',
+  recognition_for: 'user_id',
   // material and creation table
   author_id: 'user_id',
   // creation table
@@ -64,12 +64,12 @@ const pkMap: IPkMap = {
   assumed_author: 'user_id',
   winner: 'user_id',
   issuer_id: 'user_id',
-  invitations: 'invite_id',
+  recognitions: 'recognition_id',
   decisions: 'decision_id',
   // common
   creation_id: 'creation_id',
   material_id: 'material_id',
-  invite_id: 'invite_id',
+  recognition_id: 'recognition_id',
   status_id: 'status_id',
   source_id: 'source_id',
   type_id: 'type_id',
@@ -85,9 +85,9 @@ const pkMap: IPkMap = {
 const tableNameMap: ITableNameMap = {
   // decision table
   maker_id: 'users',
-  // invitation table
-  invite_from: 'users',
-  invite_to: 'users',
+  // recognition table
+  recognition_by: 'users',
+  recognition_for: 'users',
   // material and creation table
   author_id: 'users',
   // creation table
@@ -97,12 +97,12 @@ const tableNameMap: ITableNameMap = {
   assumed_author: 'users',
   winner: 'users',
   issuer_id: 'users',
-  invitations: 'invitation',
+  recognitions: 'recognition',
   decisions: 'decision',
   // common
   creation_id: 'creation',
   material_id: 'material',
-  invite_id: 'invitation',
+  recognition_id: 'recognition',
   status_id: 'status',
   source_id: 'source',
   type_id: 'material_type',
@@ -115,7 +115,7 @@ const tableNameMap: ITableNameMap = {
 /**
  * List of field names defined with array type in db tables
  */
-const arrayFields: string[] = ['invitations', 'decisions', 'tags', 'materials'];
+const arrayFields: string[] = ['recognitions', 'decisions', 'tags', 'materials'];
 
 /**
  * List of deep fields that can be populated in decision
@@ -123,9 +123,9 @@ const arrayFields: string[] = ['invitations', 'decisions', 'tags', 'materials'];
 const decisionDeepFields: string[] = ['maker_id'];
 
 /**
- * List of deep fields that can be populated in invitation
+ * List of deep fields that can be populated in recognition
  */
-const invitationDeepFields: string[] = ['invite_from', 'invite_to', 'status_id'];
+const recognitionDeepFields: string[] = ['recognition_by', 'recognition_for', 'status_id'];
 
 /**
  * List of deep fields that can be populated in material
@@ -133,8 +133,8 @@ const invitationDeepFields: string[] = ['invite_from', 'invite_to', 'status_id']
 const materialDeepFields: string[] = [
   'source_id',
   'type_id',
-  'invite_id',
-  ...invitationDeepFields.map((x) => `invite_id.${x}`),
+  'recognition_id',
+  ...recognitionDeepFields.map((x) => `recognition_id.${x}`),
   'author_id',
 ];
 
@@ -160,8 +160,8 @@ const litigationDeepFields: string[] = [
   ...creationDeepFields.map((x) => `creation_id.${x}`),
   'material_id',
   ...materialDeepFields.map((x) => `material_id.${x}`),
-  'invitations',
-  ...invitationDeepFields.map((x) => `invitations.${x}`),
+  'recognitions',
+  ...recognitionDeepFields.map((x) => `recognitions.${x}`),
   'decisions',
   ...decisionDeepFields.map((x) => `decisions.${x}`),
 ];
@@ -173,7 +173,7 @@ export {
   tableNameMap,
   arrayFields,
   decisionDeepFields,
-  invitationDeepFields,
+  recognitionDeepFields,
   materialDeepFields,
   creationDeepFields,
   litigationDeepFields,

@@ -1,37 +1,37 @@
 import express from 'express';
 import validate from '../../middlewares/validate';
-import * as invitationValidation from '../../validations/invitation.validation';
-import * as invitationController from '../../controllers/invitation.controller';
+import * as recognitionValidation from '../../validations/recognition.validation';
+import * as recognitionController from '../../controllers/recognition.controller';
 
 const router = express.Router();
 
 router
   .route('/')
-  .post(validate(invitationValidation.createInvitation), invitationController.createInvitation)
-  .get(validate(invitationValidation.queryInvitations), invitationController.queryInvitations);
+  .post(validate(recognitionValidation.createRecognition), recognitionController.createRecognition)
+  .get(validate(recognitionValidation.queryRecognitions), recognitionController.queryRecognitions);
 
 router
-  .route('/:invite_id')
-  .get(validate(invitationValidation.getInvitation), invitationController.getInvitationById)
-  .patch(validate(invitationValidation.updateInvitation), invitationController.updateInvitationById)
-  .delete(validate(invitationValidation.deleteInvitation), invitationController.deleteInvitationById);
+  .route('/:recognition_id')
+  .get(validate(recognitionValidation.getRecognition), recognitionController.getRecognitionById)
+  .patch(validate(recognitionValidation.updateRecognition), recognitionController.updateRecognitionById)
+  .delete(validate(recognitionValidation.deleteRecognition), recognitionController.deleteRecognitionById);
 
 export default router;
 
 /**
  * @swagger
  * tags:
- *   name: Invitation
- *   description: Invitation management and retrieval
+ *   name: Recognition
+ *   description: Recognition management and retrieval
  */
 
 /**
  * @swagger
- * /invitations:
+ * /recognitions:
  *   post:
- *     summary: Create an invitation
- *     description: Creates a new invitation.
- *     tags: [Invitation]
+ *     summary: Create a recognition
+ *     description: Creates a new recognition.
+ *     tags: [Recognition]
  *     requestBody:
  *       required: true
  *       content:
@@ -39,23 +39,23 @@ export default router;
  *           schema:
  *             type: object
  *             required:
- *               - invite_from
- *               - invite_to
+ *               - recognition_by
+ *               - recognition_for
  *               - status_id
  *             properties:
- *               invite_from:
+ *               recognition_by:
  *                 type: uuid
- *               invite_to:
+ *               recognition_for:
  *                 type: uuid
- *               invite_description:
+ *               recognition_description:
  *                 type: string
  *                 description: can be null
  *               status_id:
  *                 type: uuid
  *             example:
- *                invite_from: d5cef9e4-d497-45ea-bd68-609aba268886
- *                invite_to: d5cef9e4-d497-45ea-bd68-609aba268887
- *                invite_description: null
+ *                recognition_by: d5cef9e4-d497-45ea-bd68-609aba268886
+ *                recognition_for: d5cef9e4-d497-45ea-bd68-609aba268887
+ *                recognition_description: null
  *                status_id: 865b3cff-d24e-4ec7-8873-f9634c5f2245
  *     responses:
  *       "201":
@@ -63,7 +63,7 @@ export default router;
  *         content:
  *           application/json:
  *             schema:
- *                $ref: '#/components/schemas/Invitation'
+ *                $ref: '#/components/schemas/Recognition'
  *       "404":
  *         content:
  *           application/json:
@@ -87,26 +87,26 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/StatusAlreadyAssignedToInvitation'
- *                 - $ref: '#/components/responses/UserCannotInviteThemselve'
+ *                 - $ref: '#/components/responses/StatusAlreadyAssignedToRecognition'
+ *                 - $ref: '#/components/responses/UserCannotRecognizeThemselve'
  *             examples:
- *               StatusAlreadyAssignedToInvitation:
- *                 summary: status already assigned to an invitation
+ *               StatusAlreadyAssignedToRecognize:
+ *                 summary: status already assigned to a recognition
  *                 value:
  *                   code: 409
- *                   message: status already assigned to an invitation
- *               UserCannotInviteThemselve:
- *                 summary: user cannot invite themselve
+ *                   message: status already assigned to a recognition
+ *               UserCannotRecognizeThemselve:
+ *                 summary: user cannot recognize themselve
  *                 value:
  *                   code: 409
- *                   message: user cannot invite themselve
+ *                   message: user cannot recognize themselve
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *
  *   get:
- *     summary: Get all invitations
- *     description: Returns a list of invitations.
- *     tags: [Invitation]
+ *     summary: Get all reconitions
+ *     description: Returns a list of reconitions.
+ *     tags: [Recognition]
  *     parameters:
  *       - in: query
  *         name: limit
@@ -114,7 +114,7 @@ export default router;
  *           type: integer
  *           minimum: 1
  *         default: 10
- *         description: Maximum number of invitations
+ *         description: Maximum number of reconitions
  *       - in: query
  *         name: page
  *         schema:
@@ -149,8 +149,8 @@ export default router;
  *           items:
  *             type: string
  *             enum:
- *               - invite_from
- *               - invite_to
+ *               - recognition_by
+ *               - recognition_for
  *               - status_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
@@ -164,7 +164,7 @@ export default router;
  *                 results:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Invitation'
+ *                     $ref: '#/components/schemas/Recognition'
  *                 page:
  *                   type: integer
  *                   example: 1
@@ -183,18 +183,18 @@ export default router;
 
 /**
  * @swagger
- * /invitations/{invite_id}:
+ * /reconitions/{recognition_id}:
  *   get:
- *     summary: Get an invitation by id
- *     description: Get details about an invitation by its id
- *     tags: [Invitation]
+ *     summary: Get a recognition by id
+ *     description: Get details about a recognition by its id
+ *     tags: [Recognition]
  *     parameters:
  *       - in: path
- *         name: invite_id
+ *         name: recognition_id
  *         required: true
  *         schema:
  *           type: string
- *         description: Invite id
+ *         description: Recognition id
  *       - in: query
  *         name: populate
  *         schema:
@@ -202,8 +202,8 @@ export default router;
  *           items:
  *             type: string
  *             enum:
- *               - invite_from
- *               - invite_to
+ *               - recognition_by
+ *               - recognition_for
  *               - status_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
@@ -212,23 +212,23 @@ export default router;
  *         content:
  *           application/json:
  *             schema:
- *                $ref: '#/components/schemas/Invitation'
+ *                $ref: '#/components/schemas/Recognition'
  *       "404":
- *         $ref: '#/components/responses/InvitationNotFound'
+ *         $ref: '#/components/responses/RecognitionNotFound'
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *
  *   patch:
- *     summary: Update an invitation by id
- *     description: Update invitation details by its id
- *     tags: [Invitation]
+ *     summary: Update a recognition by id
+ *     description: Update recognition details by its id
+ *     tags: [Recognition]
  *     parameters:
  *       - in: path
- *         name: invite_id
+ *         name: recognition_id
  *         required: true
  *         schema:
  *           type: string
- *         description: Invite id
+ *         description: Recognition id
  *     requestBody:
  *       required: true
  *       content:
@@ -236,19 +236,19 @@ export default router;
  *           schema:
  *             type: object
  *             properties:
- *               invite_from:
+ *               recognition_by:
  *                 type: uuid
- *               invite_to:
+ *               recognition_for:
  *                 type: uuid
- *               invite_description:
+ *               recognition_description:
  *                 type: string
  *                 description: can be null
  *               status_id:
  *                 type: uuid
  *             example:
- *                invite_from: d5cef9e4-d497-45ea-bd68-609aba268886
- *                invite_to: d5cef9e4-d497-45ea-bd68-609aba268887
- *                invite_description: null
+ *                recognition_by: d5cef9e4-d497-45ea-bd68-609aba268886
+ *                recognition_for: d5cef9e4-d497-45ea-bd68-609aba268887
+ *                recognition_description: null
  *                status_id: 865b3cff-d24e-4ec7-8873-f9634c5f2245
  *     responses:
  *       "200":
@@ -256,21 +256,21 @@ export default router;
  *         content:
  *           application/json:
  *             schema:
- *                $ref: '#/components/schemas/Invitation'
+ *                $ref: '#/components/schemas/Recognition'
  *       "404":
  *         content:
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/InvitationNotFound'
+ *                 - $ref: '#/components/responses/RecognitionNotFound'
  *                 - $ref: '#/components/responses/StatusNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
  *             examples:
- *               InvitationNotFound:
- *                 summary: invitation not found
+ *               RecognitionNotFound:
+ *                 summary: recognition not found
  *                 value:
  *                   code: 404
- *                   message: invitation not found
+ *                   message: recognition not found
  *               StatusNotFound:
  *                 summary: status not found
  *                 value:
@@ -286,38 +286,38 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/StatusAlreadyAssignedToInvitation'
- *                 - $ref: '#/components/responses/UserCannotInviteThemselve'
+ *                 - $ref: '#/components/responses/StatusAlreadyAssignedToRecognition'
+ *                 - $ref: '#/components/responses/UserCannotRecognizeThemselve'
  *             examples:
- *               StatusAlreadyAssignedToInvitation:
- *                 summary: status already assigned to an invitation
+ *               StatusAlreadyAssignedToRecognition:
+ *                 summary: status already assigned to a recognition
  *                 value:
  *                   code: 409
- *                   message: status already assigned to an invitation
- *               UserCannotInviteThemselve:
- *                 summary: user cannot invite themselve
+ *                   message: status already assigned to a recognition
+ *               UserCannotRecognizeThemselve:
+ *                 summary: user cannot recognize themselve
  *                 value:
  *                   code: 409
- *                   message: user cannot invite themselve
+ *                   message: user cannot recognize themselve
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *
  *   delete:
- *     summary: Delete an invitation by id
- *     description: Deletes an invitation by its id
- *     tags: [Invitation]
+ *     summary: Delete a recognition by id
+ *     description: Deletes a recognition by its id
+ *     tags: [Recognition]
  *     parameters:
  *       - in: path
- *         name: invite_id
+ *         name: recognition_id
  *         required: true
  *         schema:
  *           type: string
- *         description: Invite id
+ *         description: Recognition id
  *     responses:
  *       "200":
  *         description: OK
  *       "404":
- *         $ref: '#/components/responses/InvitationNotFound'
+ *         $ref: '#/components/responses/RecognitionNotFound'
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  */

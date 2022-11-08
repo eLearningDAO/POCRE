@@ -2,7 +2,7 @@ import express from 'express';
 import userRoute from './user.route';
 import statusRoute from './status.route';
 import decisionRoute from './decision.route';
-import invitationRoute from './invitation.route';
+import recognitionRoute from './recognition.route';
 import sourceRoute from './source.route';
 import materialTypeRoute from './materialType.route';
 import materialRoute from './material.route';
@@ -28,8 +28,8 @@ const defaultRoutes = [
     route: decisionRoute,
   },
   {
-    path: '/invitations',
-    route: invitationRoute,
+    path: '/recognitions',
+    route: recognitionRoute,
   },
   {
     path: '/source',
