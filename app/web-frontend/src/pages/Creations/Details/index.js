@@ -167,7 +167,7 @@ export default function CreationDetails() {
         <img className="creation-qr-code" src={qrcodeBase64} alt="QR Code" />
       </Grid>
 
-      {creation?.materials.length > 0 && (
+      {creation?.materials?.length > 0 && (
         <>
 
           <Grid item xs={12} marginTop="24px">
@@ -189,7 +189,7 @@ export default function CreationDetails() {
                 username={x?.author?.user_name}
                 interactionBtns={false}
                 showReconcilateOptions={false}
-                recognitionStatus={x?.invite?.status?.status_name || null}
+                recognitionStatus={x?.recognition?.status?.status_name || null}
               />
             ))}
           </Grid>

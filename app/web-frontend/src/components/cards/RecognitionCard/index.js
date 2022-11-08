@@ -212,14 +212,14 @@ function RecognitionCard({
             </Typography>
             {acceptedOn && (
             <p className="color-green">
-              You have accepted this invitation on
+              You have accepted this recognition on
               {' '}
               <span className="heading color-green">{acceptedOn}</span>
             </p>
             )}
             {declinedOn && (
             <p className="color-red">
-              You have declined this invitation on
+              You have declined this recognition on
               {' '}
               <span className="heading color-red">{declinedOn}</span>
             </p>

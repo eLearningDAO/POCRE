@@ -37,7 +37,7 @@ const MaterialType = { ...(REQUEST_TEMPLATE('material-type')) };
 const Material = { ...(REQUEST_TEMPLATE('materials')) };
 const Creation = { ...(REQUEST_TEMPLATE('creations')) };
 const Decision = { ...(REQUEST_TEMPLATE('decision')) };
-const Invitation = { ...(REQUEST_TEMPLATE('invitations')) };
+const Recognition = { ...(REQUEST_TEMPLATE('recognitions')) };
 const Litigation = { ...(REQUEST_TEMPLATE('litigations')) };
 const Status = { ...(REQUEST_TEMPLATE('status')) };
 const Tag = { ...(REQUEST_TEMPLATE('tags')) };
@@ -49,7 +49,7 @@ export {
   Material,
   Creation,
   Decision,
-  Invitation,
+  Recognition,
   Litigation,
   Status,
   Tag,
