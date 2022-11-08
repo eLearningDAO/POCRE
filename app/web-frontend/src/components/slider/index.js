@@ -57,6 +57,7 @@ export default function Slider({ handleSlidClicked }) {
         {
           slides.map((slide, index) => (
             <a
+              key={index}
               className="carousel-item"
               {...accessibleOnClick(handleSlidClicked, index)}
             >
