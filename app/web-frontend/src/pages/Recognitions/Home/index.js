@@ -49,13 +49,13 @@ function Recognition() {
       </div>
 
       {activeTab === 'co-author-recognition' ? (recognitions?.results?.filter(
-        (x) => x?.material && x?.invite_to?.user_id === user?.user_id,
+        (x) => x?.material && x?.recognition_for?.user_id === user?.user_id,
       ).length === 0
         ? (
           <h3 className="m-auto p-64">Nothing here yet!</h3>
         )
         : recognitions?.results?.filter(
-          (x) => x?.material && x?.invite_to?.user_id === user?.user_id,
+          (x) => x?.material && x?.recognition_for?.user_id === user?.user_id,
         ).length > 0 && (
         <Grid
           width="100%"
@@ -68,14 +68,14 @@ function Recognition() {
           padding={{ xs: '12px', md: '0' }}
         >
           {recognitions?.results?.map(
-            (x) => x?.material && x?.invite_to?.user_id === user?.user_id && (
+            (x) => x?.material && x?.recognition_for?.user_id === user?.user_id && (
             <RecognitionCard
-              id={x.invite_id}
+              id={x.recognition_id}
               title={x?.material?.material_title}
               mediaUrl={x?.material?.material_link}
               description={x?.material?.material_description}
-              recognizedByUserName={x?.invite_from?.user_name}
-              creationDate={moment(x?.invite_issued).format('Do MMMM YYYY')}
+              recognizedByUserName={x?.recognition_by?.user_name}
+              creationDate={moment(x?.recognition_issued).format('Do MMMM YYYY')}
               acceptedOn={x?.status?.status_name !== 'accepted' ? null : moment(x?.status?.action_made).format('Do MMMM YYYY')}
               declinedOn={x?.status?.status_name !== 'declined' ? null : moment(x?.status?.action_made).format('Do MMMM YYYY')}
               isPending={x?.status?.status_name === 'pending'}
@@ -88,13 +88,13 @@ function Recognition() {
         )) : null}
 
       {activeTab === 'co-creations-recognized' ? (recognitions?.results?.filter(
-        (x) => x?.material && x?.invite_from?.user_id === user?.user_id,
+        (x) => x?.material && x?.recognition_by?.user_id === user?.user_id,
       ).length === 0
         ? (
           <h3 className="m-auto p-64">Nothing here yet!</h3>
         )
         : recognitions?.results?.filter(
-          (x) => x?.material && x?.invite_from?.user_id === user?.user_id,
+          (x) => x?.material && x?.recognition_by?.user_id === user?.user_id,
         ).length > 0 && (
         <Grid
           width="100%"
@@ -107,15 +107,15 @@ function Recognition() {
           padding={{ xs: '12px', md: '0' }}
         >
           {recognitions?.results?.map((x) => x?.material
-                && x?.invite_from?.user_id === user?.user_id && (
+                && x?.recognition_by?.user_id === user?.user_id && (
                   <RecognitionCard
-                    id={x.invite_id}
+                    id={x.recognition_id}
                     title={x?.material?.material_title}
                     mediaUrl={x?.material?.material_link}
                     description={x?.material?.material_description}
                     recognizedByUserName={null}
-                    awaitingRecognitionByUserName={x?.invite_to?.user_name}
-                    creationDate={moment(x?.invite_issued).format('Do MMMM YYYY')}
+                    awaitingRecognitionByUserName={x?.recognition_for?.user_name}
+                    creationDate={moment(x?.recognition_issued).format('Do MMMM YYYY')}
                     isPending={x?.status?.status_name === 'pending'}
                     isAccepted={x?.status?.status_name === 'accepted'}
                     isDeclined={x?.status?.status_name === 'declined'}

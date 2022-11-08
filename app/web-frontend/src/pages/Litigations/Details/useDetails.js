@@ -26,7 +26,7 @@ const useDetails = () => {
     queryKey: [`litigation-${litigationId}`],
     queryFn: async () => {
       // get litigation details
-      const toPopulate = ['issuer_id', 'assumed_author', 'winner', 'decisions', 'invitations', 'invitations.invite_to', 'invitations.status_id', 'material_id.invite_id.status_id', 'creation_id.source_id'];
+      const toPopulate = ['issuer_id', 'assumed_author', 'winner', 'decisions', 'recognitions', 'recognitions.recognition_for', 'recognitions.status_id', 'material_id.recognition_id.status_id', 'creation_id.source_id'];
       const litigationResponse = await Litigation.getById(litigationId, toPopulate.map((x) => `populate=${x}`).join('&'));
 
       // calculate litigation status
@@ -47,8 +47,8 @@ const useDetails = () => {
       }
 
       // calculate if auth user is a judge
-      litigationResponse.isJudging = !!litigationResponse.invitations.some(
-        (x) => x.invite_to.user_id === user?.user_id,
+      litigationResponse.isJudging = !!litigationResponse.recognitions.some(
+        (x) => x.recognition_for.user_id === user?.user_id,
       );
 
       // calculate vote status

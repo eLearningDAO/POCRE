@@ -64,7 +64,7 @@ function CreateLitigation() {
         onComplete={handleValues}
         status={newLitigationStatus}
         loading={isCreatingLitigation}
-        invitations={newLitigation?.invitations || []}
+        recognitions={newLitigation?.recognitions || []}
       />
       )}
     </Grid>

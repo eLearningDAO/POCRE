@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  Invitation, Litigation, Material, User,
+  Recognition, Litigation, Material, User,
 } from 'api/requests';
 import useSuggestions from 'hooks/useSuggestions';
 import { useState } from 'react';
@@ -47,14 +47,13 @@ const useCreate = () => {
         issuer_id: user.user_id,
         litigation_start: new Date(litigationBody.publicDate).toISOString(),
         litigation_end: new Date(litigationBody.endDate).toISOString(),
-        reconcilate: litigationBody.inviteAuthors,
       });
 
-      // get data about invited judges
-      response.invitations = await Promise.all(response.invitations.map(async (inviteId) => {
-        const invitation = await Invitation.getById(inviteId);
-        invitation.invite_to = await User.getById(invitation.invite_to);
-        return invitation;
+      // get data about recognized judges
+      response.recognitions = await Promise.all(response.recognitions.map(async (recognitionId) => {
+        const recognition = await Recognition.getById(recognitionId);
+        recognition.recognition_for = await User.getById(recognition.recognition_for);
+        return recognition;
       }));
 
       setNewLitigation(response);

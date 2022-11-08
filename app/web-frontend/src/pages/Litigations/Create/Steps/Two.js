@@ -11,32 +11,34 @@ export default function StepOne({
   onComplete = () => {},
   status = {},
   loading = false,
-  invitations = [],
+  recognitions = [],
 }) {
   const [slideNumber, setSlideNumber] = useState(1);
 
   const next = () => {
-    setSlideNumber((x) => (x === invitations.length ? 1 : x + 1));
+    setSlideNumber((x) => (x === recognitions.length ? 1 : x + 1));
   };
   const previous = () => {
-    setSlideNumber((x) => (x === 1 ? invitations.length - 1 : x - 1));
+    setSlideNumber((x) => (x === 1 ? recognitions.length - 1 : x - 1));
   };
 
   return (
     <>
       <Grid item xs={12} display="flex" flexDirection="column" justifyContent="center" alignItem="center" gap="24px" padding="24px" className="secondary-section-container">
-        {invitations.length > 0 && (
+        {recognitions.length > 0 && (
         <div className="carousel-container">
           {slideNumber}
-          {invitations.map((invite, index) => (index === slideNumber - 1 || index === slideNumber
-            ? (
-              <UserCard
-                username={invite?.invite_to?.user_name}
-                imageUrl={`https://i.pravatar.cc/50?img=${Math.random()}`}
-                totalCreationsAuthored={Math.floor(Math.random())}
-              />
-            )
-            : null))}
+          {recognitions.map(
+            (recognition, index) => (index === slideNumber - 1 || index === slideNumber
+              ? (
+                <UserCard
+                  username={recognition?.recognition_for?.user_name}
+                  imageUrl={`https://i.pravatar.cc/50?img=${Math.random()}`}
+                  totalCreationsAuthored={Math.floor(Math.random())}
+                />
+              )
+              : null),
+          )}
           <div className="carousel-slide-btns-container">
             <Button onClick={previous}><img src={LeftIcon} alt="" /></Button>
             <Button onClick={next}><img src={RightIcon} alt="" /></Button>

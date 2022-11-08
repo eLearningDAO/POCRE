@@ -150,7 +150,7 @@ function Litigation() {
                     && !decision.decision_status,
                   )
                 }
-                totalJuryMembers={x?.invitations?.length}
+                totalJuryMembers={x?.recognitions?.length}
                 canWithdraw={!x?.toJudge ? x?.reconcilate === null : null}
                 // eslint-disable-next-line no-return-await
                 onWithdraw={async () => await updateReconcilateStatus({
