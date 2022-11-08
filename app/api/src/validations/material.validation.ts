@@ -8,7 +8,7 @@ export const createMaterial = {
     material_link: Joi.string().uri().optional().allow('').allow(null),
     source_id: Joi.string().uuid().required(),
     type_id: Joi.string().uuid().required(),
-    invite_id: Joi.string().uuid().optional().allow('').allow(null),
+    recognition_id: Joi.string().uuid().optional().allow('').allow(null),
     author_id: Joi.string().uuid().required(),
     is_claimable: Joi.bool().default(true),
   }),
@@ -19,7 +19,7 @@ export const queryMaterials = {
     limit: Joi.number().integer().default(10),
     page: Joi.number().integer().default(1).greater(0),
     query: Joi.string().optional(),
-    search_fields: Joi.array().items(Joi.string().valid('invite_id')).when('query', {
+    search_fields: Joi.array().items(Joi.string().valid('recognition_id')).when('query', {
       is: Joi.string().exist(),
       then: Joi.required(),
       otherwise: Joi.forbidden(),
@@ -54,7 +54,7 @@ export const updateMaterial = {
       material_link: Joi.string().uri().optional().allow('').allow(null),
       source_id: Joi.string().uuid().optional(),
       type_id: Joi.string().uuid().optional(),
-      invite_id: Joi.string().uuid().optional().allow('').allow(null),
+      recognition_id: Joi.string().uuid().optional().allow('').allow(null),
       author_id: Joi.string().uuid().optional(),
       is_claimable: Joi.bool(),
     })

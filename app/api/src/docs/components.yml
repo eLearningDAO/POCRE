@@ -50,7 +50,7 @@ components:
       example:
         status_id: 2cc874d2-9f7d-48a8-a416-ec19e9462da9
         status_name: pending
-        status_description: invitaion to john
+        status_description: recognition to john
         action_made: 2022-09-05T19:00:00.000Z
 
     Decision:
@@ -69,32 +69,32 @@ components:
         decision_status: true
         maker_id: c83a8680-e5db-4a79-8646-c6e3d010ec6b
 
-    Invitation:
+    Recognition:
       type: object
       properties:
-        invite_id:
+        recognition_id:
           type: string
           format: uuid
-        invite_from:
+        recognition_by:
           type: string
           format: uuid
-        invite_to:
+        recognition_for:
           type: string
           format: uuid
-        invite_description:
+        recognition_description:
           type: string
-        invite_issued:
+        recognition_issued:
           type: string
           format: date-time
         status_id:
           type: string
           format: uuid
       example:
-        invite_id: 8d098580-1e4c-40c8-95f3-9c78de09a121
-        invite_from: d5cef9e4-d497-45ea-bd68-609aba268886
-        invite_to: d5cef9e4-d497-45ea-bd68-609aba268886
-        invite_description: invitation to john
-        invite_issued: 2022-09-07T19:00:00.000Z
+        recognition_id: 8d098580-1e4c-40c8-95f3-9c78de09a121
+        recognition_by: d5cef9e4-d497-45ea-bd68-609aba268886
+        recognition_for: d5cef9e4-d497-45ea-bd68-609aba268886
+        recognition_description: recognition to john
+        recognition_issued: 2022-09-07T19:00:00.000Z
         status_id: 865b3cff-d24e-4ec7-8873-f9634c5f2245
 
     Source:
@@ -133,7 +133,7 @@ components:
         type_id:
           type: string
           format: uuid
-        invite_id:
+        recognition_id:
           type: string
           format: uuid
         author_id:
@@ -148,7 +148,7 @@ components:
         material_link: https://example.com
         source_id: 12ed7a55-a1ba-4895-83e9-7aa615247390
         type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
-        invite_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
+        recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
         author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
         is_claimable: true
 
@@ -308,10 +308,10 @@ components:
               type_id: 670be025-7c46-4890-8348-b5ad620ad9a7
               type_name: plastic
               type_description: dangerous to environment
-            invite_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
-            invite: 
-              invite_id: 8d098580-1e4c-40c8-95f3-9c78de09a121
-              invite_from: 
+            recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
+            recognition: 
+              recognition_id: 8d098580-1e4c-40c8-95f3-9c78de09a121
+              recognition_by: 
                 user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
                 user_name: john
                 wallet_address: 28y9gd27g2g237g80hnibhi
@@ -321,7 +321,7 @@ components:
                 verified_id: 28y9gd27g2g237g80hnibhi
                 reputation_stars: 0
                 date_joined: 2022-09-05T19:00:00.000Z
-              invite_to: 
+              recognition_for: 
                 user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
                 user_name: john
                 wallet_address: 28y9gd27g2g237g80hnibhi
@@ -331,13 +331,13 @@ components:
                 verified_id: 28y9gd27g2g237g80hnibhi
                 reputation_stars: 0
                 date_joined: 2022-09-05T19:00:00.000Z
-              invite_description: invitation to john
-              invite_issued: 2022-09-07T19:00:00.000Z
+              recognition_description: recognition to john
+              recognition_issued: 2022-09-07T19:00:00.000Z
               status_id: 865b3cff-d24e-4ec7-8873-f9634c5f2245
               status: 
                 status_id: 2cc874d2-9f7d-48a8-a416-ec19e9462da9
                 status_name: pending
-                status_description: invitaion to john
+                status_description: recognition to john
                 action_made: 2022-09-05T19:00:00.000Z
             author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
             author: 
@@ -375,7 +375,7 @@ components:
         winner:
           type: string
           format: uuid
-        invitations:
+        recognitions:
           type: array
           items:
             type: string
@@ -403,7 +403,7 @@ components:
         assumed_author: dd7a824b-b0a9-4868-bdbf-cfa6bdd36621
         issuer_id: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
         winner: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
-        invitations: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
+        recognitions: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
         decisions: [7b3439c6-a691-4a60-9e09-8235804c33fe]
         litigation_start: 2022-09-06T19:00:00.000Z
         litigation_end: 2022-09-06T19:00:00.000Z
@@ -464,15 +464,15 @@ components:
           example:
             code: 409
             message: issuer already assigned to a litigation
-    UserCannotInviteThemselve:
-      description: User cannot invite themselve
+    UserCannotRecognizeThemselve:
+      description: User cannot recognize themselve
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: user cannot invite themselve
+            message: user cannot recognize themselve
     StatusNotFound:
       description: Status not found
       content:
@@ -482,15 +482,15 @@ components:
           example:
             code: 404
             message: status not found
-    StatusAlreadyAssignedToInvitation:
-      description: Status already assigned to an invitation
+    StatusAlreadyAssignedToRecognition:
+      description: Status already assigned to a recognition
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: status already assigned to an invitation
+            message: status already assigned to a recognition
     DecisionNotFound:
       description: Decision not found
       content:
@@ -509,33 +509,33 @@ components:
           example:
             code: 409
             message: decision already assigned to a litigation
-    InvitationNotFound:
-      description: Invitation not found
+    RecognitionNotFound:
+      description: Recognition not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
           example:
             code: 404
-            message: invitation not found
-    InvitationAlreadyAssignedToMaterial:
-      description: Invitation already assigned to a material
+            message: recognition not found
+    RecognitionAlreadyAssignedToMaterial:
+      description: Recognition already assigned to a material
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: invitation already assigned to a material
-    InvitationAlreadyAssignedToLitigation:
-      description: Invitation already assigned to a litigation
+            message: recognition already assigned to a material
+    RecognitionAlreadyAssignedToLitigation:
+      description: Recognition already assigned to a litigation
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: invitation already assigned to a litigation
+            message: recognition already assigned to a litigation
     SourceNotFound:
       description: Source not found
       content:

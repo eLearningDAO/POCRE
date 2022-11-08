@@ -252,26 +252,26 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                 FROM 
                   (SELECT 
                     material.material_id, 
-                    material.invite_id, 
-                    invitation.status_id 
+                    material.recognition_id, 
+                    recognition.status_id 
                     FROM 
                     material 
                     INNER JOIN 
-                    invitation 
+                    recognition 
                     ON 
-                    material.invite_id = invitation.invite_id
+                    material.recognition_id = recognition.recognition_id
                   ) 
-                as material_invite 
+                as material_recognition 
                 INNER JOIN 
                 status 
                 ON 
-                status.status_id = material_invite.status_id 
+                status.status_id = material_recognition.status_id 
                 WHERE 
                 status.status_name ${
                   options.is_fully_assigned ? `= '${statusTypes.ACCEPTED}'` : `<> '${statusTypes.DECLINED}'`
                 } 
                 AND 
-                material_invite.material_id = ANY(materials)
+                material_recognition.material_id = ANY(materials)
                 ) 
                 ${order} 
                 OFFSET $1 LIMIT $2`,
@@ -291,26 +291,26 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                   (
                     SELECT 
                     material.material_id, 
-                    material.invite_id, 
-                    invitation.status_id 
+                    material.recognition_id, 
+                    recognition.status_id 
                     FROM 
                     material 
                     INNER JOIN 
-                    invitation ON 
-                    material.invite_id = invitation.invite_id
+                    recognition ON 
+                    material.recognition_id = recognition.recognition_id
                   ) 
                   as 
-                  material_invite 
+                  material_recognition 
                   INNER JOIN 
                   status 
                   ON 
-                  status.status_id = material_invite.status_id 
+                  status.status_id = material_recognition.status_id 
                   WHERE 
                   status.status_name ${
                     options.is_fully_assigned ? `= '${statusTypes.ACCEPTED}'` : `<> '${statusTypes.DECLINED}'`
                   } 
                   AND 
-                  material_invite.material_id = ANY(materials)
+                  material_recognition.material_id = ANY(materials)
                 )`,
       },
     };

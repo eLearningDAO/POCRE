@@ -26,10 +26,10 @@ export const getCreationProofById = catchAsync(async (req, res): Promise<void | 
     'materials.type_id',
     'materials.source_id',
     'materials.author_id',
-    'materials.invite_id',
-    'materials.invite_id.invite_from',
-    'materials.invite_id.invite_to',
-    'materials.invite_id.status_id',
+    'materials.recognition_id',
+    'materials.recognition_id.recognition_by',
+    'materials.recognition_id.recognition_for',
+    'materials.recognition_id.status_id',
   ]);
 
   // proof object
