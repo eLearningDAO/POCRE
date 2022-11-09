@@ -15,8 +15,8 @@ const useDetails = () => {
     queryKey: [`creations-${creationId}`],
     queryFn: async () => {
       const toPopulate = [
-        'source_id', 'author_id', 'tags', 'materials', 'materials.source_id', 'materials.type_id', 'materials.invite_id',
-        'materials.invite_id.invite_from', 'materials.invite_id.invite_to', 'materials.invite_id.status_id', 'materials.author_id',
+        'source_id', 'author_id', 'tags', 'materials', 'materials.source_id', 'materials.type_id', 'materials.recognition_id',
+        'materials.recognition_id.recognition_by', 'materials.recognition_id.recognition_for', 'materials.recognition_id.status_id', 'materials.author_id',
       ];
       return await Creation.getById(creationId, toPopulate.map((x) => `populate=${x}`).join('&'));
     },

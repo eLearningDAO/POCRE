@@ -52,19 +52,19 @@ const init = async (): Promise<QueryResult<any>> => {
           ON DELETE CASCADE
     );
 
-    CREATE TABLE IF NOT EXISTS invitation (
-      invite_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      invite_from UUID NOT NULL,
-      invite_to UUID NOT NULL,
-      invite_description text,
-      invite_issued DATE NOT NULL DEFAULT CURRENT_DATE,
+    CREATE TABLE IF NOT EXISTS recognition (
+      recognition_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      recognition_by UUID NOT NULL,
+      recognition_for UUID NOT NULL,
+      recognition_description text,
+      recognition_issued DATE NOT NULL DEFAULT CURRENT_DATE,
       status_id UUID UNIQUE NOT NULL,
-      CONSTRAINT invite_from
-          FOREIGN KEY(invite_from) 
+      CONSTRAINT recognition_by
+          FOREIGN KEY(recognition_by) 
           REFERENCES users(user_id)
           ON DELETE CASCADE,
-      CONSTRAINT invite_to
-          FOREIGN KEY(invite_to) 
+      CONSTRAINT recognition_for
+          FOREIGN KEY(recognition_for) 
           REFERENCES users(user_id)
           ON DELETE CASCADE,
       CONSTRAINT status_id
@@ -100,7 +100,7 @@ const init = async (): Promise<QueryResult<any>> => {
       material_link character varying,
       source_id UUID UNIQUE NOT NULL,
       type_id UUID UNIQUE NOT NULL,
-      invite_id UUID UNIQUE,
+      recognition_id UUID UNIQUE,
       author_id UUID NOT NULL,
       is_claimable bool default true,
       CONSTRAINT source_id
@@ -111,9 +111,9 @@ const init = async (): Promise<QueryResult<any>> => {
           FOREIGN KEY(type_id) 
           REFERENCES material_type(type_id)
           ON DELETE CASCADE,
-      CONSTRAINT invite_id
-          FOREIGN KEY(invite_id) 
-          REFERENCES invitation(invite_id),
+      CONSTRAINT recognition_id
+          FOREIGN KEY(recognition_id) 
+          REFERENCES recognition(recognition_id),
       CONSTRAINT author_id
           FOREIGN KEY(author_id) 
           REFERENCES users(user_id)
@@ -150,7 +150,7 @@ const init = async (): Promise<QueryResult<any>> => {
       assumed_author UUID NOT NULL,
       issuer_id UUID NOT NULL,
       winner UUID NOT NULL,
-      invitations UUID[],
+      recognitions UUID[],
       decisions UUID[],
       litigation_start DATE NOT NULL DEFAULT CURRENT_DATE,
       litigation_end DATE,
@@ -178,10 +178,10 @@ const init = async (): Promise<QueryResult<any>> => {
       UPDATE creation SET materials = array_remove(materials, material_id);
     $$;
 
-    CREATE OR REPLACE PROCEDURE remove_invitation_references(invite_id UUID)
+    CREATE OR REPLACE PROCEDURE remove_recognition_references(recognition_id UUID)
     LANGUAGE SQL
     AS $$
-      UPDATE litigation SET invitations = array_remove(invitations, invite_id);
+      UPDATE litigation SET recognitions = array_remove(recognitions, recognition_id);
     $$;
 
     CREATE OR REPLACE PROCEDURE remove_decision_references(decision_id UUID)

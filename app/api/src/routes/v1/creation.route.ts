@@ -193,12 +193,12 @@ export default router;
  *         name: is_partially_assigned
  *         schema:
  *           type: bool
- *         description: when true, returns opened creations of which some materials are recognized by co-authors (invitation accepted by co-authors)
+ *         description: when true, returns opened creations of which some materials are recognized by co-authors (recognition accepted by co-authors)
  *       - in: query
  *         name: is_fully_assigned
  *         schema:
  *           type: bool
- *         description: when true, returns opened creations of which all materials are recognized by co-authors (invitation accepted by co-authors)
+ *         description: when true, returns opened creations of which all materials are recognized by co-authors (recognition accepted by co-authors)
  *       - in: query
  *         name: populate
  *         schema:
@@ -212,10 +212,10 @@ export default router;
  *               - materials
  *               - materials.source_id
  *               - materials.type_id
- *               - materials.invite_id
- *               - materials.invite_id.invite_from
- *               - materials.invite_id.invite_to
- *               - materials.invite_id.status_id
+ *               - materials.recognition_id
+ *               - materials.recognition_id.recognition_by
+ *               - materials.recognition_id.recognition_for
+ *               - materials.recognition_id.status_id
  *               - materials.author_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
@@ -273,10 +273,10 @@ export default router;
  *               - materials
  *               - materials.source_id
  *               - materials.type_id
- *               - materials.invite_id
- *               - materials.invite_id.invite_from
- *               - materials.invite_id.invite_to
- *               - materials.invite_id.status_id
+ *               - materials.recognition_id
+ *               - materials.recognition_id.recognition_by
+ *               - materials.recognition_id.recognition_for
+ *               - materials.recognition_id.status_id
  *               - materials.author_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:

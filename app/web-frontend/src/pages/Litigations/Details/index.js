@@ -38,11 +38,11 @@ export default function LitigationDetails() {
   const [slideNumber, setSlideNumber] = useState(1);
 
   const next = () => {
-    setSlideNumber((x) => (x === litigation?.invitations?.length ? 1 : x + 1));
+    setSlideNumber((x) => (x === litigation?.recognitions?.length ? 1 : x + 1));
   };
   const previous = () => {
     // eslint-disable-next-line no-unsafe-optional-chaining
-    setSlideNumber((x) => (x === 1 ? litigation?.invitations?.length - 1 : x - 1));
+    setSlideNumber((x) => (x === 1 ? litigation?.recognitions?.length - 1 : x - 1));
   };
 
   if (isFetchingLitigation) return <Loader />;
@@ -135,8 +135,8 @@ export default function LitigationDetails() {
           interactionBtns={false}
           showReconcilateOptions={false}
           recognitionStatus={
-            litigation?.material && litigation?.material?.invite?.status?.status_name
-              ? litigation?.material?.invite?.status?.status_name
+            litigation?.material && litigation?.material?.recognition?.status?.status_name
+              ? litigation?.material?.recognition?.status?.status_name
               : null
             }
         />
@@ -172,7 +172,9 @@ export default function LitigationDetails() {
                   />
                   Agree
                   {' '}
-                  {litigation?.decisions?.filter((x) => x?.decision_status)?.length}
+                  {litigation?.decisions
+                    ? litigation?.decisions?.filter((x) => x?.decision_status)?.length
+                    : '0'}
                 </Button>
                 <Button
                   display="flex"
@@ -193,7 +195,9 @@ export default function LitigationDetails() {
                   />
                   Opposition
                   {' '}
-                  {litigation?.decisions?.filter((x) => !x?.decision_status)?.length}
+                  {litigation?.decisions
+                    ? litigation?.decisions?.filter((x) => !x?.decision_status)?.length
+                    : '0'}
                 </Button>
                 <Button
                   display="flex"
@@ -214,8 +218,9 @@ export default function LitigationDetails() {
                   />
                   Impartial
                   {' '}
-                  {/* eslint-disable-next-line no-unsafe-optional-chaining */}
-                  {litigation?.invitations?.length - litigation?.decisions?.length}
+                  {litigation?.decisions
+                    ? (litigation?.recognitions?.length - litigation?.decisions?.length)
+                    : '0'}
                 </Button>
               </>
             )
@@ -238,7 +243,7 @@ export default function LitigationDetails() {
                   Impartial
                   {' '}
                   {/* eslint-disable-next-line no-unsafe-optional-chaining */}
-                  {litigation?.invitations?.length - litigation?.decisions?.length}
+                  {litigation?.recognitions?.length - litigation?.decisions?.length}
                 </Box>
               </>
             )
@@ -247,8 +252,8 @@ export default function LitigationDetails() {
 
       <Grid item xs={12} style={{ marginTop: '40px' }}>
         <Typography className="litigationCloseTitle" variant="h6">
-          Invited jury members (
-          {litigation?.invitations?.length}
+          Recognized jury members (
+          {litigation?.recognitions?.length}
           )
         </Typography>
       </Grid>
@@ -264,20 +269,20 @@ export default function LitigationDetails() {
         className="secondary-section-container"
       >
         <div className="carousel-container">
-          {litigation?.invitations?.map(
-            (invite, index) => (index === slideNumber - 1 || index === slideNumber
+          {litigation?.recognitions?.map(
+            (recognition, index) => (index === slideNumber - 1 || index === slideNumber
               ? (
                 <UserCard
                   key={index}
                   // eslint-disable-next-line jsx-a11y/aria-role
                   role={(() => {
                     const vote = litigation?.decisions?.find(
-                      (x) => x?.maker_id === invite?.invite_to?.user_id,
+                      (x) => x?.maker_id === recognition?.recognition_for?.user_id,
                     )?.decision_status;
 
                     return vote === false ? 'Voted in opposition' : (vote === true ? 'Voted in favor' : 'Vote not casted');
                   })()}
-                  username={invite?.invite_to?.user_name}
+                  username={recognition?.recognition_for?.user_name}
                   imageUrl={`https://i.pravatar.cc/50?img=${Math.random()}`}
                   totalCreationsAuthored={Math.floor(Math.random())}
                 />

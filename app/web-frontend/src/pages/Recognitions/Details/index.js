@@ -10,19 +10,19 @@ import DownloadIconSVG from 'assets/svgs/download.svg';
 import PreviewIcon from 'assets/svgs/preview.svg';
 import CreationPreview from 'components/previews/CreationPreview';
 import Loader from 'components/uicore/Loader';
-import Cookies from 'js-cookie';
 import moment from 'moment';
 import {
   useEffect,
   useState,
 } from 'react';
 import { useParams } from 'react-router-dom';
+import authUser from 'utils/helpers/authUser';
 import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import useRecognitions from '../common/hooks/useRecognitions';
 import './index.css';
 
 // get auth user
-const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
+const user = authUser.get();
 
 export default function CreationDetails() {
   const { id } = useParams();
@@ -47,8 +47,8 @@ export default function CreationDetails() {
   }, [id]);
 
   useEffect(() => {
-    const invitationFileType = getUrlFileType(recognitionDetails?.material?.material_link);
-    setMediaType(invitationFileType);
+    const recognitionFileType = getUrlFileType(recognitionDetails?.material?.material_link);
+    setMediaType(recognitionFileType);
 
     const creationFileType = getUrlFileType(recognitionDetails?.material?.material_link);
     setCreationMediaType(creationFileType);
@@ -103,11 +103,11 @@ export default function CreationDetails() {
       <Grid item xs={12}>
         <Grid item xs={12}>
           <Typography className="litigationCloseTitle" variant="h6">
-            {authUser?.user_id === recognitionDetails?.invite_to?.user_id ? 'You were ' : recognitionDetails?.invite_to?.user_name}
+            {user?.user_id === recognitionDetails?.recognition_for?.user_id ? 'You were ' : recognitionDetails?.recognition_for?.user_name}
             {' '}
             recognized by
             {' '}
-            {recognitionDetails?.invite_from?.user_name}
+            {recognitionDetails?.recognition_by?.user_name}
             {' '}
             for
             {' '}
@@ -174,10 +174,10 @@ export default function CreationDetails() {
             <p>
               Recognized by
               {' '}
-              {recognitionDetails?.invite_from?.user_name}
+              {recognitionDetails?.recognition_by?.user_name}
             </p>
           </div>
-          <Chip style={{ fontSize: '16px', margin: 0 }} className="mr-auto bg-orange color-white" label={`Recognized on ${moment(recognitionDetails?.invite_issued).format('DD/MM/YYYY')}`} />
+          <Chip style={{ fontSize: '16px', margin: 0 }} className="mr-auto bg-orange color-white" label={`Recognized on ${moment(recognitionDetails?.recognition_issued).format('DD/MM/YYYY')}`} />
         </Grid>
 
         <Grid
@@ -190,7 +190,7 @@ export default function CreationDetails() {
           marginLeft="auto"
         >
           {recognitionDetails?.status?.status_name === 'pending'
-          && authUser?.user_id === recognitionDetails?.invite_to?.user_id
+          && user?.user_id === recognitionDetails?.recognition_for?.user_id
             ? (
               <>
                 <Typography className="litigationCloseTitle" variant="h6">
@@ -200,7 +200,7 @@ export default function CreationDetails() {
                   className="btn bg-green color-white"
                   onClick={async () => await updateRecognitionStatus(
                     {
-                      inviteId: recognitionDetails.invite_id,
+                      recognitionId: recognitionDetails.recognition_id,
                       updatedStatus: 'accepted',
                     },
                   )}
@@ -210,7 +210,7 @@ export default function CreationDetails() {
                 <Button
                   className="btn bg-red color-white"
                   onClick={async () => await updateRecognitionStatus({
-                    inviteId: recognitionDetails.invite_id,
+                    recognitionId: recognitionDetails.recognition_id,
                     updatedStatus: 'declined',
                   })}
                 >

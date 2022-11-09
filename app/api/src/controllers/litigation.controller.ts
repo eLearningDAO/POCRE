@@ -3,7 +3,7 @@ import catchAsync from '../utils/catchAsync';
 import * as litigationService from '../services/litigation.service';
 import { getUserById, getReputedUsers } from '../services/user.service';
 import { getMaterialById, updateMaterialById } from '../services/material.service';
-import { createInvitation } from '../services/invitation.service';
+import { createRecognition } from '../services/recognition.service';
 import { getDecisionById } from '../services/decision.service';
 import { getCreationById, updateCreationById } from '../services/creation.service';
 import { createStatus } from '../services/status.service';
@@ -62,8 +62,8 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
     winner: req.body.issuer_id,
   });
 
-  // send invites to litigators
-  const invitations = await (async () => {
+  // make recognitions for litigators
+  const recognitions = await (async () => {
     // get valid litigators
     const forbiddenLitigators = [newLitigation.issuer_id];
     if (creation) forbiddenLitigators.push(creation.author_id);
@@ -73,7 +73,7 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
     );
     const litigators = await getReputedUsers({ required_users: randomUserLimit, exclude_users: forbiddenLitigators });
 
-    // create invitations for litigators
+    // create recognitions for litigators
     return Promise.all(
       litigators.map(async (user) => {
         // create new status
@@ -81,10 +81,10 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
           status_name: newLitigation.litigation_title,
         });
 
-        // create new invitation
-        return createInvitation({
-          invite_from: newLitigation.issuer_id,
-          invite_to: user.user_id,
+        // create new recognition
+        return createRecognition({
+          recognition_by: newLitigation.issuer_id,
+          recognition_for: user.user_id,
           status_id: status.status_id,
         });
       })
@@ -92,8 +92,8 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
   })();
 
   // update litigation
-  newLitigation.invitations = invitations.map((invitation) => invitation.invite_id);
-  await litigationService.updateLitigationById(newLitigation.litigation_id, { invitations: newLitigation.invitations });
+  newLitigation.recognitions = recognitions.map((recognition) => recognition.recognition_id);
+  await litigationService.updateLitigationById(newLitigation.litigation_id, { recognitions: newLitigation.recognitions });
 
   // make creation not claimable
   if (!material && creation) await updateCreationById(creation.creation_id, { is_claimable: false });

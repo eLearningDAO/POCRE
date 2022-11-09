@@ -1,59 +1,41 @@
-import Cookies from 'js-cookie';
-import moment from 'moment';
-import { useCallback, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Litigation } from 'api/requests';
+import moment from 'moment';
+import { useState } from 'react';
+import authUser from 'utils/helpers/authUser';
 
-const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
+const user = authUser.get();
 
 const useHome = () => {
-  const [isFetchingLitigations, setIsFetchingLitigations] = useState(false);
-  const [isUpdatingReconcilateStatus, setIsUpdatingReconcilateStatus] = useState(false);
-  const [isTransferringOwnership, setIsTransferringOwnership] = useState(false);
-  const [litigations, setLitigations] = useState({
-    opening: [],
-    closed: [],
-    openedAgainstMe: [],
-    toJudge: [],
-  });
-  const [fetchLitigationsStatus, setFetchLitigationsStatus] = useState({
-    success: false,
-    error: null,
-  });
-  const [updatedReconcilateStatus, setUpdatedReconcilateStatus] = useState({
-    success: false,
-    error: null,
-  });
-  const [transferOwnershipStatus, setTransferOwnershipStatus] = useState({
-    success: false,
-    error: null,
-  });
+  const queryClient = useQueryClient();
+  const [shouldFetchLitigations, setShouldFetchLitigations] = useState(false);
 
-  const fetchLitigations = useCallback(async () => {
-    try {
-      setIsFetchingLitigations(true);
-
+  // fetch all litigations
+  const {
+    data: litigations,
+    isError: isFetchLitigationsSuccess,
+    isSuccess: isFetchLitigationsError,
+    isLoading: isFetchingLitigations,
+  } = useQuery({
+    queryKey: ['litigations'],
+    queryFn: async () => {
       // get litigations
       const toPopulate = [
-        'assumed_author',
-        'winner',
-        'issuer_id',
-        'creation_id',
-        'creation_id.author_id',
-        'decisions',
-        'invitations.invite_to',
-        'invitations.status_id',
-        'material_id.author_id',
-        'material_id.author_id',
+        'assumed_author', 'winner', 'issuer_id', 'creation_id', 'creation_id.author_id', 'decisions',
+        'recognitions.recognition_for', 'recognitions.status_id', 'material_id.author_id', 'material_id.author_id',
       ];
+
+      // get all litigations
       let litigationResponse = await Litigation.getAll(
-        `query=${authUser?.user_id}&search_fields[]=issuer_id&search_fields[]=assumed_author&page=${1}&limit=1000&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
+        `query=${user?.user_id}&search_fields[]=issuer_id&search_fields[]=assumed_author&page=${1}&limit=1000&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       );
 
       // get litigations to judge
       const litigationToJudgeResponse = await Litigation.getAll(
-        `judged_by=${authUser?.user_id}&limit=1000&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
+        `judged_by=${user?.user_id}&limit=1000&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       );
 
+      // merge results
       litigationResponse.results = [
         ...litigationResponse.results,
         ...(litigationToJudgeResponse?.results?.map((x) => ({ ...x, toJudge: true })) || []),
@@ -71,13 +53,13 @@ const useHome = () => {
           ...litigationResponse?.results?.filter(
             (x) => moment(x.litigation_start).isBefore(new Date().toISOString())
               && moment(x.litigation_end).isAfter(new Date().toISOString())
-              && x?.issuer?.user_id === authUser?.user_id && !x.reconcilate && !x.toJudge,
+              && x?.issuer?.user_id === user?.user_id && !x.reconcilate && !x.toJudge,
           ) || [],
         ],
         openedAgainstMe: litigationResponse?.results?.filter(
           (x) => moment(x.litigation_start).isBefore(new Date().toISOString())
             && moment(x.litigation_end).isAfter(new Date().toISOString())
-            && x?.assumed_author?.user_id === authUser?.user_id && !x.reconcilate && !x.toJudge,
+            && x?.assumed_author?.user_id === user?.user_id && !x.reconcilate && !x.toJudge,
         ),
         toJudge: litigationResponse?.results?.filter(
           (x) => moment(x.litigation_start).isBefore(new Date().toISOString())
@@ -86,36 +68,32 @@ const useHome = () => {
         ),
       };
 
-      setFetchLitigationsStatus({
-        success: true,
-        error: null,
-      });
-      setLitigations({ ...litigationResponse });
-      // eslint-disable-next-line sonarjs/no-identical-functions
-      setTimeout(() => setFetchLitigationsStatus({
-        success: false,
-        error: null,
-      }), 3000);
-    } catch {
-      setFetchLitigationsStatus({
-        success: false,
-        error: 'Failed to fetch litigations',
-      });
-    } finally {
-      setIsFetchingLitigations(false);
-    }
-  }, []);
+      return { ...litigationResponse };
+    },
+    staleTime: 100_000, // delete cached data after 100 seconds
+    enabled: !!shouldFetchLitigations,
+  });
 
-  const updateReconcilateStatus = useCallback(async (id, reconcilate) => {
-    try {
-      setIsUpdatingReconcilateStatus(true);
-
+  // update recognition status
+  const {
+    mutate: updateReconcilateStatus,
+    isError: isReconcilateStatusUpdationError,
+    isSuccess: isReconcilateStatusUpdated,
+    isLoading: isUpdatingReconcilateStatus,
+    reset: resetReconcilateStatus,
+  } = useMutation({
+    mutationFn: async (
+      {
+        id,
+        reconcilate,
+      },
+    ) => {
       // make api call to update the litigation
       await Litigation.update(id, { reconcilate });
 
       // update litigation
       const updatedLitigations = { ...litigations };
-      const foundLitigation = updatedLitigations?.results?.openedAgainstMe?.find(
+      const foundLitigation = updatedLitigations?.openedAgainstMe?.find(
         (x) => x.litigation_id === id,
       );
       foundLitigation.reconcilate = reconcilate;
@@ -124,82 +102,73 @@ const useHome = () => {
         foundLitigation.ownership_transferred = true;
 
         // remove from opened
-        updatedLitigations.results.openedAgainstMe = [
-          ...updatedLitigations.results.openedAgainstMe,
+        updatedLitigations.openedAgainstMe = [
+          ...updatedLitigations.openedAgainstMe,
         ].filter((x) => !x.reconcilate);
 
         // add to closed
-        updatedLitigations.results.closed = [
-          ...updatedLitigations.results.closed,
+        updatedLitigations.closed = [
+          ...updatedLitigations.closed,
           { ...foundLitigation },
         ];
       }
 
-      setUpdatedReconcilateStatus({
-        success: true,
-        error: null,
-      });
-      setLitigations({ ...updatedLitigations });
-      setTimeout(() => setUpdatedReconcilateStatus({
-        success: false,
-        error: null,
-      }), 3000);
-    } catch {
-      setUpdatedReconcilateStatus({
-        success: false,
-        error: 'Failed to update litigation status',
-      });
-    } finally {
-      setIsUpdatingReconcilateStatus(false);
-    }
-  }, [litigations]);
+      // update queries
+      queryClient.cancelQueries({ queryKey: ['litigations'] });
+      queryClient.setQueryData(['litigations'], () => ({ ...updatedLitigations }));
+    },
+  });
 
-  const transferLitigatedItemOwnership = useCallback(async (id) => {
-    try {
-      setIsTransferringOwnership(true);
-
+  // transfer litigation ownership
+  const {
+    mutate: transferLitigatedItemOwnership,
+    isError: isTransferOwnershipError,
+    isSuccess: isTransferOwnershipSuccess,
+    isLoading: isTransferringOwnership,
+    reset: resetTransferOwnershipStatus,
+  } = useMutation({
+    mutationFn: async (id) => {
       // make api call to edit the litigation
       await Litigation.update(id, { ownership_transferred: true });
 
       // update litigation
       const updatedLitigations = { ...litigations };
-      const foundLitigation = updatedLitigations?.results?.closed?.find(
+      const foundLitigation = updatedLitigations?.closed?.find(
         (x) => x.litigation_id === id,
       );
       foundLitigation.ownership_transferred = true;
 
-      setTransferOwnershipStatus({
-        success: true,
-        error: null,
-      });
-      setLitigations({ ...updatedLitigations });
-      setTimeout(() => setTransferOwnershipStatus({
-        success: false,
-        error: null,
-      }), 3000);
-    } catch {
-      setTransferOwnershipStatus({
-        success: false,
-        error: 'Failed to transfer litigated item ownership!',
-      });
-    } finally {
-      setIsTransferringOwnership(false);
-    }
-  }, [litigations]);
+      // update queries
+      queryClient.cancelQueries({ queryKey: ['litigations'] });
+      queryClient.setQueryData(['litigations'], () => ({ ...updatedLitigations }));
+    },
+  });
 
   return {
+    // fetch
     isFetchingLitigations,
-    isTransferringOwnership,
-    isUpdatingReconcilateStatus,
-    fetchLitigationsStatus,
-    transferOwnershipStatus,
-    setTransferOwnershipStatus,
-    updatedReconcilateStatus,
-    setUpdatedReconcilateStatus,
+    fetchLitigationsStatus: {
+      success: isFetchLitigationsSuccess,
+      error: isFetchLitigationsError ? 'Failed to fetch litigations' : null,
+    },
     litigations,
-    fetchLitigations,
-    transferLitigatedItemOwnership,
+    fetchLitigations: () => setShouldFetchLitigations(true),
+    // update status
+    isUpdatingReconcilateStatus,
+    updatedReconcilateStatus: {
+      success: isReconcilateStatusUpdated,
+      error: isReconcilateStatusUpdationError ? 'Failed to update litigation status' : null,
+    },
     updateReconcilateStatus,
+    resetReconcilateStatus,
+    // transfer ownership
+    isTransferringOwnership,
+    transferOwnershipStatus: {
+      success: isTransferOwnershipSuccess,
+      error: isTransferOwnershipError ? 'Failed to transfer litigated item ownership!' : null,
+    },
+    resetTransferOwnershipStatus,
+    transferLitigatedItemOwnership,
   };
 };
 

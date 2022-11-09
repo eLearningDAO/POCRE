@@ -1,10 +1,9 @@
-import Cookies from 'js-cookie';
 import React, { useCallback, useState } from 'react';
 import { API_BASE_URL } from 'config';
 import useUserInfo from 'hooks/user/userInfo';
+import authUser from 'utils/helpers/authUser';
 
-// get auth user
-const authUser = JSON.parse(Cookies.get('activeUser') || '{}');
+const user = authUser.get();
 
 const useHeader = () => {
   const { setUser: setUserContext, login, setFlag } = useUserInfo();
@@ -34,9 +33,9 @@ const useHeader = () => {
       }));
       setUsers(usersWithAvatar);
 
-      const temporaryUser = Object.keys(authUser).length > 0 ? authUser : usersWithAvatar?.[0];
+      const temporaryUser = Object.keys(user).length > 0 ? user : usersWithAvatar?.[0];
       setActiveUser(temporaryUser);
-      Cookies.set('activeUser', JSON.stringify(temporaryUser));
+      authUser.set(temporaryUser);
       setUserContext((previousS) => ({ ...previousS, user: temporaryUser }));
       setFetchUserStatus({
         success: true,
@@ -51,15 +50,17 @@ const useHeader = () => {
       setLoading(false);
     }
   }, []);
+
   const onUserSelect = (event, id) => {
-    const temporaryUser = users.find((user) => user.user_id === (event?.target?.value || id));
+    const temporaryUser = users.find((x) => x.user_id === (event?.target?.value || id));
     setActiveUser(temporaryUser);
-    Cookies.set('activeUser', JSON.stringify(temporaryUser));
+    authUser.set(temporaryUser);
 
     // set User gollably at our app
     setUserContext((previousS) => ({ ...previousS, user: temporaryUser }));
     setFlag();
   };
+
   React.useEffect(() => {
     fetchUsers();
     onUserSelect({}, userId);
