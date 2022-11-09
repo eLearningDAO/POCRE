@@ -19,6 +19,7 @@ const envVarsSchema = Joi.object()
       .required(),
     MIN_LITIGATORS: Joi.number().description('min litigators per litigation').required().min(1),
     MAX_LITIGATORS: Joi.number().description('max litigators per litigation').required().min(2),
+    JWT_SECRET: Joi.string().required().description('JWT secret key'),
   })
   .unknown();
 
@@ -43,5 +44,8 @@ export default {
   litigators: {
     min: envVars.MIN_LITIGATORS,
     max: envVars.MAX_LITIGATORS,
+  },
+  jwt: {
+    secret: envVars.JWT_SECRET,
   },
 };
