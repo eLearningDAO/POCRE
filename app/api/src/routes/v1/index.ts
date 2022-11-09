@@ -9,6 +9,7 @@ import materialRoute from './material.route';
 import tagRoute from './tag.route';
 import creationRoute from './creation.route';
 import litigationRoute from './litigation.route';
+import tokenRoute from './token.route';
 import docsRoute from './docs.route';
 import config from '../../config/config';
 
@@ -54,6 +55,10 @@ const defaultRoutes = [
   {
     path: '/litigations',
     route: litigationRoute,
+  },
+  {
+    path: '/token',
+    route: tokenRoute,
   },
 ];
 

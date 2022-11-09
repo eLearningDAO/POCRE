@@ -1,13 +1,15 @@
+import compression from 'compression';
+import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
-import cors from 'cors';
-import compression from 'compression';
 import httpStatus from 'http-status';
+import passport from 'passport';
 import config from './config/config';
 import * as morgan from './config/morgan';
+import jwtStrategy from './config/passport';
+import { errorConverter, errorHandler } from './middlewares/error';
 import authLimiter from './middlewares/rateLimiter';
 import routes from './routes/v1';
-import { errorConverter, errorHandler } from './middlewares/error';
 import ApiError from './utils/ApiError';
 
 const app = express();
@@ -31,6 +33,10 @@ app.use(compression());
 
 // enable cors for any route
 app.use(cors());
+
+// jwt authentication
+app.use(passport.initialize());
+passport.use('jwt', jwtStrategy);
 
 // limit repeated failed requests to auth endpoints
 if (config.env === 'production') {
