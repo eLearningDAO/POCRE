@@ -2,19 +2,20 @@ import express from 'express';
 import validate from '../../middlewares/validate';
 import * as recognitionValidation from '../../validations/recognition.validation';
 import * as recognitionController from '../../controllers/recognition.controller';
+import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
 router
   .route('/')
-  .post(validate(recognitionValidation.createRecognition), recognitionController.createRecognition)
+  .post(auth(), validate(recognitionValidation.createRecognition), recognitionController.createRecognition)
   .get(validate(recognitionValidation.queryRecognitions), recognitionController.queryRecognitions);
 
 router
   .route('/:recognition_id')
   .get(validate(recognitionValidation.getRecognition), recognitionController.getRecognitionById)
-  .patch(validate(recognitionValidation.updateRecognition), recognitionController.updateRecognitionById)
-  .delete(validate(recognitionValidation.deleteRecognition), recognitionController.deleteRecognitionById);
+  .patch(auth(), validate(recognitionValidation.updateRecognition), recognitionController.updateRecognitionById)
+  .delete(auth(), validate(recognitionValidation.deleteRecognition), recognitionController.deleteRecognitionById);
 
 export default router;
 

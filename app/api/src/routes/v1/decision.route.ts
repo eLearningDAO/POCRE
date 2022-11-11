@@ -2,16 +2,17 @@ import express from 'express';
 import validate from '../../middlewares/validate';
 import * as decisionValidation from '../../validations/decision.validation';
 import * as decisionController from '../../controllers/decision.controller';
+import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
-router.route('/').post(validate(decisionValidation.createDecision), decisionController.createDecision);
+router.route('/').post(auth(), validate(decisionValidation.createDecision), decisionController.createDecision);
 
 router
   .route('/:decision_id')
   .get(validate(decisionValidation.getDecision), decisionController.getDecisionById)
-  .patch(validate(decisionValidation.updateDecision), decisionController.updateDecisionById)
-  .delete(validate(decisionValidation.deleteDecision), decisionController.deleteDecisionById);
+  .patch(auth(), validate(decisionValidation.updateDecision), decisionController.updateDecisionById)
+  .delete(auth(), validate(decisionValidation.deleteDecision), decisionController.deleteDecisionById);
 
 export default router;
 

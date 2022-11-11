@@ -2,16 +2,19 @@ import express from 'express';
 import validate from '../../middlewares/validate';
 import * as materialTypeValidation from '../../validations/materialType.validation';
 import * as materialTypeController from '../../controllers/materialType.controller';
+import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
-router.route('/').post(validate(materialTypeValidation.createMaterialType), materialTypeController.createMaterialType);
+router
+  .route('/')
+  .post(auth(), validate(materialTypeValidation.createMaterialType), materialTypeController.createMaterialType);
 
 router
   .route('/:type_id')
   .get(validate(materialTypeValidation.getMaterialType), materialTypeController.getMaterialTypeById)
-  .patch(validate(materialTypeValidation.updateMaterialType), materialTypeController.updateMaterialTypeById)
-  .delete(validate(materialTypeValidation.deleteMaterialType), materialTypeController.deleteMaterialTypeById);
+  .patch(auth(), validate(materialTypeValidation.updateMaterialType), materialTypeController.updateMaterialTypeById)
+  .delete(auth(), validate(materialTypeValidation.deleteMaterialType), materialTypeController.deleteMaterialTypeById);
 
 export default router;
 

@@ -2,19 +2,20 @@ import express from 'express';
 import validate from '../../middlewares/validate';
 import * as creationValidation from '../../validations/creation.validation';
 import * as creationController from '../../controllers/creation.controller';
+import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
 router
   .route('/')
-  .post(validate(creationValidation.createCreation), creationController.createCreation)
+  .post(auth(), validate(creationValidation.createCreation), creationController.createCreation)
   .get(validate(creationValidation.queryCreations), creationController.queryCreations);
 
 router
   .route('/:creation_id')
   .get(validate(creationValidation.getCreation), creationController.getCreationById)
-  .patch(validate(creationValidation.updateCreation), creationController.updateCreationById)
-  .delete(validate(creationValidation.deleteCreation), creationController.deleteCreationById);
+  .patch(auth(), validate(creationValidation.updateCreation), creationController.updateCreationById)
+  .delete(auth(), validate(creationValidation.deleteCreation), creationController.deleteCreationById);
 
 router
   .route('/:creation_id/proof')
