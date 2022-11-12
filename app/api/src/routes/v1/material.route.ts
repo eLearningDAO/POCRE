@@ -45,7 +45,6 @@ export default router;
  *               - material_title
  *               - source_id
  *               - type_id
- *               - author_id
  *             properties:
  *               material_title:
  *                 type: string
@@ -65,9 +64,6 @@ export default router;
  *                 type: string
  *                 format: uuid
  *                 description: can be null
- *               author_id:
- *                 type: string
- *                 format: uuid
  *               is_claimable:
  *                 type: bool
  *             example:
@@ -77,7 +73,6 @@ export default router;
  *                source_id: 12ed7a55-a1ba-4895-83e9-7aa615247390
  *                type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
  *                recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
- *                author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
  *                is_claimable: true
  *     responses:
  *       "201":
@@ -303,9 +298,6 @@ export default router;
  *                 type: string
  *                 format: uuid
  *                 description: can be null
- *               author_id:
- *                 type: string
- *                 format: uuid
  *               is_claimable:
  *                 type: bool
  *             example:
@@ -315,7 +307,6 @@ export default router;
  *                source_id: 12ed7a55-a1ba-4895-83e9-7aa615247390
  *                type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
  *                recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
- *                author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
  *                is_claimable: false
  *     responses:
  *       "200":
