@@ -34,17 +34,34 @@ export const createDecision = async (decisionBody: IDecision): Promise<IDecision
 /**
  * Get decision by id
  * @param {string} id
+ * @param {object} options - optional config object
+ * @param {string|string[]} options.populate - the list of fields to populate
+ * @param {owner_id} options.populate - returns the decision that belongs to owner_id
  * @returns {Promise<IDecisionDoc|null>}
  */
-export const getDecisionById = async (id: string, populate?: string | string[]): Promise<IDecisionDoc | null> => {
+export const getDecisionById = async (
+  id: string,
+  options?: {
+    populate?: string | string[];
+    owner_id?: string;
+  }
+): Promise<IDecisionDoc | null> => {
   const decision = await (async () => {
     try {
       const result = await db.query(
-        `SELECT * ${populator({
+        `SELECT 
+        * 
+        ${populator({
           tableAlias: 'd',
-          fields: typeof populate === 'string' ? [populate] : populate,
-        })} FROM decision d WHERE decision_id = $1;`,
-        [id]
+          fields: options ? (typeof options.populate === 'string' ? [options.populate] : options.populate) : [],
+        })} 
+        FROM 
+        decision d 
+        WHERE 
+        decision_id = $1 
+        ${options && options.owner_id ? 'AND maker_id = $2' : ''}
+        ;`,
+        [id, options && options.owner_id ? options.owner_id : false].filter(Boolean)
       );
       return result.rows[0];
     } catch {
@@ -61,10 +78,19 @@ export const getDecisionById = async (id: string, populate?: string | string[]):
  * Update decision by id
  * @param {string} id
  * @param {Partial<IDecision>} updateBody
+ * @param {object} options - optional config object
+ * @param {owner_id} options.populate - updates the decision that belongs to owner_id
  * @returns {Promise<IDecisionDoc|null>}
  */
-export const updateDecisionById = async (id: string, updateBody: Partial<IDecision>): Promise<IDecisionDoc | null> => {
-  await getDecisionById(id); // check if decision exists, throws error if not found
+export const updateDecisionById = async (
+  id: string,
+  updateBody: Partial<IDecision>,
+  options?: { owner_id?: string }
+): Promise<IDecisionDoc | null> => {
+  // check if decision exists, throws error if not found
+  await getDecisionById(id, {
+    owner_id: options?.owner_id,
+  });
 
   // build sql conditions and values
   const conditions: string[] = [];
@@ -95,10 +121,15 @@ export const updateDecisionById = async (id: string, updateBody: Partial<IDecisi
 /**
  * Delete decision by id
  * @param {string} id
+ * @param {object} options - optional config object
+ * @param {owner_id} options.populate - deletes the decision that belongs to owner_id
  * @returns {Promise<IDecisionDoc|null>}
  */
-export const deleteDecisionById = async (id: string): Promise<IDecisionDoc | null> => {
-  const decision = await getDecisionById(id); // check if decision exists, throws error if not found
+export const deleteDecisionById = async (id: string, options?: { owner_id?: string }): Promise<IDecisionDoc | null> => {
+  // check if decision exists, throws error if not found
+  const decision = await getDecisionById(id, {
+    owner_id: options?.owner_id,
+  });
 
   try {
     await db.query(`DELETE FROM decision WHERE decision_id = $1;`, [id]);
