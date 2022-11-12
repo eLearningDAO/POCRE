@@ -12,6 +12,7 @@ import WalletHome from 'pages/Wallet/Home';
 import Layout from 'components/Layout';
 import CreditsHome from 'pages/Credits/Home';
 import Home from 'pages/Home';
+import UserWallet from 'pages/Wallet/userWallet';
 import Protected from './Protected';
 
 function AppRoutes() {
@@ -117,6 +118,14 @@ function AppRoutes() {
           element={(
             <Layout displaySidebar>
               <WalletHome />
+            </Layout>
+          )}
+        />
+        <Route
+          path="/user/:id"
+          element={(
+            <Layout displaySidebar>
+              <UserWallet />
             </Layout>
           )}
         />

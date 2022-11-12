@@ -97,20 +97,20 @@ export default function CreationDetails() {
             <embed src={creation?.source?.site_url} />
           )}
           {mediaType === 'document' && !creation?.source?.site_url?.includes('.pdf') && (
-          <div className="unsupported-file-type">
-            <h4 className="heading h4">Are you okay to download this file?</h4>
-            <a href={mediaType}>{creation?.source?.site_url}</a>
-            <div className="media-preview-content-options">
-              <Button
-                className="btn btn-primary icon-btn"
-                // eslint-disable-next-line security/detect-non-literal-fs-filename
-                onClick={() => window.open(creation?.source?.site_url)}
-              >
-                <img src={DownloadIconSVG} alt="" />
-                Download
-              </Button>
+            <div className="unsupported-file-type">
+              <h4 className="heading h4">Are you okay to download this file?</h4>
+              <a href={mediaType}>{creation?.source?.site_url}</a>
+              <div className="media-preview-content-options">
+                <Button
+                  className="btn btn-primary icon-btn"
+                  // eslint-disable-next-line security/detect-non-literal-fs-filename
+                  onClick={() => window.open(creation?.source?.site_url)}
+                >
+                  <img src={DownloadIconSVG} alt="" />
+                  Download
+                </Button>
+              </div>
             </div>
-          </div>
           )}
         </div>
       </Grid>

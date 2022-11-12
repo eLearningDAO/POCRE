@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/alt-text */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from 'react-materialize';
 import M from 'materialize-css';
 import RightIcon from 'assets/images/right.png';
@@ -10,18 +10,19 @@ import { accessibleOnClick } from 'utils/helpers/accessibleOnClick';
 
 export default function Slider({ handleSlidClicked, slideImageList }) {
   const [car, setCar] = React.useState(null);
-
-  React.useEffect(() => {
-    const options = {
-      duration: 300,
-      indicators: true,
-      dragged: false,
-      onCycleTo: () => {
-        // console.log('New Slide');
-      },
-    };
-    M.Carousel.init(car, options);
-  }, [car]);
+  useEffect(() => {
+    if (slideImageList) {
+      const options = {
+        duration: 300,
+        indicators: true,
+        dragged: false,
+        onCycleTo: () => {
+          // console.log('New Slide');
+        },
+      };
+      M.Carousel.init(car, options);
+    }
+  }, [car, slideImageList]);
 
   const next = () => {
     const instance = M.Carousel.getInstance(car);

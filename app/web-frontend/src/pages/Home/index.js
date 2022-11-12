@@ -6,7 +6,6 @@ import Loader from 'components/uicore/Loader';
 import './index.css';
 import Slider from 'components/slider';
 import TrendingCard from 'components/cards/TrendingCard';
-import useUserInfo from 'hooks/user/userInfo';
 import useHome from './useHome';
 
 function Home() {
@@ -21,16 +20,8 @@ function Home() {
     isMaterialListFeched,
     sliderImages,
   } = useHome();
-  const setUser = useUserInfo((s) => s.setUser);
   const handleAuthorCardClick = (userId) => {
-    const authors = topAuthorList.filter((author) => author.user_id === userId);
-    if (authors.length > 0) {
-      setUser((previousS) => ({
-        user: authors[0].userDetail ? { ...previousS } : null,
-        login: authors[0].userDetail,
-      }));
-      navigate('/wallet');
-    }
+    navigate(`/user/${userId}`);
   };
 
   const handleCreationCardClick = (creationId) => {

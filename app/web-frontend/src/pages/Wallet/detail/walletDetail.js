@@ -1,37 +1,44 @@
 /* eslint-disable indent */
 import React, { useEffect, useState } from 'react';
-import { Alert } from '@mui/material';
 import profileImg from '../../../assets/svgs/profile.svg';
 import WalletDetailEdit from './walletDetailEdit';
 import WalletDisplay from './walletDisplay';
 import CameraIcon from '../../../assets/svgs/cameraIcon.svg';
-import useWalletStore from '../../../hooks/userWalletService';
 import useUserInfo from '../../../hooks/user/userInfo';
+import useWallet from '../useWallet';
 
 let userId = '43704731-d816-4f1f-a599-eb290f67c3f4';
 
-function WalletDetail() {
+function WalletDetail({ displayOnlyId }) {
   const [initialValues, setInitialValues] = useState({});
   const [isDetailEdit, setDetailEdit] = useState(false);
-  const getUserById = useWalletStore((state) => state.getUserById);
-  const userData = useWalletStore((state) => state.userData);
+  const [isDisplayOnly, setIsDisplayOnly] = useState(false);
+  const {
+    userData,
+    fetchUserDetialById,
+    userCollectionCount,
+    uploadUserImage,
+    userProfileImageUrl,
+  } = useWallet();
   const user = useUserInfo((state) => state.user);
-  const getUserCollectionCount = useWalletStore((state) => state.getUserCollectionCount);
-  const userCollectionCount = useWalletStore((state) => state.userCollectionCount);
-  const uploadUserImage = useWalletStore((state) => state.uploadUserImage);
-  const userProfileImageUrl = useWalletStore((state) => state.userProfileImageUrl);
-  const userUpdateError = useWalletStore((state) => state.userUpdateError);
-  async function handleUploadImage(event) {
+  function handleUploadImage(event) {
     const file = event.target.files[0];
-    await uploadUserImage(file);
+    uploadUserImage(file);
   }
   useEffect(() => {
     if (user && user.user_id) {
       userId = user.user_id;
-      getUserById(userId);
-      getUserCollectionCount(userId);
+      fetchUserDetialById(userId);
     }
-  }, [user]);
+  }, [user, displayOnlyId]);
+
+  useEffect(() => {
+    if (displayOnlyId) {
+      fetchUserDetialById(displayOnlyId);
+      setIsDisplayOnly(true);
+    }
+  }, [displayOnlyId]);
+
   const getProfileImage = () => {
     if (userData && userData.imageUrl) {
       return userData.imageUrl;
@@ -55,49 +62,41 @@ function WalletDetail() {
   }, [userData]);
 
   return (
-    <>
-      <div className="wallet-detail-container">
-        <div className="wallete-detail-left-container">
-          <div className="front-face-photo">
-            <img src={getProfileImage()} alt="alt" loading="lazy" />
-            {isDetailEdit && (
-              <div className="edit-camera">
-                <label htmlFor="file-input">
-                  <img src={CameraIcon} alt="camera" loading="lazy" />
-                  <input />
-                </label>
-                <input type="file" id="file-input" inputProps={{ accept: 'image/*' }} onChange={(file) => handleUploadImage(file)} />
-              </div>
-            )}
-          </div>
-
-          <span className="author-collection">
-            Author of
-            <span style={{ marginLeft: '4px', marginRight: '4px' }}>{userCollectionCount}</span>
-            collections
-          </span>
+    <div className="wallet-detail-container">
+      <div className="wallete-detail-left-container">
+        <div className="front-face-photo">
+          <img src={getProfileImage()} alt="alt" loading="lazy" />
+          {isDetailEdit && (
+            <div className="edit-camera">
+              <label htmlFor="file-input">
+                <img src={CameraIcon} alt="camera" loading="lazy" />
+                <input />
+              </label>
+              <input type="file" id="file-input" inputProps={{ accept: 'image/*' }} onChange={(file) => handleUploadImage(file)} />
+            </div>
+          )}
         </div>
-        {isDetailEdit ? (
-          <WalletDetailEdit
-            setDetailEdit={setDetailEdit}
-            initialValues={initialValues}
-            userId={userId}
-            imageUrl={userProfileImageUrl}
-          />
-        ) : (
-          <WalletDisplay setDetailEdit={setDetailEdit} user={userData} />
-        )}
+        <span className="author-collection">
+          Author of
+          <span style={{ marginLeft: '4px', marginRight: '4px' }}>{userCollectionCount}</span>
+          collections
+        </span>
       </div>
-      {userUpdateError && userUpdateError.error
-        && (
-          <Alert
-            severity="error"
-            sx={{ width: '50%' }}
-          >
-            {userUpdateError.message}
-          </Alert>
-        )}
-    </>
+      {isDetailEdit ? (
+        <WalletDetailEdit
+          setDetailEdit={setDetailEdit}
+          initialValues={initialValues}
+          userId={userId}
+          imageUrl={userProfileImageUrl}
+        />
+      ) : (
+        <WalletDisplay
+          setDetailEdit={setDetailEdit}
+          user={userData}
+          isDisplayOnly={isDisplayOnly}
+        />
+      )}
+    </div>
   );
 }
 export default WalletDetail;
