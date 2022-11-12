@@ -44,7 +44,6 @@ export default router;
  *             required:
  *               - litigation_title
  *               - creation_id
- *               - issuer_id
  *               - litigation_start
  *               - litigation_end
  *             properties:
@@ -57,9 +56,6 @@ export default router;
  *                 type: string
  *                 format: uuid
  *               material_id:
- *                 type: string
- *                 format: uuid
- *               issuer_id:
  *                 type: string
  *                 format: uuid
  *               decisions:
@@ -80,9 +76,6 @@ export default router;
  *                litigation_description: an example litigation
  *                creation_id: fa52d76c-664a-41de-aebb-b311a74ef571
  *                material_id: fa52d76c-664a-41de-aebb-b311a74ef570
- *                assumed_author: b49cf4d8-341d-4cd6-b5ad-d002e87d9331
- *                issuer_id: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
- *                winner: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
  *                decisions: [6087ac9e-7e15-4ad7-b256-7893a00c3577]
  *                litigation_start: 2022-09-09T19:00:00.000Z
  *                litigation_end: 2022-09-09T19:00:00.000Z
@@ -414,8 +407,6 @@ export default router;
  *                litigation_description: an example litigation
  *                material_id: fa52d76c-664a-41de-aebb-b311a74ef570
  *                assumed_author: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
- *                issuer_id: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
- *                winner: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
  *                decisions: [6087ac9e-7e15-4ad7-b256-7893a00c3577]
  *                litigation_start: 2022-09-09T19:00:00.000Z
  *                litigation_end: 2022-09-09T19:00:00.000Z

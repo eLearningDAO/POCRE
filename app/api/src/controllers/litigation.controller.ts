@@ -33,13 +33,16 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
     await Promise.all(req.body.decisions.map((id: string) => getDecisionById(id))); // verify decisions, will throw an error if any decision is not found
   }
 
+  // auth user is the issuer
+  const issuerId = (req.user as IUserDoc).user_id;
+
   // check if assumed author and issuer are same for creation
-  if (!material && creation?.author_id === req.body.issuer_id) {
+  if (!material && creation?.author_id === issuerId) {
     throw new ApiError(httpStatus.NOT_FOUND, 'creation is already owned');
   }
 
   // check if assumed author and issuer are same for material
-  if (material?.author_id === req.body.issuer_id) {
+  if (material?.author_id === issuerId) {
     throw new ApiError(httpStatus.NOT_FOUND, 'material is already owned');
   }
 
@@ -57,8 +60,8 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
   const newLitigation = await litigationService.createLitigation({
     ...req.body,
     assumed_author: material ? material.author_id : creation?.author_id,
-    issuer_id: (req.user as IUserDoc).user_id,
-    winner: (req.user as IUserDoc).user_id,
+    issuer_id: issuerId,
+    winner: issuerId,
   });
 
   // make recognitions for litigators
