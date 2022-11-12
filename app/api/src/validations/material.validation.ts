@@ -9,7 +9,6 @@ export const createMaterial = {
     source_id: Joi.string().uuid().required(),
     type_id: Joi.string().uuid().required(),
     recognition_id: Joi.string().uuid().optional().allow('').allow(null),
-    author_id: Joi.string().uuid().required(),
     is_claimable: Joi.bool().default(true),
   }),
 };
@@ -55,7 +54,6 @@ export const updateMaterial = {
       source_id: Joi.string().uuid().optional(),
       type_id: Joi.string().uuid().optional(),
       recognition_id: Joi.string().uuid().optional().allow('').allow(null),
-      author_id: Joi.string().uuid().optional(),
       is_claimable: Joi.bool(),
     })
     .min(1),

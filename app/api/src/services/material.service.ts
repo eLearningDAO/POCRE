@@ -268,17 +268,34 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
 /**
  * Get a material by id
  * @param {string} id
+ * @param {object} options - optional config object
+ * @param {string|string[]} options.populate - the list of fields to populate
+ * @param {string} options.owner_id - returns the material that belongs to owner_id
  * @returns {Promise<IMaterialDoc|null>}
  */
-export const getMaterialById = async (id: string, populate?: string | string[]): Promise<IMaterialDoc | null> => {
+export const getMaterialById = async (
+  id: string,
+  options?: {
+    populate?: string | string[];
+    owner_id?: string;
+  }
+): Promise<IMaterialDoc | null> => {
   const material = await (async () => {
     try {
       const result = await db.query(
-        `SELECT * ${populator({
+        `SELECT 
+        * 
+        ${populator({
           tableAlias: 'm',
-          fields: typeof populate === 'string' ? [populate] : populate,
-        })} FROM material m WHERE material_id = $1;`,
-        [id]
+          fields: options ? (typeof options.populate === 'string' ? [options.populate] : options.populate) : [],
+        })} 
+        FROM 
+        material m 
+        WHERE 
+        material_id = $1
+        ${options && options.owner_id ? 'AND author_id = $2' : ''}
+        ;`,
+        [id, options && options.owner_id ? options.owner_id : false].filter(Boolean)
       );
       return result.rows[0];
     } catch {
@@ -295,10 +312,17 @@ export const getMaterialById = async (id: string, populate?: string | string[]):
  * Update material by id
  * @param {string} id
  * @param {Partial<IMaterial>} updateBody
+ * @param {object} options - optional config object
+ * @param {string} options.owner_id - updates the material that belongs to owner_id
  * @returns {Promise<IMaterialDoc|null>}
  */
-export const updateMaterialById = async (id: string, updateBody: Partial<IMaterial>): Promise<IMaterialDoc | null> => {
-  await getMaterialById(id); // check if material exists, throws error if not found
+export const updateMaterialById = async (
+  id: string,
+  updateBody: Partial<IMaterial>,
+  options?: { owner_id?: string }
+): Promise<IMaterialDoc | null> => {
+  // check if material exists, throws error if not found
+  await getMaterialById(id, { owner_id: options?.owner_id });
 
   // build sql conditions and values
   const conditions: string[] = [];
@@ -338,10 +362,13 @@ export const updateMaterialById = async (id: string, updateBody: Partial<IMateri
 /**
  * Delete material by id
  * @param {string} id
+ * @param {object} options - optional config object
+ * @param {string} options.owner_id - deletes the material that belongs to owner_id
  * @returns {Promise<IMaterialDoc|null>}
  */
-export const deleteMaterialById = async (id: string): Promise<IMaterialDoc | null> => {
-  const material = await getMaterialById(id); // check if material exists, throws error if not found
+export const deleteMaterialById = async (id: string, options?: { owner_id?: string }): Promise<IMaterialDoc | null> => {
+  // check if material exists, throws error if not found
+  const material = await getMaterialById(id, { owner_id: options?.owner_id });
 
   try {
     await db.query(`DELETE FROM material WHERE material_id = $1;`, [id]);
