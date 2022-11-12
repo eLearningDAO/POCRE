@@ -1,49 +1,26 @@
 import { Grid } from '@mui/material';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LatestNewsCard from 'components/cards/LatestNews';
 import TopAuthorCard from 'components/cards/TopAuthorCard';
-import shallow from 'zustand/shallow';
 import Loader from 'components/uicore/Loader';
 import './index.css';
 import Slider from 'components/slider';
 import TrendingCard from 'components/cards/TrendingCard';
 import useUserInfo from 'hooks/user/userInfo';
-import useStore from './store';
+import useHome from './useHome';
 
 function Home() {
   const navigate = useNavigate();
+
   const {
     trendingList,
     topAuthorList,
     materialList,
-    fetchTrending,
-    fetchAuthor,
-    fetchMaterial,
     isTrendingListFeched,
     isTopAuthorListFeched,
     isMaterialListFeched,
-  } = useStore(
-    (state) => ({
-      trendingList: state.trendingList,
-      topAuthorList: state.topAuthorList,
-      materialList: state.materialList,
-      fetchTrending: state.fetchTrending,
-      fetchAuthor: state.fetchAuthor,
-      fetchMaterial: state.fetchMaterial,
-      isTrendingListFeched: state.isTrendingListFeched,
-      isTopAuthorListFeched: state.isTopAuthorListFeched,
-      isMaterialListFeched: state.isMaterialListFeched,
-    }),
-    shallow,
-  );
+  } = useHome();
   const setUser = useUserInfo((s) => s.setUser);
-  useEffect(() => {
-    fetchAuthor();
-    fetchTrending();
-    fetchMaterial();
-  }, []);
-
   const handleAuthorCardClick = (userId) => {
     const authors = topAuthorList.filter((author) => author.user_id === userId);
     if (authors.length > 0) {
