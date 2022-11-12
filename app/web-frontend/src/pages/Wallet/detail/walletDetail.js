@@ -1,5 +1,6 @@
 /* eslint-disable indent */
 import React, { useEffect, useState } from 'react';
+import Loader from 'components/uicore/Loader';
 import profileImg from '../../../assets/svgs/profile.svg';
 import WalletDetailEdit from './walletDetailEdit';
 import WalletDisplay from './walletDisplay';
@@ -19,6 +20,7 @@ function WalletDetail({ displayOnlyId }) {
     userCollectionCount,
     uploadUserImage,
     userProfileImageUrl,
+    isImageUploaded,
   } = useWallet();
   const user = useUserInfo((state) => state.user);
   function handleUploadImage(event) {
@@ -68,9 +70,17 @@ function WalletDetail({ displayOnlyId }) {
           <img src={getProfileImage()} alt="alt" loading="lazy" />
           {isDetailEdit && (
             <div className="edit-camera">
+
               <label htmlFor="file-input">
-                <img src={CameraIcon} alt="camera" loading="lazy" />
-                <input />
+                {
+                  isImageUploaded ? <Loader />
+                    : (
+                      <>
+                        <img src={CameraIcon} alt="camera" loading="lazy" />
+                        <input />
+                      </>
+                    )
+                }
               </label>
               <input type="file" id="file-input" inputProps={{ accept: 'image/*' }} onChange={(file) => handleUploadImage(file)} />
             </div>

@@ -37,6 +37,7 @@ const useWallet = () => {
   const {
     mutate: uploadUserImage,
     data: userProfileImageUrl,
+    isLoading: isImageUploaded,
   } = useMutation({
     mutationFn: async (file) => {
       const formData = new FormData();
@@ -52,11 +53,27 @@ const useWallet = () => {
     },
   });
 
+  const {
+    mutate: updateUser,
+    isLoading: isUserDataUpdating,
+  } = useMutation({
+    mutationFn: async (userInfo) => {
+      const id = userInfo.user_Id;
+      // eslint-disable-next-line  no-param-reassign
+      delete userInfo.user_Id;
+      const userResponse = await User.update(id, userInfo);
+      return userResponse.results;
+    },
+  });
+
   return {
     userData,
     uploadUserImage,
     userCollectionCount,
     userProfileImageUrl,
+    isImageUploaded,
+    updateUser,
+    isUserDataUpdating,
     fetchUserDetialById: (id) => setUserId(id),
   };
 };

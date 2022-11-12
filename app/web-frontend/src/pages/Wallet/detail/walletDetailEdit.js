@@ -13,12 +13,12 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import { Address } from '@emurgo/cardano-serialization-lib-asmjs';
-import useWalletStore from 'hooks/userWalletService';
 import Loader from 'components/uicore/Loader';
 import Form from 'components/uicore/Form';
 import Input from 'components/uicore/Input';
 import useUserInfo from '../../../hooks/user/userInfo';
 import { walletValidation } from './validation';
+import useWallet from '../useWallet';
 // eslint-disable-next-line import/no-unresolved, unicorn/prefer-module
 const { Buffer } = require('buffer/');
 
@@ -29,22 +29,24 @@ function WalletDetailEdit({
   imageUrl,
 }) {
   const [ratingValue, setRatingValue] = useState(3);
-  const updateUser = useWalletStore((state) => state.updateUser);
-  const getUserById = useWalletStore((state) => state.getUserById);
-  const isUserDataUpdating = useWalletStore((state) => state.isUserDataUpdating);
+  const {
+    updateUser,
+    isUserDataUpdating,
+  } = useWallet();
   const { login, flag } = useUserInfo();
   const [wallets, setWallets] = useState([]);
   const [walletAddress, setWalletAddress] = useState('');
   const [selectKey, setSelectKey] = useState(0);
   const selectElement = useRef();
 
-  const handleSubmit = async (values) => {
-    const userData = { ...values, wallet_address: walletAddress, image_url: imageUrl };
-    await updateUser(
-      userData,
-      userId,
-    );
-    getUserById(userId);
+  const handleSubmit = (values) => {
+    const userData = {
+      ...values,
+      user_Id: userId,
+      wallet_address: walletAddress,
+      image_url: imageUrl,
+    };
+    updateUser(userData);
     setDetailEdit(false);
   };
   // eslint-disable-next-line unicorn/consistent-function-scoping
