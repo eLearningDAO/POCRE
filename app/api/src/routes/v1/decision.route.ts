@@ -40,17 +40,11 @@ export default router;
  *             type: object
  *             required:
  *               - decision_status
- *               - maker_id
  *             properties:
  *               decision_status:
  *                 type: bool
- *               maker_id:
- *                 type: string
- *                 format: uuid
- *                 description: must be a valid user id
  *             example:
  *                decision_status: true
- *                maker_id: c83a8680-e5db-4a79-8646-c6e3d010ec6b
  *     responses:
  *       "201":
  *         description: Created
@@ -121,13 +115,8 @@ export default router;
  *             properties:
  *               decision_status:
  *                 type: bool
- *               maker_id:
- *                 type: string
- *                 format: uuid
- *                 description: must be a valid user id
  *             example:
  *                decision_status: true
- *                maker_id: c83a8680-e5db-4a79-8646-c6e3d010ec6b
  *     responses:
  *       "200":
  *         description: OK
@@ -143,7 +132,7 @@ export default router;
  *                 - $ref: '#/components/responses/DecisionNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
  *             examples:
- *               decisionnotfound:
+ *               DecisionNotFound:
  *                 summary: DecisionNotFound
  *                 value:
  *                   code: 404

@@ -36,7 +36,7 @@ export const createDecision = async (decisionBody: IDecision): Promise<IDecision
  * @param {string} id
  * @param {object} options - optional config object
  * @param {string|string[]} options.populate - the list of fields to populate
- * @param {owner_id} options.populate - returns the decision that belongs to owner_id
+ * @param {string} options.owner_id - returns the decision that belongs to owner_id
  * @returns {Promise<IDecisionDoc|null>}
  */
 export const getDecisionById = async (
@@ -79,7 +79,7 @@ export const getDecisionById = async (
  * @param {string} id
  * @param {Partial<IDecision>} updateBody
  * @param {object} options - optional config object
- * @param {owner_id} options.populate - updates the decision that belongs to owner_id
+ * @param {string} options.owner_id - updates the decision that belongs to owner_id
  * @returns {Promise<IDecisionDoc|null>}
  */
 export const updateDecisionById = async (
@@ -122,7 +122,7 @@ export const updateDecisionById = async (
  * Delete decision by id
  * @param {string} id
  * @param {object} options - optional config object
- * @param {owner_id} options.populate - deletes the decision that belongs to owner_id
+ * @param {string} options.owner_id - deletes the decision that belongs to owner_id
  * @returns {Promise<IDecisionDoc|null>}
  */
 export const deleteDecisionById = async (id: string, options?: { owner_id?: string }): Promise<IDecisionDoc | null> => {
