@@ -37,6 +37,8 @@ export default router;
  *     summary: Create a creation
  *     description: Creates a new creation.
  *     tags: [Creation]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -296,6 +298,8 @@ export default router;
  *     summary: Update a creation by id
  *     description: Update creation details by its id
  *     tags: [Creation]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: creation_id
@@ -415,6 +419,8 @@ export default router;
  *     summary: Delete a creation by id
  *     description: Deletes a creation by its id
  *     tags: [Creation]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: creation_id

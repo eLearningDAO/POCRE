@@ -30,6 +30,8 @@ export default router;
  *     summary: Create a source
  *     description: Creates a new source.
  *     tags: [Source]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -92,6 +94,8 @@ export default router;
  *     summary: Update a source by id
  *     description: Update source details by its id
  *     tags: [Source]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: source_id
@@ -134,6 +138,8 @@ export default router;
  *     summary: Delete a source by id
  *     description: Deletes a source by its id
  *     tags: [Source]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: source_id

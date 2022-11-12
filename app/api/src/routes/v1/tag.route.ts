@@ -149,6 +149,8 @@ export default router;
  *     summary: Update a tag by id
  *     description: Update tag details by their id
  *     tags: [Tag]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: tag_id
@@ -186,6 +188,8 @@ export default router;
  *     summary: Delete a tag by id
  *     description: Deletes a tag by their id
  *     tags: [Tag]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: tag_id

@@ -33,6 +33,8 @@ export default router;
  *     summary: Create a litigation
  *     description: Creates a new litigation.
  *     tags: [Litigation]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -196,6 +198,8 @@ export default router;
  *     summary: Get all litigations
  *     description: Returns a list of litigations.
  *     tags: [Litigation]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: limit
@@ -308,6 +312,8 @@ export default router;
  *     summary: Get a litigation by id
  *     description: Get details about a litigation by its id
  *     tags: [Litigation]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: litigation_id
@@ -368,6 +374,8 @@ export default router;
  *     summary: Update a litigation by id
  *     description: Update litigation details by its id
  *     tags: [Litigation]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: litigation_id
@@ -463,6 +471,8 @@ export default router;
  *     summary: Delete a litigation by id
  *     description: Deletes a litigation by its id
  *     tags: [Litigation]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: litigation_id

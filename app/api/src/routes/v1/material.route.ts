@@ -33,6 +33,8 @@ export default router;
  *     summary: Create a material
  *     description: Creates a new material.
  *     tags: [Material]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -268,6 +270,8 @@ export default router;
  *     summary: Update a material by id
  *     description: Update user details by its id
  *     tags: [Material]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: material_id
@@ -387,6 +391,8 @@ export default router;
  *     summary: Delete a material by id
  *     description: Deletes a material by its id
  *     tags: [Material]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: material_id

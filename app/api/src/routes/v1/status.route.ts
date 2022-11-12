@@ -30,6 +30,8 @@ export default router;
  *     summary: Create a status
  *     description: Creates a new status.
  *     tags: [Status]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -88,6 +90,8 @@ export default router;
  *     summary: Update a status by id
  *     description: Update status details by its id
  *     tags: [Status]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: status_id
@@ -128,6 +132,8 @@ export default router;
  *     summary: Delete a status by id
  *     description: Deletes a status by its id
  *     tags: [Status]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: status_id

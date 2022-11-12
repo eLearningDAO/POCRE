@@ -32,6 +32,8 @@ export default router;
  *     summary: Create a material type
  *     description: Creates a new material type.
  *     tags: [MaterialType]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -90,6 +92,8 @@ export default router;
  *     summary: Update a material type by id
  *     description: Update material type details by its id
  *     tags: [MaterialType]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: type_id
@@ -128,6 +132,8 @@ export default router;
  *     summary: Delete a material type by id
  *     description: Deletes a material type by its id
  *     tags: [MaterialType]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: type_id

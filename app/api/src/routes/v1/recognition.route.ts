@@ -33,6 +33,8 @@ export default router;
  *     summary: Create a recognition
  *     description: Creates a new recognition.
  *     tags: [Recognition]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -223,6 +225,8 @@ export default router;
  *     summary: Update a recognition by id
  *     description: Update recognition details by its id
  *     tags: [Recognition]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: recognition_id
@@ -307,6 +311,8 @@ export default router;
  *     summary: Delete a recognition by id
  *     description: Deletes a recognition by its id
  *     tags: [Recognition]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: recognition_id

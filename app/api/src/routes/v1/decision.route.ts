@@ -30,6 +30,8 @@ export default router;
  *     summary: Create a decision
  *     description: Creates a new decision.
  *     tags: [Decision]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -101,6 +103,8 @@ export default router;
  *     summary: Update a decision by id
  *     description: Update source details by its id
  *     tags: [Decision]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: decision_id
@@ -156,6 +160,8 @@ export default router;
  *     summary: Delete a decision by id
  *     description: Deletes a decision by its id
  *     tags: [Decision]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: decision_id
