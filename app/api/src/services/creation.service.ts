@@ -351,17 +351,34 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
 /**
  * Get creation by id
  * @param {string} id
+ * @param {object} options - optional config object
+ * @param {string|string[]} options.populate - the list of fields to populate
+ * @param {string} options.owner_id - returns the creation that belongs to owner_id
  * @returns {Promise<ICreationDoc|null>}
  */
-export const getCreationById = async (id: string, populate?: string | string[]): Promise<ICreationDoc | null> => {
+export const getCreationById = async (
+  id: string,
+  options?: {
+    populate?: string | string[];
+    owner_id?: string;
+  }
+): Promise<ICreationDoc | null> => {
   const creation = await (async () => {
     try {
       const result = await db.query(
-        `SELECT * ${populator({
+        `SELECT 
+        * 
+        ${populator({
           tableAlias: 'c',
-          fields: typeof populate === 'string' ? [populate] : populate,
-        })} FROM creation c WHERE creation_id = $1;`,
-        [id]
+          fields: options ? (typeof options.populate === 'string' ? [options.populate] : options.populate) : [],
+        })} 
+        FROM 
+        creation c 
+        WHERE 
+        creation_id = $1
+        ${options && options.owner_id ? 'AND author_id = $2' : ''}
+        ;`,
+        [id, options && options.owner_id ? options.owner_id : false].filter(Boolean)
       );
       return result.rows[0];
     } catch {
@@ -378,10 +395,17 @@ export const getCreationById = async (id: string, populate?: string | string[]):
  * Update creation by id
  * @param {string} id
  * @param {Partial<ICreation>} updateBody
+ * @param {object} options - optional config object
+ * @param {string} options.owner_id - updates the creation that belongs to owner_id
  * @returns {Promise<ICreationDoc|null>}
  */
-export const updateCreationById = async (id: string, updateBody: Partial<ICreation>): Promise<ICreationDoc | null> => {
-  await getCreationById(id); // check if creation exists, throws error if not found
+export const updateCreationById = async (
+  id: string,
+  updateBody: Partial<ICreation>,
+  options?: { owner_id?: string }
+): Promise<ICreationDoc | null> => {
+  // check if creation exists, throws error if not found
+  await getCreationById(id, { owner_id: options?.owner_id });
 
   // verify if material/s already exist for another creation, throw error if a material is found
   if (updateBody.materials && updateBody.materials.length > 0) {
@@ -423,10 +447,13 @@ export const updateCreationById = async (id: string, updateBody: Partial<ICreati
 /**
  * Delete creation by id
  * @param {string} id
+ * @param {object} options - optional config object
+ * @param {string} options.owner_id - deletes the creation that belongs to owner_id
  * @returns {Promise<ICreationDoc|null>}
  */
-export const deleteCreationById = async (id: string): Promise<ICreationDoc | null> => {
-  const creation = await getCreationById(id); // check if creation exists, throws error if not found
+export const deleteCreationById = async (id: string, options?: { owner_id?: string }): Promise<ICreationDoc | null> => {
+  // check if creation exists, throws error if not found
+  const creation = await getCreationById(id, { owner_id: options?.owner_id });
 
   try {
     await db.query(`DELETE FROM creation WHERE creation_id = $1;`, [id]);
