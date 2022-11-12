@@ -1,5 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { Material, User, Creation } from 'api/requests';
+import SliderImage1 from 'assets/images/slider-01.jpg';
+import SliderImage2 from 'assets/images/slider-02.jpg';
+import SliderImage3 from 'assets/images/slider-03.jpg';
+import SliderImage4 from 'assets/images/slider-04.jpg';
+import SliderImage5 from 'assets/images/slider-05.jpg';
 
 const useHome = () => {
   const {
@@ -46,6 +51,35 @@ const useHome = () => {
     },
     staleTime: 60_000, // cache for 60 seconds
   });
+  const {
+    data: sliderImages,
+    isLoading: isSliderImagesLoaded,
+  } = useQuery({
+    queryKey: ['homeSlider'],
+    queryFn: () => [
+      {
+        id: 1,
+        imageUrl: SliderImage1,
+      },
+      {
+        id: 2,
+        imageUrl: SliderImage2,
+      },
+      {
+        id: 3,
+        imageUrl: SliderImage3,
+      },
+      {
+        id: 4,
+        imageUrl: SliderImage4,
+      },
+      {
+        id: 5,
+        imageUrl: SliderImage5,
+      },
+    ],
+    staleTime: 60_000, // cache for 60 seconds
+  });
   return {
     materialList,
     isMaterialListFeched,
@@ -53,6 +87,8 @@ const useHome = () => {
     isTopAuthorListFeched,
     trendingList,
     isTrendingListFeched,
+    sliderImages,
+    isSliderImagesLoaded,
   };
 };
 export default useHome;

@@ -19,6 +19,7 @@ function Home() {
     isTrendingListFeched,
     isTopAuthorListFeched,
     isMaterialListFeched,
+    sliderImages,
   } = useHome();
   const setUser = useUserInfo((s) => s.setUser);
   const handleAuthorCardClick = (userId) => {
@@ -42,7 +43,7 @@ function Home() {
 
   return (
     <div className="container">
-      <Slider handleSlidClick={handleSlidClick} />
+      <Slider handleSlidClick={handleSlidClick} slideImageList={sliderImages} />
       <Grid container spacing={3}>
         <Grid item md={5} xs={12} sm={12} className="trending-container">
           <h4 className="home-title">Latest Co-Creations</h4>
