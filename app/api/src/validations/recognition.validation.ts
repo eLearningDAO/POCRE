@@ -3,7 +3,6 @@ import { recognitionDeepFields } from '../db/map';
 
 export const createRecognition = {
   body: Joi.object().keys({
-    recognition_by: Joi.string().uuid().required(),
     recognition_for: Joi.string().uuid().required(),
     recognition_description: Joi.string().optional().allow('').allow(null),
     status_id: Joi.string().uuid().required(),
@@ -45,7 +44,6 @@ export const updateRecognition = {
   }),
   body: Joi.object()
     .keys({
-      recognition_by: Joi.string().uuid().optional(),
       recognition_for: Joi.string().uuid().optional(),
       recognition_description: Joi.string().optional().allow('').allow(null),
       status_id: Joi.string().uuid().optional(),

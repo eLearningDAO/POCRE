@@ -127,17 +127,34 @@ export const queryRecognitions = async (options: IRecognitionQuery): Promise<IRe
 /**
  * Get recognition by id
  * @param {string} id
+ * @param {object} options - optional config object
+ * @param {string|string[]} options.populate - the list of fields to populate
+ * @param {string} options.owner_id - returns the recognition that belongs to owner_id
  * @returns {Promise<IRecognitionDoc|null>}
  */
-export const getRecognitionById = async (id: string, populate?: string | string[]): Promise<IRecognitionDoc | null> => {
+export const getRecognitionById = async (
+  id: string,
+  options?: {
+    populate?: string | string[];
+    owner_id?: string;
+  }
+): Promise<IRecognitionDoc | null> => {
   const recognition = await (async () => {
     try {
       const result = await db.query(
-        `SELECT * ${populator({
+        `SELECT 
+        * 
+        ${populator({
           tableAlias: 'r',
-          fields: typeof populate === 'string' ? [populate] : populate,
-        })} FROM recognition r WHERE recognition_id = $1;`,
-        [id]
+          fields: options ? (typeof options.populate === 'string' ? [options.populate] : options.populate) : [],
+        })} 
+        FROM 
+        recognition r 
+        WHERE 
+        recognition_id = $1
+        ${options && options.owner_id ? 'AND recognition_by = $2' : ''}
+        ;`,
+        [id, options && options.owner_id ? options.owner_id : false].filter(Boolean)
       );
       return result.rows[0];
     } catch {
@@ -154,13 +171,17 @@ export const getRecognitionById = async (id: string, populate?: string | string[
  * Update recognition by id
  * @param {string} id
  * @param {Partial<IRecognition>} updateBody
+ * @param {object} options - optional config object
+ * @param {string} options.owner_id - updates the recognition that belongs to owner_id
  * @returns {Promise<IRecognitionDoc|null>}
  */
 export const updateRecognitionById = async (
   id: string,
-  updateBody: Partial<IRecognition>
+  updateBody: Partial<IRecognition>,
+  options?: { owner_id?: string }
 ): Promise<IRecognitionDoc | null> => {
-  const foundRecognition = await getRecognitionById(id); // check if recognition exists, throws error if not found
+  // check if recognition exists, throws error if not found
+  const foundRecognition = await getRecognitionById(id, { owner_id: options?.owner_id });
 
   if (
     (updateBody.recognition_for &&
@@ -209,10 +230,16 @@ export const updateRecognitionById = async (
 /**
  * Delete recognition by id
  * @param {string} id
+ * @param {object} options - optional config object
+ * @param {string} options.owner_id - deletes the recognition that belongs to owner_id
  * @returns {Promise<IRecognitionDoc|null>}
  */
-export const deleteRecognitionById = async (id: string): Promise<IRecognitionDoc | null> => {
-  const recognition = await getRecognitionById(id); // check if recognition exists, throws error if not found
+export const deleteRecognitionById = async (
+  id: string,
+  options?: { owner_id?: string }
+): Promise<IRecognitionDoc | null> => {
+  // check if recognition exists, throws error if not found
+  const recognition = await getRecognitionById(id, { owner_id: options?.owner_id });
 
   try {
     await db.query(`DELETE FROM recognition WHERE recognition_id = $1;`, [id]);
