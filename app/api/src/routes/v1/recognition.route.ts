@@ -42,12 +42,9 @@ export default router;
  *           schema:
  *             type: object
  *             required:
- *               - recognition_by
  *               - recognition_for
  *               - status_id
  *             properties:
- *               recognition_by:
- *                 type: uuid
  *               recognition_for:
  *                 type: uuid
  *               recognition_description:
@@ -56,7 +53,6 @@ export default router;
  *               status_id:
  *                 type: uuid
  *             example:
- *                recognition_by: d5cef9e4-d497-45ea-bd68-609aba268886
  *                recognition_for: d5cef9e4-d497-45ea-bd68-609aba268887
  *                recognition_description: null
  *                status_id: 865b3cff-d24e-4ec7-8873-f9634c5f2245
@@ -107,8 +103,8 @@ export default router;
  *         $ref: '#/components/responses/InternalServerError'
  *
  *   get:
- *     summary: Get all reconitions
- *     description: Returns a list of reconitions.
+ *     summary: Get all recognitions
+ *     description: Returns a list of recognitions.
  *     tags: [Recognition]
  *     parameters:
  *       - in: query
@@ -117,7 +113,7 @@ export default router;
  *           type: integer
  *           minimum: 1
  *         default: 10
- *         description: Maximum number of reconitions
+ *         description: Maximum number of recognitions
  *       - in: query
  *         name: page
  *         schema:
@@ -186,7 +182,7 @@ export default router;
 
 /**
  * @swagger
- * /reconitions/{recognition_id}:
+ * /recognitions/{recognition_id}:
  *   get:
  *     summary: Get a recognition by id
  *     description: Get details about a recognition by its id
@@ -241,8 +237,6 @@ export default router;
  *           schema:
  *             type: object
  *             properties:
- *               recognition_by:
- *                 type: uuid
  *               recognition_for:
  *                 type: uuid
  *               recognition_description:
@@ -251,7 +245,6 @@ export default router;
  *               status_id:
  *                 type: uuid
  *             example:
- *                recognition_by: d5cef9e4-d497-45ea-bd68-609aba268886
  *                recognition_for: d5cef9e4-d497-45ea-bd68-609aba268887
  *                recognition_description: null
  *                status_id: 865b3cff-d24e-4ec7-8873-f9634c5f2245
