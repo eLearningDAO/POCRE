@@ -51,35 +51,29 @@ const useHome = () => {
     },
     staleTime: 60_000, // cache for 60 seconds
   });
-  const {
-    data: sliderImages,
-    isLoading: isSliderImagesLoaded,
-  } = useQuery({
-    queryKey: ['homeSlider'],
-    queryFn: () => [
-      {
-        id: 1,
-        imageUrl: SliderImage1,
-      },
-      {
-        id: 2,
-        imageUrl: SliderImage2,
-      },
-      {
-        id: 3,
-        imageUrl: SliderImage3,
-      },
-      {
-        id: 4,
-        imageUrl: SliderImage4,
-      },
-      {
-        id: 5,
-        imageUrl: SliderImage5,
-      },
-    ],
-    staleTime: 60_000, // cache for 60 seconds
-  });
+  const sliderImages = [
+    {
+      id: 1,
+      imageUrl: SliderImage1,
+    },
+    {
+      id: 2,
+      imageUrl: SliderImage2,
+    },
+    {
+      id: 3,
+      imageUrl: SliderImage3,
+    },
+    {
+      id: 4,
+      imageUrl: SliderImage4,
+    },
+    {
+      id: 5,
+      imageUrl: SliderImage5,
+    },
+  ];
+
   return {
     materialList,
     isMaterialListFetched,
@@ -88,7 +82,6 @@ const useHome = () => {
     trendingList,
     isTrendingListFetched,
     sliderImages,
-    isSliderImagesLoaded,
   };
 };
 export default useHome;
