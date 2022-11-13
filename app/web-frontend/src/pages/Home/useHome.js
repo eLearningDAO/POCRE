@@ -9,7 +9,7 @@ import SliderImage5 from 'assets/images/slider-05.jpg';
 const useHome = () => {
   const {
     data: trendingList,
-    isLoading: isTrendingListFeched,
+    isLoading: isTrendingListFetched,
   } = useQuery({
     queryKey: ['trendingCreations'],
     queryFn: async () => {
@@ -24,7 +24,7 @@ const useHome = () => {
   });
   const {
     data: topAuthorList,
-    isLoading: isTopAuthorListFeched,
+    isLoading: isTopAuthorListFetched,
   } = useQuery({
     queryKey: ['topAuthorCreations'],
     queryFn: async () => {
@@ -39,7 +39,7 @@ const useHome = () => {
   });
   const {
     data: materialList,
-    isLoading: isMaterialListFeched,
+    isLoading: isMaterialListFetched,
   } = useQuery({
     queryKey: ['trendingMaterial'],
     queryFn: async () => {
@@ -82,11 +82,11 @@ const useHome = () => {
   });
   return {
     materialList,
-    isMaterialListFeched,
+    isMaterialListFetched,
     topAuthorList,
-    isTopAuthorListFeched,
+    isTopAuthorListFetched,
     trendingList,
-    isTrendingListFeched,
+    isTrendingListFetched,
     sliderImages,
     isSliderImagesLoaded,
   };

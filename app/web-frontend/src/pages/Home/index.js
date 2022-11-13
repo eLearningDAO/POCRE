@@ -15,9 +15,9 @@ function Home() {
     trendingList,
     topAuthorList,
     materialList,
-    isTrendingListFeched,
-    isTopAuthorListFeched,
-    isMaterialListFeched,
+    isTrendingListFetched,
+    isTopAuthorListFetched,
+    isMaterialListFetched,
     sliderImages,
   } = useHome();
   const handleAuthorCardClick = (userId) => {
@@ -39,7 +39,7 @@ function Home() {
         <Grid item md={5} xs={12} sm={12} className="trending-container">
           <h4 className="home-title">Latest Co-Creations</h4>
           <div>
-            {isTrendingListFeched ? <Loader /> : trendingList
+            {isTrendingListFetched ? <Loader /> : trendingList
               && trendingList.map((trending) => (
                 <TrendingCard
                   mediaUrl={trending?.source?.site_url}
@@ -52,7 +52,7 @@ function Home() {
         <Grid item md={3} xs={12} sm={12} className="top-author-container">
           <h4 className="home-title">Top Authors</h4>
           <div>
-            {isTopAuthorListFeched ? <Loader /> : topAuthorList
+            {isTopAuthorListFetched ? <Loader /> : topAuthorList
               && topAuthorList.map((author) => (
                 <TopAuthorCard
                   author={author}
@@ -64,7 +64,7 @@ function Home() {
         <Grid item md={4} xs={12} sm={12} className="latest-material-container">
           <h4 className="home-title">Latest recognized materials</h4>
           <div>
-            {isMaterialListFeched ? <Loader /> : materialList
+            {isMaterialListFetched ? <Loader /> : materialList
               && materialList.map((material) => (
                 <LatestNewsCard
                   material={material}
