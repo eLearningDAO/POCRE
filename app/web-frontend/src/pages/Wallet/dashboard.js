@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import WalletDetail from './detail/walletDetail';
 import WalletCollections from './walletCollections';
 
-function UserWallet() {
+function Dashboard() {
   const { id } = useParams();
   return (
     <div className="wallet-container">
@@ -13,4 +13,4 @@ function UserWallet() {
   );
 }
 
-export default UserWallet;
+export default Dashboard;
