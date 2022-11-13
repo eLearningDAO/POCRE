@@ -16,7 +16,7 @@ function WalletDetail({ displayOnlyId }) {
   const [isDisplayOnly, setIsDisplayOnly] = useState(false);
   const {
     userData,
-    fetchUserDetialById,
+    fetchUserDetailsById,
     userCollectionCount,
     uploadUserImage,
     userProfileImageUrl,
@@ -30,13 +30,13 @@ function WalletDetail({ displayOnlyId }) {
   useEffect(() => {
     if (user && user.user_id) {
       userId = user.user_id;
-      fetchUserDetialById(userId);
+      fetchUserDetailsById(userId);
     }
   }, [user, displayOnlyId]);
 
   useEffect(() => {
     if (displayOnlyId) {
-      fetchUserDetialById(displayOnlyId);
+      fetchUserDetailsById(displayOnlyId);
       setIsDisplayOnly(true);
     }
   }, [displayOnlyId]);

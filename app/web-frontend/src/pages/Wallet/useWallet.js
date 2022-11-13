@@ -74,7 +74,7 @@ const useWallet = () => {
     isImageUploaded,
     updateUser,
     isUserDataUpdating,
-    fetchUserDetialById: (id) => setUserId(id),
+    fetchUserDetailsById: (id) => setUserId(id),
   };
 };
 
