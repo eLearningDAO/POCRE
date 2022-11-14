@@ -1,5 +1,4 @@
 import httpStatus from 'http-status';
-import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 import statusTypes from '../constants/statusTypes';
@@ -8,7 +7,7 @@ import { populator } from '../db/plugins/populator';
 interface ICreation {
   creation_title: string;
   creation_description?: string;
-  source_id: string;
+  creation_link: string;
   author_id: string;
   tags: string[];
   materials?: string[];
@@ -39,7 +38,7 @@ interface ICreationDoc {
   creation_id: string;
   creation_title: string;
   creation_description: string;
-  source_id: string;
+  creation_link: string;
   author_id: string;
   tags: string[];
   materials: string[];
@@ -125,7 +124,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
       (
         creation_title,
         creation_description,
-        source_id,
+        creation_link,
         author_id,
         tags,
         materials,
@@ -139,7 +138,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
       [
         creationBody.creation_title,
         creationBody.creation_description,
-        creationBody.source_id,
+        creationBody.creation_link,
         creationBody.author_id,
         creationBody.tags,
         creationBody.materials || [],
@@ -151,13 +150,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
     const creation = result.rows[0];
 
     return creation;
-  } catch (e: unknown) {
-    const err = e as DatabaseError;
-    if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('source_id'))
-        throw new ApiError(httpStatus.CONFLICT, `source already assigned to a creation`);
-    }
-
+  } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };
@@ -433,13 +426,7 @@ export const updateCreationById = async (
     );
     const creation = updateQry.rows[0];
     return creation;
-  } catch (e: unknown) {
-    const err = e as DatabaseError;
-    if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('source_id'))
-        throw new ApiError(httpStatus.CONFLICT, `source already assigned to a creation`);
-    }
-
+  } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };

@@ -47,7 +47,7 @@ export default router;
  *             type: object
  *             required:
  *               - creation_title
- *               - source_id
+ *               - creation_link
  *               - tags
  *               - creation_date
  *             properties:
@@ -56,9 +56,8 @@ export default router;
  *               creation_description:
  *                 type: string
  *                 description: can be null
- *               source_id:
+ *               creation_link:
  *                 type: string
- *                 format: uuid
  *               tags:
  *                 type: array
  *                 items:
@@ -79,7 +78,7 @@ export default router;
  *             example:
  *                creation_title: my first creation
  *                creation_description: an example creation
- *                source_id: d91f005d-2037-41b9-b706-0e70c651e4e2
+ *                creation_link: https://example.com
  *                tags: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
  *                materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
  *                creation_date: 2022-09-09T19:00:00.000Z
@@ -97,16 +96,10 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/SourceNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
  *                 - $ref: '#/components/responses/TagNotFound'
  *                 - $ref: '#/components/responses/MaterialNotFound'
  *             examples:
- *               SourceNotFound:
- *                 summary: source not found
- *                 value:
- *                   code: 404
- *                   message: source not found
  *               UserNotFound:
  *                 summary: user not found
  *                 value:
@@ -127,14 +120,8 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/SourceAlreadyAssignedToCreation'
  *                 - $ref: '#/components/responses/MaterialAlreadyAssignedToCreation'
  *             examples:
- *               SourceAlreadyAssignedToCreation:
- *                 summary: source already assigned to a creation
- *                 value:
- *                   code: 409
- *                   message: source already assigned to a creation
  *               MaterialAlreadyAssignedToCreation:
  *                 summary: material already assigned to a creation
  *                 value:
@@ -204,11 +191,9 @@ export default router;
  *           items:
  *             type: string
  *             enum:
- *               - source_id
  *               - author_id
  *               - tags
  *               - materials
- *               - materials.source_id
  *               - materials.type_id
  *               - materials.recognition_id
  *               - materials.recognition_id.recognition_by
@@ -265,11 +250,9 @@ export default router;
  *           items:
  *             type: string
  *             enum:
- *               - source_id
  *               - author_id
  *               - tags
  *               - materials
- *               - materials.source_id
  *               - materials.type_id
  *               - materials.recognition_id
  *               - materials.recognition_id.recognition_by
@@ -313,9 +296,8 @@ export default router;
  *               creation_description:
  *                 type: string
  *                 description: can be null
- *               source_id:
+ *               creation_link:
  *                 type: string
- *                 format: uuid
  *               tags:
  *                 type: array
  *                 items:
@@ -336,7 +318,7 @@ export default router;
  *             example:
  *                creation_title: my first creation
  *                creation_description: an example creation
- *                source_id: d91f005d-2037-41b9-b706-0e70c651e4e2
+ *                creation_link: https://example.com
  *                tags: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
  *                materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
  *                creation_date: 2022-09-09T19:00:00.000Z
@@ -355,7 +337,6 @@ export default router;
  *             schema:
  *               oneOf:
  *                 - $ref: '#/components/responses/CreationNotFound'
- *                 - $ref: '#/components/responses/SourceNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
  *                 - $ref: '#/components/responses/TagNotFound'
  *                 - $ref: '#/components/responses/MaterialNotFound'
@@ -365,11 +346,6 @@ export default router;
  *                 value:
  *                   code: 404
  *                   message: creation not found
- *               SourceNotFound:
- *                 summary: source not found
- *                 value:
- *                   code: 404
- *                   message: source not found
  *               UserNotFound:
  *                 summary: user not found
  *                 value:
@@ -390,14 +366,8 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/SourceAlreadyAssignedToCreation'
  *                 - $ref: '#/components/responses/MaterialAlreadyAssignedToCreation'
  *             examples:
- *               SourceAlreadyAssignedToCreation:
- *                 summary: source already assigned to a creation
- *                 value:
- *                   code: 409
- *                   message: source already assigned to a creation
  *               MaterialAlreadyAssignedToCreation:
  *                 summary: material already assigned to a creation
  *                 value:

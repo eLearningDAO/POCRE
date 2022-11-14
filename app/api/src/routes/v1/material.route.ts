@@ -43,7 +43,7 @@ export default router;
  *             type: object
  *             required:
  *               - material_title
- *               - source_id
+ *               - material_link
  *               - type_id
  *             properties:
  *               material_title:
@@ -54,9 +54,6 @@ export default router;
  *               material_link:
  *                 type: string
  *                 description: can be null
- *               source_id:
- *                 type: string
- *                 format: uuid
  *               type_id:
  *                 type: string
  *                 format: uuid
@@ -70,7 +67,6 @@ export default router;
  *                material_title: plastic
  *                material_description: dangerous
  *                material_link: https://example.com
- *                source_id: 12ed7a55-a1ba-4895-83e9-7aa615247390
  *                type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
  *                recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
  *                is_claimable: true
@@ -86,16 +82,10 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/SourceNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
  *                 - $ref: '#/components/responses/MaterialTypeNotFound'
  *                 - $ref: '#/components/responses/RecognitionNotFound'
  *             examples:
- *               SourceNotFound:
- *                 summary: source not found
- *                 value:
- *                   code: 404
- *                   message: source not found
  *               UserNotFound:
  *                 summary: user not found
  *                 value:
@@ -116,15 +106,9 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/SourceAlreadyAssignedToMaterial'
  *                 - $ref: '#/components/responses/MaterialTypeAlreadyAssignedToMaterial'
  *                 - $ref: '#/components/responses/RecognitionAlreadyAssignedToMaterial'
  *             examples:
- *               SourceAlreadyAssignedToMaterial:
- *                 summary: source already assigned to a material
- *                 value:
- *                   code: 409
- *                   message: source already assigned to a material
  *               MaterialTypeAlreadyAssignedToMaterial:
  *                 summary: material type already assigned to a material
  *                 value:
@@ -184,7 +168,6 @@ export default router;
  *           items:
  *             type: string
  *             enum:
- *               - source_id
  *               - type_id
  *               - recognition_id
  *               - recognition_id.recognition_by
@@ -241,7 +224,6 @@ export default router;
  *           items:
  *             type: string
  *             enum:
- *               - source_id
  *               - type_id
  *               - recognition_id
  *               - recognition_id.recognition_by
@@ -288,9 +270,6 @@ export default router;
  *               material_link:
  *                 type: string
  *                 description: can be null
- *               source_id:
- *                 type: string
- *                 format: uuid
  *               type_id:
  *                 type: string
  *                 format: uuid
@@ -304,7 +283,6 @@ export default router;
  *                material_title: plastic
  *                material_description: dangerous
  *                material_link: https://example.com
- *                source_id: 12ed7a55-a1ba-4895-83e9-7aa615247390
  *                type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
  *                recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
  *                is_claimable: false
@@ -321,7 +299,6 @@ export default router;
  *             schema:
  *               oneOf:
  *                 - $ref: '#/components/responses/MaterialNotFound'
- *                 - $ref: '#/components/responses/SourceNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
  *                 - $ref: '#/components/responses/MaterialTypeNotFound'
  *                 - $ref: '#/components/responses/RecognitionNotFound'
@@ -331,11 +308,6 @@ export default router;
  *                 value:
  *                   code: 404
  *                   message: material not found
- *               SourceNotFound:
- *                 summary: source not found
- *                 value:
- *                   code: 404
- *                   message: source not found
  *               UserNotFound:
  *                 summary: user not found
  *                 value:
@@ -356,15 +328,9 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/SourceAlreadyAssignedToMaterial'
  *                 - $ref: '#/components/responses/MaterialTypeAlreadyAssignedToMaterial'
  *                 - $ref: '#/components/responses/RecognitionAlreadyAssignedToMaterial'
  *             examples:
- *               SourceAlreadyAssignedToMaterial:
- *                 summary: source already assigned to a material
- *                 value:
- *                   code: 409
- *                   message: source already assigned to a material
  *               MaterialTypeAlreadyAssignedToMaterial:
  *                 summary: material type already assigned to a material
  *                 value:

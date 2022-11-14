@@ -73,13 +73,6 @@ const init = async (): Promise<QueryResult<any>> => {
           ON DELETE CASCADE
     );
 
-    CREATE TABLE IF NOT EXISTS source (
-      source_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      source_title character varying NOT NULL,
-      source_description text,
-      site_url character varying
-    );
-
     CREATE TABLE IF NOT EXISTS tag (
       tag_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       tag_name character varying NOT NULL,
@@ -97,16 +90,11 @@ const init = async (): Promise<QueryResult<any>> => {
       material_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       material_title character varying NOT NULL,
       material_description text,
-      material_link character varying,
-      source_id UUID UNIQUE NOT NULL,
+      material_link character varying NOT NULL,
       type_id UUID UNIQUE NOT NULL,
       recognition_id UUID UNIQUE,
       author_id UUID NOT NULL,
       is_claimable bool default true,
-      CONSTRAINT source_id
-          FOREIGN KEY(source_id) 
-          REFERENCES source(source_id)
-          ON DELETE CASCADE,
       CONSTRAINT type_id
           FOREIGN KEY(type_id) 
           REFERENCES material_type(type_id)
@@ -124,17 +112,13 @@ const init = async (): Promise<QueryResult<any>> => {
       creation_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       creation_title character varying NOT NULL,
       creation_description text,
-      source_id UUID UNIQUE NOT NULL,
+      creation_link character varying NOT NULL,
       author_id UUID NOT NULL,
       tags UUID[],
       materials UUID[],
       creation_date DATE NOT NULL DEFAULT CURRENT_DATE,
       is_draft bool default false,
       is_claimable bool default true,
-      CONSTRAINT source_id
-          FOREIGN KEY(source_id) 
-          REFERENCES source(source_id)
-          ON DELETE CASCADE,
       CONSTRAINT author_id
           FOREIGN KEY(author_id) 
           REFERENCES users(user_id)

@@ -9,7 +9,6 @@ interface IMaterial {
   material_title: string;
   material_description?: string;
   material_link?: string;
-  source_id: string;
   type_id: string;
   recognition_id?: string;
   author_id: string;
@@ -36,7 +35,6 @@ interface IMaterialDoc {
   material_title: string;
   material_description: string;
   material_link: string;
-  source_id: string;
   type_id: string;
   recognition_id: string;
   author_id: string;
@@ -55,7 +53,6 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
         material_title,
         material_description,
         material_link,
-        source_id,
         type_id,
         recognition_id,
         author_id,
@@ -69,15 +66,13 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
         $4,
         $5,
         $6,
-        $7,
-        $8
+        $7
       ) 
       RETURNING *;`,
       [
         materialBody.material_title,
         materialBody.material_description,
         materialBody.material_link,
-        materialBody.source_id,
         materialBody.type_id,
         materialBody.recognition_id,
         materialBody.author_id,
@@ -89,8 +84,6 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
   } catch (e: unknown) {
     const err = e as DatabaseError;
     if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('source_id'))
-        throw new ApiError(httpStatus.CONFLICT, `source already assigned to a material`);
       if (err.message.includes('type_id')) throw new ApiError(httpStatus.CONFLICT, `type already assigned to a material`);
       if (err.message.includes('recognition_id'))
         throw new ApiError(httpStatus.CONFLICT, `recognition already assigned to a material`);
@@ -348,8 +341,6 @@ export const updateMaterialById = async (
   } catch (e: unknown) {
     const err = e as DatabaseError;
     if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('source_id'))
-        throw new ApiError(httpStatus.CONFLICT, `source already assigned to a material`);
       if (err.message.includes('type_id')) throw new ApiError(httpStatus.CONFLICT, `type already assigned to a material`);
       if (err.message.includes('recognition_id'))
         throw new ApiError(httpStatus.CONFLICT, `recognition already assigned to a material`);

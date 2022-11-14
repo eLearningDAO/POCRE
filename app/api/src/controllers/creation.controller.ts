@@ -1,7 +1,6 @@
 import config from '../config/config';
 import catchAsync from '../utils/catchAsync';
 import * as creationService from '../services/creation.service';
-import { getSourceById } from '../services/source.service';
 import { IUserDoc } from '../services/user.service';
 import { getTagById } from '../services/tag.service';
 import { getMaterialById } from '../services/material.service';
@@ -22,12 +21,10 @@ export const getCreationById = catchAsync(async (req, res): Promise<void> => {
 export const getCreationProofById = catchAsync(async (req, res): Promise<void | any> => {
   const creation = await creationService.getCreationById(req.params.creation_id, {
     populate: [
-      'source_id',
       'author_id',
       'tags',
       'materials',
       'materials.type_id',
-      'materials.source_id',
       'materials.author_id',
       'materials.recognition_id',
       'materials.recognition_id.recognition_by',
@@ -58,7 +55,6 @@ export const getCreationProofById = catchAsync(async (req, res): Promise<void | 
 
 export const createCreation = catchAsync(async (req, res): Promise<void> => {
   // check if reference docs exist
-  await getSourceById(req.body.source_id as string); // verify source, will throw an error if source not found
   await Promise.all(req.body.tags.map((id: string) => getTagById(id))); // verify tags, will throw an error if any tag is not found
   if (req.body.materials) await Promise.all(req.body.materials.map((id: string) => getMaterialById(id))); // verify materials, will throw an error if any material is not found
 
@@ -75,7 +71,6 @@ export const deleteCreationById = catchAsync(async (req, res): Promise<void> => 
 
 export const updateCreationById = catchAsync(async (req, res): Promise<void> => {
   // check if reference docs exist
-  if (req.body.source_id) await getSourceById(req.body.source_id as string); // verify source, will throw an error if source not found
   if (req.body.tags) await Promise.all(req.body.tags.map((id: string) => getTagById(id))); // verify tags, will throw an error if any tag is not found
   if (req.body.materials && req.body.materials.length > 0) {
     await Promise.all(req.body.materials.map((id: string) => getMaterialById(id))); // verify materials, will throw an error if any material is not found

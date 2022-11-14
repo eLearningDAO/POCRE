@@ -5,8 +5,7 @@ export const createMaterial = {
   body: Joi.object().keys({
     material_title: Joi.string().required(),
     material_description: Joi.string().optional().allow('').allow(null),
-    material_link: Joi.string().uri().optional().allow('').allow(null),
-    source_id: Joi.string().uuid().required(),
+    material_link: Joi.string().uri().required(),
     type_id: Joi.string().uuid().required(),
     recognition_id: Joi.string().uuid().optional().allow('').allow(null),
     is_claimable: Joi.bool().default(true),
@@ -50,8 +49,7 @@ export const updateMaterial = {
     .keys({
       material_title: Joi.string().optional(),
       material_description: Joi.string().optional().allow('').allow(null),
-      material_link: Joi.string().uri().optional().allow('').allow(null),
-      source_id: Joi.string().uuid().optional(),
+      material_link: Joi.string().uri().optional(),
       type_id: Joi.string().uuid().optional(),
       recognition_id: Joi.string().uuid().optional().allow('').allow(null),
       is_claimable: Joi.bool(),

@@ -244,11 +244,9 @@ export default router;
  *               - issuer_id
  *               - winner
  *               - creation_id
- *               - creation_id.source_id
  *               - creation_id.author_id
  *               - creation_id.tags
  *               - creation_id.materials
- *               - creation_id.materials.source_id
  *               - creation_id.materials.type_id
  *               - creation_id.materials.recognition_id
  *               - creation_id.materials.recognition_id.recognition_by
@@ -256,7 +254,6 @@ export default router;
  *               - creation_id.materials.recognition_id.status_id
  *               - creation_id.materials.author_id
  *               - material_id
- *               - material_id.source_id
  *               - material_id.type_id
  *               - material_id.recognition_id
  *               - material_id.recognition_id.recognition_by
@@ -325,11 +322,9 @@ export default router;
  *               - issuer_id
  *               - winner
  *               - creation_id
- *               - creation_id.source_id
  *               - creation_id.author_id
  *               - creation_id.tags
  *               - creation_id.materials
- *               - creation_id.materials.source_id
  *               - creation_id.materials.type_id
  *               - creation_id.materials.recognition_id
  *               - creation_id.materials.recognition_id.recognition_by
@@ -337,7 +332,6 @@ export default router;
  *               - creation_id.materials.recognition_id.status_id
  *               - creation_id.materials.author_id
  *               - material_id
- *               - material_id.source_id
  *               - material_id.type_id
  *               - material_id.recognition_id
  *               - material_id.recognition_id.recognition_by

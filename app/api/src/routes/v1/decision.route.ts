@@ -95,7 +95,7 @@ export default router;
  *
  *   patch:
  *     summary: Update a decision by id
- *     description: Update source details by its id
+ *     description: Update decision details by its id
  *     tags: [Decision]
  *     security:
  *       - bearerAuth: []
