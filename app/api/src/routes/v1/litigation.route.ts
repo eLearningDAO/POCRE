@@ -247,14 +247,12 @@ export default router;
  *               - creation_id.author_id
  *               - creation_id.tags
  *               - creation_id.materials
- *               - creation_id.materials.type_id
  *               - creation_id.materials.recognition_id
  *               - creation_id.materials.recognition_id.recognition_by
  *               - creation_id.materials.recognition_id.recognition_for
  *               - creation_id.materials.recognition_id.status_id
  *               - creation_id.materials.author_id
  *               - material_id
- *               - material_id.type_id
  *               - material_id.recognition_id
  *               - material_id.recognition_id.recognition_by
  *               - material_id.recognition_id.recognition_for
@@ -325,14 +323,12 @@ export default router;
  *               - creation_id.author_id
  *               - creation_id.tags
  *               - creation_id.materials
- *               - creation_id.materials.type_id
  *               - creation_id.materials.recognition_id
  *               - creation_id.materials.recognition_id.recognition_by
  *               - creation_id.materials.recognition_id.recognition_for
  *               - creation_id.materials.recognition_id.status_id
  *               - creation_id.materials.author_id
  *               - material_id
- *               - material_id.type_id
  *               - material_id.recognition_id
  *               - material_id.recognition_id.recognition_by
  *               - material_id.recognition_id.recognition_for

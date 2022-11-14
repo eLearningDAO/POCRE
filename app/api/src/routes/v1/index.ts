@@ -3,7 +3,6 @@ import userRoute from './user.route';
 import statusRoute from './status.route';
 import decisionRoute from './decision.route';
 import recognitionRoute from './recognition.route';
-import materialTypeRoute from './materialType.route';
 import materialRoute from './material.route';
 import tagRoute from './tag.route';
 import creationRoute from './creation.route';
@@ -30,10 +29,6 @@ const defaultRoutes = [
   {
     path: '/recognitions',
     route: recognitionRoute,
-  },
-  {
-    path: '/material-type',
-    route: materialTypeRoute,
   },
   {
     path: '/materials',

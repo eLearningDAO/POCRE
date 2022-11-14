@@ -22,6 +22,12 @@ const init = async (): Promise<QueryResult<any>> => {
 
   return pool.query(
     `
+    DO $$ BEGIN
+      CREATE TYPE material_type_enums AS ENUM ('image', 'video', 'audio', 'document');
+    EXCEPTION
+        WHEN duplicate_object THEN null;
+    END $$;
+
     CREATE TABLE IF NOT EXISTS users (
       user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       user_name character varying NOT NULL UNIQUE,
@@ -80,25 +86,15 @@ const init = async (): Promise<QueryResult<any>> => {
       tag_created DATE NOT NULL DEFAULT CURRENT_DATE
     );
 
-    CREATE TABLE IF NOT EXISTS material_type (
-      type_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      type_name character varying NOT NULL,
-      type_description text
-    );
-
     CREATE TABLE IF NOT EXISTS material (
       material_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       material_title character varying NOT NULL,
       material_description text,
       material_link character varying NOT NULL,
-      type_id UUID UNIQUE NOT NULL,
+      material_type material_type_enums NOT NULL,
       recognition_id UUID UNIQUE,
       author_id UUID NOT NULL,
       is_claimable bool default true,
-      CONSTRAINT type_id
-          FOREIGN KEY(type_id) 
-          REFERENCES material_type(type_id)
-          ON DELETE CASCADE,
       CONSTRAINT recognition_id
           FOREIGN KEY(recognition_id) 
           REFERENCES recognition(recognition_id),

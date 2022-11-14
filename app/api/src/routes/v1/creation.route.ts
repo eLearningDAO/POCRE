@@ -194,7 +194,6 @@ export default router;
  *               - author_id
  *               - tags
  *               - materials
- *               - materials.type_id
  *               - materials.recognition_id
  *               - materials.recognition_id.recognition_by
  *               - materials.recognition_id.recognition_for
@@ -253,7 +252,6 @@ export default router;
  *               - author_id
  *               - tags
  *               - materials
- *               - materials.type_id
  *               - materials.recognition_id
  *               - materials.recognition_id.recognition_by
  *               - materials.recognition_id.recognition_for

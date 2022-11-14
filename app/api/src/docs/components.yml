@@ -109,9 +109,8 @@ components:
           type: string
         material_link:
           type: string
-        type_id:
+        material_type:
           type: string
-          format: uuid
         recognition_id:
           type: string
           format: uuid
@@ -125,25 +124,10 @@ components:
         material_title: plastic
         material_description: dangerous
         material_link: https://example.com
-        type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
+        material_type: audio
         recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
         author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
         is_claimable: true
-
-    MaterialType:
-      type: object
-      properties:
-        type_id:
-          type: string
-          format: uuid
-        type_name:
-          type: string
-        type_description:
-          type: string
-      example:
-        type_id: 670be025-7c46-4890-8348-b5ad620ad9a7
-        type_name: plastic
-        type_description: dangerous to environment
 
     Tag:
       type: object
@@ -266,11 +250,7 @@ components:
             material_title: plastic
             material_description: dangerous
             material_link: https://example.com
-            type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
-            type: 
-              type_id: 670be025-7c46-4890-8348-b5ad620ad9a7
-              type_name: plastic
-              type_description: dangerous to environment
+            material_type: audio
             recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
             recognition: 
               recognition_id: 8d098580-1e4c-40c8-95f3-9c78de09a121
@@ -507,24 +487,6 @@ components:
           example:
             code: 409
             message: recognition already assigned to a litigation
-    MaterialTypeNotFound:
-      description: Material Type not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 404
-            message: material type not found
-    MaterialTypeAlreadyAssignedToMaterial:
-      description: Material type already assigned to a material
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 409
-            message: material type already assigned to a material
     MaterialNotFound:
       description: Material not found
       content:

@@ -44,7 +44,7 @@ export default router;
  *             required:
  *               - material_title
  *               - material_link
- *               - type_id
+ *               - material_type
  *             properties:
  *               material_title:
  *                 type: string
@@ -54,9 +54,9 @@ export default router;
  *               material_link:
  *                 type: string
  *                 description: can be null
- *               type_id:
+ *               material_type:
  *                 type: string
- *                 format: uuid
+ *                 enum: [image, video, audio, document]
  *               recognition_id:
  *                 type: string
  *                 format: uuid
@@ -67,7 +67,7 @@ export default router;
  *                material_title: plastic
  *                material_description: dangerous
  *                material_link: https://example.com
- *                type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
+ *                material_type: audio
  *                recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
  *                is_claimable: true
  *     responses:
@@ -83,7 +83,6 @@ export default router;
  *             schema:
  *               oneOf:
  *                 - $ref: '#/components/responses/UserNotFound'
- *                 - $ref: '#/components/responses/MaterialTypeNotFound'
  *                 - $ref: '#/components/responses/RecognitionNotFound'
  *             examples:
  *               UserNotFound:
@@ -91,11 +90,6 @@ export default router;
  *                 value:
  *                   code: 404
  *                   message: user not found
- *               MaterialTypeNotFound:
- *                 summary: material type not found
- *                 value:
- *                   code: 404
- *                   message: material type not found
  *               RecognitionNotFound:
  *                 summary: recognition not found
  *                 value:
@@ -106,14 +100,8 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/MaterialTypeAlreadyAssignedToMaterial'
  *                 - $ref: '#/components/responses/RecognitionAlreadyAssignedToMaterial'
  *             examples:
- *               MaterialTypeAlreadyAssignedToMaterial:
- *                 summary: material type already assigned to a material
- *                 value:
- *                   code: 409
- *                   message: material type already assigned to a material
  *               RecognitionAlreadyAssignedToMaterial:
  *                 summary: recognition already assigned to a material
  *                 value:
@@ -168,7 +156,6 @@ export default router;
  *           items:
  *             type: string
  *             enum:
- *               - type_id
  *               - recognition_id
  *               - recognition_id.recognition_by
  *               - recognition_id.recognition_for
@@ -224,7 +211,6 @@ export default router;
  *           items:
  *             type: string
  *             enum:
- *               - type_id
  *               - recognition_id
  *               - recognition_id.recognition_by
  *               - recognition_id.recognition_for
@@ -270,9 +256,9 @@ export default router;
  *               material_link:
  *                 type: string
  *                 description: can be null
- *               type_id:
+ *               material_type:
  *                 type: string
- *                 format: uuid
+ *                 enum: [image, video, audio, document]
  *               recognition_id:
  *                 type: string
  *                 format: uuid
@@ -283,7 +269,7 @@ export default router;
  *                material_title: plastic
  *                material_description: dangerous
  *                material_link: https://example.com
- *                type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
+ *                material_type: audio
  *                recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
  *                is_claimable: false
  *     responses:
@@ -300,7 +286,6 @@ export default router;
  *               oneOf:
  *                 - $ref: '#/components/responses/MaterialNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
- *                 - $ref: '#/components/responses/MaterialTypeNotFound'
  *                 - $ref: '#/components/responses/RecognitionNotFound'
  *             examples:
  *               MaterialNotFound:
@@ -313,11 +298,6 @@ export default router;
  *                 value:
  *                   code: 404
  *                   message: user not found
- *               MaterialTypeNotFound:
- *                 summary: material type not found
- *                 value:
- *                   code: 404
- *                   message: material type not found
  *               RecognitionNotFound:
  *                 summary: recognition not found
  *                 value:
@@ -328,14 +308,8 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/MaterialTypeAlreadyAssignedToMaterial'
  *                 - $ref: '#/components/responses/RecognitionAlreadyAssignedToMaterial'
  *             examples:
- *               MaterialTypeAlreadyAssignedToMaterial:
- *                 summary: material type already assigned to a material
- *                 value:
- *                   code: 409
- *                   message: material type already assigned to a material
  *               RecognitionAlreadyAssignedToMaterial:
  *                 summary: recognition already assigned to a material
  *                 value:

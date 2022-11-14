@@ -27,7 +27,7 @@ export const generateProofOfCreation = async (creation: any): Promise<string> =>
             let materialItemTemplateCopy = materialItemTemplate;
             materialItemTemplateCopy = materialItemTemplateCopy
               .replace('{{title}}', x.material_title)
-              .replace('{{file_type}}', x.type.type_name)
+              .replace('{{type}}', x.material_type)
               .replace('{{link}}', x.material_link)
               .replace('{{link}}', x.material_link)
               .replace('{{author}}', x.author.user_name);

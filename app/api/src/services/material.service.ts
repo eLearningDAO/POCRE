@@ -3,13 +3,17 @@ import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 import statusTypes from '../constants/statusTypes';
+import materialTypes from '../constants/materialTypes';
 import { populator } from '../db/plugins/populator';
+
+const types = Object.values(materialTypes);
+type IMaterialType = typeof types[number];
 
 interface IMaterial {
   material_title: string;
   material_description?: string;
   material_link?: string;
-  type_id: string;
+  material_type: IMaterialType;
   recognition_id?: string;
   author_id: string;
   is_claimable: boolean;
@@ -35,7 +39,7 @@ interface IMaterialDoc {
   material_title: string;
   material_description: string;
   material_link: string;
-  type_id: string;
+  material_type: IMaterialType;
   recognition_id: string;
   author_id: string;
   is_claimable: boolean;
@@ -53,7 +57,7 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
         material_title,
         material_description,
         material_link,
-        type_id,
+        material_type,
         recognition_id,
         author_id,
         is_claimable
@@ -73,7 +77,7 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
         materialBody.material_title,
         materialBody.material_description,
         materialBody.material_link,
-        materialBody.type_id,
+        materialBody.material_type,
         materialBody.recognition_id,
         materialBody.author_id,
         materialBody.is_claimable,
@@ -84,7 +88,6 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
   } catch (e: unknown) {
     const err = e as DatabaseError;
     if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('type_id')) throw new ApiError(httpStatus.CONFLICT, `type already assigned to a material`);
       if (err.message.includes('recognition_id'))
         throw new ApiError(httpStatus.CONFLICT, `recognition already assigned to a material`);
     }
@@ -95,7 +98,7 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
 
 /**
  * Query for materials
- * @returns {Promise<Array<IMaterial>}
+ * @returns {Promise<Array<IMaterial>>}
  */
 export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterialQueryResult> => {
   try {
@@ -341,7 +344,6 @@ export const updateMaterialById = async (
   } catch (e: unknown) {
     const err = e as DatabaseError;
     if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('type_id')) throw new ApiError(httpStatus.CONFLICT, `type already assigned to a material`);
       if (err.message.includes('recognition_id'))
         throw new ApiError(httpStatus.CONFLICT, `recognition already assigned to a material`);
     }

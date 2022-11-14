@@ -24,7 +24,6 @@ export const getCreationProofById = catchAsync(async (req, res): Promise<void | 
       'author_id',
       'tags',
       'materials',
-      'materials.type_id',
       'materials.author_id',
       'materials.recognition_id',
       'materials.recognition_id.recognition_by',
