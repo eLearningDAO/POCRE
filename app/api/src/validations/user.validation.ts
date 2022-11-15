@@ -40,7 +40,6 @@ export const updateUser = {
   body: Joi.object()
     .keys({
       user_name: Joi.string().optional(),
-      wallet_address: Joi.string().optional().allow('').allow(null),
       user_bio: Joi.string().optional().allow('').allow(null),
       phone: Joi.string().optional().allow('').allow(null),
       email_address: Joi.string().optional().allow('').allow(null),

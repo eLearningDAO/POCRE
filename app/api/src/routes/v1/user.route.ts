@@ -69,7 +69,7 @@ export default router;
  *                user_bio: ready to explore
  *                phone: '+92313555544'
  *                email_address: 'example@example.com'
- *                verified_id: 28y9gd27g2g237g80hnibhi 
+ *                verified_id: 28y9gd27g2g237g80hnibhi
  *                reputation_stars: 0
  *                image_url: https://cryptologos.cc/logos/cardano-ada-logo.png
  *     responses:
@@ -190,9 +190,6 @@ export default router;
  *             properties:
  *               user_name:
  *                 type: string
- *               wallet_address:
- *                 type: string
- *                 description: can be null
  *               user_bio:
  *                 type: string
  *                 description: can be null
@@ -206,17 +203,16 @@ export default router;
  *                 type: string
  *                 description: can be null
  *               reputation_stars:
- *                 type: integer  
+ *                 type: integer
  *               image_url:
  *                 type: string
- *                 description: can be null  
+ *                 description: can be null
  *             example:
  *                user_name: john
- *                wallet_address: 28y9gd27g2g237g80hnibhi
  *                user_bio: ready to explore
-  *                phone: '+92313555544'
+ *                phone: '+92313555544'
  *                email_address: 'example@example.com'
- *                verified_id: 28y9gd27g2g237g80hnibhi  
+ *                verified_id: 28y9gd27g2g237g80hnibhi
  *                reputation_stars: 0
  *                image_url: https://cryptologos.cc/logos/cardano-ada-logo.png
  *     responses:
