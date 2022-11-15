@@ -246,7 +246,7 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                   (SELECT 
                     material.material_id, 
                     material.recognition_id, 
-                    recognition.status_id 
+                    recognition.status
                     FROM 
                     material 
                     INNER JOIN 
@@ -255,12 +255,8 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                     material.recognition_id = recognition.recognition_id
                   ) 
                 as material_recognition 
-                INNER JOIN 
-                status 
-                ON 
-                status.status_id = material_recognition.status_id 
                 WHERE 
-                status.status_name ${
+                material_recognition.status ${
                   options.is_fully_assigned ? `= '${statusTypes.ACCEPTED}'` : `<> '${statusTypes.DECLINED}'`
                 } 
                 AND 
@@ -285,7 +281,7 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                     SELECT 
                     material.material_id, 
                     material.recognition_id, 
-                    recognition.status_id 
+                    recognition.status
                     FROM 
                     material 
                     INNER JOIN 
@@ -294,12 +290,8 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                   ) 
                   as 
                   material_recognition 
-                  INNER JOIN 
-                  status 
-                  ON 
-                  status.status_id = material_recognition.status_id 
                   WHERE 
-                  status.status_name ${
+                  material_recognition.status ${
                     options.is_fully_assigned ? `= '${statusTypes.ACCEPTED}'` : `<> '${statusTypes.DECLINED}'`
                   } 
                   AND 

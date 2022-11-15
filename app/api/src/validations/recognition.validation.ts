@@ -1,11 +1,16 @@
 import Joi from 'joi';
 import { recognitionDeepFields } from '../db/map';
+import statusTypes from '../constants/statusTypes';
 
 export const createRecognition = {
   body: Joi.object().keys({
     recognition_for: Joi.string().uuid().required(),
     recognition_description: Joi.string().optional().allow('').allow(null),
-    status_id: Joi.string().uuid().required(),
+    status: Joi.string()
+      .valid(...Object.values(statusTypes))
+      .required()
+      .default(statusTypes.PENDING),
+    status_updated: Joi.string().isoDate().optional().default(new Date().toISOString()),
   }),
 };
 
@@ -46,7 +51,10 @@ export const updateRecognition = {
     .keys({
       recognition_for: Joi.string().uuid().optional(),
       recognition_description: Joi.string().optional().allow('').allow(null),
-      status_id: Joi.string().uuid().optional(),
+      status: Joi.string()
+        .valid(...Object.values(statusTypes))
+        .optional(),
+      status_updated: Joi.string().isoDate().optional(),
     })
     .min(1),
 };

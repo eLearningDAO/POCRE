@@ -13,7 +13,6 @@ interface IPkMap {
   creation_id: string;
   material_id: string;
   recognition_id: string;
-  status_id: string;
   user_id: string;
   decision_id: string;
   tag_id: string;
@@ -35,7 +34,6 @@ interface ITableNameMap {
   creation_id: string;
   material_id: string;
   recognition_id: string;
-  status_id: string;
   user_id: string;
   decision_id: string;
   tag_id: string;
@@ -66,7 +64,6 @@ const pkMap: IPkMap = {
   creation_id: 'creation_id',
   material_id: 'material_id',
   recognition_id: 'recognition_id',
-  status_id: 'status_id',
   user_id: 'user_id',
   decision_id: 'decision_id',
   tag_id: 'tag_id',
@@ -97,7 +94,6 @@ const tableNameMap: ITableNameMap = {
   creation_id: 'creation',
   material_id: 'material',
   recognition_id: 'recognition',
-  status_id: 'status',
   user_id: 'users',
   decision_id: 'decision',
   litigation_id: 'litigation',
@@ -117,7 +113,7 @@ const decisionDeepFields: string[] = ['maker_id'];
 /**
  * List of deep fields that can be populated in recognition
  */
-const recognitionDeepFields: string[] = ['recognition_by', 'recognition_for', 'status_id'];
+const recognitionDeepFields: string[] = ['recognition_by', 'recognition_for'];
 
 /**
  * List of deep fields that can be populated in material

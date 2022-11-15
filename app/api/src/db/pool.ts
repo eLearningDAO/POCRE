@@ -28,6 +28,12 @@ const init = async (): Promise<QueryResult<any>> => {
         WHEN duplicate_object THEN null;
     END $$;
 
+    DO $$ BEGIN
+      CREATE TYPE status_enums AS ENUM ('pending', 'accepted', 'declined');
+    EXCEPTION
+        WHEN duplicate_object THEN null;
+    END $$;
+
     CREATE TABLE IF NOT EXISTS users (
       user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       user_name character varying NOT NULL UNIQUE,
@@ -39,13 +45,6 @@ const init = async (): Promise<QueryResult<any>> => {
       verified_id character varying,
       reputation_stars integer  DEFAULT 0,
       date_joined DATE NOT NULL DEFAULT CURRENT_DATE
-    );
-
-    CREATE TABLE IF NOT EXISTS status (
-      status_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      status_name character varying NOT NULL,
-      status_description text,
-      action_made DATE NOT NULL DEFAULT CURRENT_DATE
     );
 
     CREATE TABLE IF NOT EXISTS decision (
@@ -64,7 +63,8 @@ const init = async (): Promise<QueryResult<any>> => {
       recognition_for UUID NOT NULL,
       recognition_description text,
       recognition_issued DATE NOT NULL DEFAULT CURRENT_DATE,
-      status_id UUID UNIQUE NOT NULL,
+      status status_enums NOT NULL,
+      status_updated DATE NOT NULL DEFAULT CURRENT_DATE,
       CONSTRAINT recognition_by
           FOREIGN KEY(recognition_by) 
           REFERENCES users(user_id)
@@ -72,10 +72,6 @@ const init = async (): Promise<QueryResult<any>> => {
       CONSTRAINT recognition_for
           FOREIGN KEY(recognition_for) 
           REFERENCES users(user_id)
-          ON DELETE CASCADE,
-      CONSTRAINT status_id
-          FOREIGN KEY(status_id) 
-          REFERENCES status(status_id)
           ON DELETE CASCADE
     );
 

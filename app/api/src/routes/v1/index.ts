@@ -1,6 +1,5 @@
 import express from 'express';
 import userRoute from './user.route';
-import statusRoute from './status.route';
 import decisionRoute from './decision.route';
 import recognitionRoute from './recognition.route';
 import materialRoute from './material.route';
@@ -17,10 +16,6 @@ const defaultRoutes = [
   {
     path: '/users',
     route: userRoute,
-  },
-  {
-    path: '/status',
-    route: statusRoute,
   },
   {
     path: '/decision',

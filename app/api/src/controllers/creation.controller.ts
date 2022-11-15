@@ -28,7 +28,6 @@ export const getCreationProofById = catchAsync(async (req, res): Promise<void | 
       'materials.recognition_id',
       'materials.recognition_id.recognition_by',
       'materials.recognition_id.recognition_for',
-      'materials.recognition_id.status_id',
     ],
   });
 

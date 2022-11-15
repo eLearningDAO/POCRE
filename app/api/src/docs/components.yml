@@ -34,25 +34,6 @@ components:
         reputation_stars: 0
         date_joined: 2022-09-05T19:00:00.000Z
 
-    Status:
-      type: object
-      properties:
-        status_id:
-          type: string
-          format: uuid
-        status_name:
-          type: string
-        status_description:
-          type: string
-        action_made:
-          type: string
-          format: date-time
-      example:
-        status_id: 2cc874d2-9f7d-48a8-a416-ec19e9462da9
-        status_name: pending
-        status_description: recognition to john
-        action_made: 2022-09-05T19:00:00.000Z
-
     Decision:
       type: object
       properties:
@@ -86,16 +67,19 @@ components:
         recognition_issued:
           type: string
           format: date-time
-        status_id:
+        status:
           type: string
-          format: uuid
+        status_updated:
+          type: string
+          format: date-time
       example:
         recognition_id: 8d098580-1e4c-40c8-95f3-9c78de09a121
         recognition_by: d5cef9e4-d497-45ea-bd68-609aba268886
         recognition_for: d5cef9e4-d497-45ea-bd68-609aba268886
         recognition_description: recognition to john
         recognition_issued: 2022-09-07T19:00:00.000Z
-        status_id: 865b3cff-d24e-4ec7-8873-f9634c5f2245
+        status: pending
+        status_updated: 2022-09-07T19:00:00.000Z
 
     Material:
       type: object
@@ -276,12 +260,8 @@ components:
                 date_joined: 2022-09-05T19:00:00.000Z
               recognition_description: recognition to john
               recognition_issued: 2022-09-07T19:00:00.000Z
-              status_id: 865b3cff-d24e-4ec7-8873-f9634c5f2245
-              status: 
-                status_id: 2cc874d2-9f7d-48a8-a416-ec19e9462da9
-                status_name: pending
-                status_description: recognition to john
-                action_made: 2022-09-05T19:00:00.000Z
+              status: pending
+              status_updated: 2022-09-07T19:00:00.000Z
             author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
             author: 
               user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
@@ -424,24 +404,6 @@ components:
           example:
             code: 409
             message: user cannot recognize themselve
-    StatusNotFound:
-      description: Status not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 404
-            message: status not found
-    StatusAlreadyAssignedToRecognition:
-      description: Status already assigned to a recognition
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 409
-            message: status already assigned to a recognition
     DecisionNotFound:
       description: Decision not found
       content:

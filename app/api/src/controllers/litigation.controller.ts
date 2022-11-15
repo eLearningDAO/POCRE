@@ -6,9 +6,9 @@ import { getMaterialById, updateMaterialById } from '../services/material.servic
 import { createRecognition } from '../services/recognition.service';
 import { getDecisionById } from '../services/decision.service';
 import { getCreationById, updateCreationById } from '../services/creation.service';
-import { createStatus } from '../services/status.service';
 import config from '../config/config';
 import ApiError from '../utils/ApiError';
+import statusTypes from '../constants/statusTypes';
 
 export const queryLitigations = catchAsync(async (req, res): Promise<void> => {
   const litigation = await litigationService.queryLitigations(req.query as any);
@@ -78,16 +78,12 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
     // create recognitions for litigators
     return Promise.all(
       litigators.map(async (user) => {
-        // create new status
-        const status = await createStatus({
-          status_name: newLitigation.litigation_title,
-        });
-
         // create new recognition
         return createRecognition({
           recognition_by: newLitigation.issuer_id,
           recognition_for: user.user_id,
-          status_id: status.status_id,
+          status: statusTypes.PENDING,
+          status_updated: new Date().toISOString(),
         });
       })
     );

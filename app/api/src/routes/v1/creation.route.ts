@@ -197,7 +197,6 @@ export default router;
  *               - materials.recognition_id
  *               - materials.recognition_id.recognition_by
  *               - materials.recognition_id.recognition_for
- *               - materials.recognition_id.status_id
  *               - materials.author_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
@@ -255,7 +254,6 @@ export default router;
  *               - materials.recognition_id
  *               - materials.recognition_id.recognition_by
  *               - materials.recognition_id.recognition_for
- *               - materials.recognition_id.status_id
  *               - materials.author_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:

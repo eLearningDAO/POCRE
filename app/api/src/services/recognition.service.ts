@@ -1,14 +1,17 @@
 import httpStatus from 'http-status';
-import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 import { populator } from '../db/plugins/populator';
+import statusTypes from '../constants/statusTypes';
 
+const types = Object.values(statusTypes);
+type TStatusType = typeof types[number];
 interface IRecognition {
   recognition_by: string;
   recognition_for: string;
   recognition_description?: string;
-  status_id: string;
+  status: TStatusType;
+  status_updated: string;
 }
 interface IRecognitionQuery {
   limit: number;
@@ -32,7 +35,8 @@ interface IRecognitionDoc {
   recognition_for: string;
   recognition_description: string;
   recognition_issued: string;
-  status_id: string;
+  status: TStatusType;
+  status_updated: string;
 }
 
 /**
@@ -47,23 +51,34 @@ export const createRecognition = async (recognitionBody: IRecognition): Promise<
 
   try {
     const result = await db.query(
-      `INSERT INTO recognition (recognition_by,recognition_for,recognition_description,status_id) values ($1,$2,$3,$4) RETURNING *;`,
+      `
+      INSERT 
+      INTO 
+      recognition 
+      (
+        recognition_by,
+        recognition_for,
+        recognition_description,
+        status,
+        status_updated
+      ) 
+      values 
+      ($1,$2,$3,$4,$5) 
+      RETURNING 
+      *;
+      `,
       [
         recognitionBody.recognition_by,
         recognitionBody.recognition_for,
         recognitionBody.recognition_description,
-        recognitionBody.status_id,
+        recognitionBody.status,
+        recognitionBody.status_updated,
       ]
     );
     const recognition = result.rows[0];
     return recognition;
-  } catch (e: unknown) {
-    const err = e as DatabaseError;
-    if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('status_id'))
-        throw new ApiError(httpStatus.CONFLICT, `status already assigned to a recognition`);
-    }
-
+  } catch (e) {
+    console.log('e => ', e);
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };
@@ -216,13 +231,7 @@ export const updateRecognitionById = async (
     );
     const recognition = updateQry.rows[0];
     return recognition;
-  } catch (e: unknown) {
-    const err = e as DatabaseError;
-    if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('status_id'))
-        throw new ApiError(httpStatus.CONFLICT, `status already assigned to a recognition`);
-    }
-
+  } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };

@@ -159,7 +159,6 @@ export default router;
  *               - recognition_id
  *               - recognition_id.recognition_by
  *               - recognition_id.recognition_for
- *               - recognition_id.status_id
  *               - author_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
@@ -214,7 +213,6 @@ export default router;
  *               - recognition_id
  *               - recognition_id.recognition_by
  *               - recognition_id.recognition_for
- *               - recognition_id.status_id
  *               - author_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:

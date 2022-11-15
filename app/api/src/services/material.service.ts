@@ -7,13 +7,13 @@ import materialTypes from '../constants/materialTypes';
 import { populator } from '../db/plugins/populator';
 
 const types = Object.values(materialTypes);
-type IMaterialType = typeof types[number];
+type TMaterialType = typeof types[number];
 
 interface IMaterial {
   material_title: string;
   material_description?: string;
   material_link?: string;
-  material_type: IMaterialType;
+  material_type: TMaterialType;
   recognition_id?: string;
   author_id: string;
   is_claimable: boolean;
@@ -39,7 +39,7 @@ interface IMaterialDoc {
   material_title: string;
   material_description: string;
   material_link: string;
-  material_type: IMaterialType;
+  material_type: TMaterialType;
   recognition_id: string;
   author_id: string;
   is_claimable: boolean;
@@ -142,13 +142,9 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
                   SELECT 
                   recognition_id 
                   FROM 
-                  recognition 
-                  INNER JOIN 
-                  status 
-                  ON 
-                  recognition.status_id = status.status_id 
-                  WHERE 
-                  status.status_name = '${statusTypes.ACCEPTED}' 
+                  recognition
+                  WHERE
+                  recognition.status = '${statusTypes.ACCEPTED}' 
                   AND recognition_id = m.recognition_id
                 )`
                     : ''
@@ -190,13 +186,9 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
                   SELECT 
                   recognition_id 
                   FROM 
-                  recognition 
-                  INNER JOIN 
-                  status 
-                  ON 
-                  recognition.status_id = status.status_id 
-                  WHERE 
-                  status.status_name = '${statusTypes.ACCEPTED}' 
+                  recognition
+                  WHERE
+                  recognition.status = '${statusTypes.ACCEPTED}'
                   AND recognition_id = m.recognition_id
                 )`
                     : ''

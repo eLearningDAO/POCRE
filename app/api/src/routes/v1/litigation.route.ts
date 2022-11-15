@@ -250,18 +250,15 @@ export default router;
  *               - creation_id.materials.recognition_id
  *               - creation_id.materials.recognition_id.recognition_by
  *               - creation_id.materials.recognition_id.recognition_for
- *               - creation_id.materials.recognition_id.status_id
  *               - creation_id.materials.author_id
  *               - material_id
  *               - material_id.recognition_id
  *               - material_id.recognition_id.recognition_by
  *               - material_id.recognition_id.recognition_for
- *               - material_id.recognition_id.status_id
  *               - material_id.author_id
  *               - recognitions
  *               - recognitions.recognition_by
  *               - recognitions.recognition_for
- *               - recognitions.status_id
  *               - decisions
  *               - decisions.maker_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
@@ -326,18 +323,15 @@ export default router;
  *               - creation_id.materials.recognition_id
  *               - creation_id.materials.recognition_id.recognition_by
  *               - creation_id.materials.recognition_id.recognition_for
- *               - creation_id.materials.recognition_id.status_id
  *               - creation_id.materials.author_id
  *               - material_id
  *               - material_id.recognition_id
  *               - material_id.recognition_id.recognition_by
  *               - material_id.recognition_id.recognition_for
- *               - material_id.recognition_id.status_id
  *               - material_id.author_id
  *               - recognitions
  *               - recognitions.recognition_by
  *               - recognitions.recognition_for
- *               - recognitions.status_id
  *               - decisions
  *               - decisions.maker_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
