@@ -7,7 +7,7 @@ import nameIcon from 'assets/svgs/nameIcon.svg';
 import phoneIcon from 'assets/svgs/phoneIcon.svg';
 import emailicon from 'assets/svgs/emailIcon.svg';
 
-function WalletDisplay({ setDetailEdit, user }) {
+function WalletDisplay({ setDetailEdit, user, isDisplayOnly }) {
   return (
     <div className="wallet-detail-right-container">
       <div className="wallet-detail-right-container-left">
@@ -15,13 +15,18 @@ function WalletDisplay({ setDetailEdit, user }) {
           <span className="wallet-rating-title">Wallet Rating</span>
           <div className="wallet-mobile-screen-only">
             <span className="wallet-rating-title-mobile-screen-title">Wallet Rating</span>
-            <Button
-              className="wallet-edit-btn-mobile-screen"
-              startIcon={<EditIcon />}
-              onClick={() => setDetailEdit(true)}
-            >
-              Edit
-            </Button>
+            {
+              !isDisplayOnly ? (
+                <Button
+                  className="wallet-edit-btn-mobile-screen"
+                  startIcon={<EditIcon />}
+                  onClick={() => setDetailEdit(true)}
+                >
+                  Edit
+                </Button>
+              ) : null
+
+            }
           </div>
           <Rating
             name="simple-controlled"
@@ -39,13 +44,18 @@ function WalletDisplay({ setDetailEdit, user }) {
         </div>
       </div>
       <div className="wallet-detail-right-container-right">
-        <Button
-          className="wallet-edit-btn"
-          startIcon={<EditIcon />}
-          onClick={() => setDetailEdit(true)}
-        >
-          Edit
-        </Button>
+        {
+          !isDisplayOnly ? (
+            <Button
+              className="wallet-edit-btn"
+              startIcon={<EditIcon />}
+              onClick={() => setDetailEdit(true)}
+            >
+              Edit
+            </Button>
+          ) : null
+
+        }
         <div className="detail-info-container">
           <div className="info-name">
             <img src={nameIcon} alt="name" />
