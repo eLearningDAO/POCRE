@@ -2,6 +2,7 @@ import express from 'express';
 import validate from '../../middlewares/validate';
 import * as userValidation from '../../validations/user.validation';
 import * as userController from '../../controllers/user.controller';
+import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
@@ -13,8 +14,8 @@ router
 router
   .route('/:user_id')
   .get(validate(userValidation.getUser), userController.getUserById)
-  .patch(validate(userValidation.updateUser), userController.updateUserById)
-  .delete(validate(userValidation.deleteUser), userController.deleteUserById);
+  .patch(auth(), validate(userValidation.updateUser), userController.updateUserById)
+  .delete(auth(), validate(userValidation.deleteUser), userController.deleteUserById);
 
 export default router;
 
@@ -174,6 +175,8 @@ export default router;
  *     summary: Update a user by id
  *     description: Update user details by their id
  *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: user_id
@@ -231,6 +234,8 @@ export default router;
  *     summary: Delete a user by id
  *     description: Deletes a user by their id
  *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: user_id
