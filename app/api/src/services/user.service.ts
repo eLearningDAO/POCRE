@@ -94,8 +94,8 @@ export const queryUsers = async (options: IUserQuery): Promise<IUserQueryResult>
     // list of queries
     const queryModes = {
       default: {
-        query: `SELECT * FROM users ${search} OFFSET $1 LIMIT $2;`,
-        count: `SELECT COUNT(*) as total_results FROM users ${search};`,
+        query: `SELECT * FROM VIEW_users_public_fields ${search} OFFSET $1 LIMIT $2;`,
+        count: `SELECT COUNT(*) as total_results FROM VIEW_users_public_fields ${search};`,
       },
       topAuthors: {
         // users with most number of creations
@@ -111,7 +111,7 @@ export const queryUsers = async (options: IUserQuery): Promise<IUserQueryResult>
                 ) 
                 as total_creations
                 FROM 
-                users u 
+                VIEW_users_public_fields u 
                 ${search}
                 WHERE 
                 u.user_id = ANY(
@@ -142,7 +142,7 @@ export const queryUsers = async (options: IUserQuery): Promise<IUserQueryResult>
         count: `SELECT 
                 COUNT(*) as total_results 
                 FROM 
-                users u 
+                VIEW_users_public_fields u 
                 ${search}
                 WHERE 
                 u.user_id = ANY(
@@ -202,7 +202,18 @@ export const getUserByCriteria = async (
 ): Promise<IUserDoc | null> => {
   const user = await (async () => {
     try {
-      const result = await db.query(`SELECT * FROM users WHERE ${criteria} = $1 LIMIT 1;`, [equals]);
+      const result = await db.query(
+        `
+        SELECT 
+        * 
+        FROM 
+        ${criteria === 'wallet_address' ? 'users' : 'VIEW_users_public_fields'} 
+        WHERE 
+        ${criteria} = $1 
+        LIMIT 1
+        ;`,
+        [equals]
+      );
       return result.rows[0];
     } catch {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');

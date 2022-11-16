@@ -22,6 +22,10 @@ const init = async (): Promise<QueryResult<any>> => {
 
   return pool.query(
     `
+    /* ************************************ */
+    /* ENUMS */
+    /* ************************************ */
+
     DO $$ BEGIN
       CREATE TYPE material_type_enums AS ENUM ('image', 'video', 'audio', 'document');
     EXCEPTION
@@ -33,6 +37,10 @@ const init = async (): Promise<QueryResult<any>> => {
     EXCEPTION
         WHEN duplicate_object THEN null;
     END $$;
+
+    /* ************************************ */
+    /* TABLES */
+    /* ************************************ */
 
     CREATE TABLE IF NOT EXISTS users (
       user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -141,6 +149,29 @@ const init = async (): Promise<QueryResult<any>> => {
           REFERENCES users(user_id)
           ON DELETE CASCADE
     );
+
+    /* ************************************ */
+    /* VIEWS */
+    /* [NOTE]: Used by app to remove sensitive fields from api response */
+    /* ************************************ */
+    CREATE OR REPLACE VIEW 
+      VIEW_users_public_fields 
+    AS 
+      SELECT 
+        user_id,
+        user_name,
+        user_bio,
+        image_url,
+        email_address,
+        phone,
+        reputation_stars,
+        date_joined 
+    FROM 
+    users;
+
+    /* ************************************ */
+    /* PRODECURES */
+    /* ************************************ */
 
     CREATE OR REPLACE PROCEDURE remove_tag_references(tag_id UUID)
     LANGUAGE SQL

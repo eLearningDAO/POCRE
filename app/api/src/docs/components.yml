@@ -8,15 +8,11 @@ components:
           format: uuid
         user_name:
           type: string
-        wallet_address:
-          type: string
         user_bio:
           type: string
         phone:
           type: string
         email_addres:
-          type: string
-        verified_id:
           type: string
         reputation_stars:
           type: number
@@ -26,11 +22,9 @@ components:
       example:
         user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
         user_name: john
-        wallet_address: 28y9gd27g2g237g80hnibhi
         user_bio: ready to explore
         phone: '+92313555544'
         email_addres: 'example@example.com'
-        verified_id: 28y9gd27g2g237g80hnibhi
         reputation_stars: 0
         date_joined: 2022-09-05T19:00:00.000Z
 

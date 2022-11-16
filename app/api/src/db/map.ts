@@ -75,26 +75,26 @@ const pkMap: IPkMap = {
  */
 const tableNameMap: ITableNameMap = {
   // decision table
-  maker_id: 'users',
+  maker_id: 'VIEW_users_public_fields',
   // recognition table
-  recognition_by: 'users',
-  recognition_for: 'users',
+  recognition_by: 'VIEW_users_public_fields',
+  recognition_for: 'VIEW_users_public_fields',
   // material and creation table
-  author_id: 'users',
+  author_id: 'VIEW_users_public_fields',
   // creation table
   tags: 'tag',
   materials: 'material',
   // litigation table
-  assumed_author: 'users',
-  winner: 'users',
-  issuer_id: 'users',
+  assumed_author: 'VIEW_users_public_fields',
+  winner: 'VIEW_users_public_fields',
+  issuer_id: 'VIEW_users_public_fields',
   recognitions: 'recognition',
   decisions: 'decision',
   // common
   creation_id: 'creation',
   material_id: 'material',
   recognition_id: 'recognition',
-  user_id: 'users',
+  user_id: 'VIEW_users_public_fields',
   decision_id: 'decision',
   litigation_id: 'litigation',
   tag_id: 'tag',
