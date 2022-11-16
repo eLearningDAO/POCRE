@@ -1,5 +1,6 @@
 import catchAsync from '../utils/catchAsync';
 import * as userService from '../services/user.service';
+import { encrypt } from '../utils/crypt';
 
 export const queryUsers = catchAsync(async (req, res): Promise<void> => {
   const users = await userService.queryUsers(req.query as any);
@@ -12,7 +13,8 @@ export const getUserById = catchAsync(async (req, res): Promise<void> => {
 });
 
 export const createUser = catchAsync(async (req, res): Promise<void> => {
-  const newUser = await userService.createUser(req.body);
+  const hashedWalletAddress = encrypt(req.body.wallet_address);
+  const newUser = await userService.createUser({ ...req.body, wallet_address: hashedWalletAddress });
   res.send(newUser);
 });
 
