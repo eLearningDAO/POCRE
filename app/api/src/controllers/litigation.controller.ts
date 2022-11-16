@@ -11,13 +11,17 @@ import ApiError from '../utils/ApiError';
 import statusTypes from '../constants/statusTypes';
 
 export const queryLitigations = catchAsync(async (req, res): Promise<void> => {
-  const litigation = await litigationService.queryLitigations(req.query as any);
+  const litigation = await litigationService.queryLitigations({
+    ...(req.query as any),
+    participant_id: (req.user as IUserDoc).user_id,
+  });
   res.send(litigation);
 });
 
 export const getLitigationById = catchAsync(async (req, res): Promise<void> => {
   const litigation = await litigationService.getLitigationById(req.params.litigation_id, {
     populate: req.query.populate as string | string[],
+    participant_id: (req.user as IUserDoc).user_id,
   });
   res.send(litigation);
 });
@@ -152,7 +156,7 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
       winner,
       ownership_transferred: req.body.reconcilate || req.body.ownership_transferred,
     },
-    { owner_id: (req.user as IUserDoc).user_id }
+    { participant_id: (req.user as IUserDoc).user_id }
   );
   res.send(updatedLitigation);
 });

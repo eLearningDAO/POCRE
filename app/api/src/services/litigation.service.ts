@@ -29,6 +29,7 @@ interface ILitigationQuery {
   descend_fields: string[];
   judged_by: string;
   populate?: string | string[];
+  participant_id?: string;
 }
 interface ILitigationQueryResult {
   results: Array<ILitigationDoc>;
@@ -187,7 +188,7 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
 
 /**
  * Query for litigation
- * @returns {Promise<Array<ILitigation>}
+ * @returns {Promise<Array<ILitigation>>}
  */
 export const queryLitigations = async (options: ILitigationQuery): Promise<ILitigationQueryResult> => {
   try {
@@ -218,14 +219,56 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
           } ${descendOrder}`
         : '';
 
+    // validate participant
+    const validateParticipant =
+      options && options.participant_id
+        ? `
+        issuer_id = '${options.participant_id}' 
+        OR 
+        assumed_author = '${options.participant_id}'
+        OR
+        EXISTS
+        (
+          SELECT 
+          recognition_for 
+          FROM 
+          recognition 
+          WHERE 
+          recognition_for = '${options.participant_id}'
+          AND
+          recognition_id = ANY(l.recognitions)
+        )
+        `
+        : '';
+
     // list of queries
     const queryModes = {
       default: {
-        query: `SELECT * ${populator({
-          tableAlias: 'l',
-          fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
-        })} FROM litigation l ${search} ${order} OFFSET $1 LIMIT $2;`,
-        count: `SELECT COUNT(*) as total_results FROM litigation ${search};`,
+        query: `
+                SELECT 
+                * 
+                ${populator({
+                  tableAlias: 'l',
+                  fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+                })} 
+                FROM 
+                litigation l 
+                ${search} 
+                ${search && validateParticipant ? ' AND ' : validateParticipant ? ' WHERE ' : ''} 
+                ${validateParticipant}
+                ${order} 
+                OFFSET $1 
+                LIMIT $2;`,
+        count: `
+                SELECT 
+                COUNT(*) 
+                as 
+                total_results 
+                FROM 
+                litigation l
+                ${search}
+                ${search && validateParticipant ? ' AND ' : validateParticipant ? ' WHERE ' : ''}
+                ${validateParticipant};`,
       },
       judged: {
         query: `SELECT 
@@ -238,6 +281,8 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
                 litigation l 
                 ${search} 
                 ${search ? ' AND ' : ' WHERE '} 
+                ${validateParticipant}
+                ${validateParticipant && ' AND '} 
                 EXISTS 
                 (
                   SELECT 
@@ -259,6 +304,8 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
                 litigation l 
                 ${search} 
                 ${search ? ' AND ' : ' WHERE '} 
+                ${validateParticipant}
+                ${validateParticipant && ' AND '}  
                 EXISTS 
                 (
                   SELECT 
@@ -306,6 +353,7 @@ export const getLitigationById = async (
   options?: {
     populate?: string | string[];
     owner_id?: string;
+    participant_id?: string;
   }
 ): Promise<ILitigationDoc | null> => {
   const litigation = await (async () => {
@@ -322,8 +370,34 @@ export const getLitigationById = async (
         WHERE 
         litigation_id = $1
         ${options && options.owner_id ? 'AND issuer_id = $2' : ''}
+        ${
+          options && options.participant_id
+            ? `
+            AND 
+            issuer_id = '${!options.participant_id ? '$2' : '$3'}' 
+            OR 
+            assumed_author = '${!options.participant_id ? '$2' : '$3'}'
+            OR
+            EXISTS
+            (
+              SELECT 
+              recognition_for 
+              FROM 
+              recognition 
+              WHERE 
+              recognition_for = '${!options.participant_id ? '$2' : '$3'}'
+              AND
+              recognition_id = ANY(l.recognitions)
+            )
+            `
+            : ''
+        }
         ;`,
-        [id, options && options.owner_id ? options.owner_id : false].filter(Boolean)
+        [
+          id,
+          options && options.owner_id ? options.owner_id : false,
+          options && options.participant_id ? options.participant_id : false,
+        ].filter(Boolean)
       );
       return result.rows[0];
     } catch {
@@ -347,10 +421,10 @@ export const getLitigationById = async (
 export const updateLitigationById = async (
   id: string,
   updateBody: Partial<ILitigation>,
-  options?: { owner_id?: string }
+  options?: { participant_id?: string }
 ): Promise<ILitigationDoc | null> => {
   // check if litigation exists, throws error if not found
-  const foundLitigation = await getLitigationById(id, { owner_id: options?.owner_id });
+  const foundLitigation = await getLitigationById(id, { participant_id: options?.participant_id });
 
   // verify if material belongs to creation of this litigation, else throw error
   if (foundLitigation && updateBody.material_id) {
