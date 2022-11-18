@@ -374,9 +374,9 @@ export const getLitigationById = async (
           options && options.participant_id
             ? `
             AND 
-            issuer_id = '${!options.participant_id ? '$2' : '$3'}' 
+            issuer_id = ${!options.owner_id ? '$2' : '$3'}
             OR 
-            assumed_author = '${!options.participant_id ? '$2' : '$3'}'
+            assumed_author = ${!options.owner_id ? '$2' : '$3'}
             OR
             EXISTS
             (
@@ -385,7 +385,7 @@ export const getLitigationById = async (
               FROM 
               recognition 
               WHERE 
-              recognition_for = '${!options.participant_id ? '$2' : '$3'}'
+              recognition_for = ${!options.owner_id ? '$2' : '$3'}
               AND
               recognition_id = ANY(l.recognitions)
             )
