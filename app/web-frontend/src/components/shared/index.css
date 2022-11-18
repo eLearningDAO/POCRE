@@ -1,0 +1,10 @@
+.subject-title {
+  margin-left: 4px;
+}
+
+.share-preview-content {
+  display: flex;
+  flex-direction: row;
+  place-content: space-evenly;
+  margin-top: 28px;
+}
