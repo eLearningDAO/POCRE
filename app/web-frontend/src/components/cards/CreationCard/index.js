@@ -134,10 +134,6 @@ function CollectionCard({
     if (onDeleteClick) await onDeleteClick();
   };
 
-  const handleSocialMediaSharing = () => {
-    setShowSocialMediaSharePreview(true);
-  };
-
   return (
     <>
       {showDeleteConfirmation && (
@@ -357,7 +353,7 @@ function CollectionCard({
                 onEditClick={onEditClick}
               />
               <ShareButton
-                onClick={handleSocialMediaSharing}
+                onClick={() => setShowSocialMediaSharePreview(true)}
               />
             </Grid>
           </Grid>
