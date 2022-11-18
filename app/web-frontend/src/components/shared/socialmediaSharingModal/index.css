@@ -8,3 +8,29 @@
   place-content: space-evenly;
   margin-top: 28px;
 }
+
+.share-preview {
+  background-color: var(--color-white);
+  padding: 12px;
+  padding-bottom: 48px;
+  border-radius: 12px;
+  width: 50%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 550px;
+  overflow-y: hidden;
+}
+
+.facebook-network {
+  text-align-last: center;
+}
+
+.linkedin-network {
+  text-align-last: center;
+}
+
+.twitter-network {
+  text-align-last: center;
+}

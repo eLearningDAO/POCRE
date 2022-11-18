@@ -21,8 +21,7 @@ function SocialMediaModal({ shareUrl = '', subjectTitle = 'Creation', onClose })
       className="creation-preview-container"
       onClick={(event) => event.target === event.currentTarget && onClose()}
     >
-
-      <div className="creation-preview">
+      <div className="share-preview">
         <div className="creation-preview-header">
           <Typography className="heading h4">
             Sharing the
