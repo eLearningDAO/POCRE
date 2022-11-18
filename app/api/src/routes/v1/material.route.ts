@@ -61,6 +61,9 @@ export default router;
  *                 type: string
  *                 format: uuid
  *                 description: can be null
+ *               author_id:
+ *                 type: string
+ *                 format: uuid
  *               is_claimable:
  *                 type: bool
  *             example:
@@ -69,6 +72,7 @@ export default router;
  *                material_link: https://example.com
  *                material_type: audio
  *                recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
+ *                author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
  *                is_claimable: true
  *     responses:
  *       "201":
@@ -229,7 +233,7 @@ export default router;
  *
  *   patch:
  *     summary: Update a material by id
- *     description: Update user details by its id
+ *     description: Update material details by its id
  *     tags: [Material]
  *     security:
  *       - bearerAuth: []
