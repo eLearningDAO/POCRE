@@ -37,7 +37,7 @@ function SocialMediaModal({ shareUrl = '', subjectTitle = 'Creation', onClose })
           <div className="facebook-network">
             <FacebookShareButton
               url={shareUrl}
-              title="Facebook"
+              title="I'm happy to share this original work"
               className="facebook-network__share-button"
             >
               <FacebookIcon size={48} round />
@@ -48,7 +48,7 @@ function SocialMediaModal({ shareUrl = '', subjectTitle = 'Creation', onClose })
           <div className="linkedin-network">
             <LinkedinShareButton
               url={shareUrl}
-              quote="Linkedin"
+              title="I'm happy to share this original work"
               className="linkedin-network__share-button"
             >
               <LinkedinIcon size={48} round />
@@ -59,7 +59,7 @@ function SocialMediaModal({ shareUrl = '', subjectTitle = 'Creation', onClose })
           <div className="twitter-network">
             <TwitterShareButton
               url={shareUrl}
-              title="Twitter"
+              title="I'm happy to share this original work"
               className="twitter-network__share-button"
             >
               <TwitterIcon size={48} round />
