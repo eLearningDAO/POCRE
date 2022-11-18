@@ -1,6 +1,6 @@
 import catchAsync from '../utils/catchAsync';
 import * as materialService from '../services/material.service';
-import { IUserDoc } from '../services/user.service';
+import { IUserDoc, getUserById } from '../services/user.service';
 import { getRecognitionById } from '../services/recognition.service';
 
 export const queryMaterials = catchAsync(async (req, res): Promise<void> => {
@@ -18,10 +18,13 @@ export const getMaterialById = catchAsync(async (req, res): Promise<void> => {
 export const createMaterial = catchAsync(async (req, res): Promise<void> => {
   // check if reference docs exist
   if (req.body.recognition_id) await getRecognitionById(req.body.recognition_id as string); // verify recognition, will throw an error if recognition not found
+  if (req.body.author_id && req.body.author_id !== (req.user as IUserDoc).user_id) {
+    await getUserById(req.body.author_id as string); // verify author id (if present), will throw an error if not found
+  }
 
   const newMaterial = await materialService.createMaterial({
     ...req.body,
-    author_id: (req.user as IUserDoc).user_id,
+    author_id: req.body.author_id || (req.user as IUserDoc).user_id,
   });
   res.send(newMaterial);
 });

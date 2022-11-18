@@ -11,6 +11,7 @@ export const createMaterial = {
       .valid(...Object.values(materialTypes))
       .required(),
     recognition_id: Joi.string().uuid().optional().allow('').allow(null),
+    author_id: Joi.string().uuid().optional(),
     is_claimable: Joi.bool().default(true),
   }),
 };
