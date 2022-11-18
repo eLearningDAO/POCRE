@@ -7,8 +7,10 @@ import {
   Grid, Snackbar, Typography,
 } from '@mui/material';
 import DownloadIconSVG from 'assets/svgs/download.svg';
-import PreviewIcon from 'assets/svgs/preview.svg';
+import PreviewButton from 'components/cards/CreationCard/btns/PreviewButton';
+import ShareButton from 'components/cards/CreationCard/btns/ShareButton';
 import CreationPreview from 'components/previews/CreationPreview';
+import SocialMediaModal from 'components/shared/socialmediaSharingModal';
 import Loader from 'components/uicore/Loader';
 import moment from 'moment';
 import {
@@ -30,6 +32,8 @@ export default function CreationDetails() {
   const [mediaType, setMediaType] = useState(null);
   const [creationMediaType, setCreationMediaType] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [showSocialMediaSharePreview, setShowSocialMediaSharePreview] = useState(false);
+  const shareUrl = `${window.location.origin}/recognitions/${id}`;
 
   const {
     recognitionDetails,
@@ -63,42 +67,48 @@ export default function CreationDetails() {
       </h2>
     );
   }
-
   return (
     <>
       {showPreview && (
-      <CreationPreview
-        id={recognitionDetails?.creation?.creation_id}
-        title={recognitionDetails?.creation?.creation_title}
-        description={recognitionDetails?.creation?.creation_description}
-        link={recognitionDetails?.creation?.source?.site_url}
-        authorName={recognitionDetails?.creation?.author?.user_name}
-        date={moment(recognitionDetails?.creation?.creation_date).format('DD/MM/YYYY')}
-        materials={recognitionDetails?.creation?.materials?.map((x) => ({
-          title: x?.material_title,
-          fileType: x?.type?.type_name,
-          link: x?.material_link,
-          authorName: x?.author?.user_name,
-        }))}
-        onClose={() => setShowPreview(false)}
-      />
+        <CreationPreview
+          id={recognitionDetails?.creation?.creation_id}
+          title={recognitionDetails?.creation?.creation_title}
+          description={recognitionDetails?.creation?.creation_description}
+          link={recognitionDetails?.creation?.source?.site_url}
+          authorName={recognitionDetails?.creation?.author?.user_name}
+          date={moment(recognitionDetails?.creation?.creation_date).format('DD/MM/YYYY')}
+          materials={recognitionDetails?.creation?.materials?.map((x) => ({
+            title: x?.material_title,
+            fileType: x?.type?.type_name,
+            link: x?.material_link,
+            authorName: x?.author?.user_name,
+          }))}
+          onClose={() => setShowPreview(false)}
+        />
+      )}
+      {showSocialMediaSharePreview && (
+        <SocialMediaModal
+          subjectTitle="Recognitions"
+          onClose={() => setShowSocialMediaSharePreview(false)}
+          shareUrl={shareUrl}
+        />
       )}
       {isUpdatingRecognition && <Loader withBackdrop size="large" />}
 
       {(updatedRecognitionStatus.success || updatedRecognitionStatus.error) && (
-      <Snackbar
-        open
-        onClose={resetUpdateRecognitionStatus}
-      >
-        <Alert
+        <Snackbar
+          open
           onClose={resetUpdateRecognitionStatus}
-          icon={false}
-          className={updatedRecognitionStatus.success ? 'bg-green color-white' : 'bg-red color-white'}
-          sx={{ width: '100%' }}
         >
-          {updatedRecognitionStatus.success ? 'Status Accepted!' : updatedRecognitionStatus.error}
-        </Alert>
-      </Snackbar>
+          <Alert
+            onClose={resetUpdateRecognitionStatus}
+            icon={false}
+            className={updatedRecognitionStatus.success ? 'bg-green color-white' : 'bg-red color-white'}
+            sx={{ width: '100%' }}
+          >
+            {updatedRecognitionStatus.success ? 'Status Accepted!' : updatedRecognitionStatus.error}
+          </Alert>
+        </Snackbar>
       )}
       <Grid item xs={12}>
         <Grid item xs={12}>
@@ -127,36 +137,36 @@ export default function CreationDetails() {
             className="creation-media"
           >
             {mediaType === 'image' && (
-            <img alt="collection-card-hero" src={recognitionDetails?.material?.material_link} />
+              <img alt="collection-card-hero" src={recognitionDetails?.material?.material_link} />
             )}
             {mediaType === 'video' && (
-            <video
-              src={recognitionDetails?.material?.material_link}
-              preload="metadata"
-              controls
-            />
+              <video
+                src={recognitionDetails?.material?.material_link}
+                preload="metadata"
+                controls
+              />
             )}
             {mediaType === 'audio' && (
-            <audio src={recognitionDetails?.material?.material_link} controls />
+              <audio src={recognitionDetails?.material?.material_link} controls />
             )}
             {(mediaType === 'document' && recognitionDetails?.material?.material_link?.includes('.pdf')) && (
-            <embed src={recognitionDetails?.material?.material_link} />
+              <embed src={recognitionDetails?.material?.material_link} />
             )}
             {mediaType === 'document' && !recognitionDetails?.material?.material_link?.includes('.pdf') && (
-            <div className="unsupported-file-type">
-              <h4 className="heading h4">Are you okay to download this file?</h4>
-              <a href={mediaType}>{recognitionDetails?.material?.material_link}</a>
-              <div className="media-preview-content-options">
-                <Button
-                  className="btn btn-primary icon-btn"
-                // eslint-disable-next-line security/detect-non-literal-fs-filename
-                  onClick={() => window.open(recognitionDetails?.material?.material_link)}
-                >
-                  <img src={DownloadIconSVG} alt="" />
-                  Download
-                </Button>
+              <div className="unsupported-file-type">
+                <h4 className="heading h4">Are you okay to download this file?</h4>
+                <a href={mediaType}>{recognitionDetails?.material?.material_link}</a>
+                <div className="media-preview-content-options">
+                  <Button
+                    className="btn btn-primary icon-btn"
+                    // eslint-disable-next-line security/detect-non-literal-fs-filename
+                    onClick={() => window.open(recognitionDetails?.material?.material_link)}
+                  >
+                    <img src={DownloadIconSVG} alt="" />
+                    Download
+                  </Button>
+                </div>
               </div>
-            </div>
             )}
           </div>
         </Grid>
@@ -190,7 +200,7 @@ export default function CreationDetails() {
           marginLeft="auto"
         >
           {recognitionDetails?.status?.status_name === 'pending'
-          && user?.user_id === recognitionDetails?.recognition_for?.user_id
+            && user?.user_id === recognitionDetails?.recognition_for?.user_id
             ? (
               <>
                 <Typography className="litigationCloseTitle" variant="h6">
@@ -238,13 +248,14 @@ export default function CreationDetails() {
           <Typography className="litigationCloseTitle" variant="h6">
             Original Creation
           </Typography>
-          <Button
-            padding="0"
-            minWidth="0"
-            onClick={() => setShowPreview(true)}
-          >
-            <img src={PreviewIcon} height="36" width="36" alt="" />
-          </Button>
+          <div>
+            <ShareButton
+              onClick={() => setShowSocialMediaSharePreview(true)}
+            />
+            <PreviewButton
+              onClick={() => setShowPreview(true)}
+            />
+          </div>
         </Grid>
 
         <Grid
@@ -259,36 +270,36 @@ export default function CreationDetails() {
             className="creation-media"
           >
             {creationMediaType === 'image' && (
-            <img alt="collection-card-hero" src={recognitionDetails?.creation?.source?.site_url} />
+              <img alt="collection-card-hero" src={recognitionDetails?.creation?.source?.site_url} />
             )}
             {creationMediaType === 'video' && (
-            <video
-              src={recognitionDetails?.creation?.source?.site_url}
-              preload="metadata"
-              controls
-            />
+              <video
+                src={recognitionDetails?.creation?.source?.site_url}
+                preload="metadata"
+                controls
+              />
             )}
             {creationMediaType === 'audio' && (
-            <audio src={recognitionDetails?.creation?.source?.site_url} controls />
+              <audio src={recognitionDetails?.creation?.source?.site_url} controls />
             )}
             {(creationMediaType === 'document' && recognitionDetails?.creation?.source?.site_url?.includes('.pdf')) && (
-            <embed src={recognitionDetails?.creation?.source?.site_url} />
+              <embed src={recognitionDetails?.creation?.source?.site_url} />
             )}
             {creationMediaType === 'document' && !recognitionDetails?.creation?.source?.site_url?.includes('.pdf') && (
-            <div className="unsupported-file-type">
-              <h4 className="heading h4">Are you okay to download this file?</h4>
-              <a href={creationMediaType}>{recognitionDetails?.creation?.source?.site_url}</a>
-              <div className="media-preview-content-options">
-                <Button
-                  className="btn btn-primary icon-btn"
-                // eslint-disable-next-line security/detect-non-literal-fs-filename
-                  onClick={() => window.open(recognitionDetails?.creation?.source?.site_url)}
-                >
-                  <img src={DownloadIconSVG} alt="" />
-                  Download
-                </Button>
+              <div className="unsupported-file-type">
+                <h4 className="heading h4">Are you okay to download this file?</h4>
+                <a href={creationMediaType}>{recognitionDetails?.creation?.source?.site_url}</a>
+                <div className="media-preview-content-options">
+                  <Button
+                    className="btn btn-primary icon-btn"
+                    // eslint-disable-next-line security/detect-non-literal-fs-filename
+                    onClick={() => window.open(recognitionDetails?.creation?.source?.site_url)}
+                  >
+                    <img src={DownloadIconSVG} alt="" />
+                    Download
+                  </Button>
+                </div>
               </div>
-            </div>
             )}
           </div>
         </Grid>

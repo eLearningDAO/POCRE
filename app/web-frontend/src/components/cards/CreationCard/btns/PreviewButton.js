@@ -1,13 +1,13 @@
 import React from 'react';
 import Button from '@mui/material/Button';
-import ShareIcon from 'assets/images/share.png';
+import PreviewIcon from 'assets/svgs/preview.svg';
 
-function ShareButton({ onClick = () => {} }) {
+function PreviewButton({ onClick }) {
   return (
     <Button className="collection-card-action-btn" onClick={onClick}>
-      <img src={ShareIcon} alt="" />
+      <img src={PreviewIcon} alt="" />
     </Button>
   );
 }
 
-export default ShareButton;
+export default PreviewButton;
