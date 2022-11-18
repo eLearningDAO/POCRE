@@ -7,10 +7,10 @@ import {
   Grid, Snackbar, Typography,
 } from '@mui/material';
 import DownloadIconSVG from 'assets/svgs/download.svg';
-import PreviewIcon from 'assets/svgs/preview.svg';
+import PreviewButton from 'components/cards/CreationCard/btns/PreviewButton';
 import ShareButton from 'components/cards/CreationCard/btns/ShareButton';
 import CreationPreview from 'components/previews/CreationPreview';
-import SocialMediaModal from 'components/shared/SocialMediaModal';
+import SocialMediaModal from 'components/shared/socialmediaSharingModal';
 import Loader from 'components/uicore/Loader';
 import moment from 'moment';
 import {
@@ -254,13 +254,9 @@ export default function CreationDetails() {
             <ShareButton
               onClick={() => setShowSocialMediaSharePreview(true)}
             />
-            <Button
-              padding="0"
-              minWidth="0"
+            <PreviewButton
               onClick={() => setShowPreview(true)}
-            >
-              <img src={PreviewIcon} height="36" width="36" alt="" />
-            </Button>
+            />
           </div>
         </Grid>
 

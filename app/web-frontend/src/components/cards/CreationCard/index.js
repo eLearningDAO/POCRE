@@ -8,12 +8,12 @@ import { useEffect, useState } from 'react';
 import DownloadIconSVG from 'assets/svgs/download.svg';
 import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import CreationPreview from 'components/previews/CreationPreview';
-import SocialMediaModal from 'components/shared/SocialMediaModal';
-import DownloadButton from './btns/DownloadButton';
+import SocialMediaModal from 'components/shared/socialmediaSharingModal';
 import EditButton from './btns/EditButton';
 import RemoveButton from './btns/RemoveButton';
 import ShareButton from './btns/ShareButton';
 import './index.css';
+import PreviewButton from './btns/PreviewButton';
 
 function DeleteCofirmationDialog({ onClose, onConfirm }) {
   return (
@@ -345,7 +345,7 @@ function CollectionCard({
                 canDelete={canDelete}
                 handleDeleteConfirmation={handleDeleteConfirmation}
               />
-              <DownloadButton
+              <PreviewButton
                 onClick={() => setShowCreationDetailsPreview(true)}
               />
               <EditButton
