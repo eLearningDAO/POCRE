@@ -77,8 +77,7 @@ export const createRecognition = async (recognitionBody: IRecognition): Promise<
     );
     const recognition = result.rows[0];
     return recognition;
-  } catch (e) {
-    console.log('e => ', e);
+  } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };
@@ -152,6 +151,7 @@ export const getRecognitionById = async (
   options?: {
     populate?: string | string[];
     owner_id?: string;
+    participant_id?: string;
   }
 ): Promise<IRecognitionDoc | null> => {
   const recognition = await (async () => {
@@ -168,8 +168,22 @@ export const getRecognitionById = async (
         WHERE 
         recognition_id = $1
         ${options && options.owner_id ? 'AND recognition_by = $2' : ''}
+        ${
+          options && options.participant_id
+            ? `
+            AND 
+            recognition_by = ${!options.owner_id ? '$2' : '$3'}
+            OR 
+            recognition_for = ${!options.owner_id ? '$2' : '$3'}
+            `
+            : ''
+        }
         ;`,
-        [id, options && options.owner_id ? options.owner_id : false].filter(Boolean)
+        [
+          id,
+          options && options.owner_id ? options.owner_id : false,
+          options && options.participant_id ? options.participant_id : false,
+        ].filter(Boolean)
       );
       return result.rows[0];
     } catch {
@@ -193,10 +207,10 @@ export const getRecognitionById = async (
 export const updateRecognitionById = async (
   id: string,
   updateBody: Partial<IRecognition>,
-  options?: { owner_id?: string }
+  options?: { participant_id?: string }
 ): Promise<IRecognitionDoc | null> => {
   // check if recognition exists, throws error if not found
-  const foundRecognition = await getRecognitionById(id, { owner_id: options?.owner_id });
+  const foundRecognition = await getRecognitionById(id, { participant_id: options?.participant_id });
 
   if (
     (updateBody.recognition_for &&

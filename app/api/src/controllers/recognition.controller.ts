@@ -35,7 +35,7 @@ export const updateRecognitionById = catchAsync(async (req, res): Promise<void> 
   if (req.body.recognition_for) await getUserById(req.body.recognition_for); // verify user, will throw an error if user not found
 
   const recognition = await recognitionService.updateRecognitionById(req.params.recognition_id, req.body, {
-    owner_id: (req.user as IUserDoc).user_id,
+    participant_id: (req.user as IUserDoc).user_id,
   });
   res.send(recognition);
 });
