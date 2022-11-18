@@ -105,7 +105,7 @@ function CollectionCard({
   const [showMediaPreview, setShowMediaPreview] = useState(null);
   const [showCreationDetailsPreview, setShowCreationDetailsPreview] = useState(null);
   const [showSocialMediaSharePreview, setShowSocialMediaSharePreview] = useState(false);
-  const shareUrl = `https://pocre.netlify.app/creations/${creationId}`;
+  const shareUrl = `${window.location.origin}/creations/${creationId}`;
 
   useEffect(() => {
     const x = getUrlFileType(mediaUrl);

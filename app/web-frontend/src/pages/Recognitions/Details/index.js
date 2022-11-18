@@ -33,7 +33,7 @@ export default function CreationDetails() {
   const [creationMediaType, setCreationMediaType] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [showSocialMediaSharePreview, setShowSocialMediaSharePreview] = useState(false);
-  const shareUrl = `https://pocre.netlify.app/recognitions/${id}`;
+  const shareUrl = `${window.location.origin}/recognitions/${id}`;
 
   const {
     recognitionDetails,
@@ -67,8 +67,6 @@ export default function CreationDetails() {
       </h2>
     );
   }
-  // eslint-disable-next-line no-console
-  console.log('showSocialMediaSharePreview', showSocialMediaSharePreview);
   return (
     <>
       {showPreview && (
