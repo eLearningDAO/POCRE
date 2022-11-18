@@ -76,11 +76,11 @@ function Recognition() {
               description={x?.material?.material_description}
               recognizedByUserName={x?.recognition_by?.user_name}
               creationDate={moment(x?.recognition_issued).format('Do MMMM YYYY')}
-              acceptedOn={x?.status?.status_name !== 'accepted' ? null : moment(x?.status?.action_made).format('Do MMMM YYYY')}
-              declinedOn={x?.status?.status_name !== 'declined' ? null : moment(x?.status?.action_made).format('Do MMMM YYYY')}
-              isPending={x?.status?.status_name === 'pending'}
-              canAccept={x?.status?.status_name === 'pending'}
-              canDecline={x?.status?.status_name === 'pending'}
+              acceptedOn={x?.status !== 'accepted' ? null : moment(x?.status_updated).format('Do MMMM YYYY')}
+              declinedOn={x?.status !== 'declined' ? null : moment(x?.status_updated).format('Do MMMM YYYY')}
+              isPending={x?.status === 'pending'}
+              canAccept={x?.status === 'pending'}
+              canDecline={x?.status === 'pending'}
             />
             ),
           )}
@@ -116,9 +116,9 @@ function Recognition() {
                     recognizedByUserName={null}
                     awaitingRecognitionByUserName={x?.recognition_for?.user_name}
                     creationDate={moment(x?.recognition_issued).format('Do MMMM YYYY')}
-                    isPending={x?.status?.status_name === 'pending'}
-                    isAccepted={x?.status?.status_name === 'accepted'}
-                    isDeclined={x?.status?.status_name === 'declined'}
+                    isPending={x?.status === 'pending'}
+                    isAccepted={x?.status === 'accepted'}
+                    isDeclined={x?.status === 'declined'}
                     canAccept={false}
                     canDecline={false}
                   />

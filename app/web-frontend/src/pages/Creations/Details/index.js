@@ -44,7 +44,7 @@ export default function CreationDetails() {
   }, [id]);
 
   useEffect(() => {
-    const x = getUrlFileType(creation?.source?.site_url);
+    const x = getUrlFileType(creation?.creation_link);
     setMediaType(x);
     if (creation?.creation_id) generateQRCodeBase64(creation?.creation_id);
   }, [creation]);
@@ -81,30 +81,30 @@ export default function CreationDetails() {
           className="creation-media"
         >
           {mediaType === 'image' && (
-            <img alt="collection-card-hero" src={creation?.source?.site_url} />
+            <img alt="collection-card-hero" src={creation?.creation_link} />
           )}
           {mediaType === 'video' && (
             <video
-              src={creation?.source?.site_url}
+              src={creation?.creation_link}
               preload="metadata"
               controls
             />
           )}
           {mediaType === 'audio' && (
-            <audio src={creation?.source?.site_url} controls />
+            <audio src={creation?.creation_link} controls />
           )}
-          {(mediaType === 'document' && creation?.source?.site_url?.includes('.pdf')) && (
-            <embed src={creation?.source?.site_url} />
+          {(mediaType === 'document' && creation?.creation_link?.includes('.pdf')) && (
+            <embed src={creation?.creation_link} />
           )}
-          {mediaType === 'document' && !creation?.source?.site_url?.includes('.pdf') && (
+          {mediaType === 'document' && !creation?.creation_link?.includes('.pdf') && (
             <div className="unsupported-file-type">
               <h4 className="heading h4">Are you okay to download this file?</h4>
-              <a href={mediaType}>{creation?.source?.site_url}</a>
+              <a href={mediaType}>{creation?.creation_link}</a>
               <div className="media-preview-content-options">
                 <Button
                   className="btn btn-primary icon-btn"
                   // eslint-disable-next-line security/detect-non-literal-fs-filename
-                  onClick={() => window.open(creation?.source?.site_url)}
+                  onClick={() => window.open(creation?.creation_link)}
                 >
                   <img src={DownloadIconSVG} alt="" />
                   Download
@@ -189,7 +189,7 @@ export default function CreationDetails() {
                 username={x?.author?.user_name}
                 interactionBtns={false}
                 showReconcilateOptions={false}
-                recognitionStatus={x?.recognition?.status?.status_name || null}
+                recognitionStatus={x?.recognition?.status || null}
               />
             ))}
           </Grid>

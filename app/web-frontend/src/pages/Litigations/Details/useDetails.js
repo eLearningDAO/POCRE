@@ -26,7 +26,7 @@ const useDetails = () => {
     queryKey: [`litigation-${litigationId}`],
     queryFn: async () => {
       // get litigation details
-      const toPopulate = ['issuer_id', 'assumed_author', 'winner', 'decisions', 'recognitions', 'recognitions.recognition_for', 'recognitions.status_id', 'material_id.recognition_id.status_id', 'creation_id.source_id'];
+      const toPopulate = ['issuer_id', 'assumed_author', 'winner', 'decisions', 'recognitions', 'recognitions.recognition_for'];
       const litigationResponse = await Litigation.getById(litigationId, toPopulate.map((x) => `populate=${x}`).join('&'));
 
       // calculate litigation status
@@ -62,7 +62,7 @@ const useDetails = () => {
     enabled: !!litigationId,
   });
 
-  // update litigation vote
+  // cast litigation vote
   const {
     mutate: castLitigationVote,
     isError: isCastingVoteError,
@@ -108,7 +108,6 @@ const useDetails = () => {
         // cast a new vote
         const response = await Decision.create({
           decision_status: voteStatus === voteStatusTypes.AGREED,
-          maker_id: user.user_id,
         });
 
         return [...decisions, response];

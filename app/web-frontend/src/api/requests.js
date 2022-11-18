@@ -31,26 +31,20 @@ const REQUEST_TEMPLATE = (endpoint) => ({
   getById: async (id, queryParameters = '') => await request(`${API_BASE_URL}/${endpoint}/${id}?${queryParameters}`, {}, 'GET'),
 });
 
-const User = { ...(REQUEST_TEMPLATE('users')) };
-const Source = { ...(REQUEST_TEMPLATE('source')) };
-const MaterialType = { ...(REQUEST_TEMPLATE('material-type')) };
-const Material = { ...(REQUEST_TEMPLATE('materials')) };
-const Creation = { ...(REQUEST_TEMPLATE('creations')) };
-const Decision = { ...(REQUEST_TEMPLATE('decision')) };
-const Recognition = { ...(REQUEST_TEMPLATE('recognitions')) };
-const Litigation = { ...(REQUEST_TEMPLATE('litigations')) };
-const Status = { ...(REQUEST_TEMPLATE('status')) };
-const Tag = { ...(REQUEST_TEMPLATE('tags')) };
+const User = REQUEST_TEMPLATE('users');
+const Material = REQUEST_TEMPLATE('materials');
+const Creation = REQUEST_TEMPLATE('creations');
+const Decision = REQUEST_TEMPLATE('decision');
+const Recognition = REQUEST_TEMPLATE('recognitions');
+const Litigation = REQUEST_TEMPLATE('litigations');
+const Tag = REQUEST_TEMPLATE('tags');
 
 export {
   User,
-  Source,
-  MaterialType,
   Material,
   Creation,
   Decision,
   Recognition,
   Litigation,
-  Status,
   Tag,
 };
