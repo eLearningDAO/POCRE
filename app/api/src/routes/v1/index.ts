@@ -7,6 +7,7 @@ import tagRoute from './tag.route';
 import creationRoute from './creation.route';
 import litigationRoute from './litigation.route';
 import tokenRoute from './token.route';
+import authRoute from './auth.route';
 import docsRoute from './docs.route';
 import config from '../../config/config';
 
@@ -44,6 +45,10 @@ const defaultRoutes = [
   {
     path: '/token',
     route: tokenRoute,
+  },
+  {
+    path: '/auth',
+    route: authRoute,
   },
 ];
 
