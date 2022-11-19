@@ -335,6 +335,24 @@ components:
       example:
         token: eyJhbGciOiJIUzI1NiJ9.MUExelAxZVA1UUdlZmkyRE1QVGZUTDVTTG12N0RpdmZOYQ.Qet6M0nRv2VD7gQgUfi9ivWo6L8IKojzGWuloFBkxvE
 
+    Session:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        token: 
+          type: strin
+      example: 
+        user: 
+          user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
+          user_name: john
+          user_bio: ready to explore
+          phone: '+92313555544'
+          email_addres: 'example@example.com'
+          reputation_stars: 0
+          date_joined: 2022-09-05T19:00:00.000Z
+        token: eyJhbGciOiJIUzI1NiJ9.MUExelAxZVA1UUdlZmkyRE1QVGZUTDVTTG12N0RpdmZOYQ.Qet6M0nRv2VD7gQgUfi9ivWo6L8IKojzGWuloFBkxvE
+
     Error:
       type: object
       properties:
