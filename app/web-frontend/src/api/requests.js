@@ -1,19 +1,20 @@
 import { API_BASE_URL } from 'config';
+import authUser from 'utils/helpers/authUser';
 import errorMap from './errorMap';
 
 const request = async (url = '', data = {}, method = '') => {
   const response = await fetch(url, {
     method,
-    ...(method !== 'GET' && ({
-      ...(method !== 'DELETE' && {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+    headers: {
+      Authorization: `Bearer ${authUser.getJWTToken()}`, // send in all requests
+      ...(['POST', 'PATCH'].includes(method) && {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       }),
-    }))
-    ,
+    },
+    ...(['POST', 'PATCH'].includes(method) && {
+      body: JSON.stringify(data),
+    }),
   }).then((x) => x?.json());
 
   if (response?.code >= 400) {
@@ -38,6 +39,7 @@ const Decision = REQUEST_TEMPLATE('decision');
 const Recognition = REQUEST_TEMPLATE('recognitions');
 const Litigation = REQUEST_TEMPLATE('litigations');
 const Tag = REQUEST_TEMPLATE('tags');
+const Auth = { login: REQUEST_TEMPLATE('auth/login').create };
 
 export {
   User,
@@ -47,4 +49,5 @@ export {
   Recognition,
   Litigation,
   Tag,
+  Auth,
 };

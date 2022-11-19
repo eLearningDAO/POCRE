@@ -10,7 +10,7 @@ import LitigationCard from 'components/cards/LitigationCard';
 import authUser from 'utils/helpers/authUser';
 import useHome from './useHome';
 
-const user = authUser.get();
+const user = authUser.getUser();
 
 function Litigation() {
   // get userInfo from the globale state with help of zustand store hook !

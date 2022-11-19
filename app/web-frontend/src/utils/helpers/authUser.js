@@ -1,20 +1,33 @@
 import Cookies from 'js-cookie';
 
-const get = () => {
+const getUser = () => {
   const user = Cookies.get('authUser');
   return typeof user === 'string' ? JSON.parse(user) : user;
 };
 
-const set = (user, options = {}) => Cookies.set(
+const setUser = (user, options = {}) => Cookies.set(
   'authUser',
   JSON.stringify({ ...user }),
   options,
 );
 
-const remove = () => Cookies.remove('authUser');
+const removeUser = () => Cookies.remove('authUser');
+
+const getJWTToken = () => Cookies.get('jwttoken');
+
+const setJWTToken = (token, options = {}) => Cookies.set(
+  'jwttoken',
+  token,
+  options,
+);
+
+const removeJWTToken = () => Cookies.remove('jwttoken');
 
 export default {
-  get,
-  set,
-  remove,
+  getUser,
+  setUser,
+  removeUser,
+  setJWTToken,
+  getJWTToken,
+  removeJWTToken,
 };

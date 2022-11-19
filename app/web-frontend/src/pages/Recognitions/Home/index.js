@@ -6,7 +6,7 @@ import authUser from 'utils/helpers/authUser';
 import useRecognition from '../common/hooks/useRecognitions';
 import './index.css';
 
-const user = authUser.get();
+const user = authUser.getUser();
 
 function Recognition() {
   const [activeTab, setActiveTab] = useState('co-author-recognition');

@@ -3,7 +3,7 @@ import { Creation } from 'api/requests';
 import authUser from 'utils/helpers/authUser';
 
 // get auth user
-const user = authUser.get();
+const user = authUser.getUser();
 
 const useCreations = () => {
   const queryClient = useQueryClient();

@@ -4,7 +4,7 @@ import moment from 'moment';
 import { useState } from 'react';
 import authUser from 'utils/helpers/authUser';
 
-const user = authUser.get();
+const user = authUser.getUser();
 
 const voteStatusTypes = {
   AGREED: 'agreed',

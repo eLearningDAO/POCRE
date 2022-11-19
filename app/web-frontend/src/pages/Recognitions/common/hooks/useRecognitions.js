@@ -6,7 +6,7 @@ import { useState } from 'react';
 import authUser from 'utils/helpers/authUser';
 
 // get auth user
-const user = authUser.get();
+const user = authUser.getUser();
 
 const useRecognitions = () => {
   const queryClient = useQueryClient();

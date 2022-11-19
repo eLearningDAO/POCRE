@@ -14,7 +14,7 @@ import SaveIcon from 'assets/svgs/save.svg';
 import CreationPreview from 'components/previews/CreationPreview';
 
 // get auth user
-const user = authUser.get();
+const user = authUser.getUser();
 
 function dec2hex(dec) {
   return dec.toString(16).padStart(2, '0');

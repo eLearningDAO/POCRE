@@ -97,7 +97,7 @@ const sendRecognitions = async (
 }));
 
 // get auth user
-const user = authUser.get();
+const user = authUser.getUser();
 
 const useCreationForm = () => {
   const navigate = useNavigate();

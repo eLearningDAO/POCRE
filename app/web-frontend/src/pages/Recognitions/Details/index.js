@@ -22,7 +22,7 @@ import useRecognitions from '../common/hooks/useRecognitions';
 import './index.css';
 
 // get auth user
-const user = authUser.get();
+const user = authUser.getUser();
 
 export default function CreationDetails() {
   const { id } = useParams();
