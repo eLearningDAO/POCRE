@@ -1,8 +1,8 @@
 import httpStatus from 'http-status';
-import { DatabaseError, QueryResult } from 'pg';
-import ApiError from '../utils/ApiError';
-import * as db from '../db/pool';
+import { QueryResult } from 'pg';
 import { reputation } from '../constants/statusTypes';
+import * as db from '../db/pool';
+import ApiError from '../utils/ApiError';
 import { getStar } from '../utils/userStarCalculation';
 
 export interface IUser {
@@ -69,12 +69,7 @@ export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
     );
     const user = result.rows[0];
     return user;
-  } catch (e: unknown) {
-    const err = e as DatabaseError;
-    if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('user_name')) throw new ApiError(httpStatus.CONFLICT, `user_name is already taken`);
-    }
-
+  } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };
@@ -272,12 +267,7 @@ export const updateUserById = async (id: string, updateBody: Partial<IUser>): Pr
       [id, ...values]
     );
     return responseWithAuthorishipDuration(updateQry);
-  } catch (e: unknown) {
-    const err = e as DatabaseError;
-    if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('user_name')) throw new ApiError(httpStatus.CONFLICT, `user_name is already taken`);
-    }
-
+  } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };

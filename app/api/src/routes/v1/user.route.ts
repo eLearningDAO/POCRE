@@ -40,7 +40,7 @@ export default router;
  *           schema:
  *             type: object
  *             required:
- *               - user_name
+ *               - wallet_address
  *             properties:
  *               user_name:
  *                 type: string

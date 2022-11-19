@@ -44,7 +44,7 @@ const init = async (): Promise<QueryResult<any>> => {
 
     CREATE TABLE IF NOT EXISTS users (
       user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      user_name character varying NOT NULL UNIQUE,
+      user_name character varying NOT NULL,
       wallet_address character varying NOT NULL UNIQUE,
       user_bio text,
       image_url character varying,

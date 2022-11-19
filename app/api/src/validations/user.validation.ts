@@ -2,7 +2,7 @@ import Joi from 'joi';
 
 export const createUser = {
   body: Joi.object().keys({
-    user_name: Joi.string().required(),
+    user_name: Joi.string().optional(),
     wallet_address: Joi.string().required(),
     user_bio: Joi.string().optional().allow('').allow(null),
     phone: Joi.string().optional().allow('').allow(null),

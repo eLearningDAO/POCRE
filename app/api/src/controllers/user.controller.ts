@@ -16,7 +16,11 @@ export const getUserById = catchAsync(async (req, res): Promise<void> => {
 
 export const createUser = catchAsync(async (req, res): Promise<void> => {
   const hashedWalletAddress = encrypt(req.body.wallet_address);
-  const newUser = await userService.createUser({ ...req.body, wallet_address: hashedWalletAddress });
+  const newUser = await userService.createUser({
+    ...req.body,
+    user_name: req.body.user_name || 'anonymous',
+    wallet_address: hashedWalletAddress,
+  });
   res.send(newUser);
 });
 
