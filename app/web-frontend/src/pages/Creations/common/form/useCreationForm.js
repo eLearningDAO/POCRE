@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import {
-  Creation, Recognition, Material, MaterialType, Source, Status, Tag, User,
+  Creation, Recognition, Material, Tag, User,
 } from 'api/requests';
 import useSuggestions from 'hooks/useSuggestions';
 import authUser from 'utils/helpers/authUser';
@@ -13,13 +13,6 @@ const makeCommonResource = async (
   tagSuggestions = [],
   authorSuggestions = [],
 ) => {
-  // make a new source
-  const source = await Source.create({
-    source_title: requestBody.title,
-    source_description: requestBody.description,
-    site_url: requestBody.source,
-  });
-
   // make new tags
   const tags = await (async () => {
     const temporaryTags = [];
@@ -72,48 +65,29 @@ const makeCommonResource = async (
         return temporaryAuthor;
       })();
 
-      // make a new source for material
-      const materialSource = await Source.create({
-        source_title: x.title,
-        site_url: requestBody.source,
-      });
-
-      // make new material type
-      const materialType = await MaterialType.create({
-        type_name: x.fileType,
-        type_description: x.title,
-      });
-
       // make new material
-      return Material.create({
+      const material = await Material.create({
         material_title: x.title,
         material_link: x.link,
-        source_id: materialSource.source_id,
-        type_id: materialType.type_id,
-        author_id: author.user_id,
+        material_type: x.fileType,
       });
+
+      return { ...material, author_id: author.user_id };
     }));
   }
 
-  return { source, tags, materials };
+  return { tags, materials };
 };
 
 const sendRecognitions = async (
-  fromUserId,
   materials = [],
 ) => await Promise.all(materials.map(async (x) => {
-  // make new status
-  const status = await Status.create({
-    status_name: 'pending',
-    status_description: x.material_description,
-  });
-
   // make new recognition
   const recognition = await Recognition.create({
-    recognition_by: fromUserId,
     recognition_for: x.author_id,
     recognition_description: x.material_description,
-    status_id: status.status_id,
+    status: 'pending',
+    status_updated: new Date().toISOString(),
   });
 
   // update material with recognition id
@@ -123,7 +97,7 @@ const sendRecognitions = async (
 }));
 
 // get auth user
-const user = authUser.get();
+const user = authUser.getUser();
 
 const useCreationForm = () => {
   const navigate = useNavigate();
@@ -160,7 +134,7 @@ const useCreationForm = () => {
     queryKey: [`creations-${creationId}`],
     queryFn: async () => {
       // get creation
-      const toPopulate = ['source_id', 'author_id', 'materials', 'materials.type_id', 'materials.source_id', 'materials.author_id', 'tags'];
+      const toPopulate = ['author_id', 'materials', 'materials.author_id', 'tags'];
       const responseCreation = await Creation.getById(creationId, toPopulate.map((x) => `populate=${x}`).join('&'));
 
       // transform creation
@@ -171,14 +145,14 @@ const useCreationForm = () => {
         title: responseCreation.creation_title,
         is_draft: responseCreation.is_draft,
         author: responseCreation.author.user_name,
-        source: responseCreation.source.site_url,
+        source: responseCreation.creation_link,
         tags: responseCreation.tags.map((tag) => tag.tag_name),
-        materials: responseCreation.materials.map((material) => (
+        materials: (responseCreation?.materials || []).map((material) => (
           {
             id: material.material_id,
             author: material.author.user_name,
             link: material.material_link,
-            fileType: material.type.type_name,
+            fileType: material.material_type,
             title: material.material_title,
           }
         )),
@@ -201,7 +175,7 @@ const useCreationForm = () => {
   } = useMutation({
     mutationFn: async (creationBody) => {
       // create common data
-      const { source, tags, materials } = await makeCommonResource(
+      const { tags, materials } = await makeCommonResource(
         creationBody,
         tagSuggestions,
         authorSuggestions,
@@ -211,9 +185,8 @@ const useCreationForm = () => {
       await Creation.create({
         creation_title: creationBody.title,
         creation_description: creationBody.description,
-        source_id: source.source_id,
+        creation_link: creationBody.source,
         tags: tags.map((tag) => tag.tag_id),
-        author_id: user.user_id,
         ...(materials.length > 0 && { materials: materials.map((x) => x.material_id) }),
         creation_date: new Date(creationBody.date).toISOString(),
         is_draft: creationBody.is_draft,
@@ -221,7 +194,7 @@ const useCreationForm = () => {
 
       // sent recognition to material authors (if creation is not draft)
       if (materials.length > 0 && !creationBody.is_draft) {
-        await sendRecognitions(user.user_id, materials);
+        await sendRecognitions(materials);
       }
 
       // remove queries cache
@@ -245,19 +218,20 @@ const useCreationForm = () => {
         creation_title: updateBody.title,
         creation_description: updateBody.description,
         creation_date: new Date(updateBody.date).toISOString(),
-        ...(creation.original.materials.length > 0 && { materials: creation.original.materials }),
+        ...((creation.original.materials || []).length > 0 && {
+          materials: creation.original.materials || [],
+        }),
         tags: creation.original.tags,
-        source_id: creation.original.source_id,
+        creation_link: updateBody.source,
         is_draft: false,
       };
 
-      const { source, tags, materials } = await makeCommonResource(
+      const { tags, materials } = await makeCommonResource(
         updateBody,
         tagSuggestions,
         authorSuggestions,
       );
 
-      updatedCreation.source_id = source.source_id;
       updatedCreation.tags = tags.map((x) => x.tag_id);
       updatedCreation.materials = (
         (updateBody.materials || []).length === 0
@@ -268,7 +242,7 @@ const useCreationForm = () => {
 
       // sent recognition to material authors
       if (materials.length > 0) {
-        await sendRecognitions(creation.original.author_id, materials);
+        await sendRecognitions(materials);
       }
 
       // remove queries cache

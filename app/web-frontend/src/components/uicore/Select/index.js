@@ -52,8 +52,8 @@ function Select(
         onOpen={handleOpen}
         onClose={handleClose}
       >
-        {placeholder && <MenuItem selected value="">{placeholder}</MenuItem>}
-        {options?.map((x, index) => <MenuItem key={index} value={x?.value}>{x?.label}</MenuItem>)}
+        {placeholder && <MenuItem selected value="" style={{ textTransform: 'capitalize' }}>{placeholder}</MenuItem>}
+        {options?.map((x, index) => <MenuItem key={index} value={x?.value} style={{ textTransform: 'capitalize' }}>{x?.label}</MenuItem>)}
       </MuiSelect>
       {
         hookToForm

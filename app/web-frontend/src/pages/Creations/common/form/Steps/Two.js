@@ -74,8 +74,9 @@ function NewMaterial({ material, onRemoveMaterial, onUpdate = () => {} }) {
               name="fileType"
               hookToForm
               options={[
+                { value: 'image', label: 'Image' },
                 { value: 'video', label: 'Video' },
-                { value: 'sound', label: 'Sound' },
+                { value: 'audio', label: 'Sound' },
                 { value: 'document', label: 'Document' },
               ]}
             />

@@ -75,3 +75,14 @@
     width: 200px;
   }
 }
+
+.loggedin-user {
+  display: flex;
+  gap:8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.loggedin-user > img {
+  border-radius: 12px;
+}

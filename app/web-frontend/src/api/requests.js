@@ -1,19 +1,20 @@
 import { API_BASE_URL } from 'config';
+import authUser from 'utils/helpers/authUser';
 import errorMap from './errorMap';
 
 const request = async (url = '', data = {}, method = '') => {
   const response = await fetch(url, {
     method,
-    ...(method !== 'GET' && ({
-      ...(method !== 'DELETE' && {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+    headers: {
+      Authorization: `Bearer ${authUser.getJWTToken()}`, // send in all requests
+      ...(['POST', 'PATCH'].includes(method) && {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       }),
-    }))
-    ,
+    },
+    ...(['POST', 'PATCH'].includes(method) && {
+      body: JSON.stringify(data),
+    }),
   }).then((x) => x?.json());
 
   if (response?.code >= 400) {
@@ -31,26 +32,22 @@ const REQUEST_TEMPLATE = (endpoint) => ({
   getById: async (id, queryParameters = '') => await request(`${API_BASE_URL}/${endpoint}/${id}?${queryParameters}`, {}, 'GET'),
 });
 
-const User = { ...(REQUEST_TEMPLATE('users')) };
-const Source = { ...(REQUEST_TEMPLATE('source')) };
-const MaterialType = { ...(REQUEST_TEMPLATE('material-type')) };
-const Material = { ...(REQUEST_TEMPLATE('materials')) };
-const Creation = { ...(REQUEST_TEMPLATE('creations')) };
-const Decision = { ...(REQUEST_TEMPLATE('decision')) };
-const Recognition = { ...(REQUEST_TEMPLATE('recognitions')) };
-const Litigation = { ...(REQUEST_TEMPLATE('litigations')) };
-const Status = { ...(REQUEST_TEMPLATE('status')) };
-const Tag = { ...(REQUEST_TEMPLATE('tags')) };
+const User = REQUEST_TEMPLATE('users');
+const Material = REQUEST_TEMPLATE('materials');
+const Creation = REQUEST_TEMPLATE('creations');
+const Decision = REQUEST_TEMPLATE('decision');
+const Recognition = REQUEST_TEMPLATE('recognitions');
+const Litigation = REQUEST_TEMPLATE('litigations');
+const Tag = REQUEST_TEMPLATE('tags');
+const Auth = { login: REQUEST_TEMPLATE('auth/login').create };
 
 export {
   User,
-  Source,
-  MaterialType,
   Material,
   Creation,
   Decision,
   Recognition,
   Litigation,
-  Status,
   Tag,
+  Auth,
 };

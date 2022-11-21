@@ -3,7 +3,7 @@ import { Creation } from 'api/requests';
 import authUser from 'utils/helpers/authUser';
 
 // get auth user
-const user = authUser.get();
+const user = authUser.getUser();
 
 const useCreations = () => {
   const queryClient = useQueryClient();
@@ -17,7 +17,7 @@ const useCreations = () => {
   } = useQuery({
     queryKey: ['creations'],
     queryFn: async () => {
-      const toPopulate = ['source_id', 'author_id', 'materials', 'materials.source_id', 'materials.type_id', 'materials.author_id'];
+      const toPopulate = ['author_id', 'materials', 'materials.author_id'];
       return await Creation.getAll(
         `page=${1}&limit=100&descend_fields[]=creation_date&query=${user.user_id}&search_fields[]=author_id&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       );

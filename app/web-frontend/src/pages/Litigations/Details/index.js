@@ -98,28 +98,24 @@ export default function LitigationDetails() {
           <Typography className="inviationSectionTitle" variant="h6">
             Assumed Author
             {' '}
-            {litigation?.isClosed && litigation?.winner?.wallet_address === litigation?.assumed_author?.wallet_address ? '(Winner)' : ''}
+            {litigation?.isClosed && litigation?.winner?.user_id === litigation?.assumed_author?.user_id ? '(Winner)' : ''}
           </Typography>
           <UserCard
             username={litigation?.assumed_author?.user_name}
             imageUrl={`https://i.pravatar.cc/50?img=${Math.random()}`}
             totalCreationsAuthored={null}
-            // eslint-disable-next-line jsx-a11y/aria-role
-            role={litigation?.assumed_author?.wallet_address?.slice(1, 24)}
           />
         </Grid>
         <Grid display="flex" width="100%" flexDirection="column" gap="12px">
           <Typography className="inviationSectionTitle" variant="h6">
             Claimer
             {' '}
-            {litigation?.isClosed && litigation?.winner?.wallet_address === litigation?.issuer?.wallet_address ? '(Winner)' : ''}
+            {litigation?.isClosed && litigation?.winner?.user_id === litigation?.issuer?.user_id ? '(Winner)' : ''}
           </Typography>
           <UserCard
             username={litigation?.issuer?.user_name}
             imageUrl={`https://i.pravatar.cc/50?img=${Math.random()}`}
             totalCreationsAuthored={null}
-            // eslint-disable-next-line jsx-a11y/aria-role
-            role={litigation?.issuer?.wallet_address?.slice(1, 24)}
           />
         </Grid>
       </Grid>

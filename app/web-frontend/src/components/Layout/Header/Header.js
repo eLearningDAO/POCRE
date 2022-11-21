@@ -1,39 +1,37 @@
+import { Logout } from '@mui/icons-material';
 import ClearIcon from '@mui/icons-material/Clear';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Box, Button, Grid } from '@mui/material';
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import '../responsive-menu-transition.css';
-import FormControl from '@mui/material/FormControl';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import logo from 'assets/images/logo-beta.png';
-import LoginButton from 'components/styled/btns/LoginButton';
+import { FaUser } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import LoginModal from '../../LoginModal';
+import '../responsive-menu-transition.css';
 import SideBar from '../Sidebar/Sidebar';
 import './Header.css';
 import useHeader from './useHeader';
 
-// const duration = 200000;
-
-// const Fade = (props) => {
-//   return (
-//     <CSSTransition
-// classNames="alert" in={props.inProp} timeout={duration} unmountOnExit onExit={props.onExit}>
-//       {props.children}
-//     </CSSTransition>
-//   );
-// };
-
 function HomeHeader({ displayNav = false }) {
-  const location = useLocation();
   const {
-    fetchUserStatus, users, activeUser, onUserSelect, login,
+    displayResponsiveMenu,
+    setDisplayResponsiveMenu,
+    handleLogin,
+    handleLogout,
+    location,
+    showLoginForm,
+    setShowLoginForm,
+    loggedInUser,
   } = useHeader();
-
-  const [displayResponsiveMenu, setDisplayResponsiveMenu] = React.useState(false);
 
   return (
     <Grid container className="header" alignItems="center">
+      {/* {!location && <LoginModal />} */}
+      {showLoginForm && (
+      <LoginModal
+        onClose={() => setShowLoginForm(false)}
+        onLoggedIn={handleLogin}
+      />
+      )}
       <Grid
         item
         md={3}
@@ -45,15 +43,6 @@ function HomeHeader({ displayNav = false }) {
           <img alt="logo" src={logo} className="site-logo" />
         </Link>
       </Grid>
-
-      {/* <Grid item md={4} className='responsive'>
-        <TextField variant="standard"
-          InputProps={{
-            disableUnderline: true,
-            style: { padding: '6px 17px', color: '#32363C' },
-          }}
-          className='searchBar' fullWidth placeholder="Search for online course" id="fullWidth" />
-      </Grid> */}
 
       <Grid
         item
@@ -114,73 +103,34 @@ function HomeHeader({ displayNav = false }) {
         display="flex"
         justifyContent="flex-end"
         alignItems="center"
+        gap="16px"
       >
-        {login && (
-          <ul
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-            }}
-          >
-            {/* <li className='menuBox'><img alt='icon-menu-1' src={icon1} /></li>
-          <li className='menuBox'><img alt='icon-menu-1' src={icon2} /></li> */}
-            <li style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              {activeUser && (
-                <img
-                  alt="user-img"
-                  style={{
-                    width: '40px',
-                    border: '1px solid #fff',
-                    borderRadius: '7px',
-                  }}
-                  src={activeUser.avatar}
-                />
-              )}
-              {fetchUserStatus.error && <span className="responsive">{fetchUserStatus.error}</span>}
-              {fetchUserStatus.success && activeUser && (
-                <FormControl fullWidth variant="standard" style={{ minWidth: '220px' }}>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={activeUser.user_id}
-                    style={{ border: 'none' }}
-                    // {... (activeUser.user_id && { value: activeUser?.user_id })}
-                    onChange={onUserSelect}
-                    SelectDisplayProps={{
-                      style: { border: 'none' },
-                    }}
-                  >
-                    {users.map((x, index) => (
-                      <MenuItem key={index} value={x.user_id}>
-                        {x.user_name}
-                        {' '}
-                        (Test User)
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              )}
-            </li>
-          </ul>
+        {loggedInUser && (
+        <div className="loggedin-user">
+          <img
+            alt=""
+            src={loggedInUser.iamge_url || `https://i.pravatar.cc/50?img=${Math.random()}`}
+          />
+          <h4>{loggedInUser.user_name}</h4>
+        </div>
         )}
-        <LoginButton />
+        <Button
+          variant="contained"
+          onClick={() => (loggedInUser ? handleLogout() : setShowLoginForm(true))}
+          endIcon={loggedInUser ? <Logout fontSize=".5rem" /> : <FaUser />}
+          style={{
+            flexShrink: '0',
+            width: loggedInUser ? '80px' : '100px',
+            fontSize: loggedInUser ? '.7rem' : '1rem',
+            background: loggedInUser ? '#F19141' : '#F9A381',
+            color: 'white',
+            marginLeft: 'auto',
+          }}
+        >
+          {loggedInUser ? 'Logout' : 'Login'}
+        </Button>
       </Grid>
 
-      {/* <Grid item xs={12} className='non-responsive'>
-        <TextField variant="standard"
-          InputProps={{
-            disableUnderline: true,
-            style: { padding: '6px 17px', color: '#32363C' },
-          }}
-          className='searchBar' fullWidth placeholder="Search for online course" id="fullWidth" />
-      </Grid> */}
-
-      {/* <Fade
-        inProp={displayResponsiveMenu}
-        onExit={() => setDisplayResponsiveMenu(false)}
-      > */}
       {displayResponsiveMenu && (
         <Box component="header" className="site-popup-menu" padding="2" display={{ md: 'none' }}>
           <nav>
@@ -204,52 +154,9 @@ function HomeHeader({ displayNav = false }) {
             </Grid>
 
             <SideBar />
-            {/* <ul className="sidebar">
-              <li className={location.pathname === '/creations' ? 'activeSidebarMenu' : ''}>
-                <Link onClick={() => setDisplayResponsiveMenu(false)} to='/creations'>
-                  <img
-                  alt="menu-icon"
-                  src={location.pathname === '/creations' ? MenuIcon2Active : MenuIcon2} />
-                  <span>Creations</span>
-                </Link>
-              </li>
-              <li className={location.pathname === '/recognitions' ? 'activeSidebarMenu' : ''} >
-                <Link onClick={() => setDisplayResponsiveMenu(false)} to='/recognitions'>
-                  <img
-                  alt="menu-icon"
-                   src={location.pathname === '/recognitions' ? MenuIcon3Active : MenuIcon3} />
-                   <span>Recognition</span>
-                </Link>
-              </li>
-              <li className={location.pathname === '/litigation' ? 'activeSidebarMenu' : ''} >
-                <Link onClick={() => setDisplayResponsiveMenu(false)} to='/litigation'>
-                  <img
-                  alt="menu-icon"
-                   src={location.pathname === '/litigation' ? MenuIcon4Active : MenuIcon4} />
-                   <span>Litigation</span>
-                </Link>
-              </li>
-              <li className={location.pathname === '/wallet' ? 'activeSidebarMenu' : ''} >
-                <Link onClick={() => setDisplayResponsiveMenu(false)} to='/wallet'>
-                  <img
-                  alt="menu-icon"
-                   src={location.pathname === '/wallet' ? MenuIcon5Active : MenuIcon5} />
-                   <span>Wallet</span>
-                </Link>
-              </li>
-              <li className={location.pathname === '/credit' ? 'activeSidebarMenu' : ''} >
-                <Link onClick={() => setDisplayResponsiveMenu(false)} to='/credit'>
-                  <img
-                  alt="menu-icon"
-                   src={location.pathname === '/credit' ? MenuIcon6Active : MenuIcon6} />
-                   <span>Credits</span>
-                </Link>
-              </li>
-            </ul> */}
           </nav>
         </Box>
       )}
-      {/* </Fade> */}
     </Grid>
   );
 }
