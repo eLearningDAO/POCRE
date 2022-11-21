@@ -8,11 +8,12 @@ import { useEffect, useState } from 'react';
 import DownloadIconSVG from 'assets/svgs/download.svg';
 import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import CreationPreview from 'components/previews/CreationPreview';
-import DownloadButton from './btns/DownloadButton';
+import SocialMediaModal from 'components/shared/socialmediaSharingModal';
 import EditButton from './btns/EditButton';
 import RemoveButton from './btns/RemoveButton';
 import ShareButton from './btns/ShareButton';
 import './index.css';
+import PreviewButton from './btns/PreviewButton';
 
 function DeleteCofirmationDialog({ onClose, onConfirm }) {
   return (
@@ -103,6 +104,8 @@ function CollectionCard({
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(null);
   const [showMediaPreview, setShowMediaPreview] = useState(null);
   const [showCreationDetailsPreview, setShowCreationDetailsPreview] = useState(null);
+  const [showSocialMediaSharePreview, setShowSocialMediaSharePreview] = useState(false);
+  const shareUrl = `${window.location.origin}/creations/${creationId}`;
 
   useEffect(() => {
     const x = getUrlFileType(mediaUrl);
@@ -115,7 +118,7 @@ function CollectionCard({
       parameters.set('preview', creationId);
       const sanitizedNewParameters = parameters.toString().length > 0 ? `?${parameters.toString()}` : '';
       const newRelativePathQuery = window.location.origin
-      + window.location.pathname + sanitizedNewParameters;
+        + window.location.pathname + sanitizedNewParameters;
       window.history.replaceState(null, '', newRelativePathQuery);
     } else {
       window.history.replaceState(null, '', window.location.origin + window.location.pathname);
@@ -137,6 +140,12 @@ function CollectionCard({
         <DeleteCofirmationDialog
           onClose={() => setShowDeleteConfirmation(false)}
           onConfirm={handleDelete}
+        />
+      )}
+      {showSocialMediaSharePreview && (
+        <SocialMediaModal
+          onClose={() => setShowSocialMediaSharePreview(false)}
+          shareUrl={shareUrl}
         />
       )}
       {showCreationDetailsPreview && (
@@ -336,14 +345,16 @@ function CollectionCard({
                 canDelete={canDelete}
                 handleDeleteConfirmation={handleDeleteConfirmation}
               />
-              <DownloadButton
+              <PreviewButton
                 onClick={() => setShowCreationDetailsPreview(true)}
               />
               <EditButton
                 canEdit={canEdit}
                 onEditClick={onEditClick}
               />
-              <ShareButton />
+              <ShareButton
+                onClick={() => setShowSocialMediaSharePreview(true)}
+              />
             </Grid>
           </Grid>
         )}
