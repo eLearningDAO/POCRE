@@ -1,14 +1,17 @@
 import httpStatus from 'http-status';
-import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 import { populator } from '../db/plugins/populator';
+import statusTypes from '../constants/statusTypes';
 
+const types = Object.values(statusTypes);
+type TStatusType = typeof types[number];
 interface IRecognition {
   recognition_by: string;
   recognition_for: string;
   recognition_description?: string;
-  status_id: string;
+  status: TStatusType;
+  status_updated: string;
 }
 interface IRecognitionQuery {
   limit: number;
@@ -32,7 +35,8 @@ interface IRecognitionDoc {
   recognition_for: string;
   recognition_description: string;
   recognition_issued: string;
-  status_id: string;
+  status: TStatusType;
+  status_updated: string;
 }
 
 /**
@@ -47,23 +51,33 @@ export const createRecognition = async (recognitionBody: IRecognition): Promise<
 
   try {
     const result = await db.query(
-      `INSERT INTO recognition (recognition_by,recognition_for,recognition_description,status_id) values ($1,$2,$3,$4) RETURNING *;`,
+      `
+      INSERT 
+      INTO 
+      recognition 
+      (
+        recognition_by,
+        recognition_for,
+        recognition_description,
+        status,
+        status_updated
+      ) 
+      values 
+      ($1,$2,$3,$4,$5) 
+      RETURNING 
+      *;
+      `,
       [
         recognitionBody.recognition_by,
         recognitionBody.recognition_for,
         recognitionBody.recognition_description,
-        recognitionBody.status_id,
+        recognitionBody.status,
+        recognitionBody.status_updated,
       ]
     );
     const recognition = result.rows[0];
     return recognition;
-  } catch (e: unknown) {
-    const err = e as DatabaseError;
-    if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('status_id'))
-        throw new ApiError(httpStatus.CONFLICT, `status already assigned to a recognition`);
-    }
-
+  } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };
@@ -127,17 +141,49 @@ export const queryRecognitions = async (options: IRecognitionQuery): Promise<IRe
 /**
  * Get recognition by id
  * @param {string} id
+ * @param {object} options - optional config object
+ * @param {string|string[]} options.populate - the list of fields to populate
+ * @param {string} options.owner_id - returns the recognition that belongs to owner_id
  * @returns {Promise<IRecognitionDoc|null>}
  */
-export const getRecognitionById = async (id: string, populate?: string | string[]): Promise<IRecognitionDoc | null> => {
+export const getRecognitionById = async (
+  id: string,
+  options?: {
+    populate?: string | string[];
+    owner_id?: string;
+    participant_id?: string;
+  }
+): Promise<IRecognitionDoc | null> => {
   const recognition = await (async () => {
     try {
       const result = await db.query(
-        `SELECT * ${populator({
+        `SELECT 
+        * 
+        ${populator({
           tableAlias: 'r',
-          fields: typeof populate === 'string' ? [populate] : populate,
-        })} FROM recognition r WHERE recognition_id = $1;`,
-        [id]
+          fields: options ? (typeof options.populate === 'string' ? [options.populate] : options.populate) : [],
+        })} 
+        FROM 
+        recognition r 
+        WHERE 
+        recognition_id = $1
+        ${options && options.owner_id ? 'AND recognition_by = $2' : ''}
+        ${
+          options && options.participant_id
+            ? `
+            AND 
+            recognition_by = ${!options.owner_id ? '$2' : '$3'}
+            OR 
+            recognition_for = ${!options.owner_id ? '$2' : '$3'}
+            `
+            : ''
+        }
+        ;`,
+        [
+          id,
+          options && options.owner_id ? options.owner_id : false,
+          options && options.participant_id ? options.participant_id : false,
+        ].filter(Boolean)
       );
       return result.rows[0];
     } catch {
@@ -154,13 +200,17 @@ export const getRecognitionById = async (id: string, populate?: string | string[
  * Update recognition by id
  * @param {string} id
  * @param {Partial<IRecognition>} updateBody
+ * @param {object} options - optional config object
+ * @param {string} options.owner_id - updates the recognition that belongs to owner_id
  * @returns {Promise<IRecognitionDoc|null>}
  */
 export const updateRecognitionById = async (
   id: string,
-  updateBody: Partial<IRecognition>
+  updateBody: Partial<IRecognition>,
+  options?: { participant_id?: string }
 ): Promise<IRecognitionDoc | null> => {
-  const foundRecognition = await getRecognitionById(id); // check if recognition exists, throws error if not found
+  // check if recognition exists, throws error if not found
+  const foundRecognition = await getRecognitionById(id, { participant_id: options?.participant_id });
 
   if (
     (updateBody.recognition_for &&
@@ -195,13 +245,7 @@ export const updateRecognitionById = async (
     );
     const recognition = updateQry.rows[0];
     return recognition;
-  } catch (e: unknown) {
-    const err = e as DatabaseError;
-    if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('status_id'))
-        throw new ApiError(httpStatus.CONFLICT, `status already assigned to a recognition`);
-    }
-
+  } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };
@@ -209,10 +253,16 @@ export const updateRecognitionById = async (
 /**
  * Delete recognition by id
  * @param {string} id
+ * @param {object} options - optional config object
+ * @param {string} options.owner_id - deletes the recognition that belongs to owner_id
  * @returns {Promise<IRecognitionDoc|null>}
  */
-export const deleteRecognitionById = async (id: string): Promise<IRecognitionDoc | null> => {
-  const recognition = await getRecognitionById(id); // check if recognition exists, throws error if not found
+export const deleteRecognitionById = async (
+  id: string,
+  options?: { owner_id?: string }
+): Promise<IRecognitionDoc | null> => {
+  // check if recognition exists, throws error if not found
+  const recognition = await getRecognitionById(id, { owner_id: options?.owner_id });
 
   try {
     await db.query(`DELETE FROM recognition WHERE recognition_id = $1;`, [id]);

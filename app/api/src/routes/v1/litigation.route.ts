@@ -2,19 +2,20 @@ import express from 'express';
 import validate from '../../middlewares/validate';
 import * as litigationValidation from '../../validations/litigation.validation';
 import * as litigationController from '../../controllers/litigation.controller';
+import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
 router
   .route('/')
-  .post(validate(litigationValidation.createLitigation), litigationController.createLitigation)
-  .get(validate(litigationValidation.queryLitigations), litigationController.queryLitigations);
+  .post(auth(), validate(litigationValidation.createLitigation), litigationController.createLitigation)
+  .get(auth(), validate(litigationValidation.queryLitigations), litigationController.queryLitigations);
 
 router
   .route('/:litigation_id')
-  .get(validate(litigationValidation.getLitigation), litigationController.getLitigationById)
-  .patch(validate(litigationValidation.updateLitigation), litigationController.updateLitigationById)
-  .delete(validate(litigationValidation.deleteLitigation), litigationController.deleteLitigationById);
+  .get(auth(), validate(litigationValidation.getLitigation), litigationController.getLitigationById)
+  .patch(auth(), validate(litigationValidation.updateLitigation), litigationController.updateLitigationById)
+  .delete(auth(), validate(litigationValidation.deleteLitigation), litigationController.deleteLitigationById);
 
 export default router;
 
@@ -32,6 +33,8 @@ export default router;
  *     summary: Create a litigation
  *     description: Creates a new litigation.
  *     tags: [Litigation]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -41,7 +44,6 @@ export default router;
  *             required:
  *               - litigation_title
  *               - creation_id
- *               - issuer_id
  *               - litigation_start
  *               - litigation_end
  *             properties:
@@ -54,9 +56,6 @@ export default router;
  *                 type: string
  *                 format: uuid
  *               material_id:
- *                 type: string
- *                 format: uuid
- *               issuer_id:
  *                 type: string
  *                 format: uuid
  *               decisions:
@@ -77,9 +76,6 @@ export default router;
  *                litigation_description: an example litigation
  *                creation_id: fa52d76c-664a-41de-aebb-b311a74ef571
  *                material_id: fa52d76c-664a-41de-aebb-b311a74ef570
- *                assumed_author: b49cf4d8-341d-4cd6-b5ad-d002e87d9331
- *                issuer_id: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
- *                winner: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
  *                decisions: [6087ac9e-7e15-4ad7-b256-7893a00c3577]
  *                litigation_start: 2022-09-09T19:00:00.000Z
  *                litigation_end: 2022-09-09T19:00:00.000Z
@@ -195,6 +191,8 @@ export default router;
  *     summary: Get all litigations
  *     description: Returns a list of litigations.
  *     tags: [Litigation]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: limit
@@ -246,29 +244,21 @@ export default router;
  *               - issuer_id
  *               - winner
  *               - creation_id
- *               - creation_id.source_id
  *               - creation_id.author_id
  *               - creation_id.tags
  *               - creation_id.materials
- *               - creation_id.materials.source_id
- *               - creation_id.materials.type_id
  *               - creation_id.materials.recognition_id
  *               - creation_id.materials.recognition_id.recognition_by
  *               - creation_id.materials.recognition_id.recognition_for
- *               - creation_id.materials.recognition_id.status_id
  *               - creation_id.materials.author_id
  *               - material_id
- *               - material_id.source_id
- *               - material_id.type_id
  *               - material_id.recognition_id
  *               - material_id.recognition_id.recognition_by
  *               - material_id.recognition_id.recognition_for
- *               - material_id.recognition_id.status_id
  *               - material_id.author_id
  *               - recognitions
  *               - recognitions.recognition_by
  *               - recognitions.recognition_for
- *               - recognitions.status_id
  *               - decisions
  *               - decisions.maker_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
@@ -307,6 +297,8 @@ export default router;
  *     summary: Get a litigation by id
  *     description: Get details about a litigation by its id
  *     tags: [Litigation]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: litigation_id
@@ -325,29 +317,21 @@ export default router;
  *               - issuer_id
  *               - winner
  *               - creation_id
- *               - creation_id.source_id
  *               - creation_id.author_id
  *               - creation_id.tags
  *               - creation_id.materials
- *               - creation_id.materials.source_id
- *               - creation_id.materials.type_id
  *               - creation_id.materials.recognition_id
  *               - creation_id.materials.recognition_id.recognition_by
  *               - creation_id.materials.recognition_id.recognition_for
- *               - creation_id.materials.recognition_id.status_id
  *               - creation_id.materials.author_id
  *               - material_id
- *               - material_id.source_id
- *               - material_id.type_id
  *               - material_id.recognition_id
  *               - material_id.recognition_id.recognition_by
  *               - material_id.recognition_id.recognition_for
- *               - material_id.recognition_id.status_id
  *               - material_id.author_id
  *               - recognitions
  *               - recognitions.recognition_by
  *               - recognitions.recognition_for
- *               - recognitions.status_id
  *               - decisions
  *               - decisions.maker_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
@@ -367,6 +351,8 @@ export default router;
  *     summary: Update a litigation by id
  *     description: Update litigation details by its id
  *     tags: [Litigation]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: litigation_id
@@ -405,8 +391,6 @@ export default router;
  *                litigation_description: an example litigation
  *                material_id: fa52d76c-664a-41de-aebb-b311a74ef570
  *                assumed_author: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
- *                issuer_id: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
- *                winner: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
  *                decisions: [6087ac9e-7e15-4ad7-b256-7893a00c3577]
  *                litigation_start: 2022-09-09T19:00:00.000Z
  *                litigation_end: 2022-09-09T19:00:00.000Z
@@ -462,6 +446,8 @@ export default router;
  *     summary: Delete a litigation by id
  *     description: Deletes a litigation by its id
  *     tags: [Litigation]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: litigation_id

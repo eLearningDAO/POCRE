@@ -1,31 +1,33 @@
 import httpStatus from 'http-status';
 import catchAsync from '../utils/catchAsync';
 import * as litigationService from '../services/litigation.service';
-import { getUserById, getReputedUsers } from '../services/user.service';
+import { getReputedUsers, IUserDoc } from '../services/user.service';
 import { getMaterialById, updateMaterialById } from '../services/material.service';
 import { createRecognition } from '../services/recognition.service';
 import { getDecisionById } from '../services/decision.service';
 import { getCreationById, updateCreationById } from '../services/creation.service';
-import { createStatus } from '../services/status.service';
 import config from '../config/config';
 import ApiError from '../utils/ApiError';
+import statusTypes from '../constants/statusTypes';
 
 export const queryLitigations = catchAsync(async (req, res): Promise<void> => {
-  const litigation = await litigationService.queryLitigations(req.query as any);
+  const litigation = await litigationService.queryLitigations({
+    ...(req.query as any),
+    participant_id: (req.user as IUserDoc).user_id,
+  });
   res.send(litigation);
 });
 
 export const getLitigationById = catchAsync(async (req, res): Promise<void> => {
-  const litigation = await litigationService.getLitigationById(
-    req.params.litigation_id,
-    req.query.populate as string | string[]
-  );
+  const litigation = await litigationService.getLitigationById(req.params.litigation_id, {
+    populate: req.query.populate as string | string[],
+    participant_id: (req.user as IUserDoc).user_id,
+  });
   res.send(litigation);
 });
 
 export const createLitigation = catchAsync(async (req, res): Promise<void> => {
   // check if reference docs exist
-  await getUserById(req.body.issuer_id as string); // verify user, will throw an error if user not found
   const creation = await getCreationById(req.body.creation_id as string); // verify creation, will throw an error if creation not found
   let material;
   if (req.body.material_id) {
@@ -35,13 +37,16 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
     await Promise.all(req.body.decisions.map((id: string) => getDecisionById(id))); // verify decisions, will throw an error if any decision is not found
   }
 
+  // auth user is the issuer
+  const issuerId = (req.user as IUserDoc).user_id;
+
   // check if assumed author and issuer are same for creation
-  if (!material && creation?.author_id === req.body.issuer_id) {
+  if (!material && creation?.author_id === issuerId) {
     throw new ApiError(httpStatus.NOT_FOUND, 'creation is already owned');
   }
 
   // check if assumed author and issuer are same for material
-  if (material?.author_id === req.body.issuer_id) {
+  if (material?.author_id === issuerId) {
     throw new ApiError(httpStatus.NOT_FOUND, 'material is already owned');
   }
 
@@ -59,7 +64,8 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
   const newLitigation = await litigationService.createLitigation({
     ...req.body,
     assumed_author: material ? material.author_id : creation?.author_id,
-    winner: req.body.issuer_id,
+    issuer_id: issuerId,
+    winner: issuerId,
   });
 
   // make recognitions for litigators
@@ -76,16 +82,12 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
     // create recognitions for litigators
     return Promise.all(
       litigators.map(async (user) => {
-        // create new status
-        const status = await createStatus({
-          status_name: newLitigation.litigation_title,
-        });
-
         // create new recognition
         return createRecognition({
           recognition_by: newLitigation.issuer_id,
           recognition_for: user.user_id,
-          status_id: status.status_id,
+          status: statusTypes.PENDING,
+          status_updated: new Date().toISOString(),
         });
       })
     );
@@ -105,7 +107,9 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
 });
 
 export const deleteLitigationById = catchAsync(async (req, res): Promise<void> => {
-  await litigationService.deleteLitigationById(req.params.litigation_id);
+  await litigationService.deleteLitigationById(req.params.litigation_id, {
+    owner_id: (req.user as IUserDoc).user_id,
+  });
   res.send();
 });
 
@@ -145,10 +149,14 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
   }
 
   // update litigation
-  const updatedLitigation = await litigationService.updateLitigationById(req.params.litigation_id, {
-    ...req.body,
-    winner,
-    ownership_transferred: req.body.reconcilate || req.body.ownership_transferred,
-  });
+  const updatedLitigation = await litigationService.updateLitigationById(
+    req.params.litigation_id,
+    {
+      ...req.body,
+      winner,
+      ownership_transferred: req.body.reconcilate || req.body.ownership_transferred,
+    },
+    { participant_id: (req.user as IUserDoc).user_id }
+  );
   res.send(updatedLitigation);
 });

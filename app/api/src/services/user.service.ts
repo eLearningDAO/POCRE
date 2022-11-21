@@ -1,8 +1,8 @@
 import httpStatus from 'http-status';
-import { DatabaseError, QueryResult } from 'pg';
-import ApiError from '../utils/ApiError';
-import * as db from '../db/pool';
+import { QueryResult } from 'pg';
 import { reputation } from '../constants/statusTypes';
+import * as db from '../db/pool';
+import ApiError from '../utils/ApiError';
 import { getStar } from '../utils/userStarCalculation';
 
 export interface IUser {
@@ -29,7 +29,7 @@ interface IUserQueryResult {
   limit: number;
   page: number;
 }
-interface IUserDoc {
+export interface IUserDoc {
   user_id: string;
   user_name: string;
   wallet_address: string;
@@ -54,24 +54,22 @@ interface IUserCriteria {
  */
 export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
   try {
-    const result = await db.query(`INSERT INTO users (user_name,wallet_address,user_bio,phone,email_address, verified_id,  reputation_stars,image_url) values ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *;`, [
-      userBody.user_name,
-      userBody.wallet_address,
-      userBody.user_bio,
-      userBody.phone,
-      userBody.email_address,
-      userBody.verified_id,
-      userBody.reputation_stars,
-      userBody.image_url,
-    ]);
+    const result = await db.query(
+      `INSERT INTO users (user_name,wallet_address,user_bio,phone,email_address, verified_id,  reputation_stars,image_url) values ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *;`,
+      [
+        userBody.user_name,
+        userBody.wallet_address,
+        userBody.user_bio,
+        userBody.phone,
+        userBody.email_address,
+        userBody.verified_id,
+        userBody.reputation_stars,
+        userBody.image_url,
+      ]
+    );
     const user = result.rows[0];
     return user;
-  } catch (e: unknown) {
-    const err = e as DatabaseError;
-    if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('user_name')) throw new ApiError(httpStatus.CONFLICT, `user_name is already taken`);
-    }
-
+  } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };
@@ -91,8 +89,8 @@ export const queryUsers = async (options: IUserQuery): Promise<IUserQueryResult>
     // list of queries
     const queryModes = {
       default: {
-        query: `SELECT * FROM users ${search} OFFSET $1 LIMIT $2;`,
-        count: `SELECT COUNT(*) as total_results FROM users ${search};`,
+        query: `SELECT * FROM VIEW_users_public_fields ${search} OFFSET $1 LIMIT $2;`,
+        count: `SELECT COUNT(*) as total_results FROM VIEW_users_public_fields ${search};`,
       },
       topAuthors: {
         // users with most number of creations
@@ -108,7 +106,7 @@ export const queryUsers = async (options: IUserQuery): Promise<IUserQueryResult>
                 ) 
                 as total_creations
                 FROM 
-                users u 
+                VIEW_users_public_fields u 
                 ${search}
                 WHERE 
                 u.user_id = ANY(
@@ -139,7 +137,7 @@ export const queryUsers = async (options: IUserQuery): Promise<IUserQueryResult>
         count: `SELECT 
                 COUNT(*) as total_results 
                 FROM 
-                users u 
+                VIEW_users_public_fields u 
                 ${search}
                 WHERE 
                 u.user_id = ANY(
@@ -188,15 +186,30 @@ export const queryUsers = async (options: IUserQuery): Promise<IUserQueryResult>
 };
 
 /**
- * Get user by id
- * @param {string} id
+ * Get user by criteria
+ * @param {string} criteria - the criteria to find user
+ * @param {string} equals - the value on which criteria matches
  * @returns {Promise<IUserDoc|null>}
  */
-export const getUserById = async (id: string): Promise<IUserDoc | null> => {
+export const getUserByCriteria = async (
+  criteria: 'user_id' | 'wallet_address',
+  equals: string
+): Promise<IUserDoc | null> => {
   const user = await (async () => {
     try {
-      const result = await db.query(`SELECT * FROM users WHERE user_id = $1;`, [id]);
-      return responseWithAuthorishipDuration(result)
+      const result = await db.query(
+        `
+        SELECT 
+        * 
+        FROM 
+        ${criteria === 'wallet_address' ? 'users' : 'VIEW_users_public_fields'} 
+        WHERE 
+        ${criteria} = $1 
+        LIMIT 1
+        ;`,
+        [equals]
+      );
+      return result.rows[0];
     } catch {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
     }
@@ -208,6 +221,24 @@ export const getUserById = async (id: string): Promise<IUserDoc | null> => {
 };
 
 /**
+ * Get user by id
+ * @param {string} id
+ * @returns {Promise<IUserDoc|null>}
+ */
+export const getUserById = async (id: string): Promise<IUserDoc | null> => {
+  return getUserByCriteria('user_id', id);
+};
+
+/**
+ * Get user by wallet address
+ * @param {string} walletAddress
+ * @returns {Promise<IUserDoc|null>}
+ */
+export const getUserByWalletAddress = async (walletAddress: string): Promise<IUserDoc | null> => {
+  return getUserByCriteria('wallet_address', walletAddress);
+};
+
+/**
  * Update user by id
  * @param {string} id
  * @param {Partial<IUser>} updateBody
@@ -216,7 +247,7 @@ export const getUserById = async (id: string): Promise<IUserDoc | null> => {
 export const updateUserById = async (id: string, updateBody: Partial<IUser>): Promise<IUserDoc | null> => {
   await getUserById(id); // check if user exists, throws error if not found
 
-  updateBody['reputation_stars'] = getStar(updateBody); //update the stars field according to aviable user fields .
+  updateBody.reputation_stars = getStar(updateBody); // update the stars field according to aviable user fields .
   // build sql conditions and values
   const conditions: string[] = [];
   const values: (string | number | null)[] = [];
@@ -235,13 +266,8 @@ export const updateUserById = async (id: string, updateBody: Partial<IUser>): Pr
       `,
       [id, ...values]
     );
-    return responseWithAuthorishipDuration(updateQry)
-  } catch (e: unknown) {
-    const err = e as DatabaseError;
-    if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('user_name')) throw new ApiError(httpStatus.CONFLICT, `user_name is already taken`);
-    }
-
+    return responseWithAuthorishipDuration(updateQry);
+  } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };
@@ -282,12 +308,12 @@ export const getReputedUsers = async (criteria: IUserCriteria): Promise<Array<IU
 };
 
 /**
- * this function is used to update the authorship 
+ * this function is used to update the authorship
  * duration of the user and return the update user object
  *
  */
 const responseWithAuthorishipDuration = (queryResult: QueryResult<any>) => {
-  const user = queryResult.rows[0]
+  const user = queryResult.rows[0];
   const authorship_duration = reputation[user.reputation_stars];
   return { ...user, authorship_duration };
-}
+};

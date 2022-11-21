@@ -3,14 +3,17 @@ import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 import statusTypes from '../constants/statusTypes';
+import materialTypes from '../constants/materialTypes';
 import { populator } from '../db/plugins/populator';
+
+const types = Object.values(materialTypes);
+type TMaterialType = typeof types[number];
 
 interface IMaterial {
   material_title: string;
   material_description?: string;
   material_link?: string;
-  source_id: string;
-  type_id: string;
+  material_type: TMaterialType;
   recognition_id?: string;
   author_id: string;
   is_claimable: boolean;
@@ -36,8 +39,7 @@ interface IMaterialDoc {
   material_title: string;
   material_description: string;
   material_link: string;
-  source_id: string;
-  type_id: string;
+  material_type: TMaterialType;
   recognition_id: string;
   author_id: string;
   is_claimable: boolean;
@@ -55,8 +57,7 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
         material_title,
         material_description,
         material_link,
-        source_id,
-        type_id,
+        material_type,
         recognition_id,
         author_id,
         is_claimable
@@ -69,16 +70,14 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
         $4,
         $5,
         $6,
-        $7,
-        $8
+        $7
       ) 
       RETURNING *;`,
       [
         materialBody.material_title,
         materialBody.material_description,
         materialBody.material_link,
-        materialBody.source_id,
-        materialBody.type_id,
+        materialBody.material_type,
         materialBody.recognition_id,
         materialBody.author_id,
         materialBody.is_claimable,
@@ -89,9 +88,6 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
   } catch (e: unknown) {
     const err = e as DatabaseError;
     if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('source_id'))
-        throw new ApiError(httpStatus.CONFLICT, `source already assigned to a material`);
-      if (err.message.includes('type_id')) throw new ApiError(httpStatus.CONFLICT, `type already assigned to a material`);
       if (err.message.includes('recognition_id'))
         throw new ApiError(httpStatus.CONFLICT, `recognition already assigned to a material`);
     }
@@ -102,7 +98,7 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
 
 /**
  * Query for materials
- * @returns {Promise<Array<IMaterial>}
+ * @returns {Promise<Array<IMaterial>>}
  */
 export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterialQueryResult> => {
   try {
@@ -146,13 +142,9 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
                   SELECT 
                   recognition_id 
                   FROM 
-                  recognition 
-                  INNER JOIN 
-                  status 
-                  ON 
-                  recognition.status_id = status.status_id 
-                  WHERE 
-                  status.status_name = '${statusTypes.ACCEPTED}' 
+                  recognition
+                  WHERE
+                  recognition.status = '${statusTypes.ACCEPTED}' 
                   AND recognition_id = m.recognition_id
                 )`
                     : ''
@@ -194,13 +186,9 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
                   SELECT 
                   recognition_id 
                   FROM 
-                  recognition 
-                  INNER JOIN 
-                  status 
-                  ON 
-                  recognition.status_id = status.status_id 
-                  WHERE 
-                  status.status_name = '${statusTypes.ACCEPTED}' 
+                  recognition
+                  WHERE
+                  recognition.status = '${statusTypes.ACCEPTED}'
                   AND recognition_id = m.recognition_id
                 )`
                     : ''
@@ -268,17 +256,34 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
 /**
  * Get a material by id
  * @param {string} id
+ * @param {object} options - optional config object
+ * @param {string|string[]} options.populate - the list of fields to populate
+ * @param {string} options.owner_id - returns the material that belongs to owner_id
  * @returns {Promise<IMaterialDoc|null>}
  */
-export const getMaterialById = async (id: string, populate?: string | string[]): Promise<IMaterialDoc | null> => {
+export const getMaterialById = async (
+  id: string,
+  options?: {
+    populate?: string | string[];
+    owner_id?: string;
+  }
+): Promise<IMaterialDoc | null> => {
   const material = await (async () => {
     try {
       const result = await db.query(
-        `SELECT * ${populator({
+        `SELECT 
+        * 
+        ${populator({
           tableAlias: 'm',
-          fields: typeof populate === 'string' ? [populate] : populate,
-        })} FROM material m WHERE material_id = $1;`,
-        [id]
+          fields: options ? (typeof options.populate === 'string' ? [options.populate] : options.populate) : [],
+        })} 
+        FROM 
+        material m 
+        WHERE 
+        material_id = $1
+        ${options && options.owner_id ? 'AND author_id = $2' : ''}
+        ;`,
+        [id, options && options.owner_id ? options.owner_id : false].filter(Boolean)
       );
       return result.rows[0];
     } catch {
@@ -295,10 +300,17 @@ export const getMaterialById = async (id: string, populate?: string | string[]):
  * Update material by id
  * @param {string} id
  * @param {Partial<IMaterial>} updateBody
+ * @param {object} options - optional config object
+ * @param {string} options.owner_id - updates the material that belongs to owner_id
  * @returns {Promise<IMaterialDoc|null>}
  */
-export const updateMaterialById = async (id: string, updateBody: Partial<IMaterial>): Promise<IMaterialDoc | null> => {
-  await getMaterialById(id); // check if material exists, throws error if not found
+export const updateMaterialById = async (
+  id: string,
+  updateBody: Partial<IMaterial>,
+  options?: { owner_id?: string }
+): Promise<IMaterialDoc | null> => {
+  // check if material exists, throws error if not found
+  await getMaterialById(id, { owner_id: options?.owner_id });
 
   // build sql conditions and values
   const conditions: string[] = [];
@@ -324,9 +336,6 @@ export const updateMaterialById = async (id: string, updateBody: Partial<IMateri
   } catch (e: unknown) {
     const err = e as DatabaseError;
     if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('source_id'))
-        throw new ApiError(httpStatus.CONFLICT, `source already assigned to a material`);
-      if (err.message.includes('type_id')) throw new ApiError(httpStatus.CONFLICT, `type already assigned to a material`);
       if (err.message.includes('recognition_id'))
         throw new ApiError(httpStatus.CONFLICT, `recognition already assigned to a material`);
     }
@@ -338,10 +347,13 @@ export const updateMaterialById = async (id: string, updateBody: Partial<IMateri
 /**
  * Delete material by id
  * @param {string} id
+ * @param {object} options - optional config object
+ * @param {string} options.owner_id - deletes the material that belongs to owner_id
  * @returns {Promise<IMaterialDoc|null>}
  */
-export const deleteMaterialById = async (id: string): Promise<IMaterialDoc | null> => {
-  const material = await getMaterialById(id); // check if material exists, throws error if not found
+export const deleteMaterialById = async (id: string, options?: { owner_id?: string }): Promise<IMaterialDoc | null> => {
+  // check if material exists, throws error if not found
+  const material = await getMaterialById(id, { owner_id: options?.owner_id });
 
   try {
     await db.query(`DELETE FROM material WHERE material_id = $1;`, [id]);

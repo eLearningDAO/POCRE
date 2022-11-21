@@ -8,15 +8,11 @@ components:
           format: uuid
         user_name:
           type: string
-        wallet_address:
-          type: string
         user_bio:
           type: string
         phone:
           type: string
         email_addres:
-          type: string
-        verified_id:
           type: string
         reputation_stars:
           type: number
@@ -26,32 +22,11 @@ components:
       example:
         user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
         user_name: john
-        wallet_address: 28y9gd27g2g237g80hnibhi
         user_bio: ready to explore
         phone: '+92313555544'
         email_addres: 'example@example.com'
-        verified_id: 28y9gd27g2g237g80hnibhi
         reputation_stars: 0
         date_joined: 2022-09-05T19:00:00.000Z
-
-    Status:
-      type: object
-      properties:
-        status_id:
-          type: string
-          format: uuid
-        status_name:
-          type: string
-        status_description:
-          type: string
-        action_made:
-          type: string
-          format: date-time
-      example:
-        status_id: 2cc874d2-9f7d-48a8-a416-ec19e9462da9
-        status_name: pending
-        status_description: recognition to john
-        action_made: 2022-09-05T19:00:00.000Z
 
     Decision:
       type: object
@@ -86,34 +61,19 @@ components:
         recognition_issued:
           type: string
           format: date-time
-        status_id:
+        status:
           type: string
-          format: uuid
+        status_updated:
+          type: string
+          format: date-time
       example:
         recognition_id: 8d098580-1e4c-40c8-95f3-9c78de09a121
         recognition_by: d5cef9e4-d497-45ea-bd68-609aba268886
         recognition_for: d5cef9e4-d497-45ea-bd68-609aba268886
         recognition_description: recognition to john
         recognition_issued: 2022-09-07T19:00:00.000Z
-        status_id: 865b3cff-d24e-4ec7-8873-f9634c5f2245
-
-    Source:
-      type: object
-      properties:
-        source_id:
-          type: string
-          format: uuid
-        source_title:
-          type: string
-        source_description:
-          type: string
-        site_url:
-          type: string
-      example:
-        source_id: 04588cf9-09c3-446c-828c-609390c66b29
-        source_title: turtle
-        source_description: turtle walks
-        site_url: https://google.com
+        status: pending
+        status_updated: 2022-09-07T19:00:00.000Z
 
     Material:
       type: object
@@ -127,12 +87,8 @@ components:
           type: string
         material_link:
           type: string
-        source_id:
+        material_type:
           type: string
-          format: uuid
-        type_id:
-          type: string
-          format: uuid
         recognition_id:
           type: string
           format: uuid
@@ -146,26 +102,10 @@ components:
         material_title: plastic
         material_description: dangerous
         material_link: https://example.com
-        source_id: 12ed7a55-a1ba-4895-83e9-7aa615247390
-        type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
+        material_type: audio
         recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
         author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
         is_claimable: true
-
-    MaterialType:
-      type: object
-      properties:
-        type_id:
-          type: string
-          format: uuid
-        type_name:
-          type: string
-        type_description:
-          type: string
-      example:
-        type_id: 670be025-7c46-4890-8348-b5ad620ad9a7
-        type_name: plastic
-        type_description: dangerous to environment
 
     Tag:
       type: object
@@ -196,9 +136,8 @@ components:
           type: string
         creation_description:
           type: string
-        source_id:
+        creation_link:
           type: string
-          format: uuid
         author_id:
           type: string
           format: uuid
@@ -223,7 +162,7 @@ components:
         creation_id: b1171878-797e-4f8a-a726-961f761bb8fc
         creation_title: my first creation
         creation_description: an example creation
-        source_id: d91f005d-2037-41b9-b706-0e70c651e4e2
+        creation_link: https://example.com
         author_id: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
         tags: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
         materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
@@ -241,11 +180,8 @@ components:
           type: string
         creation_description:
           type: string
-        source_id:
+        creation_link:
           type: string
-          format: uuid
-        source:
-          $ref: '#/components/schemas/Source'
         author_id:
           type: string
           format: uuid
@@ -270,12 +206,7 @@ components:
         creation_id: b1171878-797e-4f8a-a726-961f761bb8fc
         creation_title: my first creation
         creation_description: an example creation
-        source_id: d91f005d-2037-41b9-b706-0e70c651e4e2
-        source: 
-          source_id: 04588cf9-09c3-446c-828c-609390c66b29
-          source_title: turtle
-          source_description: turtle walks
-          site_url: https://google.com
+        creation_link: https://example.com
         author_id: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
         author: 
           user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
@@ -297,17 +228,7 @@ components:
             material_title: plastic
             material_description: dangerous
             material_link: https://example.com
-            source_id: 12ed7a55-a1ba-4895-83e9-7aa615247390
-            source:
-              source_id: 04588cf9-09c3-446c-828c-609390c66b29
-              source_title: turtle
-              source_description: turtle walks
-              site_url: https://google.com
-            type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
-            type: 
-              type_id: 670be025-7c46-4890-8348-b5ad620ad9a7
-              type_name: plastic
-              type_description: dangerous to environment
+            material_type: audio
             recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
             recognition: 
               recognition_id: 8d098580-1e4c-40c8-95f3-9c78de09a121
@@ -333,12 +254,8 @@ components:
                 date_joined: 2022-09-05T19:00:00.000Z
               recognition_description: recognition to john
               recognition_issued: 2022-09-07T19:00:00.000Z
-              status_id: 865b3cff-d24e-4ec7-8873-f9634c5f2245
-              status: 
-                status_id: 2cc874d2-9f7d-48a8-a416-ec19e9462da9
-                status_name: pending
-                status_description: recognition to john
-                action_made: 2022-09-05T19:00:00.000Z
+              status: pending
+              status_updated: 2022-09-07T19:00:00.000Z
             author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
             author: 
               user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
@@ -409,6 +326,32 @@ components:
         litigation_end: 2022-09-06T19:00:00.000Z
         reconcilate: false
         ownership_transferred: false
+    
+    Token:
+      type: object
+      properties:
+        payload:
+          type: string
+      example:
+        token: eyJhbGciOiJIUzI1NiJ9.MUExelAxZVA1UUdlZmkyRE1QVGZUTDVTTG12N0RpdmZOYQ.Qet6M0nRv2VD7gQgUfi9ivWo6L8IKojzGWuloFBkxvE
+
+    Session:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        token: 
+          type: strin
+      example: 
+        user: 
+          user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
+          user_name: john
+          user_bio: ready to explore
+          phone: '+92313555544'
+          email_addres: 'example@example.com'
+          reputation_stars: 0
+          date_joined: 2022-09-05T19:00:00.000Z
+        token: eyJhbGciOiJIUzI1NiJ9.MUExelAxZVA1UUdlZmkyRE1QVGZUTDVTTG12N0RpdmZOYQ.Qet6M0nRv2VD7gQgUfi9ivWo6L8IKojzGWuloFBkxvE
 
     Error:
       type: object
@@ -473,24 +416,6 @@ components:
           example:
             code: 409
             message: user cannot recognize themselve
-    StatusNotFound:
-      description: Status not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 404
-            message: status not found
-    StatusAlreadyAssignedToRecognition:
-      description: Status already assigned to a recognition
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 409
-            message: status already assigned to a recognition
     DecisionNotFound:
       description: Decision not found
       content:
@@ -536,51 +461,6 @@ components:
           example:
             code: 409
             message: recognition already assigned to a litigation
-    SourceNotFound:
-      description: Source not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 404
-            message: source not found
-    SourceAlreadyAssignedToMaterial:
-      description: Source already assigned to a material
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 409
-            message: source already assigned to a material
-    SourceAlreadyAssignedToCreation:
-      description: Source already assigned to a creation
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 409
-            message: source already assigned to a creation
-    MaterialTypeNotFound:
-      description: Material Type not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 404
-            message: material type not found
-    MaterialTypeAlreadyAssignedToMaterial:
-      description: Material type already assigned to a material
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 409
-            message: material type already assigned to a material
     MaterialNotFound:
       description: Material not found
       content:
@@ -698,3 +578,9 @@ components:
           example:
             code: 404
             message: litigation not found
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

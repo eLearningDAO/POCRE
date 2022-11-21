@@ -1,14 +1,13 @@
 import express from 'express';
 import userRoute from './user.route';
-import statusRoute from './status.route';
 import decisionRoute from './decision.route';
 import recognitionRoute from './recognition.route';
-import sourceRoute from './source.route';
-import materialTypeRoute from './materialType.route';
 import materialRoute from './material.route';
 import tagRoute from './tag.route';
 import creationRoute from './creation.route';
 import litigationRoute from './litigation.route';
+import tokenRoute from './token.route';
+import authRoute from './auth.route';
 import docsRoute from './docs.route';
 import config from '../../config/config';
 
@@ -20,24 +19,12 @@ const defaultRoutes = [
     route: userRoute,
   },
   {
-    path: '/status',
-    route: statusRoute,
-  },
-  {
     path: '/decision',
     route: decisionRoute,
   },
   {
     path: '/recognitions',
     route: recognitionRoute,
-  },
-  {
-    path: '/source',
-    route: sourceRoute,
-  },
-  {
-    path: '/material-type',
-    route: materialTypeRoute,
   },
   {
     path: '/materials',
@@ -54,6 +41,14 @@ const defaultRoutes = [
   {
     path: '/litigations',
     route: litigationRoute,
+  },
+  {
+    path: '/token',
+    route: tokenRoute,
+  },
+  {
+    path: '/auth',
+    route: authRoute,
   },
 ];
 
