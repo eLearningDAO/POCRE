@@ -4,7 +4,7 @@ import moment from 'moment';
 import { useState } from 'react';
 import authUser from 'utils/helpers/authUser';
 
-const user = authUser.get();
+const user = authUser.getUser();
 
 const useHome = () => {
   const queryClient = useQueryClient();
@@ -22,7 +22,7 @@ const useHome = () => {
       // get litigations
       const toPopulate = [
         'assumed_author', 'winner', 'issuer_id', 'creation_id', 'creation_id.author_id', 'decisions',
-        'recognitions.recognition_for', 'recognitions.status_id', 'material_id.author_id', 'material_id.author_id',
+        'recognitions.recognition_for', 'material_id.author_id', 'material_id.author_id',
       ];
 
       // get all litigations

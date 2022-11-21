@@ -10,7 +10,7 @@ import LitigationCard from 'components/cards/LitigationCard';
 import authUser from 'utils/helpers/authUser';
 import useHome from './useHome';
 
-const user = authUser.get();
+const user = authUser.getUser();
 
 function Litigation() {
   // get userInfo from the globale state with help of zustand store hook !
@@ -117,11 +117,9 @@ function Litigation() {
                 title={x?.litigation_title}
                 claimer={{
                   name: x?.issuer?.user_name,
-                  walletAddress: x?.issuer?.wallet_address,
                 }}
                 assumedAuthor={{
                   name: x?.assumed_author?.user_name,
-                  walletAddress: x?.assumed_author?.wallet_address,
                 }}
                 startDate={moment(x?.litigation_start).format('DD/MM/YYYY')}
                 endDate={moment(x?.litigation_end).format('DD/MM/YYYY')}
@@ -165,15 +163,14 @@ function Litigation() {
                   reconcilate: false,
                 })}
                 canRedeem={!x?.toJudge
-                  ? x?.winner?.wallet_address === user?.wallet_address : null}
+                  ? x?.winner?.user_id === user?.user_id : null}
                 isRedeemed={!x?.toJudge ? x?.ownership_transferred : null}
                 lostClaim={!x?.toJudge
-                  ? x?.winner?.wallet_address !== user?.wallet_address : null}
+                  ? x?.winner?.user_id !== user?.user_id : null}
                 // eslint-disable-next-line no-return-await
                 onRedeem={async () => await transferLitigatedItemOwnership(x?.litigation_id)}
                 winner={{
                   name: x?.winner?.user_name,
-                  walletAddress: x?.winner?.wallet_address,
                 }}
               />
             ))}

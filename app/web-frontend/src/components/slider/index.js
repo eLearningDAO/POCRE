@@ -1,40 +1,28 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/alt-text */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from 'react-materialize';
 import M from 'materialize-css';
 import RightIcon from 'assets/images/right.png';
 import LeftIcon from 'assets/images/left.png';
-import SliderImage1 from 'assets/images/slider-01.jpg';
-import SliderImage2 from 'assets/images/slider-02.jpg';
-import SliderImage3 from 'assets/images/slider-03.jpg';
-import SliderImage4 from 'assets/images/slider-04.jpg';
-import SliderImage5 from 'assets/images/slider-05.jpg';
 import './index.css';
 import { accessibleOnClick } from 'utils/helpers/accessibleOnClick';
 
-const slides = [
-  <img src={SliderImage1} alt="1" />,
-  <img src={SliderImage2} alt="2" />,
-  <img src={SliderImage3} alt="3" />,
-  <img src={SliderImage4} alt="4" />,
-  <img src={SliderImage5} alt="5" />,
-];
-
-export default function Slider({ handleSlidClicked }) {
+export default function Slider({ handleSlidClicked, slideImageList }) {
   const [car, setCar] = React.useState(null);
-
-  React.useEffect(() => {
-    const options = {
-      duration: 300,
-      indicators: true,
-      dragged: false,
-      onCycleTo: () => {
-        // console.log('New Slide');
-      },
-    };
-    M.Carousel.init(car, options);
-  }, [car]);
+  useEffect(() => {
+    if (slideImageList) {
+      const options = {
+        duration: 300,
+        indicators: true,
+        dragged: false,
+        onCycleTo: () => {
+          // console.log('New Slide');
+        },
+      };
+      M.Carousel.init(car, options);
+    }
+  }, [car, slideImageList]);
 
   const next = () => {
     const instance = M.Carousel.getInstance(car);
@@ -55,12 +43,12 @@ export default function Slider({ handleSlidClicked }) {
         className="carousel"
       >
         {
-          slides.map((slide, index) => (
+          slideImageList && slideImageList.map((slide, index) => (
             <a
               className="carousel-item"
               {...accessibleOnClick(handleSlidClicked, index)}
             >
-              {slide}
+              <img src={slide.imageUrl} alt={slide.id} />
             </a>
           ))
         }

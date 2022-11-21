@@ -1,58 +1,27 @@
 import { Grid } from '@mui/material';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LatestNewsCard from 'components/cards/LatestNews';
 import TopAuthorCard from 'components/cards/TopAuthorCard';
-import shallow from 'zustand/shallow';
 import Loader from 'components/uicore/Loader';
 import './index.css';
 import Slider from 'components/slider';
 import TrendingCard from 'components/cards/TrendingCard';
-import useUserInfo from 'hooks/user/userInfo';
-import useStore from './store';
+import useHome from './useHome';
 
 function Home() {
   const navigate = useNavigate();
+
   const {
     trendingList,
     topAuthorList,
     materialList,
-    fetchTrending,
-    fetchAuthor,
-    fetchMaterial,
-    isTrendingListFeched,
-    isTopAuthorListFeched,
-    isMaterialListFeched,
-  } = useStore(
-    (state) => ({
-      trendingList: state.trendingList,
-      topAuthorList: state.topAuthorList,
-      materialList: state.materialList,
-      fetchTrending: state.fetchTrending,
-      fetchAuthor: state.fetchAuthor,
-      fetchMaterial: state.fetchMaterial,
-      isTrendingListFeched: state.isTrendingListFeched,
-      isTopAuthorListFeched: state.isTopAuthorListFeched,
-      isMaterialListFeched: state.isMaterialListFeched,
-    }),
-    shallow,
-  );
-  const setUser = useUserInfo((s) => s.setUser);
-  useEffect(() => {
-    fetchAuthor();
-    fetchTrending();
-    fetchMaterial();
-  }, []);
-
+    isTrendingListFetched,
+    isTopAuthorListFetched,
+    isMaterialListFetched,
+    sliderImages,
+  } = useHome();
   const handleAuthorCardClick = (userId) => {
-    const authors = topAuthorList.filter((author) => author.user_id === userId);
-    if (authors.length > 0) {
-      setUser((previousS) => ({
-        user: authors[0].userDetail ? { ...previousS } : null,
-        login: authors[0].userDetail,
-      }));
-      navigate('/wallet');
-    }
+    navigate(`/user/${userId}`);
   };
 
   const handleCreationCardClick = (creationId) => {
@@ -65,12 +34,12 @@ function Home() {
 
   return (
     <div className="container">
-      <Slider handleSlidClick={handleSlidClick} />
+      <Slider handleSlidClick={handleSlidClick} slideImageList={sliderImages} />
       <Grid container spacing={3}>
         <Grid item md={5} xs={12} sm={12} className="trending-container">
           <h4 className="home-title">Latest Co-Creations</h4>
           <div>
-            {isTrendingListFeched ? <Loader /> : trendingList
+            {isTrendingListFetched ? <Loader /> : trendingList
               && trendingList.map((trending) => (
                 <TrendingCard
                   mediaUrl={trending?.source?.site_url}
@@ -83,7 +52,7 @@ function Home() {
         <Grid item md={3} xs={12} sm={12} className="top-author-container">
           <h4 className="home-title">Top Authors</h4>
           <div>
-            {isTopAuthorListFeched ? <Loader /> : topAuthorList
+            {isTopAuthorListFetched ? <Loader /> : topAuthorList
               && topAuthorList.map((author) => (
                 <TopAuthorCard
                   author={author}
@@ -95,7 +64,7 @@ function Home() {
         <Grid item md={4} xs={12} sm={12} className="latest-material-container">
           <h4 className="home-title">Latest recognized materials</h4>
           <div>
-            {isMaterialListFeched ? <Loader /> : materialList
+            {isMaterialListFetched ? <Loader /> : materialList
               && materialList.map((material) => (
                 <LatestNewsCard
                   material={material}

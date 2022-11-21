@@ -1,79 +1,48 @@
-import React, { useCallback, useState } from 'react';
-import { API_BASE_URL } from 'config';
-import useUserInfo from 'hooks/user/userInfo';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
-
-const user = authUser.get();
+import '../responsive-menu-transition.css';
+import './Header.css';
 
 const useHeader = () => {
-  const { setUser: setUserContext, login, setFlag } = useUserInfo();
-  const userId = 0;
+  const [showLoginForm, setShowLoginForm] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState(null);
 
-  const [users, setUsers] = useState([]);
-  const [activeUser, setActiveUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const user = authUser.getUser();
+    const token = authUser.getJWTToken();
 
-  const [fetchUserStatus, setFetchUserStatus] = useState({
-    success: false,
-    error: null,
-  });
-
-  const fetchUsers = useCallback(async () => {
-    try {
-      setLoading(true);
-
-      const response = await fetch(`${API_BASE_URL}/users?limit=100`, {
-        method: 'GET',
-      }).then((data) => data.json());
-
-      // adding avatar temporarily (on frontend)
-      const usersWithAvatar = response.results.map((x) => ({
-        ...x,
-        avatar: `https://i.pravatar.cc/50?img=${Math.random()}`,
-      }));
-      setUsers(usersWithAvatar);
-
-      const temporaryUser = Object.keys(user).length > 0 ? user : usersWithAvatar?.[0];
-      setActiveUser(temporaryUser);
-      authUser.set(temporaryUser);
-      setUserContext((previousS) => ({ ...previousS, user: temporaryUser }));
-      setFetchUserStatus({
-        success: true,
-        error: null,
-      });
-    } catch {
-      setFetchUserStatus({
-        success: false,
-        error: 'Failed to fetch users',
-      });
-    } finally {
-      setLoading(false);
-    }
+    setLoggedInUser(user && token ? user : null);
   }, []);
 
-  const onUserSelect = (event, id) => {
-    const temporaryUser = users.find((x) => x.user_id === (event?.target?.value || id));
-    setActiveUser(temporaryUser);
-    authUser.set(temporaryUser);
+  const location = useLocation();
 
-    // set User gollably at our app
-    setUserContext((previousS) => ({ ...previousS, user: temporaryUser }));
-    setFlag();
+  const handleLogout = () => {
+    setLoggedInUser(null);
+    authUser.removeJWTToken();
+    authUser.removeUser();
+    // eslint-disable-next-line no-self-assign
+    window.location = window.location;
   };
 
-  React.useEffect(() => {
-    fetchUsers();
-    onUserSelect({}, userId);
-  }, []);
+  const handleLogin = () => {
+    setLoggedInUser(authUser.getUser());
+    // eslint-disable-next-line no-self-assign
+    window.location = window.location;
+  };
+
+  const [displayResponsiveMenu, setDisplayResponsiveMenu] = React.useState(false);
 
   return {
-    login,
-    users,
-    activeUser,
-    loading,
-    fetchUserStatus,
-    fetchUsers,
-    onUserSelect,
+    displayResponsiveMenu,
+    setDisplayResponsiveMenu,
+    handleLogin,
+    handleLogout,
+    location,
+    showLoginForm,
+    setShowLoginForm,
+    loggedInUser,
+    setLoggedInUser,
   };
 };
 
