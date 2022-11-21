@@ -27,7 +27,7 @@ export const generateProofOfCreation = async (creation: any): Promise<string> =>
             let materialItemTemplateCopy = materialItemTemplate;
             materialItemTemplateCopy = materialItemTemplateCopy
               .replace('{{title}}', x.material_title)
-              .replace('{{file_type}}', x.type.type_name)
+              .replace('{{type}}', x.material_type)
               .replace('{{link}}', x.material_link)
               .replace('{{link}}', x.material_link)
               .replace('{{author}}', x.author.user_name);
@@ -44,8 +44,8 @@ export const generateProofOfCreation = async (creation: any): Promise<string> =>
     .replace('{{creation_title}}', creation.creation_title)
     .replace('{{creation_description}}', creation.creation_description)
     .replace('{{creation_description}}', creation.creation_description)
-    .replace('{{source.site_url}}', creation.source.site_url)
-    .replace('{{source.site_url}}', creation.source.site_url)
+    .replace('{{creation_link}}', creation.creation_link)
+    .replace('{{creation_link}}', creation.creation_link)
     .replace('{{creation_date}}', moment(creation.creation_date).format('Do MMMM YYYY'))
     .replace('{{author.user_name}}', creation.author.user_name)
     .replace('{{published_at}}', creation.published_at)

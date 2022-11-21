@@ -4,7 +4,6 @@ import { decisionDeepFields } from '../db/map';
 export const createDecision = {
   body: Joi.object().keys({
     decision_status: Joi.bool().required(),
-    maker_id: Joi.string().uuid().required(),
   }),
 };
 
@@ -26,7 +25,6 @@ export const updateDecision = {
   body: Joi.object()
     .keys({
       decision_status: Joi.bool().optional(),
-      maker_id: Joi.string().uuid().optional(),
     })
     .min(1),
 };

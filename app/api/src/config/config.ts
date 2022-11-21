@@ -20,6 +20,7 @@ const envVarsSchema = Joi.object()
     MIN_LITIGATORS: Joi.number().description('min litigators per litigation').required().min(1),
     MAX_LITIGATORS: Joi.number().description('max litigators per litigation').required().min(2),
     JWT_SECRET: Joi.string().required().description('JWT secret key'),
+    HASHING_SALT_WALLET_ADDRESS: Joi.string().required().description('Hasing Salt for wallet address'),
   })
   .unknown();
 
@@ -47,5 +48,8 @@ export default {
   },
   jwt: {
     secret: envVars.JWT_SECRET,
+  },
+  hashing_salt: {
+    wallet_address: envVars.HASHING_SALT_WALLET_ADDRESS,
   },
 };

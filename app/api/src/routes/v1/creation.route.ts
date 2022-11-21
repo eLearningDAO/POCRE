@@ -2,19 +2,20 @@ import express from 'express';
 import validate from '../../middlewares/validate';
 import * as creationValidation from '../../validations/creation.validation';
 import * as creationController from '../../controllers/creation.controller';
+import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
 router
   .route('/')
-  .post(validate(creationValidation.createCreation), creationController.createCreation)
+  .post(auth(), validate(creationValidation.createCreation), creationController.createCreation)
   .get(validate(creationValidation.queryCreations), creationController.queryCreations);
 
 router
   .route('/:creation_id')
   .get(validate(creationValidation.getCreation), creationController.getCreationById)
-  .patch(validate(creationValidation.updateCreation), creationController.updateCreationById)
-  .delete(validate(creationValidation.deleteCreation), creationController.deleteCreationById);
+  .patch(auth(), validate(creationValidation.updateCreation), creationController.updateCreationById)
+  .delete(auth(), validate(creationValidation.deleteCreation), creationController.deleteCreationById);
 
 router
   .route('/:creation_id/proof')
@@ -36,6 +37,8 @@ export default router;
  *     summary: Create a creation
  *     description: Creates a new creation.
  *     tags: [Creation]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -44,8 +47,7 @@ export default router;
  *             type: object
  *             required:
  *               - creation_title
- *               - source_id
- *               - author_id
+ *               - creation_link
  *               - tags
  *               - creation_date
  *             properties:
@@ -54,12 +56,8 @@ export default router;
  *               creation_description:
  *                 type: string
  *                 description: can be null
- *               source_id:
+ *               creation_link:
  *                 type: string
- *                 format: uuid
- *               author_id:
- *                 type: string
- *                 format: uuid
  *               tags:
  *                 type: array
  *                 items:
@@ -80,8 +78,7 @@ export default router;
  *             example:
  *                creation_title: my first creation
  *                creation_description: an example creation
- *                source_id: d91f005d-2037-41b9-b706-0e70c651e4e2
- *                author_id: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
+ *                creation_link: https://example.com
  *                tags: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
  *                materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
  *                creation_date: 2022-09-09T19:00:00.000Z
@@ -99,16 +96,10 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/SourceNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
  *                 - $ref: '#/components/responses/TagNotFound'
  *                 - $ref: '#/components/responses/MaterialNotFound'
  *             examples:
- *               SourceNotFound:
- *                 summary: source not found
- *                 value:
- *                   code: 404
- *                   message: source not found
  *               UserNotFound:
  *                 summary: user not found
  *                 value:
@@ -129,14 +120,8 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/SourceAlreadyAssignedToCreation'
  *                 - $ref: '#/components/responses/MaterialAlreadyAssignedToCreation'
  *             examples:
- *               SourceAlreadyAssignedToCreation:
- *                 summary: source already assigned to a creation
- *                 value:
- *                   code: 409
- *                   message: source already assigned to a creation
  *               MaterialAlreadyAssignedToCreation:
  *                 summary: material already assigned to a creation
  *                 value:
@@ -206,16 +191,12 @@ export default router;
  *           items:
  *             type: string
  *             enum:
- *               - source_id
  *               - author_id
  *               - tags
  *               - materials
- *               - materials.source_id
- *               - materials.type_id
  *               - materials.recognition_id
  *               - materials.recognition_id.recognition_by
  *               - materials.recognition_id.recognition_for
- *               - materials.recognition_id.status_id
  *               - materials.author_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
@@ -267,16 +248,12 @@ export default router;
  *           items:
  *             type: string
  *             enum:
- *               - source_id
  *               - author_id
  *               - tags
  *               - materials
- *               - materials.source_id
- *               - materials.type_id
  *               - materials.recognition_id
  *               - materials.recognition_id.recognition_by
  *               - materials.recognition_id.recognition_for
- *               - materials.recognition_id.status_id
  *               - materials.author_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
@@ -295,6 +272,8 @@ export default router;
  *     summary: Update a creation by id
  *     description: Update creation details by its id
  *     tags: [Creation]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: creation_id
@@ -313,12 +292,8 @@ export default router;
  *               creation_description:
  *                 type: string
  *                 description: can be null
- *               source_id:
+ *               creation_link:
  *                 type: string
- *                 format: uuid
- *               author_id:
- *                 type: string
- *                 format: uuid
  *               tags:
  *                 type: array
  *                 items:
@@ -339,8 +314,7 @@ export default router;
  *             example:
  *                creation_title: my first creation
  *                creation_description: an example creation
- *                source_id: d91f005d-2037-41b9-b706-0e70c651e4e2
- *                author_id: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
+ *                creation_link: https://example.com
  *                tags: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
  *                materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
  *                creation_date: 2022-09-09T19:00:00.000Z
@@ -359,7 +333,6 @@ export default router;
  *             schema:
  *               oneOf:
  *                 - $ref: '#/components/responses/CreationNotFound'
- *                 - $ref: '#/components/responses/SourceNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
  *                 - $ref: '#/components/responses/TagNotFound'
  *                 - $ref: '#/components/responses/MaterialNotFound'
@@ -369,11 +342,6 @@ export default router;
  *                 value:
  *                   code: 404
  *                   message: creation not found
- *               SourceNotFound:
- *                 summary: source not found
- *                 value:
- *                   code: 404
- *                   message: source not found
  *               UserNotFound:
  *                 summary: user not found
  *                 value:
@@ -394,14 +362,8 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/SourceAlreadyAssignedToCreation'
  *                 - $ref: '#/components/responses/MaterialAlreadyAssignedToCreation'
  *             examples:
- *               SourceAlreadyAssignedToCreation:
- *                 summary: source already assigned to a creation
- *                 value:
- *                   code: 409
- *                   message: source already assigned to a creation
  *               MaterialAlreadyAssignedToCreation:
  *                 summary: material already assigned to a creation
  *                 value:
@@ -414,6 +376,8 @@ export default router;
  *     summary: Delete a creation by id
  *     description: Deletes a creation by its id
  *     tags: [Creation]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: creation_id

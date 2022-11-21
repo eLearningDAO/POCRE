@@ -13,9 +13,6 @@ interface IPkMap {
   creation_id: string;
   material_id: string;
   recognition_id: string;
-  status_id: string;
-  source_id: string;
-  type_id: string;
   user_id: string;
   decision_id: string;
   tag_id: string;
@@ -37,9 +34,6 @@ interface ITableNameMap {
   creation_id: string;
   material_id: string;
   recognition_id: string;
-  status_id: string;
-  source_id: string;
-  type_id: string;
   user_id: string;
   decision_id: string;
   tag_id: string;
@@ -70,9 +64,6 @@ const pkMap: IPkMap = {
   creation_id: 'creation_id',
   material_id: 'material_id',
   recognition_id: 'recognition_id',
-  status_id: 'status_id',
-  source_id: 'source_id',
-  type_id: 'type_id',
   user_id: 'user_id',
   decision_id: 'decision_id',
   tag_id: 'tag_id',
@@ -84,29 +75,26 @@ const pkMap: IPkMap = {
  */
 const tableNameMap: ITableNameMap = {
   // decision table
-  maker_id: 'users',
+  maker_id: 'VIEW_users_public_fields',
   // recognition table
-  recognition_by: 'users',
-  recognition_for: 'users',
+  recognition_by: 'VIEW_users_public_fields',
+  recognition_for: 'VIEW_users_public_fields',
   // material and creation table
-  author_id: 'users',
+  author_id: 'VIEW_users_public_fields',
   // creation table
   tags: 'tag',
   materials: 'material',
   // litigation table
-  assumed_author: 'users',
-  winner: 'users',
-  issuer_id: 'users',
+  assumed_author: 'VIEW_users_public_fields',
+  winner: 'VIEW_users_public_fields',
+  issuer_id: 'VIEW_users_public_fields',
   recognitions: 'recognition',
   decisions: 'decision',
   // common
   creation_id: 'creation',
   material_id: 'material',
   recognition_id: 'recognition',
-  status_id: 'status',
-  source_id: 'source',
-  type_id: 'material_type',
-  user_id: 'users',
+  user_id: 'VIEW_users_public_fields',
   decision_id: 'decision',
   litigation_id: 'litigation',
   tag_id: 'tag',
@@ -125,14 +113,12 @@ const decisionDeepFields: string[] = ['maker_id'];
 /**
  * List of deep fields that can be populated in recognition
  */
-const recognitionDeepFields: string[] = ['recognition_by', 'recognition_for', 'status_id'];
+const recognitionDeepFields: string[] = ['recognition_by', 'recognition_for'];
 
 /**
  * List of deep fields that can be populated in material
  */
 const materialDeepFields: string[] = [
-  'source_id',
-  'type_id',
   'recognition_id',
   ...recognitionDeepFields.map((x) => `recognition_id.${x}`),
   'author_id',
@@ -141,13 +127,7 @@ const materialDeepFields: string[] = [
 /**
  * List of deep fields that can be populated in creation
  */
-const creationDeepFields: string[] = [
-  'source_id',
-  'author_id',
-  'tags',
-  'materials',
-  ...materialDeepFields.map((x) => `materials.${x}`),
-];
+const creationDeepFields: string[] = ['author_id', 'tags', 'materials', ...materialDeepFields.map((x) => `materials.${x}`)];
 
 /**
  * List of deep fields that can be populated in litigation

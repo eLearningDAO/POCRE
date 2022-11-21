@@ -2,19 +2,20 @@ import express from 'express';
 import validate from '../../middlewares/validate';
 import * as recognitionValidation from '../../validations/recognition.validation';
 import * as recognitionController from '../../controllers/recognition.controller';
+import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
 router
   .route('/')
-  .post(validate(recognitionValidation.createRecognition), recognitionController.createRecognition)
+  .post(auth(), validate(recognitionValidation.createRecognition), recognitionController.createRecognition)
   .get(validate(recognitionValidation.queryRecognitions), recognitionController.queryRecognitions);
 
 router
   .route('/:recognition_id')
   .get(validate(recognitionValidation.getRecognition), recognitionController.getRecognitionById)
-  .patch(validate(recognitionValidation.updateRecognition), recognitionController.updateRecognitionById)
-  .delete(validate(recognitionValidation.deleteRecognition), recognitionController.deleteRecognitionById);
+  .patch(auth(), validate(recognitionValidation.updateRecognition), recognitionController.updateRecognitionById)
+  .delete(auth(), validate(recognitionValidation.deleteRecognition), recognitionController.deleteRecognitionById);
 
 export default router;
 
@@ -32,6 +33,8 @@ export default router;
  *     summary: Create a recognition
  *     description: Creates a new recognition.
  *     tags: [Recognition]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -39,24 +42,25 @@ export default router;
  *           schema:
  *             type: object
  *             required:
- *               - recognition_by
  *               - recognition_for
- *               - status_id
+ *               - status
  *             properties:
- *               recognition_by:
- *                 type: uuid
  *               recognition_for:
  *                 type: uuid
  *               recognition_description:
  *                 type: string
  *                 description: can be null
- *               status_id:
- *                 type: uuid
+ *               status:
+ *                 type: string
+ *                 enum: [pending,accepted,declined]
+ *               status_updated:
+ *                 type: string
+ *                 format: date-time
  *             example:
- *                recognition_by: d5cef9e4-d497-45ea-bd68-609aba268886
  *                recognition_for: d5cef9e4-d497-45ea-bd68-609aba268887
  *                recognition_description: null
- *                status_id: 865b3cff-d24e-4ec7-8873-f9634c5f2245
+ *                status: pending
+ *                status_updated: 2022-09-05T19:00:00.000Z
  *     responses:
  *       "201":
  *         description: Created
@@ -69,14 +73,8 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/StatusNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
  *             examples:
- *               StatusNotFound:
- *                 summary: status not found
- *                 value:
- *                   code: 404
- *                   message: status not found
  *               UserNotFound:
  *                 summary: user not found
  *                 value:
@@ -87,14 +85,8 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/StatusAlreadyAssignedToRecognition'
  *                 - $ref: '#/components/responses/UserCannotRecognizeThemselve'
  *             examples:
- *               StatusAlreadyAssignedToRecognize:
- *                 summary: status already assigned to a recognition
- *                 value:
- *                   code: 409
- *                   message: status already assigned to a recognition
  *               UserCannotRecognizeThemselve:
  *                 summary: user cannot recognize themselve
  *                 value:
@@ -104,8 +96,8 @@ export default router;
  *         $ref: '#/components/responses/InternalServerError'
  *
  *   get:
- *     summary: Get all reconitions
- *     description: Returns a list of reconitions.
+ *     summary: Get all recognitions
+ *     description: Returns a list of recognitions.
  *     tags: [Recognition]
  *     parameters:
  *       - in: query
@@ -114,7 +106,7 @@ export default router;
  *           type: integer
  *           minimum: 1
  *         default: 10
- *         description: Maximum number of reconitions
+ *         description: Maximum number of recognitions
  *       - in: query
  *         name: page
  *         schema:
@@ -151,7 +143,6 @@ export default router;
  *             enum:
  *               - recognition_by
  *               - recognition_for
- *               - status_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
  *       "200":
@@ -183,7 +174,7 @@ export default router;
 
 /**
  * @swagger
- * /reconitions/{recognition_id}:
+ * /recognitions/{recognition_id}:
  *   get:
  *     summary: Get a recognition by id
  *     description: Get details about a recognition by its id
@@ -204,7 +195,6 @@ export default router;
  *             enum:
  *               - recognition_by
  *               - recognition_for
- *               - status_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
  *       "200":
@@ -222,6 +212,8 @@ export default router;
  *     summary: Update a recognition by id
  *     description: Update recognition details by its id
  *     tags: [Recognition]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: recognition_id
@@ -236,20 +228,22 @@ export default router;
  *           schema:
  *             type: object
  *             properties:
- *               recognition_by:
- *                 type: uuid
  *               recognition_for:
  *                 type: uuid
  *               recognition_description:
  *                 type: string
  *                 description: can be null
- *               status_id:
- *                 type: uuid
+ *               status:
+ *                 type: string
+ *                 enum: [pending,accepted,declined]
+ *               status_updated:
+ *                 type: string
+ *                 format: date-time
  *             example:
- *                recognition_by: d5cef9e4-d497-45ea-bd68-609aba268886
  *                recognition_for: d5cef9e4-d497-45ea-bd68-609aba268887
  *                recognition_description: null
- *                status_id: 865b3cff-d24e-4ec7-8873-f9634c5f2245
+ *                status: pending
+ *                status_updated: 2022-09-05T19:00:00.000Z
  *     responses:
  *       "200":
  *         description: OK
@@ -263,7 +257,6 @@ export default router;
  *             schema:
  *               oneOf:
  *                 - $ref: '#/components/responses/RecognitionNotFound'
- *                 - $ref: '#/components/responses/StatusNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
  *             examples:
  *               RecognitionNotFound:
@@ -271,11 +264,6 @@ export default router;
  *                 value:
  *                   code: 404
  *                   message: recognition not found
- *               StatusNotFound:
- *                 summary: status not found
- *                 value:
- *                   code: 404
- *                   message: status not found
  *               UserNotFound:
  *                 summary: user not found
  *                 value:
@@ -286,14 +274,8 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/StatusAlreadyAssignedToRecognition'
  *                 - $ref: '#/components/responses/UserCannotRecognizeThemselve'
  *             examples:
- *               StatusAlreadyAssignedToRecognition:
- *                 summary: status already assigned to a recognition
- *                 value:
- *                   code: 409
- *                   message: status already assigned to a recognition
  *               UserCannotRecognizeThemselve:
  *                 summary: user cannot recognize themselve
  *                 value:
@@ -306,6 +288,8 @@ export default router;
  *     summary: Delete a recognition by id
  *     description: Deletes a recognition by its id
  *     tags: [Recognition]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: recognition_id

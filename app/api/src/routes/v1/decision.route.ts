@@ -2,16 +2,17 @@ import express from 'express';
 import validate from '../../middlewares/validate';
 import * as decisionValidation from '../../validations/decision.validation';
 import * as decisionController from '../../controllers/decision.controller';
+import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
-router.route('/').post(validate(decisionValidation.createDecision), decisionController.createDecision);
+router.route('/').post(auth(), validate(decisionValidation.createDecision), decisionController.createDecision);
 
 router
   .route('/:decision_id')
   .get(validate(decisionValidation.getDecision), decisionController.getDecisionById)
-  .patch(validate(decisionValidation.updateDecision), decisionController.updateDecisionById)
-  .delete(validate(decisionValidation.deleteDecision), decisionController.deleteDecisionById);
+  .patch(auth(), validate(decisionValidation.updateDecision), decisionController.updateDecisionById)
+  .delete(auth(), validate(decisionValidation.deleteDecision), decisionController.deleteDecisionById);
 
 export default router;
 
@@ -29,6 +30,8 @@ export default router;
  *     summary: Create a decision
  *     description: Creates a new decision.
  *     tags: [Decision]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -37,17 +40,11 @@ export default router;
  *             type: object
  *             required:
  *               - decision_status
- *               - maker_id
  *             properties:
  *               decision_status:
  *                 type: bool
- *               maker_id:
- *                 type: string
- *                 format: uuid
- *                 description: must be a valid user id
  *             example:
  *                decision_status: true
- *                maker_id: c83a8680-e5db-4a79-8646-c6e3d010ec6b
  *     responses:
  *       "201":
  *         description: Created
@@ -98,8 +95,10 @@ export default router;
  *
  *   patch:
  *     summary: Update a decision by id
- *     description: Update source details by its id
+ *     description: Update decision details by its id
  *     tags: [Decision]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: decision_id
@@ -116,13 +115,8 @@ export default router;
  *             properties:
  *               decision_status:
  *                 type: bool
- *               maker_id:
- *                 type: string
- *                 format: uuid
- *                 description: must be a valid user id
  *             example:
  *                decision_status: true
- *                maker_id: c83a8680-e5db-4a79-8646-c6e3d010ec6b
  *     responses:
  *       "200":
  *         description: OK
@@ -138,7 +132,7 @@ export default router;
  *                 - $ref: '#/components/responses/DecisionNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
  *             examples:
- *               decisionnotfound:
+ *               DecisionNotFound:
  *                 summary: DecisionNotFound
  *                 value:
  *                   code: 404
@@ -155,6 +149,8 @@ export default router;
  *     summary: Delete a decision by id
  *     description: Deletes a decision by its id
  *     tags: [Decision]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: decision_id

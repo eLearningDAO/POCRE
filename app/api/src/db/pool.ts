@@ -22,10 +22,30 @@ const init = async (): Promise<QueryResult<any>> => {
 
   return pool.query(
     `
+    /* ************************************ */
+    /* ENUMS */
+    /* ************************************ */
+
+    DO $$ BEGIN
+      CREATE TYPE material_type_enums AS ENUM ('image', 'video', 'audio', 'document');
+    EXCEPTION
+        WHEN duplicate_object THEN null;
+    END $$;
+
+    DO $$ BEGIN
+      CREATE TYPE status_enums AS ENUM ('pending', 'accepted', 'declined');
+    EXCEPTION
+        WHEN duplicate_object THEN null;
+    END $$;
+
+    /* ************************************ */
+    /* TABLES */
+    /* ************************************ */
+
     CREATE TABLE IF NOT EXISTS users (
       user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      user_name character varying NOT NULL UNIQUE,
-      wallet_address character varying,
+      user_name character varying NOT NULL,
+      wallet_address character varying NOT NULL UNIQUE,
       user_bio text,
       image_url character varying,
       email_address character varying,
@@ -33,13 +53,6 @@ const init = async (): Promise<QueryResult<any>> => {
       verified_id character varying,
       reputation_stars integer  DEFAULT 0,
       date_joined DATE NOT NULL DEFAULT CURRENT_DATE
-    );
-
-    CREATE TABLE IF NOT EXISTS status (
-      status_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      status_name character varying NOT NULL,
-      status_description text,
-      action_made DATE NOT NULL DEFAULT CURRENT_DATE
     );
 
     CREATE TABLE IF NOT EXISTS decision (
@@ -58,7 +71,8 @@ const init = async (): Promise<QueryResult<any>> => {
       recognition_for UUID NOT NULL,
       recognition_description text,
       recognition_issued DATE NOT NULL DEFAULT CURRENT_DATE,
-      status_id UUID UNIQUE NOT NULL,
+      status status_enums NOT NULL,
+      status_updated DATE NOT NULL DEFAULT CURRENT_DATE,
       CONSTRAINT recognition_by
           FOREIGN KEY(recognition_by) 
           REFERENCES users(user_id)
@@ -66,18 +80,7 @@ const init = async (): Promise<QueryResult<any>> => {
       CONSTRAINT recognition_for
           FOREIGN KEY(recognition_for) 
           REFERENCES users(user_id)
-          ON DELETE CASCADE,
-      CONSTRAINT status_id
-          FOREIGN KEY(status_id) 
-          REFERENCES status(status_id)
           ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS source (
-      source_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      source_title character varying NOT NULL,
-      source_description text,
-      site_url character varying
     );
 
     CREATE TABLE IF NOT EXISTS tag (
@@ -87,30 +90,15 @@ const init = async (): Promise<QueryResult<any>> => {
       tag_created DATE NOT NULL DEFAULT CURRENT_DATE
     );
 
-    CREATE TABLE IF NOT EXISTS material_type (
-      type_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      type_name character varying NOT NULL,
-      type_description text
-    );
-
     CREATE TABLE IF NOT EXISTS material (
       material_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       material_title character varying NOT NULL,
       material_description text,
-      material_link character varying,
-      source_id UUID UNIQUE NOT NULL,
-      type_id UUID UNIQUE NOT NULL,
+      material_link character varying NOT NULL,
+      material_type material_type_enums NOT NULL,
       recognition_id UUID UNIQUE,
       author_id UUID NOT NULL,
       is_claimable bool default true,
-      CONSTRAINT source_id
-          FOREIGN KEY(source_id) 
-          REFERENCES source(source_id)
-          ON DELETE CASCADE,
-      CONSTRAINT type_id
-          FOREIGN KEY(type_id) 
-          REFERENCES material_type(type_id)
-          ON DELETE CASCADE,
       CONSTRAINT recognition_id
           FOREIGN KEY(recognition_id) 
           REFERENCES recognition(recognition_id),
@@ -124,17 +112,13 @@ const init = async (): Promise<QueryResult<any>> => {
       creation_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       creation_title character varying NOT NULL,
       creation_description text,
-      source_id UUID UNIQUE NOT NULL,
+      creation_link character varying NOT NULL,
       author_id UUID NOT NULL,
       tags UUID[],
       materials UUID[],
       creation_date DATE NOT NULL DEFAULT CURRENT_DATE,
       is_draft bool default false,
       is_claimable bool default true,
-      CONSTRAINT source_id
-          FOREIGN KEY(source_id) 
-          REFERENCES source(source_id)
-          ON DELETE CASCADE,
       CONSTRAINT author_id
           FOREIGN KEY(author_id) 
           REFERENCES users(user_id)
@@ -165,6 +149,29 @@ const init = async (): Promise<QueryResult<any>> => {
           REFERENCES users(user_id)
           ON DELETE CASCADE
     );
+
+    /* ************************************ */
+    /* VIEWS */
+    /* [NOTE]: Used by app to remove sensitive fields from api response */
+    /* ************************************ */
+    CREATE OR REPLACE VIEW 
+      VIEW_users_public_fields 
+    AS 
+      SELECT 
+        user_id,
+        user_name,
+        user_bio,
+        image_url,
+        email_address,
+        phone,
+        reputation_stars,
+        date_joined 
+    FROM 
+    users;
+
+    /* ************************************ */
+    /* PRODECURES */
+    /* ************************************ */
 
     CREATE OR REPLACE PROCEDURE remove_tag_references(tag_id UUID)
     LANGUAGE SQL

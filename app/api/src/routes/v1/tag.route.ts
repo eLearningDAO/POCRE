@@ -2,19 +2,20 @@ import express from 'express';
 import validate from '../../middlewares/validate';
 import * as tagValidation from '../../validations/tag.validation';
 import * as tagController from '../../controllers/tag.controller';
+import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
 router
   .route('/')
-  .post(validate(tagValidation.createTag), tagController.createTag)
+  .post(auth(), validate(tagValidation.createTag), tagController.createTag)
   .get(validate(tagValidation.queryTags), tagController.queryTags);
 
 router
   .route('/:tag_id')
   .get(validate(tagValidation.getTag), tagController.getTagById)
-  .patch(validate(tagValidation.updateTag), tagController.updateTagById)
-  .delete(validate(tagValidation.deleteTag), tagController.deleteTagById);
+  .patch(auth(), validate(tagValidation.updateTag), tagController.updateTagById)
+  .delete(auth(), validate(tagValidation.deleteTag), tagController.deleteTagById);
 
 export default router;
 
@@ -32,6 +33,8 @@ export default router;
  *     summary: Create a tag
  *     description: Creates a new tag.
  *     tags: [Tag]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -146,6 +149,8 @@ export default router;
  *     summary: Update a tag by id
  *     description: Update tag details by their id
  *     tags: [Tag]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: tag_id
@@ -183,6 +188,8 @@ export default router;
  *     summary: Delete a tag by id
  *     description: Deletes a tag by their id
  *     tags: [Tag]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: tag_id

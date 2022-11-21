@@ -1,5 +1,4 @@
 import httpStatus from 'http-status';
-import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 import statusTypes from '../constants/statusTypes';
@@ -8,7 +7,7 @@ import { populator } from '../db/plugins/populator';
 interface ICreation {
   creation_title: string;
   creation_description?: string;
-  source_id: string;
+  creation_link: string;
   author_id: string;
   tags: string[];
   materials?: string[];
@@ -39,7 +38,7 @@ interface ICreationDoc {
   creation_id: string;
   creation_title: string;
   creation_description: string;
-  source_id: string;
+  creation_link: string;
   author_id: string;
   tags: string[];
   materials: string[];
@@ -125,7 +124,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
       (
         creation_title,
         creation_description,
-        source_id,
+        creation_link,
         author_id,
         tags,
         materials,
@@ -139,7 +138,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
       [
         creationBody.creation_title,
         creationBody.creation_description,
-        creationBody.source_id,
+        creationBody.creation_link,
         creationBody.author_id,
         creationBody.tags,
         creationBody.materials || [],
@@ -151,13 +150,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
     const creation = result.rows[0];
 
     return creation;
-  } catch (e: unknown) {
-    const err = e as DatabaseError;
-    if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('source_id'))
-        throw new ApiError(httpStatus.CONFLICT, `source already assigned to a creation`);
-    }
-
+  } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };
@@ -253,7 +246,7 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                   (SELECT 
                     material.material_id, 
                     material.recognition_id, 
-                    recognition.status_id 
+                    recognition.status
                     FROM 
                     material 
                     INNER JOIN 
@@ -262,12 +255,8 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                     material.recognition_id = recognition.recognition_id
                   ) 
                 as material_recognition 
-                INNER JOIN 
-                status 
-                ON 
-                status.status_id = material_recognition.status_id 
                 WHERE 
-                status.status_name ${
+                material_recognition.status ${
                   options.is_fully_assigned ? `= '${statusTypes.ACCEPTED}'` : `<> '${statusTypes.DECLINED}'`
                 } 
                 AND 
@@ -292,7 +281,7 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                     SELECT 
                     material.material_id, 
                     material.recognition_id, 
-                    recognition.status_id 
+                    recognition.status
                     FROM 
                     material 
                     INNER JOIN 
@@ -301,12 +290,8 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                   ) 
                   as 
                   material_recognition 
-                  INNER JOIN 
-                  status 
-                  ON 
-                  status.status_id = material_recognition.status_id 
                   WHERE 
-                  status.status_name ${
+                  material_recognition.status ${
                     options.is_fully_assigned ? `= '${statusTypes.ACCEPTED}'` : `<> '${statusTypes.DECLINED}'`
                   } 
                   AND 
@@ -351,17 +336,34 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
 /**
  * Get creation by id
  * @param {string} id
+ * @param {object} options - optional config object
+ * @param {string|string[]} options.populate - the list of fields to populate
+ * @param {string} options.owner_id - returns the creation that belongs to owner_id
  * @returns {Promise<ICreationDoc|null>}
  */
-export const getCreationById = async (id: string, populate?: string | string[]): Promise<ICreationDoc | null> => {
+export const getCreationById = async (
+  id: string,
+  options?: {
+    populate?: string | string[];
+    owner_id?: string;
+  }
+): Promise<ICreationDoc | null> => {
   const creation = await (async () => {
     try {
       const result = await db.query(
-        `SELECT * ${populator({
+        `SELECT 
+        * 
+        ${populator({
           tableAlias: 'c',
-          fields: typeof populate === 'string' ? [populate] : populate,
-        })} FROM creation c WHERE creation_id = $1;`,
-        [id]
+          fields: options ? (typeof options.populate === 'string' ? [options.populate] : options.populate) : [],
+        })} 
+        FROM 
+        creation c 
+        WHERE 
+        creation_id = $1
+        ${options && options.owner_id ? 'AND author_id = $2' : ''}
+        ;`,
+        [id, options && options.owner_id ? options.owner_id : false].filter(Boolean)
       );
       return result.rows[0];
     } catch {
@@ -378,10 +380,17 @@ export const getCreationById = async (id: string, populate?: string | string[]):
  * Update creation by id
  * @param {string} id
  * @param {Partial<ICreation>} updateBody
+ * @param {object} options - optional config object
+ * @param {string} options.owner_id - updates the creation that belongs to owner_id
  * @returns {Promise<ICreationDoc|null>}
  */
-export const updateCreationById = async (id: string, updateBody: Partial<ICreation>): Promise<ICreationDoc | null> => {
-  await getCreationById(id); // check if creation exists, throws error if not found
+export const updateCreationById = async (
+  id: string,
+  updateBody: Partial<ICreation>,
+  options?: { owner_id?: string }
+): Promise<ICreationDoc | null> => {
+  // check if creation exists, throws error if not found
+  await getCreationById(id, { owner_id: options?.owner_id });
 
   // verify if material/s already exist for another creation, throw error if a material is found
   if (updateBody.materials && updateBody.materials.length > 0) {
@@ -409,13 +418,7 @@ export const updateCreationById = async (id: string, updateBody: Partial<ICreati
     );
     const creation = updateQry.rows[0];
     return creation;
-  } catch (e: unknown) {
-    const err = e as DatabaseError;
-    if (err.message && err.message.includes('duplicate key')) {
-      if (err.message.includes('source_id'))
-        throw new ApiError(httpStatus.CONFLICT, `source already assigned to a creation`);
-    }
-
+  } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };
@@ -423,10 +426,13 @@ export const updateCreationById = async (id: string, updateBody: Partial<ICreati
 /**
  * Delete creation by id
  * @param {string} id
+ * @param {object} options - optional config object
+ * @param {string} options.owner_id - deletes the creation that belongs to owner_id
  * @returns {Promise<ICreationDoc|null>}
  */
-export const deleteCreationById = async (id: string): Promise<ICreationDoc | null> => {
-  const creation = await getCreationById(id); // check if creation exists, throws error if not found
+export const deleteCreationById = async (id: string, options?: { owner_id?: string }): Promise<ICreationDoc | null> => {
+  // check if creation exists, throws error if not found
+  const creation = await getCreationById(id, { owner_id: options?.owner_id });
 
   try {
     await db.query(`DELETE FROM creation WHERE creation_id = $1;`, [id]);

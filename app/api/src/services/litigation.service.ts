@@ -29,6 +29,7 @@ interface ILitigationQuery {
   descend_fields: string[];
   judged_by: string;
   populate?: string | string[];
+  participant_id?: string;
 }
 interface ILitigationQueryResult {
   results: Array<ILitigationDoc>;
@@ -187,7 +188,7 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
 
 /**
  * Query for litigation
- * @returns {Promise<Array<ILitigation>}
+ * @returns {Promise<Array<ILitigation>>}
  */
 export const queryLitigations = async (options: ILitigationQuery): Promise<ILitigationQueryResult> => {
   try {
@@ -218,14 +219,56 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
           } ${descendOrder}`
         : '';
 
+    // validate participant
+    const validateParticipant =
+      options && options.participant_id
+        ? `
+        issuer_id = '${options.participant_id}' 
+        OR 
+        assumed_author = '${options.participant_id}'
+        OR
+        EXISTS
+        (
+          SELECT 
+          recognition_for 
+          FROM 
+          recognition 
+          WHERE 
+          recognition_for = '${options.participant_id}'
+          AND
+          recognition_id = ANY(l.recognitions)
+        )
+        `
+        : '';
+
     // list of queries
     const queryModes = {
       default: {
-        query: `SELECT * ${populator({
-          tableAlias: 'l',
-          fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
-        })} FROM litigation l ${search} ${order} OFFSET $1 LIMIT $2;`,
-        count: `SELECT COUNT(*) as total_results FROM litigation ${search};`,
+        query: `
+                SELECT 
+                * 
+                ${populator({
+                  tableAlias: 'l',
+                  fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+                })} 
+                FROM 
+                litigation l 
+                ${search} 
+                ${search && validateParticipant ? ' AND ' : validateParticipant ? ' WHERE ' : ''} 
+                ${validateParticipant}
+                ${order} 
+                OFFSET $1 
+                LIMIT $2;`,
+        count: `
+                SELECT 
+                COUNT(*) 
+                as 
+                total_results 
+                FROM 
+                litigation l
+                ${search}
+                ${search && validateParticipant ? ' AND ' : validateParticipant ? ' WHERE ' : ''}
+                ${validateParticipant};`,
       },
       judged: {
         query: `SELECT 
@@ -238,6 +281,8 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
                 litigation l 
                 ${search} 
                 ${search ? ' AND ' : ' WHERE '} 
+                ${validateParticipant}
+                ${validateParticipant && ' AND '} 
                 EXISTS 
                 (
                   SELECT 
@@ -259,6 +304,8 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
                 litigation l 
                 ${search} 
                 ${search ? ' AND ' : ' WHERE '} 
+                ${validateParticipant}
+                ${validateParticipant && ' AND '}  
                 EXISTS 
                 (
                   SELECT 
@@ -297,17 +344,60 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
 /**
  * Get litigation by id
  * @param {string} id
+ * @param {string|string[]} options.populate - the list of fields to populate
+ * @param {string} options.owner_id - returns the litigation that belongs to owner_id
  * @returns {Promise<ILitigationDoc|null>}
  */
-export const getLitigationById = async (id: string, populate?: string | string[]): Promise<ILitigationDoc | null> => {
+export const getLitigationById = async (
+  id: string,
+  options?: {
+    populate?: string | string[];
+    owner_id?: string;
+    participant_id?: string;
+  }
+): Promise<ILitigationDoc | null> => {
   const litigation = await (async () => {
     try {
       const result = await db.query(
-        `SELECT * ${populator({
+        `SELECT 
+        * 
+        ${populator({
           tableAlias: 'l',
-          fields: typeof populate === 'string' ? [populate] : populate,
-        })} FROM litigation l WHERE litigation_id = $1;`,
-        [id]
+          fields: options ? (typeof options.populate === 'string' ? [options.populate] : options.populate) : [],
+        })} 
+        FROM 
+        litigation l 
+        WHERE 
+        litigation_id = $1
+        ${options && options.owner_id ? 'AND issuer_id = $2' : ''}
+        ${
+          options && options.participant_id
+            ? `
+            AND 
+            issuer_id = ${!options.owner_id ? '$2' : '$3'}
+            OR 
+            assumed_author = ${!options.owner_id ? '$2' : '$3'}
+            OR
+            EXISTS
+            (
+              SELECT 
+              recognition_for 
+              FROM 
+              recognition 
+              WHERE 
+              recognition_for = ${!options.owner_id ? '$2' : '$3'}
+              AND
+              recognition_id = ANY(l.recognitions)
+            )
+            `
+            : ''
+        }
+        ;`,
+        [
+          id,
+          options && options.owner_id ? options.owner_id : false,
+          options && options.participant_id ? options.participant_id : false,
+        ].filter(Boolean)
       );
       return result.rows[0];
     } catch {
@@ -324,10 +414,17 @@ export const getLitigationById = async (id: string, populate?: string | string[]
  * Update litigation by id
  * @param {string} id
  * @param {Partial<ILitigation>} updateBody
+ * @param {object} options - optional config object
+ * @param {string} options.owner_id - updates the litigation that belongs to owner_id
  * @returns {Promise<ILitigationDoc|null>}
  */
-export const updateLitigationById = async (id: string, updateBody: Partial<ILitigation>): Promise<ILitigationDoc | null> => {
-  const foundLitigation = await getLitigationById(id); // check if litigation exists, throws error if not found
+export const updateLitigationById = async (
+  id: string,
+  updateBody: Partial<ILitigation>,
+  options?: { participant_id?: string }
+): Promise<ILitigationDoc | null> => {
+  // check if litigation exists, throws error if not found
+  const foundLitigation = await getLitigationById(id, { participant_id: options?.participant_id });
 
   // verify if material belongs to creation of this litigation, else throw error
   if (foundLitigation && updateBody.material_id) {
@@ -374,10 +471,13 @@ export const updateLitigationById = async (id: string, updateBody: Partial<ILiti
 /**
  * Delete litigation by id
  * @param {string} id
+ * @param {object} options - optional config object
+ * @param {string} options.owner_id - deletes the litigation that belongs to owner_id
  * @returns {Promise<ILitigationDoc|null>}
  */
-export const deleteLitigationById = async (id: string): Promise<ILitigationDoc | null> => {
-  const litigation = await getLitigationById(id); // check if litigation exists, throws error if not found
+export const deleteLitigationById = async (id: string, options?: { owner_id?: string }): Promise<ILitigationDoc | null> => {
+  // check if litigation exists, throws error if not found
+  const litigation = await getLitigationById(id, { owner_id: options?.owner_id });
 
   try {
     await db.query(`DELETE FROM litigation WHERE litigation_id = $1;`, [id]);

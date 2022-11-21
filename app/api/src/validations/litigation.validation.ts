@@ -7,7 +7,6 @@ export const createLitigation = {
     litigation_description: Joi.string().optional().allow('').allow(null),
     creation_id: Joi.string().uuid().required(),
     material_id: Joi.string().uuid().optional(),
-    issuer_id: Joi.string().uuid().required(),
     decisions: Joi.array().items(Joi.string().uuid()).unique().default([]),
     litigation_start: Joi.date().iso().required(),
     litigation_end: Joi.date().iso().greater(Joi.ref('litigation_start')).required(),

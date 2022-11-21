@@ -1,4 +1,5 @@
 import { ExtractJwt, Strategy as JwtStrategy, StrategyOptions, VerifyCallback } from 'passport-jwt';
+import { getUserByWalletAddress } from '../services/user.service';
 import config from './config';
 
 const jwtOptions: StrategyOptions = {
@@ -8,7 +9,8 @@ const jwtOptions: StrategyOptions = {
 
 const jwtVerify: VerifyCallback = async (token, done): Promise<void> => {
   try {
-    const user = {};
+    const hashedWalletAddress = token.sub;
+    const user = await getUserByWalletAddress(hashedWalletAddress);
     return done(null, user || false);
   } catch (error) {
     done(error, false);

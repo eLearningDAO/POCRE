@@ -2,8 +2,8 @@ import Joi from 'joi';
 
 export const createUser = {
   body: Joi.object().keys({
-    user_name: Joi.string().required(),
-    wallet_address: Joi.string().optional().allow('').allow(null),
+    user_name: Joi.string().optional(),
+    wallet_address: Joi.string().required(),
     user_bio: Joi.string().optional().allow('').allow(null),
     phone: Joi.string().optional().allow('').allow(null),
     email_address: Joi.string().optional().allow('').allow(null),
@@ -40,7 +40,6 @@ export const updateUser = {
   body: Joi.object()
     .keys({
       user_name: Joi.string().optional(),
-      wallet_address: Joi.string().optional().allow('').allow(null),
       user_bio: Joi.string().optional().allow('').allow(null),
       phone: Joi.string().optional().allow('').allow(null),
       email_address: Joi.string().optional().allow('').allow(null),

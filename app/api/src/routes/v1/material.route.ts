@@ -2,19 +2,20 @@ import express from 'express';
 import validate from '../../middlewares/validate';
 import * as materialValidation from '../../validations/material.validation';
 import * as materialController from '../../controllers/material.controller';
+import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
 router
   .route('/')
-  .post(validate(materialValidation.createMaterial), materialController.createMaterial)
+  .post(auth(), validate(materialValidation.createMaterial), materialController.createMaterial)
   .get(validate(materialValidation.queryMaterials), materialController.queryMaterials);
 
 router
   .route('/:material_id')
   .get(validate(materialValidation.getMaterial), materialController.getMaterialById)
-  .patch(validate(materialValidation.updateMaterial), materialController.updateMaterialById)
-  .delete(validate(materialValidation.deleteMaterial), materialController.deleteMaterialById);
+  .patch(auth(), validate(materialValidation.updateMaterial), materialController.updateMaterialById)
+  .delete(auth(), validate(materialValidation.deleteMaterial), materialController.deleteMaterialById);
 
 export default router;
 
@@ -32,6 +33,8 @@ export default router;
  *     summary: Create a material
  *     description: Creates a new material.
  *     tags: [Material]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -40,9 +43,8 @@ export default router;
  *             type: object
  *             required:
  *               - material_title
- *               - source_id
- *               - type_id
- *               - author_id
+ *               - material_link
+ *               - material_type
  *             properties:
  *               material_title:
  *                 type: string
@@ -52,12 +54,9 @@ export default router;
  *               material_link:
  *                 type: string
  *                 description: can be null
- *               source_id:
+ *               material_type:
  *                 type: string
- *                 format: uuid
- *               type_id:
- *                 type: string
- *                 format: uuid
+ *                 enum: [image, video, audio, document]
  *               recognition_id:
  *                 type: string
  *                 format: uuid
@@ -71,8 +70,7 @@ export default router;
  *                material_title: plastic
  *                material_description: dangerous
  *                material_link: https://example.com
- *                source_id: 12ed7a55-a1ba-4895-83e9-7aa615247390
- *                type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
+ *                material_type: audio
  *                recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
  *                author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
  *                is_claimable: true
@@ -88,26 +86,14 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/SourceNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
- *                 - $ref: '#/components/responses/MaterialTypeNotFound'
  *                 - $ref: '#/components/responses/RecognitionNotFound'
  *             examples:
- *               SourceNotFound:
- *                 summary: source not found
- *                 value:
- *                   code: 404
- *                   message: source not found
  *               UserNotFound:
  *                 summary: user not found
  *                 value:
  *                   code: 404
  *                   message: user not found
- *               MaterialTypeNotFound:
- *                 summary: material type not found
- *                 value:
- *                   code: 404
- *                   message: material type not found
  *               RecognitionNotFound:
  *                 summary: recognition not found
  *                 value:
@@ -118,20 +104,8 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/SourceAlreadyAssignedToMaterial'
- *                 - $ref: '#/components/responses/MaterialTypeAlreadyAssignedToMaterial'
  *                 - $ref: '#/components/responses/RecognitionAlreadyAssignedToMaterial'
  *             examples:
- *               SourceAlreadyAssignedToMaterial:
- *                 summary: source already assigned to a material
- *                 value:
- *                   code: 409
- *                   message: source already assigned to a material
- *               MaterialTypeAlreadyAssignedToMaterial:
- *                 summary: material type already assigned to a material
- *                 value:
- *                   code: 409
- *                   message: material type already assigned to a material
  *               RecognitionAlreadyAssignedToMaterial:
  *                 summary: recognition already assigned to a material
  *                 value:
@@ -186,12 +160,9 @@ export default router;
  *           items:
  *             type: string
  *             enum:
- *               - source_id
- *               - type_id
  *               - recognition_id
  *               - recognition_id.recognition_by
  *               - recognition_id.recognition_for
- *               - recognition_id.status_id
  *               - author_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
@@ -243,12 +214,9 @@ export default router;
  *           items:
  *             type: string
  *             enum:
- *               - source_id
- *               - type_id
  *               - recognition_id
  *               - recognition_id.recognition_by
  *               - recognition_id.recognition_for
- *               - recognition_id.status_id
  *               - author_id
  *         description: list of fields to populate - if the populated field has an '_id' in its name then it will be removed in response
  *     responses:
@@ -265,8 +233,10 @@ export default router;
  *
  *   patch:
  *     summary: Update a material by id
- *     description: Update user details by its id
+ *     description: Update material details by its id
  *     tags: [Material]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: material_id
@@ -288,29 +258,21 @@ export default router;
  *               material_link:
  *                 type: string
  *                 description: can be null
- *               source_id:
+ *               material_type:
  *                 type: string
- *                 format: uuid
- *               type_id:
- *                 type: string
- *                 format: uuid
+ *                 enum: [image, video, audio, document]
  *               recognition_id:
  *                 type: string
  *                 format: uuid
  *                 description: can be null
- *               author_id:
- *                 type: string
- *                 format: uuid
  *               is_claimable:
  *                 type: bool
  *             example:
  *                material_title: plastic
  *                material_description: dangerous
  *                material_link: https://example.com
- *                source_id: 12ed7a55-a1ba-4895-83e9-7aa615247390
- *                type_id: e1889ecb-51ad-4c4f-a3c5-cb25971cb9a6
+ *                material_type: audio
  *                recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
- *                author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
  *                is_claimable: false
  *     responses:
  *       "200":
@@ -325,9 +287,7 @@ export default router;
  *             schema:
  *               oneOf:
  *                 - $ref: '#/components/responses/MaterialNotFound'
- *                 - $ref: '#/components/responses/SourceNotFound'
  *                 - $ref: '#/components/responses/UserNotFound'
- *                 - $ref: '#/components/responses/MaterialTypeNotFound'
  *                 - $ref: '#/components/responses/RecognitionNotFound'
  *             examples:
  *               MaterialNotFound:
@@ -335,21 +295,11 @@ export default router;
  *                 value:
  *                   code: 404
  *                   message: material not found
- *               SourceNotFound:
- *                 summary: source not found
- *                 value:
- *                   code: 404
- *                   message: source not found
  *               UserNotFound:
  *                 summary: user not found
  *                 value:
  *                   code: 404
  *                   message: user not found
- *               MaterialTypeNotFound:
- *                 summary: material type not found
- *                 value:
- *                   code: 404
- *                   message: material type not found
  *               RecognitionNotFound:
  *                 summary: recognition not found
  *                 value:
@@ -360,20 +310,8 @@ export default router;
  *           application/json:
  *             schema:
  *               oneOf:
- *                 - $ref: '#/components/responses/SourceAlreadyAssignedToMaterial'
- *                 - $ref: '#/components/responses/MaterialTypeAlreadyAssignedToMaterial'
  *                 - $ref: '#/components/responses/RecognitionAlreadyAssignedToMaterial'
  *             examples:
- *               SourceAlreadyAssignedToMaterial:
- *                 summary: source already assigned to a material
- *                 value:
- *                   code: 409
- *                   message: source already assigned to a material
- *               MaterialTypeAlreadyAssignedToMaterial:
- *                 summary: material type already assigned to a material
- *                 value:
- *                   code: 409
- *                   message: material type already assigned to a material
  *               RecognitionAlreadyAssignedToMaterial:
  *                 summary: recognition already assigned to a material
  *                 value:
@@ -386,6 +324,8 @@ export default router;
  *     summary: Delete a material by id
  *     description: Deletes a material by its id
  *     tags: [Material]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: material_id
