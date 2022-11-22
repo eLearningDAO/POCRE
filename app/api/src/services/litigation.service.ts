@@ -4,6 +4,10 @@ import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 import { getCreationById } from './creation.service';
 import { populator } from '../db/plugins/populator';
+import litigationStatusTypes from '../constants/litigationStatusTypes';
+
+const types = Object.values(litigationStatusTypes);
+type TLitigationStatusTypes = typeof types[number];
 
 interface ILitigation {
   litigation_title: string;
@@ -16,7 +20,7 @@ interface ILitigation {
   decisions: string[];
   litigation_start: string;
   litigation_end: string;
-  reconcilate: boolean;
+  litigation_status: TLitigationStatusTypes;
   winner: string;
   ownership_transferred: boolean;
 }
@@ -50,7 +54,7 @@ interface ILitigationDoc {
   decisions: string[];
   litigation_start: string;
   litigation_end: string;
-  reconcilate: boolean;
+  litigation_status: TLitigationStatusTypes;
   winner: string;
   ownership_transferred: boolean;
 }
@@ -151,7 +155,7 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         decisions,
         litigation_start,
         litigation_end,
-        reconcilate,
+        litigation_status,
         winner
       ) 
       values 
@@ -168,7 +172,7 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         litigationBody.decisions,
         litigationBody.litigation_start,
         litigationBody.litigation_end,
-        litigationBody.reconcilate,
+        litigationBody.litigation_status,
         litigationBody.winner,
       ]
     );

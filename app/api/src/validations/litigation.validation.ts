@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import litigationStatusTypes from '../constants/litigationStatusTypes';
 import { litigationDeepFields } from '../db/map';
 
 export const createLitigation = {
@@ -10,7 +11,10 @@ export const createLitigation = {
     decisions: Joi.array().items(Joi.string().uuid()).unique().default([]),
     litigation_start: Joi.date().iso().required(),
     litigation_end: Joi.date().iso().greater(Joi.ref('litigation_start')).required(),
-    reconcilate: Joi.bool().optional(),
+    litigation_status: Joi.string()
+      .valid(...Object.values(litigationStatusTypes))
+      .optional()
+      .default(litigationStatusTypes.PENDING),
   }),
 };
 
@@ -57,7 +61,9 @@ export const updateLitigation = {
       decisions: Joi.array().items(Joi.string().uuid()).unique().optional(),
       litigation_start: Joi.date().iso().optional(),
       litigation_end: Joi.date().iso().greater(Joi.ref('litigation_start')).optional(),
-      reconcilate: Joi.bool().optional(),
+      litigation_status: Joi.string()
+        .valid(...Object.values(litigationStatusTypes))
+        .optional(),
       ownership_transferred: Joi.bool().optional(),
     })
     .min(1),
