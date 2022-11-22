@@ -1,12 +1,12 @@
 import { Navigate } from 'react-router-dom';
-import useUserInfo from 'hooks/user/userInfo';
+import authUser from 'utils/helpers/authUser';
 
 function ProtectedRoute({ children }) {
-  const login = useUserInfo((s) => s.login);
-  if (!login) {
-    // user is not authenticated
+  // if user is not authenticated
+  if (!(authUser.getUser() && authUser.getJWTToken())) {
     return <Navigate to="/" />;
   }
+
   return children;
 }
 

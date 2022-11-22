@@ -1,24 +1,22 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-} from 'react';
-import Rating from '@mui/material/Rating';
-import Switch from '@mui/material/Switch';
+import { Address } from '@emurgo/cardano-serialization-lib-asmjs';
+import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
+import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import { Button } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import InputAdornment from '@mui/material/InputAdornment';
-import { Button } from '@mui/material';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
-import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
-import { Address } from '@emurgo/cardano-serialization-lib-asmjs';
-import Loader from 'components/uicore/Loader';
+import Rating from '@mui/material/Rating';
+import Switch from '@mui/material/Switch';
 import Form from 'components/uicore/Form';
 import Input from 'components/uicore/Input';
-import useUserInfo from '../../../hooks/user/userInfo';
-import { walletValidation } from './validation';
+import Loader from 'components/uicore/Loader';
+import {
+  useEffect, useRef, useState,
+} from 'react';
+import authUser from 'utils/helpers/authUser';
 import useWallet from '../useWallet';
+import { walletValidation } from './validation';
 // eslint-disable-next-line import/no-unresolved, unicorn/prefer-module
 const { Buffer } = require('buffer/');
 
@@ -33,10 +31,8 @@ function WalletDetailEdit({
     updateUser,
     isUserDataUpdating,
   } = useWallet();
-  const { login, flag } = useUserInfo();
   const [wallets, setWallets] = useState([]);
   const [walletAddress, setWalletAddress] = useState('');
-  const [selectKey, setSelectKey] = useState(0);
   const selectElement = useRef();
 
   const handleSubmit = (values) => {
@@ -72,7 +68,7 @@ function WalletDetailEdit({
     setWalletAddress(usedAddress);
   };
   const pollWallets = () => {
-    if (login) {
+    if (authUser.getUser() && authUser.getJWTToken()) {
       const keys = [];
       for (const key in window.cardano) {
         if (window.cardano[key].enable) {
@@ -86,10 +82,6 @@ function WalletDetailEdit({
     pollWallets();
   }, []);
 
-  useEffect(() => {
-    setSelectKey((previous) => (previous + 1));
-    setWalletAddress('');
-  }, [flag]);
   return (
     <Form
       id="walletForm"
@@ -123,13 +115,11 @@ function WalletDetailEdit({
         <div className="edit-available-wallet">
           <span>
             Available Wallet
-            {flag}
           </span>
           <select
             className="wallet-select"
             name="walletType"
             onChange={(event) => handleWallectSelect(event)}
-            key={selectKey}
           >
             <option value="" ref={selectElement}>
               Select Wallet

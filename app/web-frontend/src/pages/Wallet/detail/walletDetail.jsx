@@ -1,12 +1,12 @@
 /* eslint-disable indent */
-import React, { useEffect, useState } from 'react';
 import Loader from 'components/uicore/Loader';
+import { useEffect, useState } from 'react';
+import authUser from 'utils/helpers/authUser';
+import CameraIcon from '../../../assets/svgs/cameraIcon.svg';
 import profileImg from '../../../assets/svgs/profile.svg';
+import useWallet from '../useWallet';
 import WalletDetailEdit from './walletDetailEdit';
 import WalletDisplay from './walletDisplay';
-import CameraIcon from '../../../assets/svgs/cameraIcon.svg';
-import useUserInfo from '../../../hooks/user/userInfo';
-import useWallet from '../useWallet';
 
 let userId = '43704731-d816-4f1f-a599-eb290f67c3f4';
 
@@ -22,17 +22,18 @@ function WalletDetail({ displayOnlyId }) {
     userProfileImageUrl,
     isImageUploaded,
   } = useWallet();
-  const user = useUserInfo((state) => state.user);
+
   function handleUploadImage(event) {
     const file = event.target.files[0];
     uploadUserImage(file);
   }
   useEffect(() => {
+    const user = authUser.getUser();
     if (user && user.user_id) {
       userId = user.user_id;
       fetchUserDetailsById(userId);
     }
-  }, [user, displayOnlyId]);
+  }, [displayOnlyId]);
 
   useEffect(() => {
     if (displayOnlyId) {
