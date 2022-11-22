@@ -15,8 +15,6 @@ const useWallet = () => {
         email: userResponse.email_address,
         phone: userResponse.phone,
         bio: userResponse.user_bio,
-        walletAddress: userResponse.wallet_address,
-        walletType: userResponse.verified_id,
         reputationStars: userResponse.reputation_stars,
         imageUrl: userResponse.image_url,
       };

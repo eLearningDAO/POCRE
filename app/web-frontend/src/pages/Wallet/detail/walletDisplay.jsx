@@ -38,10 +38,6 @@ function WalletDisplay({ setDetailEdit, user, isDisplayOnly }) {
             <img src={framImg} alt="alt" />
           </div>
         </div>
-        <div className="wallet-detail-address">
-          <span>Wallet Address</span>
-          <span>{user && user.walletAddress}</span>
-        </div>
       </div>
       <div className="wallet-detail-right-container-right">
         {

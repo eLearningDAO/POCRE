@@ -133,13 +133,6 @@ function WalletDetailEdit({
             }
           </select>
         </div>
-        <div className="edit-available-wallet">
-          <span>Wallet Address</span>
-          <input
-            name="walletAddress"
-            value={walletAddress}
-          />
-        </div>
       </div>
       <div className="wallet-detail-right-container-right-edit">
         <Input
