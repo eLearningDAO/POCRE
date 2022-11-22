@@ -1,3 +1,19 @@
+.wallet-container-1 {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    align-items: center;
+    padding: 64px;
+    background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%) !important;
+}
+
+.wallet-explore-header {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    align-items: center;
+}
+
 .inner-heading {
     display: flex;
     justify-content: space-between;

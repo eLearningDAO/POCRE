@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material';
 import Tile from 'components/tile';
 import { useNavigate } from 'react-router-dom';
-import WalletDetail from '../common/components/profile';
+import WalletProfile from '../common/components/profile';
 import './index.css';
 
 function WalletSelf() {
@@ -12,7 +12,7 @@ function WalletSelf() {
 
   return (
     <div className="wallet-container">
-      <WalletDetail />
+      <WalletProfile />
       <Grid container className="wallet-collection-container">
         <Grid item md={12} sm={12} xs={12} className="wallet-collection-right">
           <Tile

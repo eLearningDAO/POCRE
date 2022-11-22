@@ -13,7 +13,7 @@ import LitigationsCreate from 'pages/Litigations/Create';
 import LitigationsDetails from 'pages/Litigations/Details';
 import LitigationsHome from 'pages/Litigations/Home';
 // wallet pages
-import WalletSelf from 'pages/Wallet/Self';
+import WalletHome from 'pages/Wallet/Home';
 import WalletPublic from 'pages/Wallet/Public';
 // other pages
 import CreditsHome from 'pages/Credits/Home';
@@ -122,7 +122,7 @@ function AppRoutes() {
           path="/wallet"
           element={(
             <Layout displaySidebar>
-              <WalletSelf />
+              <WalletHome />
             </Layout>
           )}
         />
