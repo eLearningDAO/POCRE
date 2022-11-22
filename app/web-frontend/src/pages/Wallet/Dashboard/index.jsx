@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import WalletDetail from './detail/walletDetail';
-import WalletCollections from './walletCollections';
+import WalletDetail from '../common/components/walletDetail';
+import WalletCollections from '../common/components/walletCollections';
 
 function Dashboard() {
   const { id } = useParams();

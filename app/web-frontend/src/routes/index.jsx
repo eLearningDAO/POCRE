@@ -1,18 +1,23 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import CreationsHome from 'pages/Creations/Home';
+import Layout from 'components/Layout';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+// creation pages
 import CreateCreation from 'pages/Creations/Create';
-import UpdateCreation from 'pages/Creations/Update';
 import CreationDetails from 'pages/Creations/Details';
-import RecognitionsHome from 'pages/Recognitions/Home';
+import CreationsHome from 'pages/Creations/Home';
+import UpdateCreation from 'pages/Creations/Update';
+// recognition pages
 import RecognitionsDetails from 'pages/Recognitions/Details';
-import LitigationsHome from 'pages/Litigations/Home';
+import RecognitionsHome from 'pages/Recognitions/Home';
+// litigation pages
 import LitigationsCreate from 'pages/Litigations/Create';
 import LitigationsDetails from 'pages/Litigations/Details';
+import LitigationsHome from 'pages/Litigations/Home';
+// wallet pages
 import WalletHome from 'pages/Wallet/Home';
-import Layout from 'components/Layout';
+import WalletDashboard from 'pages/Wallet/Dashboard';
+// other pages
 import CreditsHome from 'pages/Credits/Home';
 import Home from 'pages/Home';
-import Dashboard from 'pages/Wallet/dashboard';
 import Protected from './Protected';
 
 function AppRoutes() {
@@ -125,7 +130,7 @@ function AppRoutes() {
           path="/user/:id"
           element={(
             <Layout displaySidebar>
-              <Dashboard />
+              <WalletDashboard />
             </Layout>
           )}
         />

@@ -2,9 +2,9 @@
 import Loader from 'components/uicore/Loader';
 import { useEffect, useState } from 'react';
 import authUser from 'utils/helpers/authUser';
-import CameraIcon from '../../../assets/svgs/cameraIcon.svg';
-import profileImg from '../../../assets/svgs/profile.svg';
-import useWallet from '../useWallet';
+import CameraIcon from 'assets/svgs/cameraIcon.svg';
+import profileImg from 'assets/svgs/profile.svg';
+import useWallet from '../hooks/useWallet';
 import WalletDetailEdit from './walletDetailEdit';
 import WalletDisplay from './walletDisplay';
 

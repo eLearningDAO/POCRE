@@ -15,7 +15,7 @@ import {
   useEffect, useRef, useState,
 } from 'react';
 import authUser from 'utils/helpers/authUser';
-import useWallet from '../useWallet';
+import useWallet from '../hooks/useWallet';
 import { walletValidation } from './validation';
 // eslint-disable-next-line import/no-unresolved, unicorn/prefer-module
 const { Buffer } = require('buffer/');
