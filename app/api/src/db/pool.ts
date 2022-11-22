@@ -33,7 +33,13 @@ const init = async (): Promise<QueryResult<any>> => {
     END $$;
 
     DO $$ BEGIN
-      CREATE TYPE status_enums AS ENUM ('pending', 'accepted', 'declined');
+      CREATE TYPE recognition_status_enums AS ENUM ('pending', 'accepted', 'declined');
+    EXCEPTION
+        WHEN duplicate_object THEN null;
+    END $$;
+
+    DO $$ BEGIN
+      CREATE TYPE litigation_status_enums AS ENUM ('pending', 'started', 'withdrawn');
     EXCEPTION
         WHEN duplicate_object THEN null;
     END $$;
@@ -71,7 +77,7 @@ const init = async (): Promise<QueryResult<any>> => {
       recognition_for UUID NOT NULL,
       recognition_description text,
       recognition_issued DATE NOT NULL DEFAULT CURRENT_DATE,
-      status status_enums NOT NULL,
+      status recognition_status_enums NOT NULL,
       status_updated DATE NOT NULL DEFAULT CURRENT_DATE,
       CONSTRAINT recognition_by
           FOREIGN KEY(recognition_by) 
@@ -138,7 +144,7 @@ const init = async (): Promise<QueryResult<any>> => {
       decisions UUID[],
       litigation_start DATE NOT NULL DEFAULT CURRENT_DATE,
       litigation_end DATE,
-      reconcilate bool,
+      litigation_status litigation_status_enums NOT NULL,
       ownership_transferred bool default false,
       CONSTRAINT material_id
           FOREIGN KEY(material_id) 
