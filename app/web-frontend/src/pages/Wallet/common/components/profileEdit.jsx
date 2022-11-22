@@ -1,4 +1,3 @@
-import { Address } from '@emurgo/cardano-serialization-lib-asmjs';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
@@ -14,13 +13,11 @@ import Loader from 'components/uicore/Loader';
 import {
   useEffect, useRef, useState,
 } from 'react';
-import authUser from 'utils/helpers/authUser';
+import { getAvailableWallets, getWalletAddress } from 'utils/helpers/wallet';
 import useWallet from '../hooks/useWallet';
 import { walletValidation } from './validation';
-// eslint-disable-next-line import/no-unresolved, unicorn/prefer-module
-const { Buffer } = require('buffer/');
 
-function WalletDetailEdit({
+function WalletProfileEdit({
   setDetailEdit,
   initialValues,
   userId,
@@ -45,39 +42,22 @@ function WalletDetailEdit({
     updateUser(userData);
     setDetailEdit(false);
   };
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const getUsedAddress = async (walletKey) => {
-    try {
-      const API = await window.cardano[walletKey].enable();
-      const raw = await API.getUsedAddresses();
-      const rawFirst = raw[0];
-      return Address.from_bytes(Buffer.from(rawFirst, 'hex')).to_bech32();
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
-      return 0;
-    }
-  };
+
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleWallectSelect = async (event) => {
     event.preventDefault();
     selectElement.current.style.display = 'none';
     const walletKey = event.target.value;
-    let usedAddress = await getUsedAddress(walletKey);
+    let usedAddress = await getWalletAddress(walletKey);
     usedAddress = `${usedAddress.slice(0, 10)}.....${usedAddress.slice(93, 103)}`;
     setWalletAddress(usedAddress);
   };
+
   const pollWallets = () => {
-    if (authUser.getUser() && authUser.getJWTToken()) {
-      const keys = [];
-      for (const key in window.cardano) {
-        if (window.cardano[key].enable) {
-          keys.push(key);
-        }
-      }
-      setWallets(keys);
-    }
+    const availableWallets = getAvailableWallets();
+    setWallets(availableWallets);
   };
+
   useEffect(() => {
     pollWallets();
   }, []);
@@ -194,4 +174,4 @@ function WalletDetailEdit({
   );
 }
 
-export default WalletDetailEdit;
+export default WalletProfileEdit;

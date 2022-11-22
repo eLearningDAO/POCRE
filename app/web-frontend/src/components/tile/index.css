@@ -1,0 +1,30 @@
+.tile {
+  width: 328px;
+  height: 195px;
+  border-radius: 24px !important;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 16px;
+
+  font-family: 'Gilroy-SemiBold';
+  font-size: 22px !important;
+  line-height: 30px !important;
+  text-align: center !important;
+  color: #FFFFFF !important;
+}
+
+.tile-filled {
+  background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%);
+  box-shadow: 0px 13px 39px rgb(247 143 138 / 47%);
+}
+
+.tile-outlined {
+  background: linear-gradient(104.08deg, #fece76 -28.92%, #f78b88 76.85%);
+  box-shadow: 0px 13px 39px rgb(247 143 138 / 47%);
+  background: rgba(247, 143, 138, 0.08);
+  border: 2px dashed #f78f8a !important;
+  color: #f78f8a !important;
+}

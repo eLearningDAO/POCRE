@@ -13,8 +13,8 @@ import LitigationsCreate from 'pages/Litigations/Create';
 import LitigationsDetails from 'pages/Litigations/Details';
 import LitigationsHome from 'pages/Litigations/Home';
 // wallet pages
-import WalletHome from 'pages/Wallet/Home';
-import WalletDashboard from 'pages/Wallet/Dashboard';
+import WalletSelf from 'pages/Wallet/Self';
+import WalletPublic from 'pages/Wallet/Public';
 // other pages
 import CreditsHome from 'pages/Credits/Home';
 import Home from 'pages/Home';
@@ -122,7 +122,7 @@ function AppRoutes() {
           path="/wallet"
           element={(
             <Layout displaySidebar>
-              <WalletHome />
+              <WalletSelf />
             </Layout>
           )}
         />
@@ -130,7 +130,7 @@ function AppRoutes() {
           path="/user/:id"
           element={(
             <Layout displaySidebar>
-              <WalletDashboard />
+              <WalletPublic />
             </Layout>
           )}
         />
