@@ -1,15 +1,10 @@
-import React from 'react';
-import './Wallet.css';
-import WalletCollections from '../walletCollections';
-import WalletDetail from '../detail/walletDetail';
+import authUser from 'utils/helpers/authUser';
+import WalletExplore from '../Explore';
+import WalletSelf from '../Self';
 
-function Wallet() {
-  return (
-    <div className="wallet-container">
-      <WalletDetail />
-      <WalletCollections />
-    </div>
-  );
+function WalletHome() {
+  const isLoggedIn = authUser.getUser() && authUser.getJWTToken();
+  return isLoggedIn ? <WalletSelf /> : <WalletExplore />;
 }
 
-export default Wallet;
+export default WalletHome;

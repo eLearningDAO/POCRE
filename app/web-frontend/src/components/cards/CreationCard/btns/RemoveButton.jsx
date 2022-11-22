@@ -1,10 +1,9 @@
 import Button from '@mui/material/Button';
-import React from 'react';
 import DeleteIconSVG from 'assets/svgs/delete.svg';
-import useUserInfo from 'hooks/user/userInfo';
+import authUser from 'utils/helpers/authUser';
 
 function RemoveButton({ canDelete, handleDeleteConfirmation }) {
-  const login = useUserInfo((s) => s.login);
+  const login = authUser.getUser() && authUser.getJWTToken();
   const isVisible = login && canDelete;
   return isVisible
     ? (

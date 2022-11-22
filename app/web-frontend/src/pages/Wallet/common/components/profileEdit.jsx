@@ -1,28 +1,23 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-} from 'react';
-import Rating from '@mui/material/Rating';
-import Switch from '@mui/material/Switch';
+import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
+import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import { Button } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import InputAdornment from '@mui/material/InputAdornment';
-import { Button } from '@mui/material';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
-import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
-import { Address } from '@emurgo/cardano-serialization-lib-asmjs';
-import Loader from 'components/uicore/Loader';
+import Rating from '@mui/material/Rating';
+import Switch from '@mui/material/Switch';
 import Form from 'components/uicore/Form';
 import Input from 'components/uicore/Input';
-import useUserInfo from '../../../hooks/user/userInfo';
+import Loader from 'components/uicore/Loader';
+import {
+  useEffect, useRef, useState,
+} from 'react';
+import { getAvailableWallets, getWalletAddress } from 'utils/helpers/wallet';
+import useWallet from '../hooks/useWallet';
 import { walletValidation } from './validation';
-import useWallet from '../useWallet';
-// eslint-disable-next-line import/no-unresolved, unicorn/prefer-module
-const { Buffer } = require('buffer/');
 
-function WalletDetailEdit({
+function WalletProfileEdit({
   setDetailEdit,
   initialValues,
   userId,
@@ -33,10 +28,8 @@ function WalletDetailEdit({
     updateUser,
     isUserDataUpdating,
   } = useWallet();
-  const { login, flag } = useUserInfo();
   const [wallets, setWallets] = useState([]);
   const [walletAddress, setWalletAddress] = useState('');
-  const [selectKey, setSelectKey] = useState(0);
   const selectElement = useRef();
 
   const handleSubmit = (values) => {
@@ -49,47 +42,26 @@ function WalletDetailEdit({
     updateUser(userData);
     setDetailEdit(false);
   };
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const getUsedAddress = async (walletKey) => {
-    try {
-      const API = await window.cardano[walletKey].enable();
-      const raw = await API.getUsedAddresses();
-      const rawFirst = raw[0];
-      return Address.from_bytes(Buffer.from(rawFirst, 'hex')).to_bech32();
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
-      return 0;
-    }
-  };
+
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleWallectSelect = async (event) => {
     event.preventDefault();
     selectElement.current.style.display = 'none';
     const walletKey = event.target.value;
-    let usedAddress = await getUsedAddress(walletKey);
+    let usedAddress = await getWalletAddress(walletKey);
     usedAddress = `${usedAddress.slice(0, 10)}.....${usedAddress.slice(93, 103)}`;
     setWalletAddress(usedAddress);
   };
+
   const pollWallets = () => {
-    if (login) {
-      const keys = [];
-      for (const key in window.cardano) {
-        if (window.cardano[key].enable) {
-          keys.push(key);
-        }
-      }
-      setWallets(keys);
-    }
+    const availableWallets = getAvailableWallets();
+    setWallets(availableWallets);
   };
+
   useEffect(() => {
     pollWallets();
   }, []);
 
-  useEffect(() => {
-    setSelectKey((previous) => (previous + 1));
-    setWalletAddress('');
-  }, [flag]);
   return (
     <Form
       id="walletForm"
@@ -123,13 +95,11 @@ function WalletDetailEdit({
         <div className="edit-available-wallet">
           <span>
             Available Wallet
-            {flag}
           </span>
           <select
             className="wallet-select"
             name="walletType"
             onChange={(event) => handleWallectSelect(event)}
-            key={selectKey}
           >
             <option value="" ref={selectElement}>
               Select Wallet
@@ -142,13 +112,6 @@ function WalletDetailEdit({
               ))
             }
           </select>
-        </div>
-        <div className="edit-available-wallet">
-          <span>Wallet Address</span>
-          <input
-            name="walletAddress"
-            value={walletAddress}
-          />
         </div>
       </div>
       <div className="wallet-detail-right-container-right-edit">
@@ -211,4 +174,4 @@ function WalletDetailEdit({
   );
 }
 
-export default WalletDetailEdit;
+export default WalletProfileEdit;

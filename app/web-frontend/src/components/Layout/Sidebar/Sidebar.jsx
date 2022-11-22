@@ -1,22 +1,22 @@
-import { Link, useLocation } from 'react-router-dom';
-import MenuIcon4 from 'assets/images/bank-icon.png';
-import MenuIcon2 from 'assets/images/book-icon.png';
-import MenuIcon6 from 'assets/images/credit.png';
-import MenuIcon3 from 'assets/images/envelope-icon.png';
-import MenuIcon5 from 'assets/images/wallet-icon.png';
 import MenuIcon4Active from 'assets/images/bank-icon-2.png';
+import MenuIcon4 from 'assets/images/bank-icon.png';
 import MenuIcon2Active from 'assets/images/book-icon-2.png';
+import MenuIcon2 from 'assets/images/book-icon.png';
 import MenuIcon6Active from 'assets/images/credit-icon-2.png';
+import MenuIcon6 from 'assets/images/credit.png';
 import MenuIcon3Active from 'assets/images/envelope-icon-2.png';
-import MenuIcon5Active from 'assets/images/wallet-icon-2.png';
+import MenuIcon3 from 'assets/images/envelope-icon.png';
 import HomeIcon from 'assets/images/homeicon.png';
-
+import MenuIcon5Active from 'assets/images/wallet-icon-2.png';
+import MenuIcon5 from 'assets/images/wallet-icon.png';
+import { Link, useLocation } from 'react-router-dom';
+import authUser from 'utils/helpers/authUser';
 import './Sidebar.css';
-import useUserInfo from 'hooks/user/userInfo';
 
 function SideBar() {
   const location = useLocation();
-  const login = useUserInfo((s) => s.login);
+  const login = authUser.getUser() && authUser.getJWTToken();
+
   return (
     <div className="sidebar">
       <ul>

@@ -3,17 +3,17 @@ import {
 } from '@mui/material';
 import CreationCard from 'components/cards/CreationCard';
 import Loader from 'components/uicore/Loader';
-import useUserInfo from 'hooks/user/userInfo';
 import moment from 'moment';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import authUser from 'utils/helpers/authUser';
 import './index.css';
 import useCreations from './useCreations';
 
 function Creations() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
-  const login = useUserInfo((s) => s.login);
+  const login = authUser.getUser() && authUser.getJWTToken();
   const {
     creations,
     isLoadingCreations,

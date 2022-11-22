@@ -1,18 +1,20 @@
 /* eslint-disable indent */
-import React, { useEffect, useState } from 'react';
 import Loader from 'components/uicore/Loader';
-import profileImg from '../../../assets/svgs/profile.svg';
-import WalletDetailEdit from './walletDetailEdit';
-import WalletDisplay from './walletDisplay';
-import CameraIcon from '../../../assets/svgs/cameraIcon.svg';
-import useUserInfo from '../../../hooks/user/userInfo';
-import useWallet from '../useWallet';
+import { useEffect, useState } from 'react';
+import authUser from 'utils/helpers/authUser';
+import CameraIcon from 'assets/svgs/cameraIcon.svg';
+import profileImg from 'assets/svgs/profile.svg';
+import useWallet from '../hooks/useWallet';
+import WalletProfileEdit from './profileEdit';
+import WalletProfileInfo from './profileInfo';
 
 let userId = '43704731-d816-4f1f-a599-eb290f67c3f4';
 
-function WalletDetail({ displayOnlyId }) {
+function WalletProfile({
+  publicUserId = null, // when public user id is present we only show public information of user
+}) {
   const [initialValues, setInitialValues] = useState({});
-  const [isDetailEdit, setDetailEdit] = useState(false);
+  const [isEditMode, setDetailEdit] = useState(false);
   const [isDisplayOnly, setIsDisplayOnly] = useState(false);
   const {
     userData,
@@ -22,24 +24,25 @@ function WalletDetail({ displayOnlyId }) {
     userProfileImageUrl,
     isImageUploaded,
   } = useWallet();
-  const user = useUserInfo((state) => state.user);
+
   function handleUploadImage(event) {
     const file = event.target.files[0];
     uploadUserImage(file);
   }
   useEffect(() => {
+    const user = authUser.getUser();
     if (user && user.user_id) {
       userId = user.user_id;
       fetchUserDetailsById(userId);
     }
-  }, [user, displayOnlyId]);
+  }, [publicUserId]);
 
   useEffect(() => {
-    if (displayOnlyId) {
-      fetchUserDetailsById(displayOnlyId);
+    if (publicUserId) {
+      fetchUserDetailsById(publicUserId);
       setIsDisplayOnly(true);
     }
-  }, [displayOnlyId]);
+  }, [publicUserId]);
 
   const getProfileImage = () => {
     if (userData && userData.imageUrl) {
@@ -68,7 +71,7 @@ function WalletDetail({ displayOnlyId }) {
       <div className="wallete-detail-left-container">
         <div className="front-face-photo">
           <img src={getProfileImage()} alt="alt" loading="lazy" />
-          {isDetailEdit && (
+          {isEditMode && (
             <div className="edit-camera">
 
               <label htmlFor="file-input">
@@ -92,21 +95,26 @@ function WalletDetail({ displayOnlyId }) {
           collections
         </span>
       </div>
-      {isDetailEdit ? (
-        <WalletDetailEdit
+      {isEditMode ? (
+        <WalletProfileEdit
           setDetailEdit={setDetailEdit}
           initialValues={initialValues}
           userId={userId}
           imageUrl={userProfileImageUrl}
         />
       ) : (
-        <WalletDisplay
-          setDetailEdit={setDetailEdit}
-          user={userData}
+        <WalletProfileInfo
+          onEdit={() => setDetailEdit(true)}
+          profileInfo={{
+            name: userData?.name,
+            email: userData?.email,
+            phone: userData?.phone,
+            bio: userData?.bio,
+          }}
           isDisplayOnly={isDisplayOnly}
         />
       )}
     </div>
   );
 }
-export default WalletDetail;
+export default WalletProfile;
