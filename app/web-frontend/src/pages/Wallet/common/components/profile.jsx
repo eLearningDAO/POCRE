@@ -1,9 +1,9 @@
 /* eslint-disable indent */
+import CameraIcon from 'assets/svgs/cameraIcon.svg';
+import profileImg from 'assets/svgs/profile.svg';
 import Loader from 'components/uicore/Loader';
 import { useEffect, useState } from 'react';
 import authUser from 'utils/helpers/authUser';
-import CameraIcon from 'assets/svgs/cameraIcon.svg';
-import profileImg from 'assets/svgs/profile.svg';
 import useWallet from '../hooks/useWallet';
 import WalletProfileEdit from './profileEdit';
 import WalletProfileInfo from './profileInfo';
@@ -13,9 +13,9 @@ let userId = '43704731-d816-4f1f-a599-eb290f67c3f4';
 function WalletProfile({
   publicUserId = null, // when public user id is present we only show public information of user
 }) {
-  const [initialValues, setInitialValues] = useState({});
   const [isEditMode, setDetailEdit] = useState(false);
   const [isDisplayOnly, setIsDisplayOnly] = useState(false);
+  const [userDataToDisplay, setUserDataToDisplay] = useState({});
   const {
     userData,
     fetchUserDetailsById,
@@ -24,6 +24,10 @@ function WalletProfile({
     userProfileImageUrl,
     isImageUploaded,
   } = useWallet();
+
+  useEffect(() => {
+    setUserDataToDisplay(userData);
+  }, [userData]);
 
   function handleUploadImage(event) {
     const file = event.target.files[0];
@@ -53,18 +57,6 @@ function WalletProfile({
     }
     return profileImg;
   };
-
-  useEffect(() => {
-    // eslint-disable-next-line  no-param-reassign
-    if (userData) {
-      const init = { ...userData };
-      delete init.walletAddress;
-      delete init.walletType;
-      delete init.reputationStars;
-      delete init.imageUrl;
-      setInitialValues(init);
-    }
-  }, [userData]);
 
   return (
     <div className="wallet-detail-container">
@@ -97,19 +89,26 @@ function WalletProfile({
       </div>
       {isEditMode ? (
         <WalletProfileEdit
+          key={isEditMode}
           setDetailEdit={setDetailEdit}
-          initialValues={initialValues}
+          initialValues={{
+            name: userDataToDisplay?.name,
+            email: userDataToDisplay?.email,
+            phone: userDataToDisplay?.phone,
+            bio: userDataToDisplay?.bio,
+          }}
           userId={userId}
           imageUrl={userProfileImageUrl}
+          onUpdate={(data) => setUserDataToDisplay(data)}
         />
       ) : (
         <WalletProfileInfo
           onEdit={() => setDetailEdit(true)}
           profileInfo={{
-            name: userData?.name,
-            email: userData?.email,
-            phone: userData?.phone,
-            bio: userData?.bio,
+            name: userDataToDisplay?.name,
+            email: userDataToDisplay?.email,
+            phone: userDataToDisplay?.phone,
+            bio: userDataToDisplay?.bio,
           }}
           isDisplayOnly={isDisplayOnly}
         />

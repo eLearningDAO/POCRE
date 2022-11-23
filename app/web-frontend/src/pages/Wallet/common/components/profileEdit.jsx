@@ -10,10 +10,7 @@ import Switch from '@mui/material/Switch';
 import Form from 'components/uicore/Form';
 import Input from 'components/uicore/Input';
 import Loader from 'components/uicore/Loader';
-import {
-  useEffect, useRef, useState,
-} from 'react';
-import { getAvailableWallets, getWalletAddress } from 'utils/helpers/wallet';
+import { useState } from 'react';
 import useWallet from '../hooks/useWallet';
 import { walletValidation } from './validation';
 
@@ -22,45 +19,26 @@ function WalletProfileEdit({
   initialValues,
   userId,
   imageUrl,
+  onUpdate,
 }) {
   const [ratingValue, setRatingValue] = useState(3);
   const {
     updateUser,
     isUserDataUpdating,
   } = useWallet();
-  const [wallets, setWallets] = useState([]);
-  const [walletAddress, setWalletAddress] = useState('');
-  const selectElement = useRef();
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     const userData = {
-      ...values,
-      user_Id: userId,
-      wallet_address: walletAddress,
       image_url: imageUrl,
+      user_name: values?.name?.trim(),
+      user_bio: values?.bio?.trim(),
+      email_address: values?.email?.trim(),
+      phone: values?.phone?.trim(),
     };
-    updateUser(userData);
     setDetailEdit(false);
+    onUpdate(values);
+    await updateUser({ id: userId, updateBody: userData });
   };
-
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const handleWallectSelect = async (event) => {
-    event.preventDefault();
-    selectElement.current.style.display = 'none';
-    const walletKey = event.target.value;
-    let usedAddress = await getWalletAddress(walletKey);
-    usedAddress = `${usedAddress.slice(0, 10)}.....${usedAddress.slice(93, 103)}`;
-    setWalletAddress(usedAddress);
-  };
-
-  const pollWallets = () => {
-    const availableWallets = getAvailableWallets();
-    setWallets(availableWallets);
-  };
-
-  useEffect(() => {
-    pollWallets();
-  }, []);
 
   return (
     <Form
@@ -91,27 +69,6 @@ function WalletProfileEdit({
             label="Verified Identy"
             labelPlacement="start"
           />
-        </div>
-        <div className="edit-available-wallet">
-          <span>
-            Available Wallet
-          </span>
-          <select
-            className="wallet-select"
-            name="walletType"
-            onChange={(event) => handleWallectSelect(event)}
-          >
-            <option value="" ref={selectElement}>
-              Select Wallet
-            </option>
-            {
-              wallets.map((wallet, index) => (
-                <option value={wallet} key={index}>
-                  {wallet}
-                </option>
-              ))
-            }
-          </select>
         </div>
       </div>
       <div className="wallet-detail-right-container-right-edit">
