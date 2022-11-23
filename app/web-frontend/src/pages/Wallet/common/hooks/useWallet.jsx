@@ -55,11 +55,8 @@ const useWallet = () => {
     mutate: updateUser,
     isLoading: isUserDataUpdating,
   } = useMutation({
-    mutationFn: async (userInfo) => {
-      const id = userInfo.user_Id;
-      // eslint-disable-next-line  no-param-reassign
-      delete userInfo.user_Id;
-      const userResponse = await User.update(id, userInfo);
+    mutationFn: async ({ id, updateBody }) => {
+      const userResponse = await User.update(id, updateBody);
       return userResponse.results;
     },
   });
