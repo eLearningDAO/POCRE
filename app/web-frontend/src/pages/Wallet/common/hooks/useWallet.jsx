@@ -1,75 +1,45 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { User, Creation } from 'api/requests';
+import { useQuery } from '@tanstack/react-query';
+import { Creation, User } from 'api/requests';
 import { useState } from 'react';
 
 const useWallet = () => {
   const [userId, setUserId] = useState(null);
+
+  // get user profile
   const {
-    data: userData,
+    data: userProfile,
+    isError: isFetchUserProfileError,
+    isSuccess: isFetchUserProfileSuccess,
+    isLoading: isFetchingUserProfile,
   } = useQuery({
-    queryKey: ['userById'],
+    queryKey: [`user-wallet-profile-${userId}`],
     queryFn: async () => {
-      const userResponse = await User.getById(userId);
+      const responseProfile = await User.getById(userId);
+
+      const responseCreationsCount = (await Creation.getAll(`query=${userId}&search_fields[]=author_id&limit=1`));
+
       return {
-        name: userResponse.user_name,
-        email: userResponse.email_address,
-        phone: userResponse.phone,
-        bio: userResponse.user_bio,
-        reputationStars: userResponse.reputation_stars,
-        imageUrl: userResponse.image_url,
+        name: responseProfile.user_name,
+        email: responseProfile.email_address,
+        phone: responseProfile.phone,
+        bio: responseProfile.user_bio,
+        reputationStars: responseProfile.reputation_stars,
+        imageUrl: responseProfile.image_url,
+        totalCreationsAuthored: responseCreationsCount?.total_results || 0,
       };
     },
     enabled: !!userId,
-  });
-
-  const {
-    data: userCollectionCount,
-  } = useQuery({
-    queryKey: ['userCollectionById'],
-    queryFn: async () => {
-      const userCollectionResponse = await Creation.getById(userId);
-      return userCollectionResponse.results.length;
-    },
-    enabled: !!userId,
-  });
-  const {
-    mutate: uploadUserImage,
-    data: userProfileImageUrl,
-    isLoading: isImageUploaded,
-  } = useMutation({
-    mutationFn: async (file) => {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', 'zqrypurh');
-      const requestOptions = {
-        method: 'POST',
-        body: formData,
-      };
-      const userProfileImageUpload = await fetch('https://api.cloudinary.com/v1_1/dia0ztihb/image/upload', requestOptions)
-        .then((response) => response.json());
-      return userProfileImageUpload.url;
-    },
-  });
-
-  const {
-    mutate: updateUser,
-    isLoading: isUserDataUpdating,
-  } = useMutation({
-    mutationFn: async ({ id, updateBody }) => {
-      const userResponse = await User.update(id, updateBody);
-      return userResponse.results;
-    },
   });
 
   return {
-    userData,
-    uploadUserImage,
-    userCollectionCount,
-    userProfileImageUrl,
-    isImageUploaded,
-    updateUser,
-    isUserDataUpdating,
-    fetchUserDetailsById: (id) => setUserId(id),
+    // get user profile
+    fetchUserProfile: (id) => setUserId(id),
+    userProfile,
+    isFetchingUserProfile,
+    fetchUserProfileStatus: {
+      success: isFetchUserProfileSuccess,
+      error: isFetchUserProfileError ? 'Failed to get profile' : null,
+    },
   };
 };
 

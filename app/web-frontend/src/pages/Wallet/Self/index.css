@@ -449,7 +449,6 @@
     height: 238px;
     border-radius: 56px;
     background-color: white;
-    margin-top: 16%;
     position: relative;
 }
 
@@ -1067,4 +1066,75 @@ select.wallet-select option {
         width: 286px;
     }
 
+}
+
+
+/* new classes */
+.wallet-profile-orange-bg {
+    background: linear-gradient(104.08deg, #FECE76 -28.92%, #F78B88 76.85%) !important;
+}
+.wallet-profile-white-bg {
+    background: #FFFFFF !important;
+}
+.wallet-update-form{ 
+    display: flex;
+    padding: 36px;
+    flex-direction: column;
+    gap:16px;
+}
+.wallet-update-form-action-btns{ 
+    display: flex;
+    margin-left: auto;
+    gap:16px;
+    align-items: center;
+}
+.wallet-update-form-fields-grid {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 16px;
+}
+.wallet-update-form-input {
+    display: flex;
+    flex-direction: column;
+    gap:16px;
+}
+.user-profile-avatar {
+    width: 230px;
+    height: 230px;
+    border-radius: 24px;
+    background-color: var(--color-orange-dark);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-profile-avatar>img {
+    width: 200px;
+    height: 200px;
+    border-radius: 24px;
+    object-fit: contain;
+    background-color: black;
+}
+
+.user-profile-avatar-picker-btn {
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 80%;
+    background-color: black;
+}
+
+.user-profile-avatar-picker-btn input {
+    display: none;
+}
+
+.user-profile-avatar-picker-btn img {
+    width: 40px;
+    height: 40px;
 }

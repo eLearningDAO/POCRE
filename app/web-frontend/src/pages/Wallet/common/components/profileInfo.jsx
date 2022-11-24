@@ -8,11 +8,11 @@ import phoneIcon from 'assets/svgs/phoneIcon.svg';
 import emailicon from 'assets/svgs/emailIcon.svg';
 
 function WalletProfileInfo({
-  onEdit,
+  onEdit = () => {},
   profileInfo = {
     name: '', email: '', phone: '', bio: '',
   },
-  isDisplayOnly,
+  canEdit = true,
 }) {
   return (
     <div className="wallet-detail-right-container">
@@ -22,7 +22,7 @@ function WalletProfileInfo({
           <div className="wallet-mobile-screen-only">
             <span className="wallet-rating-title-mobile-screen-title">Wallet Rating</span>
             {
-                !isDisplayOnly ? (
+                !canEdit ? (
                   <Button
                     className="wallet-edit-btn-mobile-screen"
                     startIcon={<EditIcon />}
@@ -46,7 +46,7 @@ function WalletProfileInfo({
       </div>
       <div className="wallet-detail-right-container-right">
         {
-            !isDisplayOnly ? (
+            !canEdit ? (
               <Button
                 className="wallet-edit-btn"
                 startIcon={<EditIcon />}
