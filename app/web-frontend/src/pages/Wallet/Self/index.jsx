@@ -37,7 +37,7 @@ function WalletSelf() {
   }, [updateUserProfileStatus.success]);
 
   return (
-    <div className={`wallet-container ${isEditMode ? 'wallet-profile-white-bg' : 'wallet-profile-orange-bg'}`}>
+    <div className="wallet-container">
       {isEditMode
         ? (
           <Form
@@ -93,6 +93,11 @@ function WalletSelf() {
         : (
           <>
             <WalletProfile
+              name={user?.user_name}
+              bio={user?.user_bio}
+              phone={user?.phone}
+              email={user?.email_address}
+              image={user?.image_url}
               onEditProfile={() => setEditMode(true)}
             />
             <Grid container className="wallet-collection-container">

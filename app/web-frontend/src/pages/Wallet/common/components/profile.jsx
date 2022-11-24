@@ -1,109 +1,71 @@
-/* eslint-disable indent */
-import CameraIcon from 'assets/svgs/cameraIcon.svg';
-import profileImg from 'assets/svgs/profile.svg';
-import Loader from 'components/uicore/Loader';
-import { useEffect, useState } from 'react';
-import authUser from 'utils/helpers/authUser';
-import useWallet from '../hooks/useWallet';
-// import WalletProfileEdit from './profileEdit';
-import WalletProfileInfo from './profileInfo';
+import EditIcon from '@mui/icons-material/Edit';
+import { Button } from '@mui/material';
+import Rating from '@mui/material/Rating';
+import UserAvatar from './userAvatar';
 
 function WalletProfile({
+  bio = '',
+  name = '',
+  image = '',
+  email = '',
+  phone = '',
+  totalCreationsAuthored = 0,
   onEditProfile = () => {},
-  publicUserId = null, // when public user id is present we only show public information of user
+  canEdit = false,
 }) {
-  const [isEditMode] = useState(false);
-  const [userDataToDisplay, setUserDataToDisplay] = useState({});
-  const {
-    userProfile,
-    fetchUserProfile,
-    userCollectionCount,
-    uploadUserImage,
-    userProfileImageUrl,
-    isImageUploaded,
-  } = useWallet();
-
-  useEffect(() => {
-    setUserDataToDisplay(userProfile);
-  }, [userProfile]);
-
-  function handleUploadImage(event) {
-    const file = event.target.files[0];
-    uploadUserImage(file);
-  }
-
-  useEffect(() => {
-    if (publicUserId) fetchUserProfile(publicUserId);
-    else fetchUserProfile(authUser.getUser().user_id);
-  }, [publicUserId]);
-
-  const getProfileImage = () => {
-    if (userProfile && userProfile.imageUrl) {
-      return userProfile.imageUrl;
-    }
-    if (userProfileImageUrl) {
-      return userProfileImageUrl;
-    }
-    return profileImg;
-  };
-
   return (
-    <div className="wallet-detail-container">
-      <div className="wallete-detail-left-container">
-        <div className="front-face-photo">
-          <img src={getProfileImage()} alt="alt" loading="lazy" />
-          {isEditMode && (
-            <div className="edit-camera">
-
-              <label htmlFor="file-input">
-                {
-                  isImageUploaded ? <Loader />
-                    : (
-                      <>
-                        <img src={CameraIcon} alt="camera" loading="lazy" />
-                        <input />
-                      </>
-                    )
-                }
-              </label>
-              <input type="file" id="file-input" inputProps={{ accept: 'image/*' }} onChange={(file) => handleUploadImage(file)} />
-            </div>
-          )}
+    <>
+      <h4 className="h4">User Profile</h4>
+      <div className="wallet-profile-container">
+        <div className="wallet-profile-info">
+          <UserAvatar imageUrl={image} />
+          <Rating
+            name="simple-controlled"
+            color="red"
+            readOnly
+            value={0}
+          />
+          <p className="wallet-profile-creations-count">
+            Author of
+            <span style={{ marginLeft: '4px', marginRight: '4px' }}>{totalCreationsAuthored}</span>
+            creations
+          </p>
         </div>
-        <span className="author-collection">
-          Author of
-          <span style={{ marginLeft: '4px', marginRight: '4px' }}>{userCollectionCount}</span>
-          creations
-        </span>
+
+        <div className="wallet-profile-info wallet-profile-info-right">
+          <div>
+            <h4 className="h4">Name</h4>
+            <p>{name}</p>
+          </div>
+          <div>
+            <h4 className="h4">Email</h4>
+            <p>{email}</p>
+          </div>
+          <div>
+            <h4 className="h4">phone</h4>
+            <p>{phone}</p>
+          </div>
+          <div>
+            <h4 className="h4">Biography</h4>
+            <p>{bio}</p>
+          </div>
+          {
+            !canEdit && (
+              <Button
+                className="nextCollectionButton"
+                startIcon={<EditIcon />}
+                onClick={onEditProfile}
+                style={{
+                  marginLeft: 'auto',
+                }}
+              >
+                Edit
+              </Button>
+            )
+          }
+        </div>
       </div>
-      {isEditMode ? (
-        <hey />
-        // <WalletProfileEdit
-        //   key={isEditMode}
-        //   initialValues={{
-        //     name: userDataToDisplay?.name,
-        //     email: userDataToDisplay?.email,
-        //     phone: userDataToDisplay?.phone,
-        //     bio: userDataToDisplay?.bio,
-        //   }}
-        //   userId={userId}
-        //   imageUrl={userProfileImageUrl}
-        //   onUpdate={(data) => setUserDataToDisplay(data)}
-        //   onEditCancel={() => setDetailEdit(false)}
-        // />
-      ) : (
-        <WalletProfileInfo
-          onEdit={onEditProfile}
-          profileInfo={{
-            name: userDataToDisplay?.name,
-            email: userDataToDisplay?.email,
-            phone: userDataToDisplay?.phone,
-            bio: userDataToDisplay?.bio,
-          }}
-          canEdit={publicUserId}
-        />
-      )}
-    </div>
+    </>
   );
 }
 export default WalletProfile;

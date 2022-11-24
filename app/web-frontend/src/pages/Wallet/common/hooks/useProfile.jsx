@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Creation, User } from 'api/requests';
 import { useState } from 'react';
 
-const useWallet = () => {
+const useProfile = () => {
   const [userId, setUserId] = useState(null);
 
   // get user profile
@@ -43,4 +43,4 @@ const useWallet = () => {
   };
 };
 
-export default useWallet;
+export default useProfile;
