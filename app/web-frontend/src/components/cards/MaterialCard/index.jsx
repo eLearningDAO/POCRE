@@ -64,6 +64,7 @@ function MaterialCard({
   interactionBtns,
   requestAccepted = true,
   username = 'jack 50',
+  userimage = '',
   link = 'https://www.youtube.com/watch?v=2BjYPFBh4Zc',
   title = 'Mobile App Design',
   mediaUrl = CreationCardImg,
@@ -220,9 +221,10 @@ function MaterialCard({
 
           <Grid display="flex" gap="12px" alignItems="center">
             <img
-              className="material-card-avatar"
               alt="avatar"
-              src={`https://i.pravatar.cc/50?img=${Math.random()}`}
+              className="profile-pic profile-pic-small profile-pic-rounded"
+              // eslint-disable-next-line unicorn/prefer-module
+              src={userimage || require('assets/images/profile-placeholder.png')}
             />
             <span>
               By

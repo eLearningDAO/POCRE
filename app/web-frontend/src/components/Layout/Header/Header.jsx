@@ -109,7 +109,8 @@ function HomeHeader({ displayNav = false }) {
         <div className="loggedin-user">
           <img
             alt=""
-            src={loggedInUser.iamge_url || `https://i.pravatar.cc/50?img=${Math.random()}`}
+            src={loggedInUser.image_url}
+            className="profile-pic profile-pic-small"
           />
           <h4>{loggedInUser.user_name}</h4>
         </div>

@@ -117,9 +117,13 @@ function Litigation() {
                 title={x?.litigation_title}
                 claimer={{
                   name: x?.issuer?.user_name,
+                  // eslint-disable-next-line unicorn/prefer-module
+                  image: x?.issuer?.image_url || require('assets/images/profile-placeholder.png'),
                 }}
                 assumedAuthor={{
                   name: x?.assumed_author?.user_name,
+                  // eslint-disable-next-line unicorn/prefer-module
+                  image: x?.assumed_author?.image_url || require('assets/images/profile-placeholder.png'),
                 }}
                 startDate={moment(x?.litigation_start).format('DD/MM/YYYY')}
                 endDate={moment(x?.litigation_end).format('DD/MM/YYYY')}
@@ -171,6 +175,8 @@ function Litigation() {
                 onRedeem={async () => await transferLitigatedItemOwnership(x?.litigation_id)}
                 winner={{
                   name: x?.winner?.user_name,
+                  // eslint-disable-next-line unicorn/prefer-module
+                  image: x?.winner?.image_url || require('assets/images/profile-placeholder.png'),
                 }}
               />
             ))}

@@ -10,9 +10,11 @@ function LitigationCard({
   title = 'I want to reclaim',
   claimer = {
     name: 'bob',
+    image: '',
   },
   assumedAuthor = {
     name: 'bob',
+    image: '',
   },
   startDate = '27/10/2022',
   endDate = '27/10/2022',
@@ -28,6 +30,7 @@ function LitigationCard({
   // mode = closed
   winner = {
     name: 'bob',
+    image: '',
   },
   canRedeem = true,
   isRedeemed = true,
@@ -51,7 +54,11 @@ function LitigationCard({
       <div className="litigation-card-authors">
         <div className="litigation-card-author">
           <h3>Assumed Author</h3>
-          <img src={`https://i.pravatar.cc/50?img=${Math.random()}`} alt="" />
+          <img
+            alt=""
+            src={assumedAuthor.image}
+            className="profile-pic profile-pic-small profile-pic-rounded"
+          />
           <h4>{assumedAuthor.name}</h4>
           {mode === 'closed' && winner.name === assumedAuthor.name
           && <span className="litigation-winner-label">Winner</span>}
@@ -59,7 +66,11 @@ function LitigationCard({
         <h1>vs</h1>
         <div className="litigation-card-author">
           <h3>Claimer</h3>
-          <img src={`https://i.pravatar.cc/50?img=${Math.random()}`} alt="" />
+          <img
+            alt=""
+            src={claimer.image}
+            className="profile-pic profile-pic-small profile-pic-rounded"
+          />
           <h4>{claimer.name}</h4>
           {mode === 'closed' && winner.name === claimer.name
           && <span className="litigation-winner-label">Winner</span>}

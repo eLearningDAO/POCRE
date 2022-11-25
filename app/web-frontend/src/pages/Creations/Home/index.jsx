@@ -112,6 +112,7 @@ function Creations() {
                     link: m?.material_link,
                     fileType: m?.type?.type_name,
                     author: m?.author?.user_name,
+                    author_image: m?.author?.image_url,
                   }))}
                   canEdit={x.is_draft}
                   onEditClick={() => navigate(`/creations/${x.creation_id}/update`)}

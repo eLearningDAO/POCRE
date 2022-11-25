@@ -33,7 +33,8 @@ export default function StepOne({
               ? (
                 <UserCard
                   username={recognition?.recognition_for?.user_name}
-                  imageUrl={`https://i.pravatar.cc/50?img=${Math.random()}`}
+                  // eslint-disable-next-line unicorn/prefer-module
+                  imageUrl={recognition?.recognition_for?.image_url || require('assets/images/profile-placeholder.png')}
                   totalCreationsAuthored={Math.floor(Math.random())}
                 />
               )

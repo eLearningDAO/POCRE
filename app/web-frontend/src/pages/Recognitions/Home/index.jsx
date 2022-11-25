@@ -16,6 +16,7 @@ function Recognition() {
     fetchRecognitions,
     recognitions,
   } = useRecognition();
+  console.log('recognitions =>', recognitions);
 
   useEffect(() => {
     fetchRecognitions();
@@ -75,6 +76,8 @@ function Recognition() {
               mediaUrl={x?.material?.material_link}
               description={x?.material?.material_description}
               recognizedByUserName={x?.recognition_by?.user_name}
+              // eslint-disable-next-line unicorn/prefer-module
+              userImage={x?.recognition_by?.image_url || require('assets/images/profile-placeholder.png')}
               creationDate={moment(x?.recognition_issued).format('Do MMMM YYYY')}
               acceptedOn={x?.status !== 'accepted' ? null : moment(x?.status_updated).format('Do MMMM YYYY')}
               declinedOn={x?.status !== 'declined' ? null : moment(x?.status_updated).format('Do MMMM YYYY')}
@@ -116,6 +119,8 @@ function Recognition() {
                     recognizedByUserName={null}
                     awaitingRecognitionByUserName={x?.recognition_for?.user_name}
                     creationDate={moment(x?.recognition_issued).format('Do MMMM YYYY')}
+                    // eslint-disable-next-line unicorn/prefer-module
+                    userImage={x?.recognition_for?.image_url || require('assets/images/profile-placeholder.png')}
                     isPending={x?.status === 'pending'}
                     isAccepted={x?.status === 'accepted'}
                     isDeclined={x?.status === 'declined'}

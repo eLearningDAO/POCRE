@@ -13,7 +13,11 @@ function UserCard({
 }) {
   return (
     <div className={`user-card user-card-${variant}`}>
-      <img className="user-card-image" alt="" src={imageUrl} />
+      <img
+        alt=""
+        src={imageUrl}
+        className="profile-pic profile-pic-small profile-pic-rounded"
+      />
 
       <div className="user-card-details">
         <div className="user-card-header">

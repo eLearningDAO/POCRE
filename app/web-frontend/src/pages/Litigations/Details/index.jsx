@@ -102,7 +102,8 @@ export default function LitigationDetails() {
           </Typography>
           <UserCard
             username={litigation?.assumed_author?.user_name}
-            imageUrl={`https://i.pravatar.cc/50?img=${Math.random()}`}
+            // eslint-disable-next-line unicorn/prefer-module
+            imageUrl={litigation?.assumed_author?.image_url || require('assets/images/profile-placeholder.png')}
             totalCreationsAuthored={null}
           />
         </Grid>
@@ -114,7 +115,8 @@ export default function LitigationDetails() {
           </Typography>
           <UserCard
             username={litigation?.issuer?.user_name}
-            imageUrl={`https://i.pravatar.cc/50?img=${Math.random()}`}
+            // eslint-disable-next-line unicorn/prefer-module
+            imageUrl={litigation?.issuer?.image_url || require('assets/images/profile-placeholder.png')}
             totalCreationsAuthored={null}
           />
         </Grid>
@@ -279,7 +281,8 @@ export default function LitigationDetails() {
                     return vote === false ? 'Voted in opposition' : (vote === true ? 'Voted in favor' : 'Vote not casted');
                   })()}
                   username={recognition?.recognition_for?.user_name}
-                  imageUrl={`https://i.pravatar.cc/50?img=${Math.random()}`}
+                  // eslint-disable-next-line unicorn/prefer-module
+                  imageUrl={recognition?.recognition_for?.image_url || require('assets/images/profile-placeholder.png')}
                   totalCreationsAuthored={Math.floor(Math.random())}
                 />
               )

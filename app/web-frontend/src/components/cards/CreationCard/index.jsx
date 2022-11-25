@@ -90,6 +90,7 @@ function CollectionCard({
     fileType: 'image',
     link: 'https://example.com',
     author: 'turtle',
+    author_image: '',
   }],
   title = 'Mobile App Design',
   description = '1000+ free files you can duplicate, remix, and reuse 1000+ free files',
@@ -297,7 +298,13 @@ function CollectionCard({
               />
             ) : (
               materials.map((x, index) => (
-                <img key={index} src={`https://i.pravatar.cc/50?img=${Math.random()}`} alt="" />
+                <img
+                  alt=""
+                  key={index}
+                  className="profile-pic profile-pic-small profile-pic-rounded"
+                  // eslint-disable-next-line unicorn/prefer-module
+                  src={x?.author_image || require('assets/images/profile-placeholder.png')}
+                />
               ))
             )}
           </div>

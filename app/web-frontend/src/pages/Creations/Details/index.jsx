@@ -139,7 +139,8 @@ export default function CreationDetails() {
           >
             <img
               className="creation-user-image"
-              src={`https://i.pravatar.cc/150?img=${Math.random()}`}
+              // eslint-disable-next-line unicorn/prefer-module
+              src={creation?.author?.image_url || require('assets/images/profile-placeholder.png')}
               alt=""
             />
             <Box
@@ -187,6 +188,7 @@ export default function CreationDetails() {
                 title={x?.material_title}
                 description={x?.material_description}
                 username={x?.author?.user_name}
+                userimage={x?.author?.image_url}
                 interactionBtns={false}
                 showReconcilateOptions={false}
                 recognitionStatus={x?.recognition?.status || null}
