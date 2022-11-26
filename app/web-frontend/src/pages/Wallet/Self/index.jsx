@@ -31,7 +31,7 @@ function WalletSelf() {
 
   useEffect(() => {
     if (updateUserProfileStatus.success) {
-      setUser(authUser.getUser());
+      setTimeout(() => setUser(authUser.getUser()));
       setEditMode(false);
     }
   }, [updateUserProfileStatus.success]);
@@ -98,6 +98,7 @@ function WalletSelf() {
               phone={user?.phone}
               email={user?.email_address}
               image={user?.image_url}
+              stars={user?.reputation_stars || 0}
               onEditProfile={() => setEditMode(true)}
             />
             <Grid container className="wallet-collection-container">

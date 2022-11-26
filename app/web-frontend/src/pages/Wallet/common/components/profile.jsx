@@ -9,6 +9,7 @@ function WalletProfile({
   image = '',
   email = '',
   phone = '',
+  stars = 0,
   totalCreationsAuthored = 0,
   onEditProfile = () => {},
   canEdit = false,
@@ -20,10 +21,11 @@ function WalletProfile({
         <div className="wallet-profile-info">
           <UserAvatar imageUrl={image} />
           <Rating
+            key={stars}
             name="simple-controlled"
             color="red"
             readOnly
-            value={0}
+            value={stars}
           />
           <p className="wallet-profile-creations-count">
             Author of
