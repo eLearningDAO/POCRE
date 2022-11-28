@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { User } from 'api/requests';
 import authUser from 'utils/helpers/authUser';
 
-const useSelf = () => {
+const useProfile = () => {
   // update user profile
   const {
     mutate: updateUserProfile,
@@ -51,4 +51,4 @@ const useSelf = () => {
   };
 };
 
-export default useSelf;
+export default useProfile;
