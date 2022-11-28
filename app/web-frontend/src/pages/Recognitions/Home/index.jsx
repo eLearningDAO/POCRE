@@ -16,7 +16,6 @@ function Recognition() {
     fetchRecognitions,
     recognitions,
   } = useRecognition();
-  console.log('recognitions =>', recognitions);
 
   useEffect(() => {
     fetchRecognitions();
