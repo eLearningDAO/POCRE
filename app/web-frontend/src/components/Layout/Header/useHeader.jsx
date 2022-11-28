@@ -3,8 +3,11 @@ import { useLocation } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
 import '../responsive-menu-transition.css';
 import './Header.css';
+import useAppKeys from 'hooks/useAppKeys';
 
 const useHeader = () => {
+  const { updateAppKey } = useAppKeys();
+
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
 
@@ -21,14 +24,12 @@ const useHeader = () => {
     setLoggedInUser(null);
     authUser.removeJWTToken();
     authUser.removeUser();
-    // eslint-disable-next-line no-self-assign
-    window.location = window.location;
+    updateAppKey();
   };
 
   const handleLogin = () => {
     setLoggedInUser(authUser.getUser());
-    // eslint-disable-next-line no-self-assign
-    window.location = window.location;
+    updateAppKey();
   };
 
   const [displayResponsiveMenu, setDisplayResponsiveMenu] = React.useState(false);

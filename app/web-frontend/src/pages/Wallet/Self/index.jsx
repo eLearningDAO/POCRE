@@ -6,6 +6,7 @@ import Loader from 'components/uicore/Loader';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
+import useAppKeys from 'hooks/useAppKeys';
 import WalletProfile from '../common/components/profile';
 import UserAvatar from '../common/components/userAvatar';
 import './index.css';
@@ -14,6 +15,8 @@ import { updateProfileValidation } from './validation';
 
 function WalletSelf() {
   const navigate = useNavigate();
+
+  const { updateAppKey } = useAppKeys();
 
   const handleViewCreattion = () => navigate('/creations');
   const handleCreateCreattion = () => navigate('/creations/create');
@@ -31,6 +34,7 @@ function WalletSelf() {
 
   useEffect(() => {
     if (updateUserProfileStatus.success) {
+      updateAppKey();
       setTimeout(() => setUser(authUser.getUser()));
       setEditMode(false);
     }
