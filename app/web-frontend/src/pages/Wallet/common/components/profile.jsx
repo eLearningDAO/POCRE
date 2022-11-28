@@ -45,7 +45,7 @@ function WalletProfile({
 
   return (
     <Form
-      className="wallet-profile-container"
+      className={`wallet-profile-container ${!canEdit && 'wallet-profile-container-full-rounded'}`}
       onSubmit={async (values) => {
         await updateUserProfile({ ...values, avatarImageFile });
         setTimeout(() => {

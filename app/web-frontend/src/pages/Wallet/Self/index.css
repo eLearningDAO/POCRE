@@ -69,6 +69,9 @@
     border-top-right-radius: 25px;
     position: relative;
 }
+.wallet-profile-container-full-rounded {
+    border-radius: 25px;
+}
 .wallet-profile-info-left {
     display: flex;
     flex-direction: column;
