@@ -181,7 +181,12 @@ export default function CreationDetails() {
           width="100%"
         >
           <div className="collection-member-images">
-            <img src={`https://i.pravatar.cc/50?img=${Math.random()}`} alt="" />
+            <img
+              alt=""
+              className="profile-pic profile-pic-small profile-pic-rounded"
+              // eslint-disable-next-line unicorn/prefer-module
+              src={recognitionDetails?.recognition_by?.image_url || require('assets/images/profile-placeholder.png')}
+            />
             <p>
               Recognized by
               {' '}

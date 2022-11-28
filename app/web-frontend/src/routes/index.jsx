@@ -127,7 +127,7 @@ function AppRoutes() {
           )}
         />
         <Route
-          path="/user/:id"
+          path="/wallet/:id"
           element={(
             <Layout displaySidebar>
               <WalletPublic />

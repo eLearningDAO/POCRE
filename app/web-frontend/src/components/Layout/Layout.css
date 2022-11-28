@@ -1,3 +1,9 @@
+/* Slider */
+
+@import '~slick-carousel/slick/slick.css';
+@import '~slick-carousel/slick/slick-theme.css';
+
+
 /**** GLOBAL ***/
 
 @font-face {
@@ -607,11 +613,6 @@ a {
   text-align: right;
   justify-content: flex-end
 } */
-
-/* Slider */
-
-@import '~slick-carousel/slick/slick.css';
-@import '~slick-carousel/slick/slick-theme.css';
 
 .slider-container {
   height: 700px;

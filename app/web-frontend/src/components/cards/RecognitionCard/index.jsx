@@ -58,6 +58,7 @@ function RecognitionCard({
   mediaUrl = 'https://images.pexels.com/photos/415071/pexels-photo-415071.jpeg?cs=srgb&dl=pexels-pixabay-415071.jpg&fm=jpg',
   recognizedByUserName = 'jack 58',
   awaitingRecognitionByUserName = '',
+  userImage = '',
   isPending = false,
   isAccepted = false,
   isDeclined = false,
@@ -193,7 +194,11 @@ function RecognitionCard({
           )}
           {(recognizedByUserName || awaitingRecognitionByUserName) && (
             <div className="collection-member-images">
-              <img src={`https://i.pravatar.cc/50?img=${Math.random()}`} alt="" />
+              <img
+                alt=""
+                className="profile-pic profile-pic-small profile-pic-rounded"
+                src={userImage}
+              />
               <p>
                 {recognizedByUserName ? 'Recognized by' : ((isPending && 'Awaiting recognition by') || (isAccepted && 'Recognized by') || (isDeclined && 'Rejected by'))}
                 {' '}
