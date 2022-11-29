@@ -99,7 +99,7 @@ export default function CreationDetails() {
           {mediaType === 'document' && !creation?.creation_link?.includes('.pdf') && (
             <div className="unsupported-file-type">
               <h4 className="heading h4">Are you okay to download this file?</h4>
-              <a href={mediaType}>{creation?.creation_link}</a>
+              <a href={creation?.creation_link}>{creation?.creation_link}</a>
               <div className="media-preview-content-options">
                 <Button
                   className="btn btn-primary icon-btn"
