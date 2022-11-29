@@ -4,16 +4,16 @@
 import {
   Box, Button, Chip, Grid, Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
 import DownloadIconSVG from 'assets/svgs/download.svg';
-import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import CreationPreview from 'components/previews/CreationPreview';
 import SocialMediaModal from 'components/shared/socialmediaSharingModal';
+import { useEffect, useState } from 'react';
+import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import EditButton from './btns/EditButton';
+import PreviewButton from './btns/PreviewButton';
 import RemoveButton from './btns/RemoveButton';
 import ShareButton from './btns/ShareButton';
 import './index.css';
-import PreviewButton from './btns/PreviewButton';
 
 function DeleteCofirmationDialog({ onClose, onConfirm }) {
   return (
@@ -85,14 +85,16 @@ function CollectionCard({
   creationId = '378t7egf9gf38gf0239h',
   interactionBtns,
   creationDate = '2022-01-01 00:00:00',
-  materials = [{
-    title: 'First Material',
-    fileType: 'image',
-    link: 'https://example.com',
-    author: 'turtle',
-    author_image: '',
-    authorProfileId: '',
-  }],
+  materials = [
+    //   {
+    //   title: 'First Material',
+    //   fileType: 'image',
+    //   link: 'https://example.com',
+    //   author: 'turtle',
+    //   author_image: '',
+    //   authorProfileId: '',
+    // }
+  ],
   title = 'Mobile App Design',
   description = '1000+ free files you can duplicate, remix, and reuse 1000+ free files',
   author = 'author',
@@ -291,7 +293,7 @@ function CollectionCard({
           paddingRight={{ md: interactionBtns ? '12px' : '' }}
         >
           <div className="collection-member-images">
-            {materials.length === 0 ? (
+            {materials?.length === 0 ? (
               <Chip
                 style={{
                   backgroundColor: 'var(--color-orange)',
@@ -301,7 +303,7 @@ function CollectionCard({
                 label="Not a collaborative creation"
               />
             ) : (
-              materials.map((x, index) => (
+              materials?.map((x, index) => (
                 x?.authorProfileId ? (
                   <a href={`wallet/${x.authorProfileId}`}>
                     <img
@@ -317,7 +319,7 @@ function CollectionCard({
                     alt=""
                     key={index}
                     className="profile-pic profile-pic-small profile-pic-rounded"
-                  // eslint-disable-next-line unicorn/prefer-module
+                    // eslint-disable-next-line unicorn/prefer-module
                     src={x?.author_image || require('assets/images/profile-placeholder.png')}
                   />
                 )
