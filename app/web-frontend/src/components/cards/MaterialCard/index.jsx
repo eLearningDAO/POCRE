@@ -65,6 +65,7 @@ function MaterialCard({
   requestAccepted = true,
   username = 'jack 50',
   userimage = '',
+  userProfileId = '',
   link = 'https://www.youtube.com/watch?v=2BjYPFBh4Zc',
   title = 'Mobile App Design',
   mediaUrl = CreationCardImg,
@@ -220,16 +221,20 @@ function MaterialCard({
         >
 
           <Grid display="flex" gap="12px" alignItems="center">
-            <img
-              alt="avatar"
-              className="profile-pic profile-pic-small profile-pic-rounded"
+            <a href={`wallet/${userProfileId}`}>
+              <img
+                alt="avatar"
+                className="profile-pic profile-pic-small profile-pic-rounded"
               // eslint-disable-next-line unicorn/prefer-module
-              src={userimage || require('assets/images/profile-placeholder.png')}
-            />
+                src={userimage || require('assets/images/profile-placeholder.png')}
+              />
+            </a>
             <span>
               By
               {' '}
-              {username}
+              <a href={`wallet/${userProfileId}`}>
+                {username}
+              </a>
             </span>
           </Grid>
 

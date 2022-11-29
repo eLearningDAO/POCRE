@@ -91,10 +91,12 @@ function CollectionCard({
     link: 'https://example.com',
     author: 'turtle',
     author_image: '',
+    authorProfileId: '',
   }],
   title = 'Mobile App Design',
   description = '1000+ free files you can duplicate, remix, and reuse 1000+ free files',
   author = 'author',
+  authorProfileId = '',
   mediaUrl = 'https://images.pexels.com/photos/415071/pexels-photo-415071.jpeg?cs=srgb&dl=pexels-pixabay-415071.jpg&fm=jpg',
   canEdit = true,
   canDelete = true,
@@ -157,11 +159,13 @@ function CollectionCard({
           link={mediaUrl}
           date={creationDate}
           authorName={author}
+          authorProfileId={authorProfileId}
           materials={materials?.map((x) => ({
             title: x?.title,
             fileType: x?.fileType,
             link: x?.link,
             authorName: x?.author,
+            authorProfileId: x?.authorProfileId,
           }))}
           onClose={() => setShowCreationDetailsPreview(false)}
         />
@@ -298,13 +302,25 @@ function CollectionCard({
               />
             ) : (
               materials.map((x, index) => (
-                <img
-                  alt=""
-                  key={index}
-                  className="profile-pic profile-pic-small profile-pic-rounded"
+                x?.authorProfileId ? (
+                  <a href={`wallet/${x.authorProfileId}`}>
+                    <img
+                      alt=""
+                      key={index}
+                      className="profile-pic profile-pic-small profile-pic-rounded"
+                      // eslint-disable-next-line unicorn/prefer-module
+                      src={x?.author_image || require('assets/images/profile-placeholder.png')}
+                    />
+                  </a>
+                ) : (
+                  <img
+                    alt=""
+                    key={index}
+                    className="profile-pic profile-pic-small profile-pic-rounded"
                   // eslint-disable-next-line unicorn/prefer-module
-                  src={x?.author_image || require('assets/images/profile-placeholder.png')}
-                />
+                    src={x?.author_image || require('assets/images/profile-placeholder.png')}
+                  />
+                )
               ))
             )}
           </div>

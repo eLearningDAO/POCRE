@@ -77,6 +77,7 @@ function Recognition() {
               recognizedByUserName={x?.recognition_by?.user_name}
               // eslint-disable-next-line unicorn/prefer-module
               userImage={x?.recognition_by?.image_url || require('assets/images/profile-placeholder.png')}
+              userProfileId={x?.recognition_by?.user_id}
               creationDate={moment(x?.recognition_issued).format('Do MMMM YYYY')}
               acceptedOn={x?.status !== 'accepted' ? null : moment(x?.status_updated).format('Do MMMM YYYY')}
               declinedOn={x?.status !== 'declined' ? null : moment(x?.status_updated).format('Do MMMM YYYY')}
@@ -120,6 +121,7 @@ function Recognition() {
                     creationDate={moment(x?.recognition_issued).format('Do MMMM YYYY')}
                     // eslint-disable-next-line unicorn/prefer-module
                     userImage={x?.recognition_for?.image_url || require('assets/images/profile-placeholder.png')}
+                    userProfileId={x?.recognition_for?.user_id}
                     isPending={x?.status === 'pending'}
                     isAccepted={x?.status === 'accepted'}
                     isDeclined={x?.status === 'declined'}

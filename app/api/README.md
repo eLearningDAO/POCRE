@@ -1,6 +1,6 @@
 # Proof Of co-CREation (POCRE) REST API
 ## Developing Locally
-You must have nodeJS > 12.0.0 installed.
+You must have nodeJS > 12.0.0 installed. Postgress >= 14.0 is also needed either via docker container or local installation.
 
 Install dependencies
 ```bash

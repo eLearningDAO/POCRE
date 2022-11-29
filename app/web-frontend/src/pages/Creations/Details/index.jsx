@@ -153,7 +153,9 @@ export default function CreationDetails() {
               marginRight="auto"
             >
               <h4 className="h4">
-                {creation?.author?.user_name}
+                <a href={`/wallet/${creation?.author?.user_id}`}>
+                  {creation?.author?.user_name}
+                </a>
               </h4>
               <Chip className="mr-auto bg-orange-dark color-white" label={`Created on ${moment(creation?.creation_date).format('DD/MM/YYYY')}`} />
               <Chip className="mr-auto bg-black color-white" label={`Unique ID: ${creation?.creation_id}`} />
@@ -189,6 +191,7 @@ export default function CreationDetails() {
                 description={x?.material_description}
                 username={x?.author?.user_name}
                 userimage={x?.author?.image_url}
+                userProfileId={x?.author?.user_id}
                 interactionBtns={false}
                 showReconcilateOptions={false}
                 recognitionStatus={x?.recognition?.status || null}

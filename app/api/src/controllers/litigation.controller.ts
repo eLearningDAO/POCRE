@@ -9,6 +9,7 @@ import { getCreationById, updateCreationById } from '../services/creation.servic
 import config from '../config/config';
 import ApiError from '../utils/ApiError';
 import statusTypes from '../constants/statusTypes';
+import litigationStatusTypes from '../constants/litigationStatusTypes';
 
 export const queryLitigations = catchAsync(async (req, res): Promise<void> => {
   const litigation = await litigationService.queryLitigations({
@@ -132,18 +133,20 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
   }
 
   // transfer ownership to correct author
-  if (req.body.ownership_transferred || req.body.reconcilate) {
+  const shouldTransferOwnership =
+    req.body.ownership_transferred || req.body.litigation_status === litigationStatusTypes.WITHDRAWN;
+  if (shouldTransferOwnership) {
     // transfer material
     if (litigation?.material_id) {
       await updateMaterialById(litigation.material_id, {
-        author_id: req.body.reconcilate ? litigation.issuer_id : winner,
+        author_id: req.body.litigation_status === litigationStatusTypes.WITHDRAWN ? litigation.issuer_id : winner,
       });
     }
 
     // transfer creation
     else if (litigation?.creation_id) {
       await updateCreationById(litigation.creation_id, {
-        author_id: req.body.reconcilate ? litigation.issuer_id : winner,
+        author_id: req.body.litigation_status === litigationStatusTypes.WITHDRAWN ? litigation.issuer_id : winner,
       });
     }
   }
@@ -154,7 +157,7 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     {
       ...req.body,
       winner,
-      ownership_transferred: req.body.reconcilate || req.body.ownership_transferred,
+      ownership_transferred: shouldTransferOwnership,
     },
     { participant_id: (req.user as IUserDoc).user_id }
   );
