@@ -15,11 +15,13 @@ function CreationPreview({
   link = '',
   date = '',
   authorName = '',
+  authorProfileId = '',
   materials = [{
     title: '',
     fileType: '',
     link: '',
     authorName: '',
+    authorProfileId: '',
   }],
   onClose = () => {},
 }) {
@@ -68,7 +70,7 @@ function CreationPreview({
               <span>{date || '-'}</span>
 
               <span className="heading">Author</span>
-              <span>{authorName || '-'}</span>
+              {authorProfileId ? <a href={`/wallet/${authorProfileId}`}>{authorName}</a> : <span>{authorName || '-'}</span>}
 
               {/* <span className="heading">Tags</span>
             <span className="creation-tags">
@@ -99,7 +101,11 @@ function CreationPreview({
                   <td>{x.title || '-'}</td>
                   <td className="capitalize">{x.fileType || '-'}</td>
                   <td><a href={x.link}>{x.link || '-'}</a></td>
-                  <td>{x.authorName || '-'}</td>
+                  <td>
+                    {x?.authorProfileId
+                      ? <a href={`wallet/${x?.authorProfileId}`}>{x.authorName}</a>
+                      : x.authorName || '-'}
+                  </td>
                 </tr>
               ))}
             </table>

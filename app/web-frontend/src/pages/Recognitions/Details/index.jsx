@@ -71,21 +71,23 @@ export default function CreationDetails() {
   return (
     <>
       {showPreview && (
-      <CreationPreview
-        id={recognitionDetails?.creation?.creation_id}
-        title={recognitionDetails?.creation?.creation_title}
-        description={recognitionDetails?.creation?.creation_description}
-        link={recognitionDetails?.creation?.creation_link}
-        authorName={recognitionDetails?.creation?.author?.user_name}
-        date={moment(recognitionDetails?.creation?.creation_date).format('DD/MM/YYYY')}
-        materials={recognitionDetails?.creation?.materials?.map((x) => ({
-          title: x?.material_title,
-          fileType: x?.material_type,
-          link: x?.material_link,
-          authorName: x?.author?.user_name,
-        }))}
-        onClose={() => setShowPreview(false)}
-      />
+        <CreationPreview
+          id={recognitionDetails?.creation?.creation_id}
+          title={recognitionDetails?.creation?.creation_title}
+          description={recognitionDetails?.creation?.creation_description}
+          link={recognitionDetails?.creation?.creation_link}
+          authorName={recognitionDetails?.creation?.author?.user_name}
+          authorProfileId={recognitionDetails?.creation?.author?.user_id}
+          date={moment(recognitionDetails?.creation?.creation_date).format('DD/MM/YYYY')}
+          materials={recognitionDetails?.creation?.materials?.map((x) => ({
+            title: x?.material_title,
+            fileType: x?.material_type,
+            link: x?.material_link,
+            authorName: x?.author?.user_name,
+            authorProfileId: x?.author?.user_id,
+          }))}
+          onClose={() => setShowPreview(false)}
+        />
       )}
       {showSocialMediaSharePreview && (
         <SocialMediaModal
@@ -181,16 +183,20 @@ export default function CreationDetails() {
           width="100%"
         >
           <div className="collection-member-images">
-            <img
-              alt=""
-              className="profile-pic profile-pic-small profile-pic-rounded"
-              // eslint-disable-next-line unicorn/prefer-module
-              src={recognitionDetails?.recognition_by?.image_url || require('assets/images/profile-placeholder.png')}
-            />
+            <a href={`wallet/${recognitionDetails?.recognition_by?.user_id}`}>
+              <img
+                alt=""
+                className="profile-pic profile-pic-small profile-pic-rounded"
+                // eslint-disable-next-line unicorn/prefer-module
+                src={recognitionDetails?.recognition_by?.image_url || require('assets/images/profile-placeholder.png')}
+              />
+            </a>
             <p>
               Recognized by
               {' '}
-              {recognitionDetails?.recognition_by?.user_name}
+              <a href={`wallet/${recognitionDetails?.recognition_by?.user_id}`}>
+                {recognitionDetails?.recognition_by?.user_name}
+              </a>
             </p>
           </div>
           <Chip style={{ fontSize: '16px', margin: 0 }} className="mr-auto bg-orange color-white" label={`Recognized on ${moment(recognitionDetails?.recognition_issued).format('DD/MM/YYYY')}`} />
@@ -206,7 +212,7 @@ export default function CreationDetails() {
           marginLeft="auto"
         >
           {recognitionDetails?.status === 'pending'
-          && user?.user_id === recognitionDetails?.recognition_for?.user_id
+            && user?.user_id === recognitionDetails?.recognition_for?.user_id
             ? (
               <>
                 <Typography className="litigationCloseTitle" variant="h6">
@@ -276,36 +282,36 @@ export default function CreationDetails() {
             className="creation-media"
           >
             {creationMediaType === 'image' && (
-            <img alt="collection-card-hero" src={recognitionDetails?.creation?.creation_link} />
+              <img alt="collection-card-hero" src={recognitionDetails?.creation?.creation_link} />
             )}
             {creationMediaType === 'video' && (
-            <video
-              src={recognitionDetails?.creation?.creation_link}
-              preload="metadata"
-              controls
-            />
+              <video
+                src={recognitionDetails?.creation?.creation_link}
+                preload="metadata"
+                controls
+              />
             )}
             {creationMediaType === 'audio' && (
-            <audio src={recognitionDetails?.creation?.creation_link} controls />
+              <audio src={recognitionDetails?.creation?.creation_link} controls />
             )}
             {(creationMediaType === 'document' && recognitionDetails?.creation?.creation_link?.includes('.pdf')) && (
-            <embed src={recognitionDetails?.creation?.creation_link} />
+              <embed src={recognitionDetails?.creation?.creation_link} />
             )}
             {creationMediaType === 'document' && !recognitionDetails?.creation?.creation_link?.includes('.pdf') && (
-            <div className="unsupported-file-type">
-              <h4 className="heading h4">Are you okay to download this file?</h4>
-              <a href={creationMediaType}>{recognitionDetails?.creation?.creation_link}</a>
-              <div className="media-preview-content-options">
-                <Button
-                  className="btn btn-primary icon-btn"
-                // eslint-disable-next-line security/detect-non-literal-fs-filename
-                  onClick={() => window.open(recognitionDetails?.creation?.creation_link)}
-                >
-                  <img src={DownloadIconSVG} alt="" />
-                  Download
-                </Button>
+              <div className="unsupported-file-type">
+                <h4 className="heading h4">Are you okay to download this file?</h4>
+                <a href={creationMediaType}>{recognitionDetails?.creation?.creation_link}</a>
+                <div className="media-preview-content-options">
+                  <Button
+                    className="btn btn-primary icon-btn"
+                    // eslint-disable-next-line security/detect-non-literal-fs-filename
+                    onClick={() => window.open(recognitionDetails?.creation?.creation_link)}
+                  >
+                    <img src={DownloadIconSVG} alt="" />
+                    Download
+                  </Button>
+                </div>
               </div>
-            </div>
             )}
           </div>
         </Grid>

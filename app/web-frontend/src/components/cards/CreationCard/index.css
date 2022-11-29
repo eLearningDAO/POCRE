@@ -104,7 +104,7 @@
    gap: 12px;
 }
 
-.collection-member-images>img {
+.collection-member-images img {
   display: inline;
   object-fit: cover;
   border: 1px solid #FFFFFF;
@@ -112,7 +112,7 @@
   border-radius: 50%;
 }
 
-.collection-member-images>img:first-of-type {
+.collection-member-images img:first-of-type {
   margin-left: 0;
 }
 
