@@ -15,7 +15,7 @@ const request = async (url = '', data = {}, method = '') => {
     ...(['POST', 'PATCH'].includes(method) && {
       body: JSON.stringify(data),
     }),
-  }).then((x) => x?.json());
+  }).then((x) => (method !== 'DELETE' ? x?.json() : x));
 
   if (response?.code >= 400) {
     throw new Error(errorMap[response?.message?.toLowerCase()] || response?.message);

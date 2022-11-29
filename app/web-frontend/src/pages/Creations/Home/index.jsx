@@ -108,14 +108,14 @@ function Creations() {
                   mediaUrl={x?.source?.site_url}
                   author={x?.author?.user_name}
                   authorProfileId={x?.author?.user_id}
-                  materials={x.materials?.map((m) => ({
+                  materials={x?.materials?.length > 0 ? x?.materials?.map((m) => ({
                     title: m?.material_title,
                     link: m?.material_link,
                     fileType: m?.type?.type_name,
                     author: m?.author?.user_name,
                     author_image: m?.author?.image_url,
                     authorProfileId: m?.author?.user_id,
-                  }))}
+                  })) : []}
                   canEdit={x.is_draft}
                   onEditClick={() => navigate(`/creations/${x.creation_id}/update`)}
                   // eslint-disable-next-line no-return-await
