@@ -65,7 +65,6 @@ export const createCreation = catchAsync(async (req, res): Promise<void> => {
     // get all materials
     // eslint-disable-next-line @typescript-eslint/return-await
     const materials = await Promise.all(req.body.materials.map(async (id: string) => await getMaterialById(id)));
-
     await Promise.all(
       materials.map(async (m: any) => {
         // send recognition
@@ -77,9 +76,7 @@ export const createCreation = catchAsync(async (req, res): Promise<void> => {
         });
 
         // update material with recognition
-        await updateMaterialById(m, {
-          recognition_id: recognition.recognition_id,
-        });
+        await updateMaterialById(m.material_id, { recognition_id: recognition.recognition_id }, { owner_id: m.author_id });
       })
     );
   }
@@ -126,7 +123,7 @@ export const updateCreationById = catchAsync(async (req, res): Promise<void> => 
         });
 
         // update material with recognition
-        await updateMaterialById(m, {
+        await updateMaterialById(m.material_id, {
           recognition_id: recognition.recognition_id,
         });
       })
