@@ -1,9 +1,10 @@
 import config from '../config/config';
-import catchAsync from '../utils/catchAsync';
 import * as creationService from '../services/creation.service';
-import { IUserDoc } from '../services/user.service';
+import { getMaterialById, updateMaterialById } from '../services/material.service';
+import { createRecognition } from '../services/recognition.service';
 import { getTagById } from '../services/tag.service';
-import { getMaterialById } from '../services/material.service';
+import { IUserDoc } from '../services/user.service';
+import catchAsync from '../utils/catchAsync';
 import { generateProofOfCreation } from '../utils/generateProofOfCreation';
 
 export const queryCreations = catchAsync(async (req, res): Promise<void> => {
@@ -56,7 +57,33 @@ export const createCreation = catchAsync(async (req, res): Promise<void> => {
   await Promise.all(req.body.tags.map((id: string) => getTagById(id))); // verify tags, will throw an error if any tag is not found
   if (req.body.materials) await Promise.all(req.body.materials.map((id: string) => getMaterialById(id))); // verify materials, will throw an error if any material is not found
 
+  // make the creation
   const newCreation = await creationService.createCreation({ ...req.body, author_id: (req.user as IUserDoc).user_id });
+
+  // send recognitions to material authors if the creation is published
+  if (!req.body.is_draft) {
+    // get all materials
+    // eslint-disable-next-line @typescript-eslint/return-await
+    const materials = await Promise.all(req.body.materials.map(async (id: string) => await getMaterialById(id)));
+
+    await Promise.all(
+      materials.map(async (m: any) => {
+        // send recognition
+        const recognition = await createRecognition({
+          recognition_for: m.author_id,
+          recognition_by: (req.user as IUserDoc).user_id,
+          status: 'pending',
+          status_updated: new Date().toISOString(),
+        });
+
+        // update material with recognition
+        await updateMaterialById(m, {
+          recognition_id: recognition.recognition_id,
+        });
+      })
+    );
+  }
+
   res.send(newCreation);
 });
 
@@ -74,8 +101,37 @@ export const updateCreationById = catchAsync(async (req, res): Promise<void> => 
     await Promise.all(req.body.materials.map((id: string) => getMaterialById(id))); // verify materials, will throw an error if any material is not found
   }
 
-  const creation = await creationService.updateCreationById(req.params.creation_id, req.body, {
+  // get original creation
+  const foundCreation = await creationService.getCreationById(req.params.creation_id);
+
+  // update creation
+  const updatedCreation = await creationService.updateCreationById(req.params.creation_id, req.body, {
     owner_id: (req.user as IUserDoc).user_id,
   });
-  res.send(creation);
+
+  // send recognitions to material authors if the creation is published
+  if (foundCreation?.is_draft && req.body.is_draft === false && updatedCreation) {
+    // get all materials
+    // eslint-disable-next-line @typescript-eslint/return-await
+    const materials = await Promise.all(updatedCreation.materials.map(async (id: string) => await getMaterialById(id)));
+
+    await Promise.all(
+      materials.map(async (m: any) => {
+        // send recognition
+        const recognition = await createRecognition({
+          recognition_for: m.author_id,
+          recognition_by: (req.user as IUserDoc).user_id,
+          status: 'pending',
+          status_updated: new Date().toISOString(),
+        });
+
+        // update material with recognition
+        await updateMaterialById(m, {
+          recognition_id: recognition.recognition_id,
+        });
+      })
+    );
+  }
+
+  res.send(updatedCreation);
 });
