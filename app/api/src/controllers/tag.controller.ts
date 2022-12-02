@@ -11,7 +11,12 @@ export const getTagById = catchAsync(async (req, res): Promise<void> => {
   res.send(tag);
 });
 
-export const createTag = catchAsync(async (req, res): Promise<void> => {
+export const createTag = catchAsync(async (req, res): Promise<void | any> => {
+  // return if tag found
+  const foundTag = await tagService.getTagByTagName(req.body.tag_name).catch(() => null);
+  if (foundTag) return res.send(foundTag);
+
+  // else create a new tag
   const newTag = await tagService.createTag(req.body);
   res.send(newTag);
 });

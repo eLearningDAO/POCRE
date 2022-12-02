@@ -1,4 +1,5 @@
 import httpStatus from 'http-status';
+import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 
@@ -39,7 +40,12 @@ export const createTag = async (tagBody: ITag): Promise<ITagDoc> => {
     ]);
     const tag = result.rows[0];
     return tag;
-  } catch {
+  } catch (e: unknown) {
+    const err = e as DatabaseError;
+    if (err.message && err.message.includes('duplicate key')) {
+      if (err.message.includes('tag_name')) throw new ApiError(httpStatus.CONFLICT, `tag already exists`);
+    }
+
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
   }
 };
@@ -76,14 +82,26 @@ export const queryTags = async (options: ITagQuery): Promise<ITagQueryResult> =>
 };
 
 /**
- * Get tag by id
- * @param {string} id
+ * Get tag by criteria
+ * @param {string} criteria - the criteria to find tag
+ * @param {string} equals - the value on which criteria matches
  * @returns {Promise<ITagDoc|null>}
  */
-export const getTagById = async (id: string): Promise<ITagDoc | null> => {
+export const getTagByCriteria = async (criteria: 'tag_id' | 'tag_name', equals: string): Promise<ITagDoc | null> => {
   const tag = await (async () => {
     try {
-      const result = await db.query(`SELECT * FROM tag WHERE tag_id = $1;`, [id]);
+      const result = await db.query(
+        `
+        SELECT 
+        * 
+        FROM 
+        tag
+        WHERE 
+        ${criteria} = $1 
+        LIMIT 1
+        ;`,
+        [equals]
+      );
       return result.rows[0];
     } catch {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
@@ -93,6 +111,24 @@ export const getTagById = async (id: string): Promise<ITagDoc | null> => {
   if (!tag) throw new ApiError(httpStatus.NOT_FOUND, 'tag not found');
 
   return tag;
+};
+
+/**
+ * Get tag by id
+ * @param {string} id
+ * @returns {Promise<ITagDoc|null>}
+ */
+export const getTagById = async (id: string): Promise<ITagDoc | null> => {
+  return getTagByCriteria('tag_id', id);
+};
+
+/**
+ * Get tag by name
+ * @param {string} name
+ * @returns {Promise<ITagDoc|null>}
+ */
+export const getTagByTagName = async (name: string): Promise<ITagDoc | null> => {
+  return getTagByCriteria('tag_name', name);
 };
 
 /**
@@ -125,7 +161,12 @@ export const updateTagById = async (id: string, updateBody: Partial<ITag>): Prom
     );
     const tag = updateQry.rows[0];
     return tag;
-  } catch {
+  } catch (e: unknown) {
+    const err = e as DatabaseError;
+    if (err.message && err.message.includes('duplicate key')) {
+      if (err.message.includes('tag_name')) throw new ApiError(httpStatus.CONFLICT, `tag already exists`);
+    }
+
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
   }
 };
