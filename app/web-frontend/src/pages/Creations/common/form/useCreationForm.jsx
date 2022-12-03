@@ -4,7 +4,7 @@ import {
 } from 'api/requests';
 import useSuggestions from 'hooks/useSuggestions';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
 
@@ -83,7 +83,9 @@ const makeCommonResource = async (
 // get auth user
 const user = authUser.getUser();
 
-const useCreationForm = () => {
+const useCreationForm = ({
+  onCreationFetch = () => {},
+}) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -149,6 +151,11 @@ const useCreationForm = () => {
     },
     enabled: !!creationId,
   });
+
+  // trigger the callback when a creation is fetched
+  useEffect(() => {
+    if (creation) onCreationFetch(creation);
+  }, [creation]);
 
   // create creation
   const {
