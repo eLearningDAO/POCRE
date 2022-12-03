@@ -1,12 +1,12 @@
-import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  Creation, Recognition, Material, Tag, User,
+  Creation, Material, Tag, User,
 } from 'api/requests';
 import useSuggestions from 'hooks/useSuggestions';
-import authUser from 'utils/helpers/authUser';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import authUser from 'utils/helpers/authUser';
 
 const makeCommonResource = async (
   requestBody = {},
@@ -70,36 +70,22 @@ const makeCommonResource = async (
         material_title: x.title,
         material_link: x.link,
         material_type: x.fileType,
+        author_id: author.user_id,
       });
 
-      return { ...material, author_id: author.user_id };
+      return { ...material };
     }));
   }
 
   return { tags, materials };
 };
 
-const sendRecognitions = async (
-  materials = [],
-) => await Promise.all(materials.map(async (x) => {
-  // make new recognition
-  const recognition = await Recognition.create({
-    recognition_for: x.author_id,
-    recognition_description: x.material_description,
-    status: 'pending',
-    status_updated: new Date().toISOString(),
-  });
-
-  // update material with recognition id
-  await Material.update(x.material_id, {
-    recognition_id: recognition.recognition_id,
-  });
-}));
-
 // get auth user
 const user = authUser.getUser();
 
-const useCreationForm = () => {
+const useCreationForm = ({
+  onCreationFetch = () => {},
+}) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -166,6 +152,11 @@ const useCreationForm = () => {
     enabled: !!creationId,
   });
 
+  // trigger the callback when a creation is fetched
+  useEffect(() => {
+    if (creation) onCreationFetch(creation);
+  }, [creation]);
+
   // create creation
   const {
     mutate: makeNewCreation,
@@ -191,11 +182,6 @@ const useCreationForm = () => {
         creation_date: new Date(creationBody.date).toISOString(),
         is_draft: creationBody.is_draft,
       });
-
-      // sent recognition to material authors (if creation is not draft)
-      if (materials.length > 0 && !creationBody.is_draft) {
-        await sendRecognitions(materials);
-      }
 
       // remove queries cache
       queryClient.invalidateQueries({ queryKey: ['creations'] });
@@ -239,11 +225,6 @@ const useCreationForm = () => {
 
       // update creation
       await Creation.update(creation.original.creation_id, { ...updatedCreation });
-
-      // sent recognition to material authors
-      if (materials.length > 0) {
-        await sendRecognitions(materials);
-      }
 
       // remove queries cache
       queryClient.invalidateQueries({ queryKey: ['creations'] });

@@ -4,16 +4,17 @@
 import {
   Box, Button, Chip, Grid, Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
 import DownloadIconSVG from 'assets/svgs/download.svg';
-import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import CreationPreview from 'components/previews/CreationPreview';
 import SocialMediaModal from 'components/shared/socialmediaSharingModal';
+import { useEffect, useState } from 'react';
+import { getUrlFileType } from 'utils/helpers/getUrlFileType';
+import { Link } from 'react-router-dom';
 import EditButton from './btns/EditButton';
+import PreviewButton from './btns/PreviewButton';
 import RemoveButton from './btns/RemoveButton';
 import ShareButton from './btns/ShareButton';
 import './index.css';
-import PreviewButton from './btns/PreviewButton';
 
 function DeleteCofirmationDialog({ onClose, onConfirm }) {
   return (
@@ -85,16 +86,20 @@ function CollectionCard({
   creationId = '378t7egf9gf38gf0239h',
   interactionBtns,
   creationDate = '2022-01-01 00:00:00',
-  materials = [{
-    title: 'First Material',
-    fileType: 'image',
-    link: 'https://example.com',
-    author: 'turtle',
-    author_image: '',
-  }],
+  materials = [
+    //   {
+    //   title: 'First Material',
+    //   fileType: 'image',
+    //   link: 'https://example.com',
+    //   author: 'turtle',
+    //   author_image: '',
+    //   authorProfileId: '',
+    // }
+  ],
   title = 'Mobile App Design',
   description = '1000+ free files you can duplicate, remix, and reuse 1000+ free files',
   author = 'author',
+  authorProfileId = '',
   mediaUrl = 'https://images.pexels.com/photos/415071/pexels-photo-415071.jpeg?cs=srgb&dl=pexels-pixabay-415071.jpg&fm=jpg',
   canEdit = true,
   canDelete = true,
@@ -157,11 +162,13 @@ function CollectionCard({
           link={mediaUrl}
           date={creationDate}
           authorName={author}
+          authorProfileId={authorProfileId}
           materials={materials?.map((x) => ({
             title: x?.title,
             fileType: x?.fileType,
             link: x?.link,
             authorName: x?.author,
+            authorProfileId: x?.authorProfileId,
           }))}
           onClose={() => setShowCreationDetailsPreview(false)}
         />
@@ -287,7 +294,7 @@ function CollectionCard({
           paddingRight={{ md: interactionBtns ? '12px' : '' }}
         >
           <div className="collection-member-images">
-            {materials.length === 0 ? (
+            {materials?.length === 0 ? (
               <Chip
                 style={{
                   backgroundColor: 'var(--color-orange)',
@@ -297,14 +304,26 @@ function CollectionCard({
                 label="Not a collaborative creation"
               />
             ) : (
-              materials.map((x, index) => (
-                <img
-                  alt=""
-                  key={index}
-                  className="profile-pic profile-pic-small profile-pic-rounded"
-                  // eslint-disable-next-line unicorn/prefer-module
-                  src={x?.author_image || require('assets/images/profile-placeholder.png')}
-                />
+              materials?.map((x, index) => (
+                x?.authorProfileId ? (
+                  <Link to={`/wallet/${x.authorProfileId}`}>
+                    <img
+                      alt=""
+                      key={index}
+                      className="profile-pic profile-pic-small profile-pic-rounded"
+                      // eslint-disable-next-line unicorn/prefer-module
+                      src={x?.author_image || require('assets/images/profile-placeholder.png')}
+                    />
+                  </Link>
+                ) : (
+                  <img
+                    alt=""
+                    key={index}
+                    className="profile-pic profile-pic-small profile-pic-rounded"
+                    // eslint-disable-next-line unicorn/prefer-module
+                    src={x?.author_image || require('assets/images/profile-placeholder.png')}
+                  />
+                )
               ))
             )}
           </div>
@@ -327,13 +346,13 @@ function CollectionCard({
             alignItems="center"
             justifyContent="center"
           >
-            <a className="creation-details-link" href={`/creations/${creationId}`}>
+            <Link className="creation-details-link" to={`/creations/${creationId}`}>
               <h4>
                 View Details
               </h4>
               {' '}
               <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M869 487.8L491.2 159.9c-2.9-2.5-6.6-3.9-10.5-3.9h-88.5c-7.4 0-10.8 9.2-5.2 14l350.2 304H152c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h585.1L386.9 854c-5.6 4.9-2.2 14 5.2 14h91.5c1.9 0 3.8-.7 5.2-2L869 536.2a32.07 32.07 0 0 0 0-48.4z" /></svg>
-            </a>
+            </Link>
           </Box>
         </Grid>
 

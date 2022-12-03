@@ -4,9 +4,6 @@ import {
   Button, Chip, Grid,
   Typography,
 } from '@mui/material';
-import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import LeftIcon from 'assets/images/left.png';
 import RightIcon from 'assets/images/right.png';
 import { ReactComponent as DislikeIcon } from 'assets/svgs/dislike.svg';
@@ -15,6 +12,9 @@ import { ReactComponent as ThumbPinIcon } from 'assets/svgs/thumb-pin.svg';
 import MaterialCard from 'components/cards/MaterialCard';
 import UserCard from 'components/cards/UserCard';
 import Loader from 'components/uicore/Loader';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import './index.css';
 import useDetails from './useDetails';
 
@@ -65,9 +65,9 @@ export default function LitigationDetails() {
           {litigation?.litigation_title}
         </Typography>
         {litigation?.litigation_description && (
-        <Typography variant="h6">
-          {litigation?.litigation_description}
-        </Typography>
+          <Typography variant="h6">
+            {litigation?.litigation_description}
+          </Typography>
         )}
       </Grid>
 
@@ -101,6 +101,7 @@ export default function LitigationDetails() {
             {litigation?.isClosed && litigation?.winner?.user_id === litigation?.assumed_author?.user_id ? '(Winner)' : ''}
           </Typography>
           <UserCard
+            userProfileId={litigation?.assumed_author?.user_id}
             username={litigation?.assumed_author?.user_name}
             // eslint-disable-next-line unicorn/prefer-module
             imageUrl={litigation?.assumed_author?.image_url || require('assets/images/profile-placeholder.png')}
@@ -114,6 +115,7 @@ export default function LitigationDetails() {
             {litigation?.isClosed && litigation?.winner?.user_id === litigation?.issuer?.user_id ? '(Winner)' : ''}
           </Typography>
           <UserCard
+            userProfileId={litigation?.issuer?.user_id}
             username={litigation?.issuer?.user_name}
             // eslint-disable-next-line unicorn/prefer-module
             imageUrl={litigation?.issuer?.image_url || require('assets/images/profile-placeholder.png')}
@@ -130,13 +132,14 @@ export default function LitigationDetails() {
           description={litigation?.material?.material_description
             || litigation?.creation?.creation_description}
           username={litigation?.assumed_author?.user_name}
+          userProfileId={litigation?.assumed_author?.user_id}
           interactionBtns={false}
           showReconcilateOptions={false}
           recognitionStatus={
             litigation?.material && litigation?.material?.recognition?.status?.status_name
               ? litigation?.material?.recognition?.status?.status_name
               : null
-            }
+          }
         />
       </Grid>
       <Grid
@@ -280,6 +283,7 @@ export default function LitigationDetails() {
 
                     return vote === false ? 'Voted in opposition' : (vote === true ? 'Voted in favor' : 'Vote not casted');
                   })()}
+                  userProfileId={recognition?.recognition_for?.user_id}
                   username={recognition?.recognition_for?.user_name}
                   // eslint-disable-next-line unicorn/prefer-module
                   imageUrl={recognition?.recognition_for?.image_url || require('assets/images/profile-placeholder.png')}

@@ -27,10 +27,10 @@ function HomeHeader({ displayNav = false }) {
     <Grid container className="header" alignItems="center">
       {/* {!location && <LoginModal />} */}
       {showLoginForm && (
-      <LoginModal
-        onClose={() => setShowLoginForm(false)}
-        onLoggedIn={handleLogin}
-      />
+        <LoginModal
+          onClose={() => setShowLoginForm(false)}
+          onLoggedIn={handleLogin}
+        />
       )}
       <Grid
         item
@@ -106,14 +106,18 @@ function HomeHeader({ displayNav = false }) {
         gap="16px"
       >
         {loggedInUser && (
-        <div className="loggedin-user">
-          <img
-            alt=""
-            src={loggedInUser.image_url}
-            className="profile-pic profile-pic-small"
-          />
-          <h4>{loggedInUser.user_name}</h4>
-        </div>
+          <div className="loggedin-user">
+            <Link to={`/wallet/${loggedInUser?.user_id}`}>
+              <img
+                alt=""
+                src={loggedInUser.image_url}
+                className="profile-pic profile-pic-small"
+              />
+            </Link>
+            <Link to={`/wallet/${loggedInUser?.user_id}`}>
+              <h4>{loggedInUser.user_name}</h4>
+            </Link>
+          </div>
         )}
         <Button
           variant="contained"

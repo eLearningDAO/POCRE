@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import QRCode from 'qrcode';
 import MaterialCard from 'components/cards/MaterialCard';
 import Loader from 'components/uicore/Loader';
@@ -99,7 +99,7 @@ export default function CreationDetails() {
           {mediaType === 'document' && !creation?.creation_link?.includes('.pdf') && (
             <div className="unsupported-file-type">
               <h4 className="heading h4">Are you okay to download this file?</h4>
-              <a href={mediaType}>{creation?.creation_link}</a>
+              <a href={creation?.creation_link}>{creation?.creation_link}</a>
               <div className="media-preview-content-options">
                 <Button
                   className="btn btn-primary icon-btn"
@@ -153,7 +153,9 @@ export default function CreationDetails() {
               marginRight="auto"
             >
               <h4 className="h4">
-                {creation?.author?.user_name}
+                <Link to={`/wallet/${creation?.author?.user_id}`}>
+                  {creation?.author?.user_name}
+                </Link>
               </h4>
               <Chip className="mr-auto bg-orange-dark color-white" label={`Created on ${moment(creation?.creation_date).format('DD/MM/YYYY')}`} />
               <Chip className="mr-auto bg-black color-white" label={`Unique ID: ${creation?.creation_id}`} />
@@ -189,6 +191,7 @@ export default function CreationDetails() {
                 description={x?.material_description}
                 username={x?.author?.user_name}
                 userimage={x?.author?.image_url}
+                userProfileId={x?.author?.user_id}
                 interactionBtns={false}
                 showReconcilateOptions={false}
                 recognitionStatus={x?.recognition?.status || null}

@@ -14,7 +14,7 @@ const stepInfo = [
   'Generate the proof of authorship',
 ];
 
-function CreationForm({ id = null }) {
+function CreationForm({ id = null, onCreationFetch = () => {} }) {
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
@@ -34,7 +34,7 @@ function CreationForm({ id = null }) {
     transformedCreation,
     authorSuggestions,
     handleAuthorInputChange,
-  } = useCreationForm();
+  } = useCreationForm({ onCreationFetch });
 
   useEffect(() => {
     if (id) setCreationDraft(transformedCreation);

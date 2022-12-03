@@ -7,6 +7,7 @@ import QRCode from 'qrcode';
 import React, { useState, useEffect } from 'react';
 import CloseIcon from 'assets/svgs/close.svg';
 import './index.css';
+import { Link } from 'react-router-dom';
 
 function CreationPreview({
   id = '',
@@ -15,11 +16,13 @@ function CreationPreview({
   link = '',
   date = '',
   authorName = '',
+  authorProfileId = '',
   materials = [{
     title: '',
     fileType: '',
     link: '',
     authorName: '',
+    authorProfileId: '',
   }],
   onClose = () => {},
 }) {
@@ -68,7 +71,7 @@ function CreationPreview({
               <span>{date || '-'}</span>
 
               <span className="heading">Author</span>
-              <span>{authorName || '-'}</span>
+              {authorProfileId ? <Link to={`/wallet/${authorProfileId}`}>{authorName}</Link> : <span>{authorName || '-'}</span>}
 
               {/* <span className="heading">Tags</span>
             <span className="creation-tags">
@@ -99,7 +102,11 @@ function CreationPreview({
                   <td>{x.title || '-'}</td>
                   <td className="capitalize">{x.fileType || '-'}</td>
                   <td><a href={x.link}>{x.link || '-'}</a></td>
-                  <td>{x.authorName || '-'}</td>
+                  <td>
+                    {x?.authorProfileId
+                      ? <Link to={`/wallet/${x?.authorProfileId}`}>{x.authorName}</Link>
+                      : x.authorName || '-'}
+                  </td>
                 </tr>
               ))}
             </table>
