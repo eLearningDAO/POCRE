@@ -569,6 +569,15 @@ components:
           example:
             code: 409
             message: creation is not claimable
+    PublishedCreationNotAllowedUpdate:
+      description: Published creation cannot be updated
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 406
+            message: published creation cannot be updated
     LitigationNotFound:
       description: Litigation not found
       content:
