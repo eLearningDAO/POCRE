@@ -49,32 +49,6 @@ function SideBar() {
         </li>
         {login && (
           <li className={location.pathname.includes('/litigations') ? 'activeSidebarMenu' : ''}>
-            {/* {login ? (
-            <Link to="/litigations">
-              <img
-                alt="menu-icon"
-                src={
-                  location.pathname.includes("/litigations")
-                    ? MenuIcon4Active
-                    : MenuIcon4
-                }
-              />
-              <span>Litigation</span>
-            </Link>
-          ) : (
-            <a className="inActive">
-              <img
-                alt="menu-icon"
-                src={
-                  location.pathname.includes("/litigations")
-                    ? MenuIcon4Active
-                    : MenuIcon4
-                }
-              />
-              <span>Litigation</span>
-            </a>
-          )} */}
-
             <Link to="/litigations">
               <img
                 alt="menu-icon"

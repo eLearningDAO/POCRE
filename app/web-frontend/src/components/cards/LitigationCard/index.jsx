@@ -4,6 +4,7 @@ import {
 import ApproveIcon from 'assets/images/approve-icon.png';
 import WithdrawIcon from 'assets/images/withdraw-icon.png';
 import './index.css';
+import { Link } from 'react-router-dom';
 
 function LitigationCard({
   id = '',
@@ -57,32 +58,32 @@ function LitigationCard({
       <div className="litigation-card-authors">
         <div className="litigation-card-author">
           <h3>Assumed Author</h3>
-          <a href={`wallet/${assumedAuthor?.profileId}`}>
+          <Link to={`/wallet/${assumedAuthor?.profileId}`}>
             <img
               alt=""
               src={assumedAuthor.image}
               className="profile-pic profile-pic-small profile-pic-rounded"
             />
-          </a>
-          <a href={`wallet/${assumedAuthor?.profileId}`}>
+          </Link>
+          <Link to={`/wallet/${assumedAuthor?.profileId}`}>
             <h4>{assumedAuthor.name}</h4>
-          </a>
+          </Link>
           {mode === 'closed' && winner.name === assumedAuthor.name
             && <span className="litigation-winner-label">Winner</span>}
         </div>
         <h1>vs</h1>
         <div className="litigation-card-author">
           <h3>Claimer</h3>
-          <a href={`wallet/${assumedAuthor?.profileId}`}>
+          <Link to={`/wallet/${assumedAuthor?.profileId}`}>
             <img
               alt=""
               src={claimer.image}
               className="profile-pic profile-pic-small profile-pic-rounded"
             />
-          </a>
-          <a href={`wallet/${assumedAuthor?.profileId}`}>
+          </Link>
+          <Link to={`/wallet/${assumedAuthor?.profileId}`}>
             <h4>{claimer.name}</h4>
-          </a>
+          </Link>
           {mode === 'closed' && winner.name === claimer.name
             && <span className="litigation-winner-label">Winner</span>}
         </div>
@@ -174,7 +175,7 @@ function LitigationCard({
             jury members
           </h3>
         )}
-        <a className="litigation-details-link" href={`/litigations/${id}`}>
+        <Link className="litigation-details-link" to={`/litigations/${id}`}>
           <h4>
             View Details
             {' '}
@@ -182,7 +183,7 @@ function LitigationCard({
           </h4>
           {' '}
           <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M869 487.8L491.2 159.9c-2.9-2.5-6.6-3.9-10.5-3.9h-88.5c-7.4 0-10.8 9.2-5.2 14l350.2 304H152c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h585.1L386.9 854c-5.6 4.9-2.2 14 5.2 14h91.5c1.9 0 3.8-.7 5.2-2L869 536.2a32.07 32.07 0 0 0 0-48.4z" /></svg>
-        </a>
+        </Link>
       </div>
     </div>
   );

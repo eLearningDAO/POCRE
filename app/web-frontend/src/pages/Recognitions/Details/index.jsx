@@ -17,7 +17,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
 import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import useRecognitions from '../common/hooks/useRecognitions';
@@ -183,20 +183,20 @@ export default function CreationDetails() {
           width="100%"
         >
           <div className="collection-member-images">
-            <a href={`wallet/${recognitionDetails?.recognition_by?.user_id}`}>
+            <Link to={`/wallet/${recognitionDetails?.recognition_by?.user_id}`}>
               <img
                 alt=""
                 className="profile-pic profile-pic-small profile-pic-rounded"
                 // eslint-disable-next-line unicorn/prefer-module
                 src={recognitionDetails?.recognition_by?.image_url || require('assets/images/profile-placeholder.png')}
               />
-            </a>
+            </Link>
             <p>
               Recognized by
               {' '}
-              <a href={`wallet/${recognitionDetails?.recognition_by?.user_id}`}>
+              <Link to={`/wallet/${recognitionDetails?.recognition_by?.user_id}`}>
                 {recognitionDetails?.recognition_by?.user_name}
-              </a>
+              </Link>
             </p>
           </div>
           <Chip style={{ fontSize: '16px', margin: 0 }} className="mr-auto bg-orange color-white" label={`Recognized on ${moment(recognitionDetails?.recognition_issued).format('DD/MM/YYYY')}`} />
@@ -317,8 +317,8 @@ export default function CreationDetails() {
         </Grid>
 
         <Grid item xs={12} marginTop="18px" marginLeft="auto">
-          <a
-            href={`/creations/${recognitionDetails?.creation?.creation_id}`}
+          <Link
+            to={`/creations/${recognitionDetails?.creation?.creation_id}`}
             className="litigationCloseTitle"
             style={{
               display: 'flex',
@@ -329,7 +329,7 @@ export default function CreationDetails() {
             View more about this creation
             {' '}
             <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M869 487.8L491.2 159.9c-2.9-2.5-6.6-3.9-10.5-3.9h-88.5c-7.4 0-10.8 9.2-5.2 14l350.2 304H152c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h585.1L386.9 854c-5.6 4.9-2.2 14 5.2 14h91.5c1.9 0 3.8-.7 5.2-2L869 536.2a32.07 32.07 0 0 0 0-48.4z" /></svg>
-          </a>
+          </Link>
         </Grid>
       </Grid>
     </>

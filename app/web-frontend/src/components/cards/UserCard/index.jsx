@@ -2,6 +2,7 @@ import { Button, Chip, Typography } from '@mui/material';
 import PlaceholderImage from 'assets/images/top-learner-user.png';
 import FingerPrintIcon from 'assets/svgs/fingerprint.svg';
 import './index.css';
+import { Link } from 'react-router-dom';
 
 function UserCard({
   variant = 'secondary  ',
@@ -13,22 +14,22 @@ function UserCard({
 }) {
   return (
     <div className={`user-card user-card-${variant}`}>
-      <a href={`wallet/${userProfileId}`}>
+      <Link to={`/wallet/${userProfileId}`}>
         <img
           alt=""
           src={imageUrl}
           className="profile-pic profile-pic-small profile-pic-rounded"
         />
-      </a>
+      </Link>
 
       <div className="user-card-details">
         <div className="user-card-header">
           {username
           && (
           <Typography variant="h6">
-            <a href={`wallet/${userProfileId}`}>
+            <Link to={`/wallet/${userProfileId}`}>
               {username}
-            </a>
+            </Link>
           </Typography>
           )}
           <Button className={`user-card-action-btn user-card-action-btn-${variant}`}>

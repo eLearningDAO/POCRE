@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import QRCode from 'qrcode';
 import MaterialCard from 'components/cards/MaterialCard';
 import Loader from 'components/uicore/Loader';
@@ -153,9 +153,9 @@ export default function CreationDetails() {
               marginRight="auto"
             >
               <h4 className="h4">
-                <a href={`/wallet/${creation?.author?.user_id}`}>
+                <Link to={`/wallet/${creation?.author?.user_id}`}>
                   {creation?.author?.user_name}
-                </a>
+                </Link>
               </h4>
               <Chip className="mr-auto bg-orange-dark color-white" label={`Created on ${moment(creation?.creation_date).format('DD/MM/YYYY')}`} />
               <Chip className="mr-auto bg-black color-white" label={`Unique ID: ${creation?.creation_id}`} />
