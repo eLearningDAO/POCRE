@@ -18,6 +18,7 @@ import WalletPublic from 'pages/Wallet/Public';
 // other pages
 import CreditsHome from 'pages/Credits/Home';
 import Home from 'pages/Home';
+import Page404 from 'pages/404';
 import Protected from './Protected';
 
 function AppRoutes() {
@@ -139,6 +140,14 @@ function AppRoutes() {
           element={(
             <Layout displaySidebar>
               <CreditsHome />
+            </Layout>
+          )}
+        />
+        <Route
+          path="*"
+          element={(
+            <Layout>
+              <Page404 />
             </Layout>
           )}
         />
