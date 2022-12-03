@@ -524,6 +524,15 @@ components:
           example:
             code: 404
             message: tag not found
+    TagAlreadyExists:
+      description: Tag already exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 400
+            message: tag already exists
     CreationNotFound:
       description: Creation not found
       content:
