@@ -59,6 +59,8 @@ export default router;
  *           application/json:
  *             schema:
  *                $ref: '#/components/schemas/Tag'
+ *       "409":
+ *         $ref: '#/components/responses/TagAlreadyExists'
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *
@@ -181,6 +183,8 @@ export default router;
  *                $ref: '#/components/schemas/Tag'
  *       "404":
  *         $ref: '#/components/responses/TagNotFound'
+ *       "409":
+ *         $ref: '#/components/responses/TagAlreadyExists'
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *

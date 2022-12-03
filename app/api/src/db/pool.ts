@@ -91,7 +91,7 @@ const init = async (): Promise<QueryResult<any>> => {
 
     CREATE TABLE IF NOT EXISTS tag (
       tag_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      tag_name character varying NOT NULL,
+      tag_name character varying UNIQUE NOT NULL,
       tag_description text,
       tag_created DATE NOT NULL DEFAULT CURRENT_DATE
     );

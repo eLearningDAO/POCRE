@@ -357,6 +357,8 @@ export default router;
  *                 value:
  *                   code: 404
  *                   message: material not found
+ *       "406":
+ *         $ref: '#/components/responses/PublishedCreationNotAllowedUpdate'
  *       "409":
  *         content:
  *           application/json:
