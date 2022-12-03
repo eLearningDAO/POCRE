@@ -18,6 +18,7 @@ import RequestDeclineOutlinedIcon from 'assets/svgs/request-decline-outlined.svg
 import { useEffect, useState } from 'react';
 import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import './index.css';
+import { Link } from 'react-router-dom';
 
 function MediaPreview({ mediaType, mediaUrl, onClose }) {
   return (
@@ -222,14 +223,14 @@ function MaterialCard({
 
           <Grid display="flex" gap="12px" alignItems="center">
             {userProfileId ? (
-              <a href={`wallet/${userProfileId}`}>
+              <Link to={`/wallet/${userProfileId}`}>
                 <img
                   alt="avatar"
                   className="profile-pic profile-pic-small profile-pic-rounded"
                 // eslint-disable-next-line unicorn/prefer-module
                   src={userimage || require('assets/images/profile-placeholder.png')}
                 />
-              </a>
+              </Link>
             )
               : (
                 <img
@@ -244,9 +245,9 @@ function MaterialCard({
               {' '}
               {userProfileId
                 ? (
-                  <a href={`wallet/${userProfileId}`}>
+                  <Link to={`/wallet/${userProfileId}`}>
                     {username}
-                  </a>
+                  </Link>
                 )
                 : username}
             </span>

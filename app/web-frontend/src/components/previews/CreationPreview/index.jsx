@@ -7,6 +7,7 @@ import QRCode from 'qrcode';
 import React, { useState, useEffect } from 'react';
 import CloseIcon from 'assets/svgs/close.svg';
 import './index.css';
+import { Link } from 'react-router-dom';
 
 function CreationPreview({
   id = '',
@@ -70,7 +71,7 @@ function CreationPreview({
               <span>{date || '-'}</span>
 
               <span className="heading">Author</span>
-              {authorProfileId ? <a href={`/wallet/${authorProfileId}`}>{authorName}</a> : <span>{authorName || '-'}</span>}
+              {authorProfileId ? <Link to={`/wallet/${authorProfileId}`}>{authorName}</Link> : <span>{authorName || '-'}</span>}
 
               {/* <span className="heading">Tags</span>
             <span className="creation-tags">
@@ -103,7 +104,7 @@ function CreationPreview({
                   <td><a href={x.link}>{x.link || '-'}</a></td>
                   <td>
                     {x?.authorProfileId
-                      ? <a href={`wallet/${x?.authorProfileId}`}>{x.authorName}</a>
+                      ? <Link to={`/wallet/${x?.authorProfileId}`}>{x.authorName}</Link>
                       : x.authorName || '-'}
                   </td>
                 </tr>
