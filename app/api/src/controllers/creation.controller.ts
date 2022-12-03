@@ -1,9 +1,11 @@
+import httpStatus from 'http-status';
 import config from '../config/config';
 import * as creationService from '../services/creation.service';
 import { getMaterialById, updateMaterialById } from '../services/material.service';
 import { createRecognition } from '../services/recognition.service';
 import { getTagById } from '../services/tag.service';
 import { IUserDoc } from '../services/user.service';
+import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/catchAsync';
 import { generateProofOfCreation } from '../utils/generateProofOfCreation';
 
@@ -100,6 +102,11 @@ export const updateCreationById = catchAsync(async (req, res): Promise<void> => 
 
   // get original creation
   const foundCreation = await creationService.getCreationById(req.params.creation_id);
+
+  // block update if creation is published
+  if (!foundCreation?.is_draft) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `published creation cannot be updated`);
+  }
 
   // update creation
   const updatedCreation = await creationService.updateCreationById(req.params.creation_id, req.body, {
