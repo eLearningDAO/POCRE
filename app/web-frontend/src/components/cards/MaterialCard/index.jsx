@@ -241,6 +241,7 @@ function MaterialCard({
               )}
             <span>
               By
+              {' '}
               {userProfileId
                 ? (
                   <a href={`wallet/${userProfileId}`}>
