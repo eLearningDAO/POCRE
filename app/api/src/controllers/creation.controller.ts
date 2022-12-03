@@ -61,7 +61,7 @@ export const createCreation = catchAsync(async (req, res): Promise<void> => {
   const newCreation = await creationService.createCreation({ ...req.body, author_id: (req.user as IUserDoc).user_id });
 
   // send recognitions to material authors if the creation is published
-  if (!req.body.is_draft) {
+  if (!req.body.is_draft && req.body.materials && req.body.materials.length > 0) {
     // get all materials
     // eslint-disable-next-line @typescript-eslint/return-await
     const materials = await Promise.all(req.body.materials.map(async (id: string) => await getMaterialById(id)));
@@ -107,7 +107,7 @@ export const updateCreationById = catchAsync(async (req, res): Promise<void> => 
   });
 
   // send recognitions to material authors if the creation is published
-  if (foundCreation?.is_draft && req.body.is_draft === false && updatedCreation) {
+  if (foundCreation?.is_draft && req.body.is_draft === false && updatedCreation && updatedCreation.materials.length > 0) {
     // get all materials
     // eslint-disable-next-line @typescript-eslint/return-await
     const materials = await Promise.all(updatedCreation.materials.map(async (id: string) => await getMaterialById(id)));
