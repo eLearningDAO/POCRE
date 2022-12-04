@@ -69,6 +69,13 @@ export default function CreationDetails() {
   }, [id]);
 
   useEffect(() => {
+    if (creation?.is_draft && !(user?.user_id === creation?.author?.user_id)) {
+      // redirect to 404 if creation is in draft status
+      navigate('/404');
+    }
+  }, [creation]);
+
+  useEffect(() => {
     if (deleteCreationStatus.success) {
       navigate('/creations');
     }
