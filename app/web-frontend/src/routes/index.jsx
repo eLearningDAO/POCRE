@@ -52,17 +52,21 @@ function AppRoutes() {
         <Route
           path="/creations/create"
           element={(
-            <Layout displaySidebar>
-              <CreateCreation />
-            </Layout>
+            <Protected>
+              <Layout displaySidebar>
+                <CreateCreation />
+              </Layout>
+            </Protected>
           )}
         />
         <Route
           path="/creations/:id/update"
           element={(
-            <Layout displaySidebar>
-              <UpdateCreation />
-            </Layout>
+            <Protected>
+              <Layout displaySidebar>
+                <UpdateCreation />
+              </Layout>
+            </Protected>
           )}
         />
         <Route
