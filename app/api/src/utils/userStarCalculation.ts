@@ -13,7 +13,7 @@ export const getStar = (user: Partial<IUser>) => {
     else if (user.email_address && user.phone) {
         return 2;
     }
-    else if (user.email_address) {
+    else if (user.email_address || user.phone) {
         return 1
     }
     return 0
