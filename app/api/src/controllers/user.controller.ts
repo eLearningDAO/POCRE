@@ -14,8 +14,14 @@ export const getUserById = catchAsync(async (req, res): Promise<void> => {
   res.send(user);
 });
 
-export const createUser = catchAsync(async (req, res): Promise<void> => {
+export const createUser = catchAsync(async (req, res): Promise<any> => {
   const hashedWalletAddress = encrypt(req.body.wallet_address);
+
+  // check if this user already exists
+  const foundUser = await userService.getUserByWalletAddress(hashedWalletAddress).catch(() => null);
+  if (foundUser) return res.send(foundUser);
+
+  // create user
   const newUser = await userService.createUser({
     ...req.body,
     user_name: req.body.user_name || 'anonymous',
