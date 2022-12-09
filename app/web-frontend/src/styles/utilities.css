@@ -242,6 +242,10 @@
     margin-right: auto;
 }
 
+.mt-auto {
+    margin-top: auto !important;
+}
+
 .m-auto {
     margin: auto;
 }

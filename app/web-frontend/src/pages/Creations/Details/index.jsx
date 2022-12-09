@@ -1,31 +1,56 @@
+/* eslint-disable unicorn/consistent-function-scoping */
 /* eslint-disable jsx-a11y/media-has-caption */
 /* eslint-disable sonarjs/no-all-duplicated-branches */
 import {
   Chip, Grid,
   Typography, Box, Button,
+  Alert, Snackbar,
 } from '@mui/material';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode';
 import MaterialCard from 'components/cards/MaterialCard';
 import Loader from 'components/uicore/Loader';
 import './index.css';
 import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import DownloadIconSVG from 'assets/svgs/download.svg';
+import PencilIcon from 'assets/images/pencil.png';
+import ShareIcon from 'assets/images/share.png';
+import DeleteIconSVG from 'assets/svgs/delete.svg';
+import PreviewIcon from 'assets/images/previewicons.png';
+import SocialMediaModal from 'components/shared/socialmediaSharingModal';
+import CreationPreview from 'components/previews/CreationPreview';
+import { DeleteCofirmationDialog } from 'components/cards/CreationCard';
+import authUser from 'utils/helpers/authUser';
 import useDetails from './useDetails';
+
+const user = authUser.getUser();
 
 export default function CreationDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [mediaType, setMediaType] = useState(null);
   const [qrcodeBase64, setQrcodeBase64] = useState(null);
+  const [showShareOptions, setShowShareOptions] = useState(null);
+  const [showCreationDetailsPreview, setShowCreationDetailsPreview] = useState(null);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(null);
+
+  const onEditClick = () => navigate(`/creations/${id}/update`);
+  const onDeleteClick = () => setShowDeleteConfirmation(true);
+  const onShareClick = () => setShowShareOptions(true);
+  const onPreviewClick = () => setShowCreationDetailsPreview(true);
 
   const {
     creation,
     fetchCreationDetails,
     fetchCreationStatus,
     isFetchingCreation,
+    isDeletingCreation,
+    deleteCreationStatus,
+    deleteCreation,
+    resetDeletionErrors,
   } = useDetails();
 
   const generateQRCodeBase64 = async (text) => {
@@ -44,6 +69,19 @@ export default function CreationDetails() {
   }, [id]);
 
   useEffect(() => {
+    if (creation?.is_draft && !(user?.user_id === creation?.author?.user_id)) {
+      // redirect to 404 if creation is in draft status
+      navigate('/404');
+    }
+  }, [creation]);
+
+  useEffect(() => {
+    if (deleteCreationStatus.success) {
+      navigate('/creations');
+    }
+  }, [deleteCreationStatus.success]);
+
+  useEffect(() => {
     const x = getUrlFileType(creation?.creation_link);
     setMediaType(x);
     if (creation?.creation_id) generateQRCodeBase64(creation?.creation_id);
@@ -59,8 +97,58 @@ export default function CreationDetails() {
     );
   }
 
+  const handleDelete = async () => {
+    setShowDeleteConfirmation(false);
+    await deleteCreation();
+  };
+
   return (
     <Grid item xs={12}>
+      {isDeletingCreation && <Loader withBackdrop size="large" />}
+      {(deleteCreationStatus.success || deleteCreationStatus.error) && (
+        <Snackbar open onClose={resetDeletionErrors}>
+          <Alert
+            onClose={resetDeletionErrors}
+            severity={deleteCreationStatus.success ? 'success' : 'error'}
+            sx={{ width: '100%' }}
+          >
+            {deleteCreationStatus.success
+              ? 'Creation deleted successfully!'
+              : 'Failed to delete creation!'}
+          </Alert>
+        </Snackbar>
+      )}
+      {showShareOptions && (
+        <SocialMediaModal
+          onClose={() => setShowShareOptions(false)}
+          shareUrl={`${window.location.origin}/creations/${id}`}
+        />
+      )}
+      {showCreationDetailsPreview && (
+        <CreationPreview
+          id={creation?.creation_id}
+          title={creation?.creation_title}
+          description={creation?.creation_description}
+          link={creation?.creation_link}
+          date={moment(creation?.creation_date).format('Do MMMM YYYY')}
+          authorName={creation?.author?.user_name}
+          authorProfileId={creation?.author?.user_id}
+          materials={(creation?.materials || [])?.map((x) => ({
+            title: x?.material_title,
+            fileType: x?.material_type,
+            link: x?.material_link,
+            authorName: x?.author?.user_name,
+            authorProfileId: x?.author?.user_id,
+          }))}
+          onClose={() => setShowCreationDetailsPreview(false)}
+        />
+      )}
+      {showDeleteConfirmation && (
+        <DeleteCofirmationDialog
+          onClose={() => setShowDeleteConfirmation(false)}
+          onConfirm={handleDelete}
+        />
+      )}
       <Grid item xs={12}>
         <Typography className="litigationCloseTitle" variant="h6">
           Creation -
@@ -113,6 +201,34 @@ export default function CreationDetails() {
             </div>
           )}
         </div>
+      </Grid>
+
+      <Grid
+        display="flex"
+        gap="12px"
+        justifyContent="flex-end"
+        marginTop="18px"
+        width="100%"
+      >
+        {user?.user_id === creation?.author?.user_id && creation?.is_draft && (
+        <Button className="collection-card-action-btn collection-card-action-btn-border-dark" onClick={onEditClick}>
+          <img src={PencilIcon} alt="" />
+        </Button>
+        )}
+
+        {user?.user_id === creation?.author?.user_id && (
+        <Button className="collection-card-action-btn collection-card-action-btn-border-dark" onClick={onDeleteClick}>
+          <img src={DeleteIconSVG} alt="" />
+        </Button>
+        )}
+
+        <Button className="collection-card-action-btn collection-card-action-btn-border-dark" onClick={onPreviewClick}>
+          <img src={PreviewIcon} alt="" width={26} />
+        </Button>
+
+        <Button className="collection-card-action-btn collection-card-action-btn-border-dark" onClick={onShareClick}>
+          <img src={ShareIcon} alt="" />
+        </Button>
       </Grid>
 
       <Grid

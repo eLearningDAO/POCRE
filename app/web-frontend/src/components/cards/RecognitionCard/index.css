@@ -130,13 +130,6 @@
   color: #F78F8A;
 }
 
-.collection-card-action-btn {
-  width: fit-content !important;
-  min-width: initial !important;
-  background-color: #F5F9FD !important;
-  border: 1px solid #F5F9FD !important;
-}
-
 @media (max-width: 599px) {
   .collection-card {
     padding: 18px;
@@ -151,11 +144,6 @@
     width: 40px;
     height: 40px;
   }
-
-  .collection-card-action-btn {
-    padding: 5px !important;
-    border-radius: 5px !important;
-  }
 }
 
 @media(min-width: 600px) {
@@ -167,11 +155,6 @@
   .collection-member-images>img {
     width: 40px;
     height: 40px;
-  }
-
-  .collection-card-action-btn {
-    padding: 8px !important;
-    border-radius: 8px !important;
   }
 }
 
@@ -191,11 +174,6 @@
 
   .collection-card-media, .overlay-button {
     border-radius: 24px;
-  }
-
-  .collection-card-action-btn {
-    padding: 12px !important;
-    border-radius: 12px !important;
   }
 }
 

@@ -105,13 +105,13 @@ function Creations() {
                   description={x?.creation_description}
                   creationDate={moment(x?.creation_date).format('Do MMMM YYYY')}
                   interactionBtns
-                  mediaUrl={x?.source?.site_url}
+                  mediaUrl={x?.creation_link}
                   author={x?.author?.user_name}
                   authorProfileId={x?.author?.user_id}
                   materials={x?.materials?.length > 0 ? x?.materials?.map((m) => ({
                     title: m?.material_title,
                     link: m?.material_link,
-                    fileType: m?.type?.type_name,
+                    fileType: m?.material_type,
                     author: m?.author?.user_name,
                     author_image: m?.author?.image_url,
                     authorProfileId: m?.author?.user_id,

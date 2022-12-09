@@ -39,9 +39,12 @@ const useCreations = () => {
       // update queries
       queryClient.cancelQueries({ queryKey: ['creations'] });
       queryClient.setQueryData(['creations'], (data) => {
-        const temporaryCreations = data.results.filter((x) => x?.creation_id !== creationId);
+        if (data && data.results) {
+          const temporaryCreations = data.results.filter((x) => x?.creation_id !== creationId);
 
-        return { ...data, results: [...temporaryCreations] };
+          return { ...data, results: [...temporaryCreations] };
+        }
+        return data;
       });
     },
   });
