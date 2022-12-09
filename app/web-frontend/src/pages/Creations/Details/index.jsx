@@ -24,6 +24,7 @@ import CreationPreview from 'components/previews/CreationPreview';
 import { DeleteCofirmationDialog } from 'components/cards/CreationCard';
 import authUser from 'utils/helpers/authUser';
 import useDetails from './useDetails';
+import useCreationDelete from '../common/hooks/useCreationDelete';
 
 const user = authUser.getUser();
 
@@ -47,11 +48,14 @@ export default function CreationDetails() {
     fetchCreationDetails,
     fetchCreationStatus,
     isFetchingCreation,
+  } = useDetails();
+
+  const {
     isDeletingCreation,
     deleteCreationStatus,
     deleteCreation,
     resetDeletionErrors,
-  } = useDetails();
+  } = useCreationDelete();
 
   const generateQRCodeBase64 = async (text) => {
     const code = await QRCode.toDataURL(`${window.location.origin}/creations/${text}`, {
@@ -99,7 +103,7 @@ export default function CreationDetails() {
 
   const handleDelete = async () => {
     setShowDeleteConfirmation(false);
-    await deleteCreation();
+    await deleteCreation(id);
   };
 
   return (
@@ -112,9 +116,7 @@ export default function CreationDetails() {
             severity={deleteCreationStatus.success ? 'success' : 'error'}
             sx={{ width: '100%' }}
           >
-            {deleteCreationStatus.success
-              ? 'Creation deleted successfully!'
-              : 'Failed to delete creation!'}
+            {deleteCreationStatus.success || deleteCreationStatus.error}
           </Alert>
         </Snackbar>
       )}
