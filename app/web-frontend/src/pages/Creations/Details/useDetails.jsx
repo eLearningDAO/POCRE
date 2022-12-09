@@ -1,9 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Creation } from 'api/requests';
 import { useState } from 'react';
 
 const useDetails = () => {
-  const queryClient = useQueryClient();
   const [creationId, setCreationId] = useState(null);
 
   // get creation details
@@ -22,30 +21,7 @@ const useDetails = () => {
       return await Creation.getById(creationId, toPopulate.map((x) => `populate=${x}`).join('&'));
     },
     enabled: !!creationId,
-  });
-
-  // delete creation
-  const {
-    mutate: deleteCreation,
-    isError: isDeleteError,
-    isSuccess: isDeleteSuccess,
-    isLoading: isDeletingCreation,
-    reset: resetDeletionErrors,
-  } = useMutation({
-    mutationFn: async () => {
-      await Creation.delete(creationId);
-
-      // update queries
-      queryClient.cancelQueries({ queryKey: ['creations'] });
-      queryClient.setQueryData(['creations'], (data) => {
-        if (data && data.results) {
-          const temporaryCreations = data.results.filter((x) => x?.creation_id !== creationId);
-
-          return { ...data, results: [...temporaryCreations] };
-        }
-        return data;
-      });
-    },
+    staleTime: 60_000, // cache for 60 seconds
   });
 
   return {
@@ -56,13 +32,6 @@ const useDetails = () => {
     },
     creation,
     fetchCreationDetails: (id) => setCreationId(id),
-    deleteCreationStatus: {
-      success: isDeleteSuccess,
-      error: isDeleteError ? 'Failed to delete creation' : null,
-    },
-    deleteCreation,
-    resetDeletionErrors,
-    isDeletingCreation,
   };
 };
 

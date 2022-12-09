@@ -9,19 +9,24 @@ import { useNavigate } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
 import './index.css';
 import useCreations from './useCreations';
+import useCreationDelete from '../common/hooks/useCreationDelete';
 
 function Creations() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const login = authUser.getUser() && authUser.getJWTToken();
+
   const {
     creations,
     isLoadingCreations,
+  } = useCreations();
+
+  const {
     isDeletingCreation,
     deleteCreationStatus,
     deleteCreation,
     resetDeletionErrors,
-  } = useCreations();
+  } = useCreationDelete();
 
   const add = () => {
     navigate('/creations/create');
@@ -41,9 +46,7 @@ function Creations() {
             severity={deleteCreationStatus.success ? 'success' : 'error'}
             sx={{ width: '100%' }}
           >
-            {deleteCreationStatus.success
-              ? 'Creation deleted successfully!'
-              : 'Failed to delete creation!'}
+            {deleteCreationStatus.success || deleteCreationStatus.error}
           </Alert>
         </Snackbar>
       )}
