@@ -21,7 +21,7 @@ function Home() {
     sliderImages,
   } = useHome();
   const handleAuthorCardClick = (userId) => {
-    navigate(`/user/${userId}`);
+    navigate(`/wallet/${userId}`);
   };
 
   const handleCreationCardClick = (creationId) => {
