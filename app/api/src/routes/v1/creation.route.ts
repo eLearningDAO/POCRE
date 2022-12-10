@@ -392,6 +392,24 @@ export default router;
  *         description: OK
  *       "404":
  *         $ref: '#/components/responses/CreationNotFound'
+ *       "406":
+ *         content:
+ *           application/json:
+ *             schema:
+ *               oneOf:
+ *                 - $ref: '#/components/responses/CreationOngoingMaterialRecognition'
+ *                 - $ref: '#/components/responses/CreationOngoingLitigation'
+ *             examples:
+ *               CreationOngoingMaterialRecognition:
+ *                 summary: creation has ongoing material recognition process
+ *                 value:
+ *                   code: 409
+ *                   message: creation has ongoing material recognition process
+ *               CreationOngoingLitigation:
+ *                 summary: creation has ongoing litigation process
+ *                 value:
+ *                   code: 409
+ *                   message: creation has ongoing litigation process
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  */
