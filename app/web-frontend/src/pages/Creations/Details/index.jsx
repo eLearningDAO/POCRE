@@ -18,7 +18,7 @@ import DownloadIconSVG from 'assets/svgs/download.svg';
 import PencilIcon from 'assets/images/pencil.png';
 import ShareIcon from 'assets/images/share.png';
 import DeleteIconSVG from 'assets/svgs/delete.svg';
-import PreviewIcon from 'assets/images/previewicons.png';
+import PreviewIcon from 'assets/images/preview.png';
 import SocialMediaModal from 'components/shared/socialmediaSharingModal';
 import CreationPreview from 'components/previews/CreationPreview';
 import { DeleteCofirmationDialog } from 'components/cards/CreationCard';
