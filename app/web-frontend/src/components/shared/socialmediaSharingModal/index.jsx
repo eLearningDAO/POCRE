@@ -1,9 +1,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import React from 'react';
-import {
-  Button, Typography,
-} from '@mui/material';
+import React, { useState } from 'react';
+import { Button, Typography } from '@mui/material';
 import {
   FacebookShareButton,
   FacebookIcon,
@@ -12,10 +10,13 @@ import {
   TwitterShareButton,
   TwitterIcon,
 } from 'react-share';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import CloseIcon from 'assets/svgs/close.svg';
+import LinkIcon from 'assets/images/linkicon.png';
 import './index.css';
 
 function SocialMediaModal({ shareUrl = '', subjectTitle = 'Creation', onClose }) {
+  const [copied, setCopied] = useState(false);
   return (
     <div
       className="creation-preview-container"
@@ -25,9 +26,7 @@ function SocialMediaModal({ shareUrl = '', subjectTitle = 'Creation', onClose })
         <div className="creation-preview-header">
           <Typography className="heading h4">
             Sharing the
-            <span className="subject-title">
-              {subjectTitle}
-            </span>
+            <span className="subject-title">{subjectTitle}</span>
           </Typography>
           <Button padding="0" minWidth="0" onClick={onClose}>
             <img src={CloseIcon} height="24" width="24" alt="" />
@@ -66,6 +65,12 @@ function SocialMediaModal({ shareUrl = '', subjectTitle = 'Creation', onClose })
             </TwitterShareButton>
 
             <div className="twitter-network__share-count">Twitter</div>
+          </div>
+          <div className="twitter-network">
+            <CopyToClipboard text={shareUrl} onCopy={() => setCopied(true)}>
+              <img src={LinkIcon} alt="clipboard" width={48} height={48} />
+            </CopyToClipboard>
+            <div className="twitter-network__share-count">{copied ? 'Copied Link' : 'Link'}</div>
           </div>
         </div>
       </div>
