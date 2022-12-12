@@ -3,7 +3,7 @@ import Page404 from 'pages/404';
 import Layout from 'components/Layout';
 
 function ProtectedRoute({ children }) {
-  // if user is not authenticated
+  // if user is not authenticated return 404
   if (!(authUser.getUser() && authUser.getJWTToken())) {
     return (
       <Layout>
@@ -12,6 +12,7 @@ function ProtectedRoute({ children }) {
     );
   }
 
+  // else render the protected component
   return children;
 }
 

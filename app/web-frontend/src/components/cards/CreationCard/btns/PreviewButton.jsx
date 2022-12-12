@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '@mui/material/Button';
-import PreviewIcon from 'assets/images/previewicons.png';
+import PreviewIcon from 'assets/images/preview.png';
 
 function PreviewButton({ onClick }) {
   return (

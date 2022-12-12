@@ -13,7 +13,7 @@ const useHome = () => {
   } = useQuery({
     queryKey: ['trendingCreations'],
     queryFn: async () => {
-      const toPopulate = ['source_id', 'author_id', 'materials', 'materials.source_id', 'materials.type_id', 'materials.author_id'];
+      const toPopulate = ['author_id', 'materials', 'materials.author_id'];
       let createResponse = Creation.getAll(
         `page=${1}&limit=5&descend_fields[]=creation_date&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       );
