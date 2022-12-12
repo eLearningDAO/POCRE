@@ -12,7 +12,7 @@ import {
 } from 'react-share';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import CloseIcon from 'assets/svgs/close.svg';
-import LinkIcon from 'assets/images/linkedin.png';
+import LinkIcon from 'assets/images/link.png';
 import './index.css';
 
 function SocialMediaModal({ shareUrl = '', subjectTitle = 'Creation', onClose }) {
