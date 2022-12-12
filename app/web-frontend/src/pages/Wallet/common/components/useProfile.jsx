@@ -36,7 +36,7 @@ const useProfile = () => {
       }
 
       const response = await User.update(authUser.getUser().user_id, updateBody);
-      authUser.setUser(response); // update user in cookies
+      authUser.setUser({ ...authUser.getUser(), ...response }); // update user in cookies
     },
   });
 

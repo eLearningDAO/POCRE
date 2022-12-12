@@ -254,6 +254,14 @@
     margin-top: 24px;
 }
 
+.mb-24 {
+    margin-bottom: 24px;
+}
+
+.hidden {
+    display: none;
+}
+
 .text-center {
     text-align: center;
 }
