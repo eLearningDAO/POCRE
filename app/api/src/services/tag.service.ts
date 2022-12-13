@@ -58,7 +58,7 @@ export const queryTags = async (options: ITagQuery): Promise<ITagQueryResult> =>
   try {
     const search =
       options.search_fields && options.search_fields.length > 0
-        ? `WHERE ${options.search_fields.map((field) => `${field} LIKE '%${options.query}%'`).join(' OR ')}`
+        ? `WHERE ${options.search_fields.map((field) => `LOWER(${field}) LIKE LOWER('%${options.query}%')`).join(' OR ')}`
         : '';
 
     const result = await db.query(`SELECT * FROM tag ${search} OFFSET $1 LIMIT $2;`, [

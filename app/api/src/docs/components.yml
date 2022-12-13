@@ -542,6 +542,24 @@ components:
           example:
             code: 404
             message: creation not found
+    CreationOngoingMaterialRecognition:
+      description: Creation has ongoing material recognition process
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 406
+            message: creation has ongoing material recognition process 
+    CreationOngoingLitigation:
+      description: Creation has ongoing litigation process
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 406
+            message: creation has ongoing litigation process  
     CreationAlreadyAssignedToLitigation:
       description: Creation already assigned to a litigation
       content:
