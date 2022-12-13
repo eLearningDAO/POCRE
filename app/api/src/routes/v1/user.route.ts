@@ -149,6 +149,44 @@ export default router;
 
 /**
  * @swagger
+ * /users/invite:
+ *   post:
+ *     summary: Invite a user
+ *     description: Invites a new user.
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               user_name:
+ *                 type: string
+ *                 description: only phone or email or user name is allowed
+ *               phone:
+ *                 type: string
+ *                 description: only phone or email or user name is allowed
+ *               email_address:
+ *                 type: string
+ *                 description: only phone or email or user name is allowed
+ *             example:
+ *                user_name: john
+ *                phone: '+92313555544'
+ *                email_address: 'example@example.com'
+ *     responses:
+ *       "201":
+ *         description: Created
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/User'
+ *       "500":
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+
+/**
+ * @swagger
  * /users/{user_id}:
  *   get:
  *     summary: Get a user by id
