@@ -51,14 +51,15 @@ const init = async (): Promise<QueryResult<any>> => {
     CREATE TABLE IF NOT EXISTS users (
       user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       user_name character varying NOT NULL,
-      wallet_address character varying NOT NULL UNIQUE,
+      wallet_address character varying UNIQUE,
       user_bio text,
       image_url character varying,
       email_address character varying,
       phone character varying,
       verified_id character varying,
       reputation_stars integer  DEFAULT 0,
-      date_joined DATE NOT NULL DEFAULT CURRENT_DATE
+      date_joined DATE NOT NULL DEFAULT CURRENT_DATE,
+      is_invited bool default false
     );
 
     CREATE TABLE IF NOT EXISTS decision (
@@ -171,7 +172,8 @@ const init = async (): Promise<QueryResult<any>> => {
         email_address,
         phone,
         reputation_stars,
-        date_joined 
+        date_joined,
+        is_invited
     FROM 
     users;
 

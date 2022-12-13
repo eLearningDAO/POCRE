@@ -13,6 +13,26 @@ export const createUser = {
   }),
 };
 
+export const inviteUser = {
+  body: Joi.alternatives().try(
+    Joi.object().keys({
+      user_name: Joi.string().required(),
+      phone: Joi.string().forbidden(),
+      email_address: Joi.string().forbidden(),
+    }),
+    Joi.object().keys({
+      user_name: Joi.string().forbidden(),
+      phone: Joi.string().required(),
+      email_address: Joi.string().forbidden(),
+    }),
+    Joi.object().keys({
+      user_name: Joi.string().forbidden(),
+      phone: Joi.string().forbidden(),
+      email_address: Joi.string().required(),
+    })
+  ),
+};
+
 export const queryUsers = {
   query: Joi.object().keys({
     limit: Joi.number().integer().default(10),

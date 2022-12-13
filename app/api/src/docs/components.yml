@@ -19,6 +19,8 @@ components:
         date_joined:
           type: string
           format: date-time
+        is_invited:
+          type: boolean
       example:
         user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
         user_name: john
@@ -27,6 +29,7 @@ components:
         email_addres: 'example@example.com'
         reputation_stars: 0
         date_joined: 2022-09-05T19:00:00.000Z
+        is_invited: false
 
     Decision:
       type: object

@@ -26,8 +26,38 @@ export const createUser = catchAsync(async (req, res): Promise<any> => {
     ...req.body,
     user_name: req.body.user_name || 'anonymous',
     wallet_address: hashedWalletAddress,
+    is_invited: false,
   });
   res.send(newUser);
+});
+
+export const inviteUser = catchAsync(async (req, res): Promise<any> => {
+  const { user_name: username, email_address: emailAddress, phone } = req.body;
+
+  // check if the user exists
+  const findingCallback = username
+    ? userService.getUserByUsername
+    : emailAddress
+    ? userService.getUserByEmailAddress
+    : phone
+    ? userService.getUserByPhone
+    : async () => {};
+  const findingCriteria = username || emailAddress || phone;
+  const foundUser = await findingCallback(findingCriteria).catch(() => null);
+
+  // check if the user is already invited
+  if (foundUser && foundUser.is_invited) {
+    return res.send(foundUser);
+  }
+
+  // create a new invited user
+  const invitedUser = await userService.createUser({
+    user_name: username || 'anonymous',
+    email_address: emailAddress || null,
+    phone: phone || null,
+    is_invited: true,
+  });
+  res.send(invitedUser);
 });
 
 export const deleteUserById = catchAsync(async (req, res): Promise<void> => {
