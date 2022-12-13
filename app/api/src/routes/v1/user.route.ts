@@ -11,6 +11,8 @@ router
   .post(validate(userValidation.createUser), userController.createUser)
   .get(validate(userValidation.queryUsers), userController.queryUsers);
 
+router.route('/invite').post(validate(userValidation.inviteUser), userController.inviteUser);
+
 router
   .route('/:user_id')
   .get(validate(userValidation.getUser), userController.getUserById)

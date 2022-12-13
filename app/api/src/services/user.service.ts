@@ -14,6 +14,7 @@ export interface IUser {
   verified_id?: string;
   reputation_stars?: number;
   image_url?: string;
+  is_invited?: boolean;
 }
 interface IUserQuery {
   limit: number;
@@ -41,6 +42,7 @@ export interface IUserDoc {
   authorship_duration?: string;
   date_joined: string;
   total_creations?: string;
+  is_invited: boolean;
 }
 interface IUserCriteria {
   required_users: number;
@@ -55,7 +57,21 @@ interface IUserCriteria {
 export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
   try {
     const result = await db.query(
-      `INSERT INTO users (user_name,wallet_address,user_bio,phone,email_address,verified_id,reputation_stars,image_url) values ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *;`,
+      `INSERT INTO users 
+      (
+        user_name,
+        wallet_address,
+        user_bio,
+        phone,
+        email_address,
+        verified_id,
+        reputation_stars,
+        image_url,
+        is_invited
+      ) 
+      values 
+      ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+      RETURNING *;`,
       [
         userBody.user_name,
         userBody.wallet_address,
@@ -65,6 +81,7 @@ export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
         userBody.verified_id,
         userBody.reputation_stars,
         userBody.image_url,
+        userBody.is_invited,
       ]
     );
     const user = result.rows[0];
@@ -192,7 +209,7 @@ export const queryUsers = async (options: IUserQuery): Promise<IUserQueryResult>
  * @returns {Promise<IUserDoc|null>}
  */
 export const getUserByCriteria = async (
-  criteria: 'user_id' | 'wallet_address',
+  criteria: 'user_id' | 'wallet_address' | 'user_name' | 'email_address' | 'phone',
   equals: string
 ): Promise<IUserDoc | null> => {
   const user = await (async () => {
@@ -239,6 +256,33 @@ export const getUserByWalletAddress = async (walletAddress: string): Promise<IUs
 };
 
 /**
+ * Get user by email address
+ * @param {string} emailAddress
+ * @returns {Promise<IUserDoc|null>}
+ */
+export const getUserByEmailAddress = async (emailAddress: string): Promise<IUserDoc | null> => {
+  return getUserByCriteria('email_address', emailAddress);
+};
+
+/**
+ * Get user by phone
+ * @param {string} phone
+ * @returns {Promise<IUserDoc|null>}
+ */
+export const getUserByPhone = async (phone: string): Promise<IUserDoc | null> => {
+  return getUserByCriteria('phone', phone);
+};
+
+/**
+ * Get user by username
+ * @param {string} username
+ * @returns {Promise<IUserDoc|null>}
+ */
+export const getUserByUsername = async (username: string): Promise<IUserDoc | null> => {
+  return getUserByCriteria('user_name', username);
+};
+
+/**
  * Update user by id
  * @param {string} id
  * @param {Partial<IUser>} updateBody
@@ -250,7 +294,7 @@ export const updateUserById = async (id: string, updateBody: Partial<IUser>): Pr
   updateBody.reputation_stars = getStar(updateBody); // update the stars field according to aviable user fields .
   // build sql conditions and values
   const conditions: string[] = [];
-  const values: (string | number | null)[] = [];
+  const values: (string | number | null | boolean)[] = [];
   Object.entries(updateBody).map(([k, v], index) => {
     conditions.push(`${k} = $${index + 2}`);
     values.push(v);
