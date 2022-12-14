@@ -42,13 +42,15 @@ const makeCommonResource = async (
   let materials = [];
   if (requestBody.materials && requestBody.materials.length > 0) {
     materials = await Promise.all(requestBody.materials.map(async (x) => {
+      const authorName = x?.author?.[0]?.trim();
+
       // get author for material
       const author = await (async () => {
         let temporaryAuthor = null;
 
         // return if author found from suggestions
         temporaryAuthor = authorSuggestions.find(
-          (suggestion) => suggestion.user_name.trim() === x.author.trim(),
+          (suggestion) => suggestion.user_name.trim() === authorName,
         );
         if (temporaryAuthor) return temporaryAuthor;
 
@@ -59,7 +61,7 @@ const makeCommonResource = async (
 
         // make new author
         temporaryAuthor = await User.create({
-          user_name: x.author,
+          user_name: authorName,
         });
 
         return temporaryAuthor;

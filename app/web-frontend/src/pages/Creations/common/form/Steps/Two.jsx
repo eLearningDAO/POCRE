@@ -7,9 +7,16 @@ import MaterialCard from 'components/cards/MaterialCard';
 import Input from 'components/uicore/Input';
 import Select from 'components/uicore/Select';
 import Form from 'components/uicore/Form';
+import TagInput from 'components/uicore/TagInput';
 import { stepTwoValidation } from './validation';
 
-function NewMaterial({ material, onRemoveMaterial, onUpdate = () => {} }) {
+function NewMaterial({
+  material,
+  authorSuggestions = [],
+  onUpdate = () => {},
+  onRemoveMaterial = () => {},
+  onAuthorInputChange = () => {},
+}) {
   const [editMode, setEditMode] = useState(false);
 
   const handleUpdate = (values) => {
@@ -126,7 +133,15 @@ function NewMaterial({ material, onRemoveMaterial, onUpdate = () => {} }) {
             gap="8px"
             alignItems="center"
           >
-            <Input placeholder="Select an author or add a new author name" name="author" hookToForm />
+            <TagInput
+              hookToForm
+              maxTags={1}
+              name="author"
+              addTagOnEnter={false}
+              onInput={onAuthorInputChange}
+              placeholder="Type author name and select from suggestions below"
+              tagSuggestions={authorSuggestions.map((x) => x.user_name) || []}
+            />
             <Button
               className="inviteButton"
               style={{
@@ -242,7 +257,7 @@ export default function StepTwo({
             title: '',
             fileType: '',
             link: '',
-            author: '',
+            author: [],
           }}
         >
           <Grid container className="create-collection" bgcolor="rgba(255, 255, 255, 0.28)" border="2px dashed #F78F8A">
@@ -281,7 +296,15 @@ export default function StepTwo({
               <Typography className="heading">Author</Typography>
             </Grid>
             <Grid xs={12} md={10} marginTop={{ xs: '0px', md: '18px' }} display="flex" gap="8px" alignItems="center">
-              <Input onChange={onAuthorInputChange} autoComplete autoCompleteOptions={authorSuggestions.map((x) => x.user_name) || []} placeholder="Select an author or add a new author name" name="author" hookToForm />
+              <TagInput
+                hookToForm
+                maxTags={1}
+                name="author"
+                addTagOnEnter={false}
+                onInput={onAuthorInputChange}
+                placeholder="Type author name and select from suggestions below"
+                tagSuggestions={authorSuggestions.map((x) => x.user_name) || []}
+              />
               <Button className="inviteButton" style={{ width: 'fit-content', paddingLeft: '24px', paddingRight: '24px' }}>
                 <img width={17} style={{ marginRight: '10px' }} alt="invite-icon" src={InviteIcon} />
                 {' '}
@@ -310,6 +333,8 @@ export default function StepTwo({
             material={material}
             onRemoveMaterial={() => removeMaterial(index)}
             onUpdate={(newData) => updateMaterial(index, newData)}
+            onAuthorInputChange={onAuthorInputChange}
+            authorSuggestions={authorSuggestions}
           />
         ))}
       </Grid>
