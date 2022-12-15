@@ -35,7 +35,7 @@ const REQUEST_TEMPLATE = (endpoint) => ({
   getById: async (id, queryParameters = '') => await request(`${API_BASE_URL}/${endpoint}/${id}?${queryParameters}`, {}, 'GET'),
 });
 
-const User = REQUEST_TEMPLATE('users');
+const User = { ...REQUEST_TEMPLATE('users'), invite: REQUEST_TEMPLATE('users/invite').create };
 const Material = REQUEST_TEMPLATE('materials');
 const Creation = REQUEST_TEMPLATE('creations');
 const Decision = REQUEST_TEMPLATE('decision');

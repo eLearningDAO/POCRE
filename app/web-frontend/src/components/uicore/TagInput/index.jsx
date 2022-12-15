@@ -41,6 +41,7 @@ function TagInput(
     tagSuggestions,
     maxTags = 1000,
     addTagOnEnter = true,
+    selectedTags = [],
   },
 ) {
   const formContext = useFormContext();
@@ -90,6 +91,15 @@ function TagInput(
     }
     formContext.trigger([name]);
   }, [tags]);
+
+  useEffect(() => {
+    if (selectedTags && selectedTags.length > 0) {
+      formContext.setValue(name, selectedTags, { shouldDirty: isFirstValidationSkipped });
+      formContext.trigger([name]);
+      setTags(selectedTags);
+      if (inputReference && inputReference.current) { inputReference.current.value = ''; }
+    }
+  }, [selectedTags]);
 
   useEffect(() => {
     setShowSuggestions(isFocused && tagSuggestions.length > 0);

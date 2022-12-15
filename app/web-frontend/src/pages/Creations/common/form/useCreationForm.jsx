@@ -48,6 +48,22 @@ const makeCommonResource = async (
       const author = await (async () => {
         let temporaryAuthor = null;
 
+        // invite user by email address
+        if (authorName.includes('invite-via-')) {
+          const invite = authorName.split('invite-via-')[1].split(':');
+          const method = invite[0];
+          const value = invite[1];
+
+          // invite author by email
+          temporaryAuthor = await User.invite({
+            ...(method === 'email' && { email_address: value.trim() }),
+            ...(method === 'phone' && { phone: value.trim() }),
+            ...(method === 'username' && { user_name: value.trim() }),
+          });
+
+          return temporaryAuthor;
+        }
+
         // return if author found from suggestions
         temporaryAuthor = authorSuggestions.find(
           (suggestion) => suggestion.user_name.trim() === authorName,
