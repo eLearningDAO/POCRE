@@ -251,6 +251,30 @@ export const updateRecognitionById = async (
 };
 
 /**
+ * Update recognition in bulk
+ * @param {string} field - the field to match and update
+ * @param {string} existingValue - the present value of field
+ * @param {string} updatedValue - the new value of field
+ * @returns {Promise<IRecognitionDoc|null>}
+ */
+export const updateRecognitionsInBulk = async (
+  field: 'recognition_for',
+  existingValue: string,
+  updatedValue: string
+): Promise<IRecognitionDoc[] | null> => {
+  try {
+    const updateQry = await db.query(`UPDATE recognition SET ${field} = $1 WHERE ${field} = $2 RETURNING *;`, [
+      updatedValue,
+      existingValue,
+    ]);
+    const recognitions = updateQry.rows;
+    return recognitions;
+  } catch {
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
+  }
+};
+
+/**
  * Delete recognition by id
  * @param {string} id
  * @param {object} options - optional config object
