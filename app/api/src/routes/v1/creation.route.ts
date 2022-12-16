@@ -21,8 +21,6 @@ router
   .route('/:creation_id/proof')
   .get(validate(creationValidation.getCreationProof), creationController.getCreationProofById);
 
-router.route('/validate').post(validate(creationValidation.getFileType), creationController.getCreationLinkFileType);
-
 export default router;
 
 /**

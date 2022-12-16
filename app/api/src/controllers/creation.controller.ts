@@ -1,8 +1,5 @@
 import httpStatus from 'http-status';
-import got from 'got';
-import FileType from 'file-type';
 import config from '../config/config';
-import logger from '../config/logger';
 import statusTypes from '../constants/statusTypes';
 import * as creationService from '../services/creation.service';
 import * as litigationService from '../services/litigation.service';
@@ -42,10 +39,11 @@ export const getCreationProofById = catchAsync(async (req, res): Promise<void | 
   // proof object
   const creationProof = {
     ...creation,
-    published_at: `${(config.creation_details_web_base_url as string).endsWith('/')
+    published_at: `${
+      (config.creation_details_web_base_url as string).endsWith('/')
         ? config.creation_details_web_base_url.slice(0, -1)
         : config.creation_details_web_base_url
-      }/${creation?.creation_id}`,
+    }/${creation?.creation_id}`,
   };
 
   // when json is required
@@ -166,12 +164,4 @@ export const updateCreationById = catchAsync(async (req, res): Promise<void> => 
   }
 
   res.send(updatedCreation);
-});
-
-export const getCreationLinkFileType = catchAsync(async (req, res): Promise<void> => {
-  const url = req.body.creation_link;
-  const stream = got.stream(url);
-  const fileType = await FileType.fromStream(stream);
-  logger.info(fileType);
-  res.send(fileType);
 });
