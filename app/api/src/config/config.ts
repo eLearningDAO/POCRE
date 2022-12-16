@@ -21,6 +21,10 @@ const envVarsSchema = Joi.object()
     MAX_LITIGATORS: Joi.number().description('max litigators per litigation').required().min(2),
     JWT_SECRET: Joi.string().required().description('JWT secret key'),
     HASHING_SALT_WALLET_ADDRESS: Joi.string().required().description('Hasing Salt for wallet address'),
+    SENDGRID_MAIL_API_KEY: Joi.string().description('sendgrid api key used to send emails').required(),
+    SENDGRID_MAIL_FROM_NAME: Joi.string().description('sendgrid mail from name used to send emails').required(),
+    SENDGRID_MAIL_FROM_EMAIL: Joi.string().description('sendgrid mail from email used to send emails').required(),
+    SENDGRID_MAIL_INVITE_TEMPLATE_ID: Joi.string().description('sendgrid invitation email template id').required(),
   })
   .unknown();
 
@@ -51,5 +55,11 @@ export default {
   },
   hashing_salt: {
     wallet_address: envVars.HASHING_SALT_WALLET_ADDRESS,
+  },
+  sendgrid: {
+    api_key: envVars.SENDGRID_MAIL_API_KEY,
+    from_name: envVars.SENDGRID_MAIL_FROM_NAME,
+    from_email: envVars.SENDGRID_MAIL_FROM_EMAIL,
+    invite_template_id: envVars.SENDGRID_MAIL_INVITE_TEMPLATE_ID,
   },
 };
