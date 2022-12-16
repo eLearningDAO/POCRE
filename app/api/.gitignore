@@ -3,7 +3,7 @@ node_modules
 
 # yarn error logs
 yarn-error.log
-
+yarn.lock
 # Environment variables
 .env*
 !.env*.example
@@ -15,3 +15,5 @@ dist
 .vscode
 
 .DS_Store
+
+package-lock.json
