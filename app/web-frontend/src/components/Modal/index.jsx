@@ -10,13 +10,14 @@ function Modal({
   title = '',
   children,
   onClose = () => {},
+  className = '',
 }) {
   return (
     <div
       className="creation-preview-container"
       onClick={(event) => event.target === event.currentTarget && onClose()}
     >
-      <div className="creation-preview">
+      <div className={`creation-preview ${className}`}>
         <div className="creation-preview-header">
           <Typography className="heading h4">{title}</Typography>
           <Button padding="0" minWidth="0" onClick={onClose}>

@@ -3,7 +3,9 @@ import got from 'got';
 import FileType from 'file-type';
 import config from '../config/config';
 import logger from '../config/logger';
+import statusTypes from '../constants/statusTypes';
 import * as creationService from '../services/creation.service';
+import * as litigationService from '../services/litigation.service';
 import { getMaterialById, updateMaterialById } from '../services/material.service';
 import { createRecognition } from '../services/recognition.service';
 import { getTagById } from '../services/tag.service';
@@ -89,6 +91,30 @@ export const createCreation = catchAsync(async (req, res): Promise<void> => {
 });
 
 export const deleteCreationById = catchAsync(async (req, res): Promise<void> => {
+  // get the creation
+  const foundCreation = await creationService.getCreationById(req.params.creation_id, {
+    populate: ['materials.recognition_id'],
+  });
+
+  // check if the creation has ongoing material recognition process
+  if (
+    !foundCreation?.is_draft &&
+    foundCreation?.materials &&
+    foundCreation.materials.length > 0 &&
+    foundCreation.materials.filter((x: any) => x?.recognition?.status === statusTypes.PENDING).length > 0
+  ) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `creation has ongoing material recognition process`);
+  }
+
+  // check if the creation has ongoing litigation process
+  const foundLitigation = await litigationService
+    .getLitigationByCriteria('creation_id', req.params.creation_id)
+    .catch(() => null);
+  if (foundLitigation && !foundLitigation.ownership_transferred) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `creation has ongoing litigation process`);
+  }
+
+  // delete the creation
   await creationService.deleteCreationById(req.params.creation_id, {
     owner_id: (req.user as IUserDoc).user_id,
   });

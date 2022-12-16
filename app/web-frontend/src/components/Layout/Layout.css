@@ -2319,3 +2319,35 @@ a {
     right: -1%;
   }
 }
+
+.collection-card-action-btn {
+  width: fit-content !important;
+  min-width: initial !important;
+  background-color: #F5F9FD !important;
+  border: 1px solid #F5F9FD !important;
+}
+
+.collection-card-action-btn-border-dark {
+  border: 1px solid #b2b3b5 !important;
+}
+
+@media (max-width: 599px) {
+  .collection-card-action-btn {
+    padding: 5px !important;
+    border-radius: 5px !important;
+  }
+}
+
+@media(min-width: 600px) {
+  .collection-card-action-btn {
+    padding: 8px !important;
+    border-radius: 8px !important;
+  }
+}
+
+@media(min-width: 900px) {
+  .collection-card-action-btn {
+    padding: 12px !important;
+    border-radius: 12px !important;
+  }
+}

@@ -9,19 +9,24 @@ import { useNavigate } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
 import './index.css';
 import useCreations from './useCreations';
+import useCreationDelete from '../common/hooks/useCreationDelete';
 
 function Creations() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const login = authUser.getUser() && authUser.getJWTToken();
+
   const {
     creations,
     isLoadingCreations,
+  } = useCreations();
+
+  const {
     isDeletingCreation,
     deleteCreationStatus,
     deleteCreation,
     resetDeletionErrors,
-  } = useCreations();
+  } = useCreationDelete();
 
   const add = () => {
     navigate('/creations/create');
@@ -41,9 +46,7 @@ function Creations() {
             severity={deleteCreationStatus.success ? 'success' : 'error'}
             sx={{ width: '100%' }}
           >
-            {deleteCreationStatus.success
-              ? 'Creation deleted successfully!'
-              : 'Failed to delete creation!'}
+            {deleteCreationStatus.success || deleteCreationStatus.error}
           </Alert>
         </Snackbar>
       )}
@@ -105,13 +108,13 @@ function Creations() {
                   description={x?.creation_description}
                   creationDate={moment(x?.creation_date).format('Do MMMM YYYY')}
                   interactionBtns
-                  mediaUrl={x?.source?.site_url}
+                  mediaUrl={x?.creation_link}
                   author={x?.author?.user_name}
                   authorProfileId={x?.author?.user_id}
                   materials={x?.materials?.length > 0 ? x?.materials?.map((m) => ({
                     title: m?.material_title,
                     link: m?.material_link,
-                    fileType: m?.type?.type_name,
+                    fileType: m?.material_type,
                     author: m?.author?.user_name,
                     author_image: m?.author?.image_url,
                     authorProfileId: m?.author?.user_id,

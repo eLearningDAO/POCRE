@@ -21,6 +21,7 @@ const useDetails = () => {
       return await Creation.getById(creationId, toPopulate.map((x) => `populate=${x}`).join('&'));
     },
     enabled: !!creationId,
+    staleTime: 60_000, // cache for 60 seconds
   });
 
   return {

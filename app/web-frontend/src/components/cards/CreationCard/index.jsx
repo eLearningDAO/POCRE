@@ -16,7 +16,7 @@ import RemoveButton from './btns/RemoveButton';
 import ShareButton from './btns/ShareButton';
 import './index.css';
 
-function DeleteCofirmationDialog({ onClose, onConfirm }) {
+export function DeleteCofirmationDialog({ onClose, onConfirm }) {
   return (
     <div
       className="delete-dialog-container"
@@ -82,10 +82,10 @@ export function MediaPreview({ mediaType, mediaUrl, onClose }) {
   );
 }
 
-function CollectionCard({
-  creationId = '378t7egf9gf38gf0239h',
+function CreationCard({
+  creationId = '',
   interactionBtns,
-  creationDate = '2022-01-01 00:00:00',
+  creationDate = '',
   materials = [
     //   {
     //   title: 'First Material',
@@ -96,11 +96,11 @@ function CollectionCard({
     //   authorProfileId: '',
     // }
   ],
-  title = 'Mobile App Design',
-  description = '1000+ free files you can duplicate, remix, and reuse 1000+ free files',
-  author = 'author',
+  title = '',
+  description = '',
+  author = '',
   authorProfileId = '',
-  mediaUrl = 'https://images.pexels.com/photos/415071/pexels-photo-415071.jpeg?cs=srgb&dl=pexels-pixabay-415071.jpg&fm=jpg',
+  mediaUrl = '',
   canEdit = true,
   canDelete = true,
   onEditClick = () => {},
@@ -389,4 +389,4 @@ function CollectionCard({
   );
 }
 
-export default CollectionCard;
+export default CreationCard;

@@ -1,8 +1,8 @@
 import httpStatus from 'http-status';
-import ApiError from '../utils/ApiError';
-import * as db from '../db/pool';
 import statusTypes from '../constants/statusTypes';
 import { populator } from '../db/plugins/populator';
+import * as db from '../db/pool';
+import ApiError from '../utils/ApiError';
 
 interface ICreation {
   creation_title: string;
@@ -167,12 +167,12 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
         ? `WHERE ${options.search_fields
             .map(
               (field) => `
-              ${field === 'material_id' ? `'${options.query}'` : field} ${
+              ${field === 'material_id' ? `'${options.query}'` : field === 'creation_title' ? `LOWER(${field})` : field} ${
                 ['author_id'].includes(field)
                   ? `= '${options.query}'`
                   : ['material_id'].includes(field)
                   ? ` = ANY(materials)`
-                  : `LIKE '%${options.query}%'`
+                  : `LIKE ${field === 'creation_title' ? `LOWER('%${options.query}%')` : `'%${options.query}%'`}`
               }
               `
             )

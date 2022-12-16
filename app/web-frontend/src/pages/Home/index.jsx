@@ -21,7 +21,7 @@ function Home() {
     sliderImages,
   } = useHome();
   const handleAuthorCardClick = (userId) => {
-    navigate(`/user/${userId}`);
+    navigate(`/wallet/${userId}`);
   };
 
   const handleCreationCardClick = (creationId) => {
@@ -42,7 +42,7 @@ function Home() {
             {isTrendingListFetched ? <Loader /> : trendingList
               && trendingList.map((trending) => (
                 <TrendingCard
-                  mediaUrl={trending?.source?.site_url}
+                  mediaUrl={trending?.creation_link}
                   trending={trending}
                   handleCreationCardClick={handleCreationCardClick}
                 />
