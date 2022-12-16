@@ -345,6 +345,30 @@ export const updateMaterialById = async (
 };
 
 /**
+ * Update material in bulk
+ * @param {string} field - the field to match and update
+ * @param {string} existingValue - the present value of field
+ * @param {string} updatedValue - the new value of field
+ * @returns {Promise<IMaterialDoc|null>}
+ */
+export const updateMaterialsInBulk = async (
+  field: 'author_id',
+  existingValue: string,
+  updatedValue: string
+): Promise<IMaterialDoc[] | null> => {
+  try {
+    const updateQry = await db.query(`UPDATE material SET ${field} = $1 WHERE ${field} = $2 RETURNING *;`, [
+      updatedValue,
+      existingValue,
+    ]);
+    const materials = updateQry.rows;
+    return materials;
+  } catch {
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
+  }
+};
+
+/**
  * Delete material by id
  * @param {string} id
  * @param {object} options - optional config object
