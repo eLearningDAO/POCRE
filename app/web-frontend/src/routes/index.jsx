@@ -18,6 +18,7 @@ import WalletPublic from 'pages/Wallet/Public';
 // other pages
 import CreditsHome from 'pages/Credits/Home';
 import Home from 'pages/Home';
+import Signup from 'pages/Signup';
 import Page404 from 'pages/404';
 import Protected from './Protected';
 
@@ -30,6 +31,14 @@ function AppRoutes() {
           element={(
             <Layout displayNav>
               <Home />
+            </Layout>
+          )}
+        />
+        <Route
+          path="/signup"
+          element={(
+            <Layout>
+              <Signup />
             </Layout>
           )}
         />

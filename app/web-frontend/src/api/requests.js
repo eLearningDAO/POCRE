@@ -42,7 +42,7 @@ const Decision = REQUEST_TEMPLATE('decision');
 const Recognition = REQUEST_TEMPLATE('recognitions');
 const Litigation = REQUEST_TEMPLATE('litigations');
 const Tag = REQUEST_TEMPLATE('tags');
-const Auth = { login: REQUEST_TEMPLATE('auth/login').create };
+const Auth = { login: REQUEST_TEMPLATE('auth/login').create, signup: REQUEST_TEMPLATE('auth/signup').create };
 
 export {
   User,
