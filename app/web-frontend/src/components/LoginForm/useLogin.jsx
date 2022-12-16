@@ -4,7 +4,7 @@ import { useState } from 'react';
 import authUser from 'utils/helpers/authUser';
 import { getAvailableWallets, getWalletAddress } from 'utils/helpers/wallet';
 
-const useLoginModal = () => {
+const useLogin = ({ inviteToken = null }) => {
   const [walletAddressError, setWalletAddressError] = useState(null);
   const [loadingWalletAddress, setLoadingWalletAddress] = useState(null);
   const [selectedWalletAddressOriginal, setSelectedWalletAddressOriginal] = useState(null);
@@ -34,6 +34,7 @@ const useLoginModal = () => {
     }
   };
 
+  // login with wallet
   const {
     mutate: loginWithWallet,
     error: loginError,
@@ -42,7 +43,12 @@ const useLoginModal = () => {
   } = useMutation({
     mutationFn: async () => {
       // login with wallet
-      const response = await Auth.login({ wallet_address: selectedWalletAddressOriginal });
+      const response = inviteToken
+        ? await Auth.signup({
+          invite_token: inviteToken,
+          wallet_address: selectedWalletAddressOriginal,
+        })
+        : await Auth.login({ wallet_address: selectedWalletAddressOriginal });
       authUser.setUser({ ...response.user, hashedWalletAddress: selectedWalletAddressHashed });
       authUser.setJWTToken(response.token);
     },
@@ -64,4 +70,4 @@ const useLoginModal = () => {
   };
 };
 
-export default useLoginModal;
+export default useLogin;
