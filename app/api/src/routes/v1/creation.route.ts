@@ -21,6 +21,9 @@ router
   .route('/:creation_id/proof')
   .get(validate(creationValidation.getCreationProof), creationController.getCreationProofById);
 
+router
+  .route('/:creation_link')
+  .get(validate(creationValidation.getCreationProof), creationController.getCreationLinkFileType);
 export default router;
 
 /**
