@@ -86,3 +86,9 @@ export const deleteCreation = {
     creation_id: Joi.string().uuid().required(),
   }),
 };
+
+export const getFileType = {
+  body: Joi.object().keys({
+    creation_link: Joi.string().uri().required(),
+  }),
+};
