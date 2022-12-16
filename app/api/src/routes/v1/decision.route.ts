@@ -11,7 +11,6 @@ router.route('/').post(auth(), validate(decisionValidation.createDecision), deci
 router
   .route('/:decision_id')
   .get(validate(decisionValidation.getDecision), decisionController.getDecisionById)
-  .patch(auth(), validate(decisionValidation.updateDecision), decisionController.updateDecisionById)
   .delete(auth(), validate(decisionValidation.deleteDecision), decisionController.deleteDecisionById);
 
 export default router;
