@@ -23,10 +23,3 @@ export const deleteDecisionById = catchAsync(async (req, res): Promise<void> => 
   });
   res.send();
 });
-
-export const updateDecisionById = catchAsync(async (req, res): Promise<void> => {
-  const updatedDecision = await decisionService.updateDecisionById(req.params.decision_id, req.body, {
-    owner_id: (req.user as IUserDoc).user_id,
-  });
-  res.send(updatedDecision);
-});
