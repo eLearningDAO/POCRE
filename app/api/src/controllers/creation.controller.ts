@@ -2,6 +2,7 @@ import httpStatus from 'http-status';
 import got from 'got';
 import FileType from 'file-type';
 import config from '../config/config';
+import logger from '../config/logger';
 import * as creationService from '../services/creation.service';
 import { getMaterialById, updateMaterialById } from '../services/material.service';
 import { createRecognition } from '../services/recognition.service';
@@ -142,9 +143,9 @@ export const updateCreationById = catchAsync(async (req, res): Promise<void> => 
 });
 
 export const getCreationLinkFileType = catchAsync(async (req, res): Promise<void> => {
-  const url = 'https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg';
+  const url = req.body.creation_link;
   const stream = got.stream(url);
   const fileType = await FileType.fromStream(stream);
-  
-  res.send();
+  logger.info(fileType);
+  res.send(fileType);
 });
