@@ -25,6 +25,7 @@ const envVarsSchema = Joi.object()
     SENDGRID_MAIL_FROM_NAME: Joi.string().description('sendgrid mail from name used to send emails').required(),
     SENDGRID_MAIL_FROM_EMAIL: Joi.string().description('sendgrid mail from email used to send emails').required(),
     SENDGRID_MAIL_INVITE_TEMPLATE_ID: Joi.string().description('sendgrid invitation email template id').required(),
+    WEB_CLIENT_BASE_URL: Joi.string().description('web client base url').required(),
   })
   .unknown();
 
@@ -62,4 +63,5 @@ export default {
     from_email: envVars.SENDGRID_MAIL_FROM_EMAIL,
     invite_template_id: envVars.SENDGRID_MAIL_INVITE_TEMPLATE_ID,
   },
+  web_client_base_url: envVars.WEB_CLIENT_BASE_URL,
 };
