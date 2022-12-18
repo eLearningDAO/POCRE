@@ -11,7 +11,6 @@ router.route('/').post(auth(), validate(decisionValidation.createDecision), deci
 router
   .route('/:decision_id')
   .get(validate(decisionValidation.getDecision), decisionController.getDecisionById)
-  .patch(auth(), validate(decisionValidation.updateDecision), decisionController.updateDecisionById)
   .delete(auth(), validate(decisionValidation.deleteDecision), decisionController.deleteDecisionById);
 
 export default router;
@@ -90,58 +89,6 @@ export default router;
  *                $ref: '#/components/schemas/Decision'
  *       "404":
  *         $ref: '#/components/responses/DecisionNotFound'
- *       "500":
- *         $ref: '#/components/responses/InternalServerError'
- *
- *   patch:
- *     summary: Update a decision by id
- *     description: Update decision details by its id
- *     tags: [Decision]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: decision_id
- *         required: true
- *         schema:
- *           type: string
- *         description: Decision id
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               decision_status:
- *                 type: bool
- *             example:
- *                decision_status: true
- *     responses:
- *       "200":
- *         description: OK
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Decision'
- *       "404":
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                 - $ref: '#/components/responses/DecisionNotFound'
- *                 - $ref: '#/components/responses/UserNotFound'
- *             examples:
- *               DecisionNotFound:
- *                 summary: DecisionNotFound
- *                 value:
- *                   code: 404
- *                   message: decision not found
- *               usernotfound:
- *                 summary: UserNotFound
- *                 value:
- *                   code: 404
- *                   message: user not found
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *

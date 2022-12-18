@@ -1,8 +1,5 @@
 import httpStatus from 'http-status';
-import got from 'got';
-import FileType from 'file-type';
 import config from '../config/config';
-import logger from '../config/logger';
 import statusTypes from '../constants/statusTypes';
 import * as creationService from '../services/creation.service';
 import * as litigationService from '../services/litigation.service';

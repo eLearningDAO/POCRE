@@ -82,41 +82,6 @@ export const getDecisionById = async (
  * @param {string} options.owner_id - updates the decision that belongs to owner_id
  * @returns {Promise<IDecisionDoc|null>}
  */
-export const updateDecisionById = async (
-  id: string,
-  updateBody: Partial<IDecision>,
-  options?: { owner_id?: string }
-): Promise<IDecisionDoc | null> => {
-  // check if decision exists, throws error if not found
-  await getDecisionById(id, {
-    owner_id: options?.owner_id,
-  });
-
-  // build sql conditions and values
-  const conditions: string[] = [];
-  const values: (string | null | boolean)[] = [];
-  Object.entries(updateBody).map(([k, v], index) => {
-    conditions.push(`${k} = $${index + 2}`);
-    values.push(v);
-    return null;
-  });
-
-  // update decision
-  try {
-    const updateQry = await db.query(
-      `
-      UPDATE decision SET
-      ${conditions.filter(Boolean).join(',')}
-      WHERE decision_id = $1 RETURNING *;
-    `,
-      [id, ...values]
-    );
-    const decision = updateQry.rows[0];
-    return decision;
-  } catch {
-    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
-  }
-};
 
 /**
  * Delete decision by id
