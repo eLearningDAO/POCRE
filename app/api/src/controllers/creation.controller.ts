@@ -43,8 +43,8 @@ export const getCreationProofById = catchAsync(async (req, res): Promise<void | 
   const creationProof = {
     ...creation,
     published_at: `${(config.creation_details_web_base_url as string).endsWith('/')
-        ? config.creation_details_web_base_url.slice(0, -1)
-        : config.creation_details_web_base_url
+      ? config.creation_details_web_base_url.slice(0, -1)
+      : config.creation_details_web_base_url
       }/${creation?.creation_id}`,
   };
 
@@ -173,5 +173,6 @@ export const getCreationLinkFileType = catchAsync(async (req, res): Promise<void
   const stream = got.stream(url);
   const fileType = await FileType.fromStream(stream);
   logger.info(fileType);
-  res.send(fileType);
+  const result = { ...fileType, mime: fileType?.mime.split('/')[0] };
+  res.send(result);
 });
