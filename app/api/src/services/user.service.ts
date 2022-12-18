@@ -55,7 +55,7 @@ interface IUserCriteria {
 export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
   try {
     const result = await db.query(
-      `INSERT INTO users (user_name,wallet_address,user_bio,phone,email_address, verified_id,  reputation_stars,image_url) values ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *;`,
+      `INSERT INTO users (user_name,wallet_address,user_bio,phone,email_address,verified_id,reputation_stars,image_url) values ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *;`,
       [
         userBody.user_name,
         userBody.wallet_address,
@@ -83,7 +83,7 @@ export const queryUsers = async (options: IUserQuery): Promise<IUserQueryResult>
     // search
     const search =
       options.search_fields && options.search_fields.length > 0
-        ? `WHERE ${options.search_fields.map((field) => `${field} LIKE '%${options.query}%'`).join(' OR ')}`
+        ? `WHERE ${options.search_fields.map((field) => `LOWER(${field}) LIKE LOWER('%${options.query}%')`).join(' OR ')}`
         : '';
 
     // list of queries

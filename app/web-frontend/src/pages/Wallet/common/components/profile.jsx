@@ -21,6 +21,7 @@ function WalletProfile({
   email = '',
   phone = '',
   stars = 0,
+  hashedWalletAddress = '',
   totalCreationsAuthored = 0,
   canEdit = false,
 }) {
@@ -67,12 +68,20 @@ function WalletProfile({
           imageUrl={image}
           onAvatarFilePicked={(file) => setAvatarImageFile(file)}
         />
+        {isEditMode && (
+        <div className="mt-24">
+          <h4>Wallet Address</h4>
+          <p>
+            {hashedWalletAddress}
+          </p>
+        </div>
+        )}
         {!isEditMode && (
-        <p className="wallet-profile-creations-count">
-          Author of
-          <span style={{ marginLeft: '4px', marginRight: '4px' }}>{totalCreationsAuthored}</span>
-          creations
-        </p>
+          <p className="wallet-profile-creations-count">
+            Author of
+            <span style={{ marginLeft: '4px', marginRight: '4px' }}>{totalCreationsAuthored}</span>
+            creations
+          </p>
         )}
       </div>
 
@@ -94,60 +103,60 @@ function WalletProfile({
             )
           }
           {canEdit
-          && isEditMode
-          && (
-          <div className="wallet-update-form-action-btns">
-            <Button type="button" className="saveDraftButton border-white" onClick={() => setEditMode(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" className="nextCollectionButton border-white">
-              {isUpdatingUserProfile ? <Loader /> : 'Update'}
-            </Button>
-          </div>
-          )}
+            && isEditMode
+            && (
+              <div className="wallet-update-form-action-btns">
+                <Button type="button" className="saveDraftButton border-white" onClick={() => setEditMode(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit" className="nextCollectionButton border-white">
+                  {isUpdatingUserProfile ? <Loader /> : 'Update'}
+                </Button>
+              </div>
+            )}
         </div>
         {!isEditMode && (
-        <div className="wallet-profile-info-right-details-wrapper">
-          <div>
-            <Rating
-              key={stars}
-              name="simple-controlled"
-              color="red"
-              className="rating-color"
-              readOnly
-              value={stars}
-            />
-            <img src={FrameSVG} alt="" />
-          </div>
-          <div className="wallet-profile-form-container">
-            <div className="wallet-profile-form-wrapper">
-              <img className="profile-info-right-icon" src={NameIcon} alt="" />
-              <p>{name}</p>
-              <img className="profile-info-right-icon" src={EmailIcon} alt="" />
-              <p>{email}</p>
-              <img className="profile-info-right-icon" src={PhoneIcon} alt="" />
-              <p>{phone}</p>
-            </div>
+          <div className="wallet-profile-info-right-details-wrapper">
             <div>
-              <h4 className="h4">
-                Biography
-              </h4>
-              <p>{bio}</p>
+              <Rating
+                key={stars}
+                name="simple-controlled"
+                color="red"
+                className="rating-color"
+                readOnly
+                value={stars}
+              />
+              <img src={FrameSVG} alt="" />
+            </div>
+            <div className="wallet-profile-form-container">
+              <div className="wallet-profile-form-wrapper">
+                <img className="profile-info-right-icon" src={NameIcon} alt="" />
+                <p>{name}</p>
+                <img className="profile-info-right-icon" src={EmailIcon} alt="" />
+                <p>{email}</p>
+                <img className="profile-info-right-icon" src={PhoneIcon} alt="" />
+                <p>{phone}</p>
+              </div>
+              <div>
+                <h4 className="h4">
+                  Biography
+                </h4>
+                <p>{bio}</p>
+              </div>
             </div>
           </div>
-        </div>
         )}
         {isEditMode && (
-        <div className="wallet-profile-info-right-form-wrapper">
-          <h4 className="h4">Name</h4>
-          <Input variant="dark" placeholder="Name" name="user_name" hookToForm />
-          <h4 className="h4">Email</h4>
-          <Input variant="dark" placeholder="Email Address" name="email_address" hookToForm />
-          <h4 className="h4">Phone</h4>
-          <Input variant="dark" placeholder="Phone" name="phone" hookToForm />
-          <h4 className="h4">Bio</h4>
-          <Input variant="dark" placeholder="Bio" multiline hookToForm name="user_bio" minRows={3} />
-        </div>
+          <div className="wallet-profile-info-right-form-wrapper">
+            <h4 className="h4">Name</h4>
+            <Input variant="dark" placeholder="Name" name="user_name" hookToForm />
+            <h4 className="h4">Email</h4>
+            <Input variant="dark" placeholder="Email Address" name="email_address" hookToForm />
+            <h4 className="h4">Phone</h4>
+            <Input variant="dark" placeholder="Phone" name="phone" hookToForm />
+            <h4 className="h4">Bio</h4>
+            <Input variant="dark" placeholder="Bio" multiline hookToForm name="user_bio" minRows={3} />
+          </div>
         )}
       </div>
     </Form>

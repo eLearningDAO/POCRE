@@ -32,6 +32,8 @@ function Select(
 ) {
   const [isOpen, setIsOpen] = useState(false);
   const formContext = useFormContext();
+  const controlProperties = hookToForm ? formContext.register(name) : {};
+  // const {on} = useFormContext();
 
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
@@ -45,8 +47,11 @@ function Select(
           style: { border: 'none', padding: 0 },
         }}
         {...(placeholder && !isOpen && { value: hookToForm ? formContext?.getValues(name) : '' })}
-        onChange={onChange}
-        {...(hookToForm ? formContext.register(name) : {})}
+        {...controlProperties}
+        onChange={async (event) => {
+          if (onChange) await onChange(event);
+          if (controlProperties.onChange) await controlProperties.onChange(event);
+        }}
         className={`select select-${variant} ${hookToForm && formContext?.formState?.errors?.[name]?.message ? 'select-error' : ''}`}
         displayEmpty={!!placeholder}
         onOpen={handleOpen}

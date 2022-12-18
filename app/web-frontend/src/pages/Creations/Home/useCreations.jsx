@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Creation } from 'api/requests';
 import authUser from 'utils/helpers/authUser';
 
@@ -6,8 +6,6 @@ import authUser from 'utils/helpers/authUser';
 const user = authUser.getUser();
 
 const useCreations = () => {
-  const queryClient = useQueryClient();
-
   // get creations
   const {
     data: creations,
@@ -25,40 +23,12 @@ const useCreations = () => {
     staleTime: 60_000, // cache for 60 seconds
   });
 
-  // delete creation
-  const {
-    mutate: deleteCreation,
-    isError: isDeleteError,
-    isSuccess: isDeleteSuccess,
-    isLoading: isDeletingCreation,
-    reset: resetDeletionErrors,
-  } = useMutation({
-    mutationFn: async (creationId) => {
-      await Creation.delete(creationId);
-
-      // update queries
-      queryClient.cancelQueries({ queryKey: ['creations'] });
-      queryClient.setQueryData(['creations'], (data) => {
-        const temporaryCreations = data.results.filter((x) => x?.creation_id !== creationId);
-
-        return { ...data, results: [...temporaryCreations] };
-      });
-    },
-  });
-
   return {
     isLoadingCreations,
-    isDeletingCreation,
     fetchCreationStatus: {
       success: isFetchSuccess,
       error: isFetchError ? 'Failed to fetch creations' : null,
     },
-    deleteCreationStatus: {
-      success: isDeleteSuccess,
-      error: isDeleteError ? 'Failed to delete creation' : null,
-    },
-    deleteCreation,
-    resetDeletionErrors,
     creations,
   };
 };

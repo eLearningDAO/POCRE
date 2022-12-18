@@ -9,7 +9,7 @@ import authUser from 'utils/helpers/authUser';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode';
-import PreviewIcon from 'assets/svgs/preview.svg';
+import PreviewIcon from 'assets/images/preview.png';
 import SaveIcon from 'assets/svgs/save.svg';
 import CreationPreview from 'components/previews/CreationPreview';
 

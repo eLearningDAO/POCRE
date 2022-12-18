@@ -346,14 +346,16 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
 };
 
 /**
- * Get litigation by id
- * @param {string} id
+ * Get litigation by criteria
+ * @param {string} criteria - the criteria to find tag
+ * @param {string} equals - the value on which criteria matches
  * @param {string|string[]} options.populate - the list of fields to populate
  * @param {string} options.owner_id - returns the litigation that belongs to owner_id
  * @returns {Promise<ILitigationDoc|null>}
  */
-export const getLitigationById = async (
-  id: string,
+export const getLitigationByCriteria = async (
+  criteria: 'litigation_id' | 'creation_id',
+  equals: string,
   options?: {
     populate?: string | string[];
     owner_id?: string;
@@ -372,7 +374,7 @@ export const getLitigationById = async (
         FROM 
         litigation l 
         WHERE 
-        litigation_id = $1
+        ${criteria} = $1
         ${options && options.owner_id ? 'AND issuer_id = $2' : ''}
         ${
           options && options.participant_id
@@ -398,7 +400,7 @@ export const getLitigationById = async (
         }
         ;`,
         [
-          id,
+          equals,
           options && options.owner_id ? options.owner_id : false,
           options && options.participant_id ? options.participant_id : false,
         ].filter(Boolean)
@@ -412,6 +414,24 @@ export const getLitigationById = async (
   if (!litigation) throw new ApiError(httpStatus.NOT_FOUND, 'litigation not found');
 
   return litigation;
+};
+
+/**
+ * Get litigation by id
+ * @param {string} id
+ * @param {string|string[]} options.populate - the list of fields to populate
+ * @param {string} options.owner_id - returns the litigation that belongs to owner_id
+ * @returns {Promise<ILitigationDoc|null>}
+ */
+export const getLitigationById = async (
+  id: string,
+  options?: {
+    populate?: string | string[];
+    owner_id?: string;
+    participant_id?: string;
+  }
+): Promise<ILitigationDoc | null> => {
+  return getLitigationByCriteria('litigation_id', id, options);
 };
 
 /**

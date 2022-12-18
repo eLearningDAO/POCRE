@@ -242,12 +242,24 @@
     margin-right: auto;
 }
 
+.mt-auto {
+    margin-top: auto !important;
+}
+
 .m-auto {
     margin: auto;
 }
 
 .mt-24 {
     margin-top: 24px;
+}
+
+.mb-24 {
+    margin-bottom: 24px;
+}
+
+.hidden {
+    display: none;
 }
 
 .text-center {
