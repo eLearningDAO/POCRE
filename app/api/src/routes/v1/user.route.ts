@@ -11,6 +11,8 @@ router
   .post(validate(userValidation.createUser), userController.createUser)
   .get(validate(userValidation.queryUsers), userController.queryUsers);
 
+router.route('/invite').post(validate(userValidation.inviteUser), userController.inviteUser);
+
 router
   .route('/:user_id')
   .get(validate(userValidation.getUser), userController.getUserById)
@@ -141,6 +143,44 @@ export default router;
  *                 total_results:
  *                   type: integer
  *                   example: 1
+ *       "500":
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+
+/**
+ * @swagger
+ * /users/invite:
+ *   post:
+ *     summary: Invite a user
+ *     description: Invites a new user.
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               user_name:
+ *                 type: string
+ *                 description: only phone or email or user name is allowed
+ *               phone:
+ *                 type: string
+ *                 description: only phone or email or user name is allowed
+ *               email_address:
+ *                 type: string
+ *                 description: only phone or email or user name is allowed
+ *             example:
+ *                user_name: john
+ *                phone: '+92313555544'
+ *                email_address: 'example@example.com'
+ *     responses:
+ *       "201":
+ *         description: Created
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/User'
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  */
