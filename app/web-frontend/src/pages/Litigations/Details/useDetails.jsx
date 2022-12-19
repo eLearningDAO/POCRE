@@ -132,6 +132,7 @@ const useDetails = () => {
   return {
     fetchLitigationDetails: (id) => setLitigationId(id),
     litigation,
+    user,
     isFetchingLitigation,
     fetchLitigationStatus: {
       success: isFetchLitigationSuccess,

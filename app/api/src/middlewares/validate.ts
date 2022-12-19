@@ -6,7 +6,7 @@ import pick from '../utils/pick';
 import ApiError from '../utils/ApiError';
 
 export type ValidateSchema = {
-  body?: boolean | Joi.ObjectSchema;
+  body?: boolean | Joi.ObjectSchema | Joi.AlternativesSchema;
   params?: Joi.ObjectSchema;
   query?: Joi.ObjectSchema;
 };

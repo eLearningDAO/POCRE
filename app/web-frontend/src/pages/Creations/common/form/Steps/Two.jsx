@@ -1,15 +1,23 @@
 import {
   Button, Grid, Typography,
 } from '@mui/material';
-import React, { useState } from 'react';
 import InviteIcon from 'assets/images/invite-icon.png';
 import MaterialCard from 'components/cards/MaterialCard';
+import Modal from 'components/Modal';
+import Form from 'components/uicore/Form';
 import Input from 'components/uicore/Input';
 import Select from 'components/uicore/Select';
-import Form from 'components/uicore/Form';
-import { stepTwoValidation } from './validation';
+import TagInput from 'components/uicore/TagInput';
+import { useState } from 'react';
+import { stepTwoAuthorInviteValidation, stepTwoMaterialValidation } from './validation';
 
-function NewMaterial({ material, onRemoveMaterial, onUpdate = () => {} }) {
+function NewMaterial({
+  material,
+  authorSuggestions = [],
+  onUpdate = () => {},
+  onRemoveMaterial = () => {},
+  onAuthorInputChange = () => {},
+}) {
   const [editMode, setEditMode] = useState(false);
 
   const handleUpdate = (values) => {
@@ -36,7 +44,7 @@ function NewMaterial({ material, onRemoveMaterial, onUpdate = () => {} }) {
     ) : (
       <Form
         onSubmit={handleUpdate}
-        validationSchema={stepTwoValidation}
+        validationSchema={stepTwoMaterialValidation}
         initialValues={{
           title: material.title,
           fileType: material.fileType,
@@ -126,8 +134,16 @@ function NewMaterial({ material, onRemoveMaterial, onUpdate = () => {} }) {
             gap="8px"
             alignItems="center"
           >
-            <Input placeholder="Select an author or add a new author name" name="author" hookToForm />
-            <Button
+            <TagInput
+              hookToForm
+              maxTags={1}
+              name="author"
+              addTagOnEnter={false}
+              onInput={onAuthorInputChange}
+              placeholder="Type author name and select from suggestions below"
+              tagSuggestions={authorSuggestions.map((x) => x.user_name) || []}
+            />
+            {/* <Button
               className="inviteButton"
               style={{
                 width: 'fit-content',
@@ -138,7 +154,7 @@ function NewMaterial({ material, onRemoveMaterial, onUpdate = () => {} }) {
               <img width={17} style={{ marginRight: '10px' }} alt="invite-icon" src={InviteIcon} />
               {' '}
               New author
-            </Button>
+            </Button> */}
           </Grid>
 
           <Grid
@@ -183,6 +199,93 @@ function NewMaterial({ material, onRemoveMaterial, onUpdate = () => {} }) {
   );
 }
 
+function AuthorInviteModal({ onClose = () => {}, onAuthorDetailsSubmit }) {
+  const [requiredMethod, setRequiredMethod] = useState(null);
+
+  const onSubmit = (values) => {
+    const invitedAuthor = `invite-via-${values?.inviteMethod}:${values?.inviteValue}`;
+    onAuthorDetailsSubmit(invitedAuthor);
+  };
+
+  return (
+    <Modal
+      title="Invite an author"
+      onClose={onClose}
+    >
+      <Form
+        key={requiredMethod}
+        onSubmit={onSubmit}
+        validationSchema={stepTwoAuthorInviteValidation}
+        initialValues={{
+          inviteMethod: requiredMethod || '',
+        }}
+      >
+        <Grid container>
+          <Grid xs={12} md={2} display="flex" flexDirection="row" alignItems="center" marginTop={{ xs: '12px', md: '18px' }}>
+            <Typography className="heading">Invite Method</Typography>
+          </Grid>
+          <Grid xs={12} md={10} marginTop={{ xs: '12px', md: '18px' }}>
+            <Select
+              variant="dark"
+              placeholder="Select Invite Method"
+              name="inviteMethod"
+              hookToForm
+              options={[
+                { value: 'phone', label: 'Phone' },
+                { value: 'email', label: 'Email' },
+                { value: 'username', label: 'username' },
+              ]}
+              onChange={(event) => {
+                setRequiredMethod(event?.target?.value?.trim() || null);
+              }}
+            />
+          </Grid>
+          <Grid
+            md={2}
+            xs={12}
+            display="flex"
+            alignItems="center"
+            flexDirection="row"
+            marginTop={{ xs: '12px', md: '18px' }}
+            className={!['email', 'phone', 'username'].includes(requiredMethod) && 'hidden'}
+          >
+            <Typography className={`heading ${!['email', 'phone', 'username'].includes(requiredMethod) && 'hidden'}`}>
+              {requiredMethod === 'email' ? 'Email' : ''}
+              {requiredMethod === 'phone' ? 'Phone Number' : ''}
+              {requiredMethod === 'username' ? 'Name' : ''}
+              {!requiredMethod && 'Invite Value'}
+            </Typography>
+          </Grid>
+          <Grid
+            xs={12}
+            md={10}
+            marginTop={{ xs: '12px', md: '18px' }}
+            className={!['email', 'phone', 'username'].includes(requiredMethod) && 'hidden'}
+          >
+            <Input
+              hookToForm
+              placeholder={
+                (() => {
+                  if (requiredMethod === 'email') return 'Enter the author\'s Email';
+                  if (requiredMethod === 'phone') return 'Enter the author\'s Phone';
+                  if (requiredMethod === 'username') return 'Enter the author\'s Name';
+                  return '';
+                })()
+              }
+              variant="dark"
+              name="inviteValue"
+            />
+          </Grid>
+
+          <Grid item xs={12} className="collectionButtons">
+            <Button type="submit" className="nextCollectionButton" style={{ marginLeft: 'auto', marginRight: '12px' }}>Invite</Button>
+          </Grid>
+        </Grid>
+      </Form>
+    </Modal>
+  );
+}
+
 export default function StepTwo({
   onComplete = () => {},
   onBack = () => {},
@@ -192,9 +295,12 @@ export default function StepTwo({
 }) {
   const [formKey, setFormKey] = useState(new Date().toISOString());
   const [materials, setMaterials] = useState(initialMaterials);
+  const [showInviteAuthorDialog, setShowInviteAuthorDialog] = useState(false);
+  const [invitedAuthor, setInvitedAuthor] = useState(null);
 
   const handleValues = (values) => {
     setMaterials([...materials, values]);
+    setInvitedAuthor(null);
 
     setFormKey(new Date().toISOString());
   };
@@ -233,16 +339,25 @@ export default function StepTwo({
 
   return (
     <>
+      {showInviteAuthorDialog && (
+        <AuthorInviteModal
+          onClose={() => setShowInviteAuthorDialog(false)}
+          onAuthorDetailsSubmit={(author) => {
+            setInvitedAuthor(author);
+            setShowInviteAuthorDialog(false);
+          }}
+        />
+      )}
       <Grid item xs={12} display="flex" flexDirection="column" gap="24px">
         <Form
           key={formKey}
           onSubmit={handleValues}
-          validationSchema={stepTwoValidation}
+          validationSchema={stepTwoMaterialValidation}
           initialValues={{
             title: '',
             fileType: '',
             link: '',
-            author: '',
+            author: [],
           }}
         >
           <Grid container className="create-collection" bgcolor="rgba(255, 255, 255, 0.28)" border="2px dashed #F78F8A">
@@ -281,8 +396,17 @@ export default function StepTwo({
               <Typography className="heading">Author</Typography>
             </Grid>
             <Grid xs={12} md={10} marginTop={{ xs: '0px', md: '18px' }} display="flex" gap="8px" alignItems="center">
-              <Input onChange={onAuthorInputChange} autoComplete autoCompleteOptions={authorSuggestions.map((x) => x.user_name) || []} placeholder="Select an author or add a new author name" name="author" hookToForm />
-              <Button className="inviteButton" style={{ width: 'fit-content', paddingLeft: '24px', paddingRight: '24px' }}>
+              <TagInput
+                hookToForm
+                maxTags={1}
+                name="author"
+                addTagOnEnter={false}
+                onInput={onAuthorInputChange}
+                selectedTags={invitedAuthor ? [invitedAuthor] : []}
+                placeholder="Type author name and select from suggestions below"
+                tagSuggestions={authorSuggestions.map((x) => x.user_name) || []}
+              />
+              <Button className="inviteButton" style={{ width: 'fit-content', paddingLeft: '24px', paddingRight: '24px' }} onClick={() => setShowInviteAuthorDialog(true)}>
                 <img width={17} style={{ marginRight: '10px' }} alt="invite-icon" src={InviteIcon} />
                 {' '}
                 New author
@@ -310,6 +434,8 @@ export default function StepTwo({
             material={material}
             onRemoveMaterial={() => removeMaterial(index)}
             onUpdate={(newData) => updateMaterial(index, newData)}
+            onAuthorInputChange={onAuthorInputChange}
+            authorSuggestions={authorSuggestions}
           />
         ))}
       </Grid>

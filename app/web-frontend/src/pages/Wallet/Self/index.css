@@ -173,3 +173,11 @@
     gap: 24px;
     align-items: center;
 }
+
+.invited-user-header {
+    width: 100% !important;
+    text-align: center;
+    background-color: white;
+    border-radius: 16px;
+    padding: 8px;
+}

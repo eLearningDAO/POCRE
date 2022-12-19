@@ -33,7 +33,6 @@ function Select(
   const [isOpen, setIsOpen] = useState(false);
   const formContext = useFormContext();
   const controlProperties = hookToForm ? formContext.register(name) : {};
-  // const {on} = useFormContext();
 
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
@@ -47,15 +46,18 @@ function Select(
           style: { border: 'none', padding: 0 },
         }}
         {...(placeholder && !isOpen && { value: hookToForm ? formContext?.getValues(name) : '' })}
-        {...controlProperties}
-        onChange={async (event) => {
-          if (onChange) await onChange(event);
-          if (controlProperties.onChange) await controlProperties.onChange(event);
-        }}
         className={`select select-${variant} ${hookToForm && formContext?.formState?.errors?.[name]?.message ? 'select-error' : ''}`}
         displayEmpty={!!placeholder}
         onOpen={handleOpen}
         onClose={handleClose}
+        {...controlProperties}
+        onChange={async (event) => {
+          if (hookToForm) {
+            await controlProperties.onChange(event);
+          }
+
+          if (onChange) await onChange(event);
+        }}
       >
         {placeholder && <MenuItem selected value="" style={{ textTransform: 'capitalize' }}>{placeholder}</MenuItem>}
         {options?.map((x, index) => <MenuItem key={index} value={x?.value} style={{ textTransform: 'capitalize' }}>{x?.label}</MenuItem>)}

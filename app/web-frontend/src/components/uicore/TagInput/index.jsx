@@ -39,12 +39,16 @@ function TagInput(
     onInput,
     variant,
     tagSuggestions,
+    maxTags = 1000,
+    addTagOnEnter = true,
+    selectedTags = [],
   },
 ) {
   const formContext = useFormContext();
   const inputReference = useRef();
   const [placeholderVisiable, setPlaceholderVisiable] = useState(true);
   const [tags, setTags] = useState([]);
+  const [isFocused, setIsFocused] = useState(false);
   const [internalTagSuggestions, setTagSuggestions] = useState([]);
   const [tagsSuggestionsToDisplay, setTagSuggestionsToDisplay] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -80,7 +84,7 @@ function TagInput(
   }, [tags, inputValue]);
 
   useEffect(() => {
-    formContext.setValue(name, tags, { shouldDirty: true });
+    formContext.setValue(name, tags, { shouldDirty: isFirstValidationSkipped });
     if (!isFirstValidationSkipped) {
       isFirstValidationSkipped = true;
       return;
@@ -89,10 +93,30 @@ function TagInput(
   }, [tags]);
 
   useEffect(() => {
+    if (selectedTags && selectedTags.length > 0) {
+      formContext.setValue(name, selectedTags, { shouldDirty: isFirstValidationSkipped });
+      formContext.trigger([name]);
+      setTags(selectedTags);
+      if (inputReference && inputReference.current) { inputReference.current.value = ''; }
+    }
+  }, [selectedTags]);
+
+  useEffect(() => {
+    setShowSuggestions(isFocused && tagSuggestions.length > 0);
+
     updateTagSuggestions(tagSuggestions, tags);
 
     setTagSuggestions(tagSuggestions);
   }, [tagSuggestions]);
+
+  const addTagSuggestion = (tag) => {
+    if (tags.length < maxTags) {
+      const newTags = [...tags, tag];
+      setTags(newTags);
+
+      inputReference.current.value = '';
+    }
+  };
 
   const focusInput = (event) => {
     const { classList } = event.target;
@@ -107,9 +131,13 @@ function TagInput(
     }
   };
 
-  const onInputFocus = () => setPlaceholderVisiable(false);
+  const onInputFocus = () => {
+    setIsFocused(true);
+    setPlaceholderVisiable(false);
+  };
 
   const onInputBlur = () => {
+    setIsFocused(false);
     if (
       placeholder
       && inputReference.current
@@ -121,13 +149,12 @@ function TagInput(
   };
 
   const onInputKeyUp = (event) => {
-    if (event.code === 'Enter') {
+    if (event.code === 'Enter' && addTagOnEnter) {
       event.preventDefault();
       const value = inputReference.current.value.trim();
       if (value.length === 0) return;
 
-      const newTags = [...tags, value];
-      setTags(newTags);
+      addTagSuggestion(value);
 
       inputReference.current.value = '';
     }
@@ -147,12 +174,12 @@ function TagInput(
     ) setPlaceholderVisiable(true);
   };
 
-  const addTagSuggestion = (tag) => {
-    const newTags = [...tags, tag];
-    setTags(newTags);
-  };
-
   const onInputChange = async (event) => {
+    if (tags.length === maxTags) {
+      inputReference.current.value = '';
+      return;
+    }
+
     if (onInput) await onInput(event);
     setInputValue(event.target.value.trim());
   };

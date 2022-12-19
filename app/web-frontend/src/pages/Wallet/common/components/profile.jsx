@@ -21,6 +21,7 @@ function WalletProfile({
   email = '',
   phone = '',
   stars = 0,
+  isInvited = false,
   hashedWalletAddress = '',
   totalCreationsAuthored = 0,
   canEdit = false,
@@ -63,18 +64,23 @@ function WalletProfile({
       }}
     >
       <div className="wallet-profile-info-left">
+        {isInvited && (
+          <h4 className="h4 invited-user-header">
+            Invited User
+          </h4>
+        )}
         <UserAvatar
           editable={isEditMode}
           imageUrl={image}
           onAvatarFilePicked={(file) => setAvatarImageFile(file)}
         />
         {isEditMode && (
-        <div className="mt-24">
-          <h4>Wallet Address</h4>
-          <p>
-            {hashedWalletAddress}
-          </p>
-        </div>
+          <div className="mt-24">
+            <h4>Wallet Address</h4>
+            <p>
+              {hashedWalletAddress}
+            </p>
+          </div>
         )}
         {!isEditMode && (
           <p className="wallet-profile-creations-count">

@@ -42,13 +42,31 @@ const makeCommonResource = async (
   let materials = [];
   if (requestBody.materials && requestBody.materials.length > 0) {
     materials = await Promise.all(requestBody.materials.map(async (x) => {
+      const authorName = x?.author?.[0]?.trim();
+
       // get author for material
       const author = await (async () => {
         let temporaryAuthor = null;
 
+        // invite user by email address
+        if (authorName.includes('invite-via-')) {
+          const invite = authorName.split('invite-via-')[1].split(':');
+          const method = invite[0];
+          const value = invite[1];
+
+          // invite author by email
+          temporaryAuthor = await User.invite({
+            ...(method === 'email' && { email_address: value.trim() }),
+            ...(method === 'phone' && { phone: value.trim() }),
+            ...(method === 'username' && { user_name: value.trim() }),
+          });
+
+          return temporaryAuthor;
+        }
+
         // return if author found from suggestions
         temporaryAuthor = authorSuggestions.find(
-          (suggestion) => suggestion.user_name.trim() === x.author.trim(),
+          (suggestion) => suggestion.user_name.trim() === authorName,
         );
         if (temporaryAuthor) return temporaryAuthor;
 
@@ -59,7 +77,7 @@ const makeCommonResource = async (
 
         // make new author
         temporaryAuthor = await User.create({
-          user_name: x.author,
+          user_name: authorName,
         });
 
         return temporaryAuthor;
