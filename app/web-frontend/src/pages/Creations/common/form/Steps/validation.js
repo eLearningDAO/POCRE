@@ -32,7 +32,13 @@ const stepTwoMaterialValidation = Joi.object({
 
 const stepTwoAuthorInviteValidation = Joi.object({
   inviteMethod: Joi.string().required().messages({ 'string.empty': 'Invite method is required', 'string.required': 'Invite method is required', 'any.required': 'Invite method is required' }),
-  inviteValue: Joi.string().optional().messages({ 'string.empty': 'Invite value is required', 'string.required': 'Invite value is required', 'any.required': 'Invite value is required' })
+  username: Joi.string().optional()
+    .when('inviteMethod', {
+      is: Joi.string().valid('username').exist(),
+      then: Joi.string().required().messages({ 'string.empty': 'Username is required', 'string.required': 'Username is required' }),
+      otherwise: Joi.string().optional().allow('').allow(null),
+    }),
+  inviteValue: Joi.string().optional()
     .when('inviteMethod', {
       is: Joi.string().valid('email').exist(),
       then: Joi.string().email({ tlds: { allow: false } }).required().messages({ 'string.empty': 'Email is required', 'string.required': 'Email is required', 'string.email': 'Email must be valid' }),
@@ -43,7 +49,7 @@ const stepTwoAuthorInviteValidation = Joi.object({
     })
     .when('inviteMethod', {
       is: Joi.string().valid('username').exist(),
-      then: Joi.string().required().messages({ 'string.empty': 'Username is required', 'string.required': 'Username is required' }),
+      then: Joi.string().optional().allow('').allow(null),
     }),
 });
 
