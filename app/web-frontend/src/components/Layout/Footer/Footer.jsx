@@ -12,13 +12,13 @@ function Footer() {
       </Grid>
       <Grid item gap={2} md={6} xs={3} display="flex" justifyContent="flex-end" alignItems="center">
         <a href="https://twitter.com/eLearningDAO">
-          <img src={TwitterIcon} alt="@eLearningDAO" />
+          <img src={TwitterIcon} alt="@eLearningDAO" width={30} height={30} />
         </a>
         <a href="https://github.com/e-Learning-DAO/POCRE">
           <img src={GithubIcon} alt="@eLearningDAO" width={30} height={30} />
         </a>
         <a href="https://www.pocre.net/">
-          <img src={GlobeIcon} alt="@eLearningDAO" width={30} height={30} />
+          <img src={GlobeIcon} alt="@eLearningDAO" width={33} height={33} />
         </a>
       </Grid>
     </Grid>

@@ -21,15 +21,6 @@
                     "githubUrl": "https://github.com/huzaifa-99"
                 },
                 {
-                    "name": "Eric Valentine",
-                    "job": "Software Engineer",
-                    "bio": "We have to do things meaningful",
-                    "avatarUrl": "https://cdn.discordapp.com/attachments/989117788213874698/1026751484144140379/Selfie.png",
-                    "linkedinUrl": "https://www.linkedin.com/in/ericvale0128",
-                    "twitterUrl": "",
-                    "githubUrl": "https://github.com/ericvale0128"
-                },
-                {
                     "name": "Mithun Ray",
                     "job": "Designer",
                     "bio": "A Senior UX/UI designer",
@@ -39,29 +30,44 @@
                     "githubUrl": ""
                 },
                 {
-                    "name": "Shujaat Ali",
+                    "name": "Eric Valentine",
                     "job": "Software Engineer",
-                    "bio": "Java and React at Lamstan Technologies",
-                    "avatarUrl": "https://avatars.githubusercontent.com/u/26273225?v=4",
-                    "linkedinUrl": "http://www.lamstan.org/",
-                    "twitterUrl": "https://twitter.com/shujaatCraft",
-                    "githubUrl": "https://github.com/SHUJAAT-DEV"
+                    "bio": "We have to do things meaningful",
+                    "avatarUrl": "https://cdn.discordapp.com/attachments/989117788213874698/1026751484144140379/Selfie.png",
+                    "linkedinUrl": "https://www.linkedin.com/in/ericvale0128",
+                    "twitterUrl": "",
+                    "githubUrl": "https://github.com/ericvale0128"
+                },
+                {
+                    "name": "Umair Mukhtar",
+                    "job": "Full Stack Developer",
+                    "bio": "Founder Aen Studios",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/34018917?v=4",
+                    "linkedinUrl": "https://www.linkedin.com/in/umair-mukhtar-828510153/",
+                    "twitterUrl": "https://twitter.com/aenumair",
+                    "githubUrl": "https://github.com/UmairMukhtar"
                 }
             ]
         },
         {
             "otherContributors": [
                 {
-                    "name": "Blazecode200",
-                    "job": "Developer",
-                    "avatarUrl": "https://avatars.githubusercontent.com/u/69413640?v=4",
-                    "profileUrl": "https://github.com/adisagar2003"
-                },
-                {
                     "name": "Jack Kostic",
                     "job": "Full Stack Developer",
                     "avatarUrl": "https://avatars.githubusercontent.com/u/106480299?v=4",
                     "profileUrl": "https://github.com/kostic0510"
+                },
+                {
+                    "name": "Shujaat Ali",
+                    "job": "Software Engineer",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/26273225?v=4",
+                    "profileUrl": "https://github.com/SHUJAAT-DEV"
+                },
+                {
+                    "name": "Blazecode200",
+                    "job": "Developer",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/69413640?v=4",
+                    "profileUrl": "https://github.com/adisagar2003"
                 },
                 {
                     "name": "Nemo Breukhoven",
