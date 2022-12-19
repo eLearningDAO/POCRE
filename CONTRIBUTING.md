@@ -31,12 +31,8 @@ Automatic CD/CD for api is done via [heroku](https://heroku.com). It uses the [a
 If you are looking to contribute to `API`, please follow this workflow
 
 1. Create a new branch based off of [main](https://github.com/e-Learning-DAO/POCRE/tree/main) branch
-2. Make your changes and create a PR to merge your changes in the [api](https://github.com/e-Learning-DAO/POCRE/tree/api) branch
-3. Once your changes are merged to [api](https://github.com/e-Learning-DAO/POCRE/tree/api) branch, they will be deployed to live api.
-4. As an extra step, we will be merging the [api](https://github.com/e-Learning-DAO/POCRE/tree/api) branch to [main](https://github.com/e-Learning-DAO/POCRE/tree/main) branch on a regular basis.
-
-![contributing to api](./resources/contributing-to-api.png)
-
+2. Make your changes and create a PR to merge your changes in the [main](https://github.com/e-Learning-DAO/POCRE/tree/main) branch
+3. Once your changes are merged to [main](https://github.com/e-Learning-DAO/POCRE/tree/main) branch, they will be deployed to live api.
 
 ## Frontend
 The frontend is build with ReactJS.
@@ -50,8 +46,5 @@ Automatic CD/CD for api is done via [netlify](https://netlify.com). It uses the 
 If you are looking to contribute to `Frontend`, please follow this workflow
 
 1. Create a new branch based off of [main](https://github.com/e-Learning-DAO/POCRE/tree/main) branch
-2. Make your changes and create a PR to merge your changes in the [web-frontend](https://github.com/e-Learning-DAO/POCRE/tree/web-frontend) branch
-3. Once your changes are merged to [web-frontend](https://github.com/e-Learning-DAO/POCRE/tree/web-frontend) branch, they will be deployed to live site.
-4. As an extra step, we will be merging the [web-frontend](https://github.com/e-Learning-DAO/POCRE/tree/web-frontend) branch to [main](https://github.com/e-Learning-DAO/POCRE/tree/main) branch on a regular basis.
-
-![contributing to frontend](./resources/contributing-to-frontend.png)
+2. Make your changes and create a PR to merge your changes in the [main](https://github.com/e-Learning-DAO/POCRE/tree/main) branch
+3. Once your changes are merged to [main](https://github.com/e-Learning-DAO/POCRE/tree/main) branch, they will be deployed to live site.
