@@ -23,7 +23,7 @@ function SideBar() {
         <li className={location.pathname.includes('/home') ? 'activeSidebarMenu' : ''}>
           <Link to="/home">
             <img
-              alt="menu-icon"
+              alt="menu home"
               src={HomeIcon}
             />
             <span>Home</span>
@@ -32,7 +32,7 @@ function SideBar() {
         <li className={location.pathname.includes('/creations') ? 'activeSidebarMenu' : ''}>
           <Link to="/creations">
             <img
-              alt="menu-icon"
+              alt="menu creations"
               src={location.pathname.includes('/creations') ? MenuIcon2Active : MenuIcon2}
             />
             <span>Creations</span>
@@ -41,7 +41,7 @@ function SideBar() {
         <li className={location.pathname.includes('/recognitions') ? 'activeSidebarMenu' : ''}>
           <Link to="/recognitions">
             <img
-              alt="menu-icon"
+              alt="menu recognitions"
               src={location.pathname.includes('/recognitions') ? MenuIcon3Active : MenuIcon3}
             />
             <span>Recognitions</span>
@@ -51,7 +51,7 @@ function SideBar() {
           <li className={location.pathname.includes('/litigations') ? 'activeSidebarMenu' : ''}>
             <Link to="/litigations">
               <img
-                alt="menu-icon"
+                alt="menu litigations"
                 src={location.pathname.includes('/litigations') ? MenuIcon4Active : MenuIcon4}
               />
               <span>Litigations</span>
@@ -61,7 +61,7 @@ function SideBar() {
         <li className={location.pathname.includes('/wallet') ? 'activeSidebarMenu' : ''}>
           <Link to="/wallet">
             <img
-              alt="menu-icon"
+              alt="menu wallet"
               src={location.pathname.includes('/wallet') ? MenuIcon5Active : MenuIcon5}
             />
             <span>Wallet</span>
@@ -70,7 +70,7 @@ function SideBar() {
         <li className={location.pathname.includes('/credits') ? 'activeSidebarMenu' : ''}>
           <Link to="/credits">
             <img
-              alt="menu-icon"
+              alt="menu credits"
               src={location.pathname.includes('/credits') ? MenuIcon6Active : MenuIcon6}
             />
             <span>Credits</span>

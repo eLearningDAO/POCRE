@@ -8,7 +8,7 @@ export default function OtherContributerCard({
     <div className="otherContributorCard">
       <a href={profileUrl} style={{ textDecoration: 'none' }}>
         <div className="otherContributorCardImage">
-          <img alt="credit-user" src={image} />
+          <img alt="crontributor face" src={image} />
         </div>
 
         <div className="otherContributorCardDetials">

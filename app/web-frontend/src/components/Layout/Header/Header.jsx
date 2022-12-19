@@ -40,7 +40,7 @@ function HomeHeader({ displayNav = false }) {
         display={{ xs: 'none', sm: 'none', md: 'flex' }}
       >
         <Link to="/">
-          <img alt="logo" src={logo} className="site-logo" />
+          <img alt="POCRE logo" src={logo} className="site-logo" />
         </Link>
       </Grid>
 
@@ -147,7 +147,7 @@ function HomeHeader({ displayNav = false }) {
             >
               <Grid item xs={8} paddingTop="12" paddingLeft="12" alignItems="center">
                 <Link onClick={() => setDisplayResponsiveMenu(false)} to="/">
-                  <img alt="logo" src={logo} className="site-logo" />
+                  <img alt="POCRE logo" src={logo} className="site-logo" />
                 </Link>
               </Grid>
 
