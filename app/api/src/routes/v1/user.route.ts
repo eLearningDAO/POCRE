@@ -160,20 +160,23 @@ export default router;
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - invite_method
+ *               - invite_value
  *             properties:
  *               user_name:
  *                 type: string
- *                 description: only phone or email or user name is allowed
- *               phone:
+ *               invite_method:
  *                 type: string
- *                 description: only phone or email or user name is allowed
- *               email_address:
+ *                 enum: [phone, email, username]
+ *                 description: only phone or email or username is allowed
+ *               invite_value:
  *                 type: string
- *                 description: only phone or email or user name is allowed
+ *                 description: the actual email or phone or username
  *             example:
  *                user_name: john
- *                phone: '+92313555544'
- *                email_address: 'example@example.com'
+ *                invite_method: email
+ *                invite_value: example@example.com
  *     responses:
  *       "201":
  *         description: Created

@@ -50,15 +50,17 @@ const makeCommonResource = async (
 
         // invite user by email address
         if (authorName.includes('invite-via-')) {
-          const invite = authorName.split('invite-via-')[1].split(':');
-          const method = invite[0];
-          const value = invite[1];
+          const invite = authorName.split('invite-via-')[1].split(':')?.filter((y) => !!y);
+
+          const method = invite?.[0]?.trim();
+          const username = invite.length === 3 ? invite?.[1]?.trim() : null;
+          const value = invite?.[invite.length - 1]?.trim();
 
           // invite author by email
           temporaryAuthor = await User.invite({
-            ...(method === 'email' && { email_address: value.trim() }),
-            ...(method === 'phone' && { phone: value.trim() }),
-            ...(method === 'username' && { user_name: value.trim() }),
+            invite_method: method?.trim(),
+            invite_value: value?.trim(),
+            ...(username && { user_name: username?.trim() }),
           });
 
           return temporaryAuthor;

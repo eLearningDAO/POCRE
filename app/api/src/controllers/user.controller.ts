@@ -32,29 +32,26 @@ export const createUser = catchAsync(async (req, res): Promise<any> => {
 });
 
 export const inviteUser = catchAsync(async (req, res): Promise<any> => {
-  const { user_name: username, email_address: emailAddress, phone } = req.body;
+  const { invite_method: inviteMethod, invite_value: inviteValue } = req.body;
+  const username = (req.body.invite_method === 'username' ? req.body.invite_value : null) || req.body.user_name;
+
+  const inviteMethods: any = {
+    phone: userService.getUserByPhone,
+    username: userService.getUserByUsername,
+    email: userService.getUserByEmailAddress,
+  };
 
   // check if the user exists
-  const findingCallback = username
-    ? userService.getUserByUsername
-    : emailAddress
-    ? userService.getUserByEmailAddress
-    : phone
-    ? userService.getUserByPhone
-    : async () => {};
-  const findingCriteria = username || emailAddress || phone;
-  const foundUser = await findingCallback(findingCriteria).catch(() => null);
+  const foundUser = await inviteMethods[inviteMethod as any](inviteValue).catch(() => null);
 
   // check if the user is already invited
-  if (foundUser && foundUser.is_invited) {
-    return res.send(foundUser);
-  }
+  if (foundUser && foundUser.is_invited) return res.send(foundUser);
 
   // create a new invited user
   const invitedUser = await userService.createUser({
     user_name: username || 'anonymous',
-    email_address: emailAddress || null,
-    phone: phone || null,
+    email_address: inviteMethod === 'email' ? inviteValue : null,
+    phone: inviteMethod === 'phone' ? inviteValue : null,
     is_invited: true,
   });
   res.send(invitedUser);

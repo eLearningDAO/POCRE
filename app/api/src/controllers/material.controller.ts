@@ -33,7 +33,7 @@ export const createMaterial = catchAsync(async (req, res): Promise<void> => {
   });
 
   // send email to the invited user if found
-  if (foundUser && foundUser.is_invited) {
+  if (foundUser && foundUser.is_invited && foundUser.email_address) {
     await sendMail({
       to: foundUser.email_address as string,
       subject: `Invitation to recognize authorship of "${newMaterial.material_title}"`,

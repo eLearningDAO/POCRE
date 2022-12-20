@@ -52,19 +52,19 @@ export default function CreditCard(
           {linkedInPresent
             ? (
               <a href={linkedIn}>
-                <img src={LinkedinIcon} alt="" href={linkedIn} />
+                <img src={LinkedinIcon} alt="LinkedIn profile" width={20} height={20} href={linkedIn} />
               </a>
             ) : null}
           {twitterPresent
             ? (
               <a href={twitter}>
-                <img src={TwitterIcon} alt="" href={twitter} />
+                <img src={TwitterIcon} alt="Twitter profile" width={20} height={20} href={twitter} />
               </a>
             ) : null}
           {githubPresent
             ? (
               <a href={github}>
-                <img src={GithubIcon} alt="" width={20} height={20} href={github} />
+                <img src={GithubIcon} alt="Github profile" width={20} height={20} href={github} />
               </a>
             ) : null}
         </div>

@@ -6,7 +6,11 @@ export const createUser = {
     wallet_address: Joi.string().required(),
     user_bio: Joi.string().optional().allow('').allow(null),
     phone: Joi.string().optional().allow('').allow(null),
-    email_address: Joi.string().optional().allow('').allow(null),
+    email_address: Joi.string()
+      .email({ tlds: { allow: false } })
+      .optional()
+      .allow('')
+      .allow(null),
     verified_id: Joi.string().optional().allow('').allow(null),
     reputation_stars: Joi.number().optional().allow(0).allow(null),
     image_url: Joi.string().optional().allow('').allow(null),
@@ -14,23 +18,19 @@ export const createUser = {
 };
 
 export const inviteUser = {
-  body: Joi.alternatives().try(
-    Joi.object().keys({
-      user_name: Joi.string().required(),
-      phone: Joi.string().forbidden(),
-      email_address: Joi.string().forbidden(),
-    }),
-    Joi.object().keys({
-      user_name: Joi.string().forbidden(),
-      phone: Joi.string().required(),
-      email_address: Joi.string().forbidden(),
-    }),
-    Joi.object().keys({
-      user_name: Joi.string().forbidden(),
-      phone: Joi.string().forbidden(),
-      email_address: Joi.string().required(),
-    })
-  ),
+  body: Joi.object().keys({
+    user_name: Joi.string().optional(),
+    invite_method: Joi.string().valid('email', 'phone', 'username').required(),
+    invite_value: Joi.string()
+      .required()
+      .when('invite_method', {
+        is: Joi.string().valid('email').exist(),
+        then: Joi.string()
+          .email({ tlds: { allow: false } })
+          .required(),
+        otherwise: Joi.string().required(),
+      }),
+  }),
 };
 
 export const queryUsers = {

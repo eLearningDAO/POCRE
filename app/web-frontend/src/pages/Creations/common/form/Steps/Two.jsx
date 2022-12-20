@@ -203,7 +203,7 @@ function AuthorInviteModal({ onClose = () => {}, onAuthorDetailsSubmit }) {
   const [requiredMethod, setRequiredMethod] = useState(null);
 
   const onSubmit = (values) => {
-    const invitedAuthor = `invite-via-${values?.inviteMethod}:${values?.inviteValue}`;
+    const invitedAuthor = `invite-via-${values?.inviteMethod}${values?.username ? `:${values?.username}` : ''}:${values?.inviteValue}`;
     onAuthorDetailsSubmit(invitedAuthor);
   };
 
@@ -233,13 +233,14 @@ function AuthorInviteModal({ onClose = () => {}, onAuthorDetailsSubmit }) {
               options={[
                 { value: 'phone', label: 'Phone' },
                 { value: 'email', label: 'Email' },
-                { value: 'username', label: 'username' },
+                { value: 'username', label: 'Username' },
               ]}
               onChange={(event) => {
                 setRequiredMethod(event?.target?.value?.trim() || null);
               }}
             />
           </Grid>
+
           <Grid
             md={2}
             xs={12}
@@ -247,12 +248,36 @@ function AuthorInviteModal({ onClose = () => {}, onAuthorDetailsSubmit }) {
             alignItems="center"
             flexDirection="row"
             marginTop={{ xs: '12px', md: '18px' }}
-            className={!['email', 'phone', 'username'].includes(requiredMethod) && 'hidden'}
           >
-            <Typography className={`heading ${!['email', 'phone', 'username'].includes(requiredMethod) && 'hidden'}`}>
+            <Typography className="heading">
+              Name
+            </Typography>
+          </Grid>
+          <Grid
+            xs={12}
+            md={10}
+            marginTop={{ xs: '12px', md: '18px' }}
+          >
+            <Input
+              hookToForm
+              placeholder={'Enter the author\'s Name'}
+              variant="dark"
+              name="username"
+            />
+          </Grid>
+
+          <Grid
+            md={2}
+            xs={12}
+            display="flex"
+            alignItems="center"
+            flexDirection="row"
+            marginTop={{ xs: '12px', md: '18px' }}
+            className={!['email', 'phone'].includes(requiredMethod) && 'hidden'}
+          >
+            <Typography className={`heading ${!['email', 'phone'].includes(requiredMethod) && 'hidden'}`}>
               {requiredMethod === 'email' ? 'Email' : ''}
               {requiredMethod === 'phone' ? 'Phone Number' : ''}
-              {requiredMethod === 'username' ? 'Name' : ''}
               {!requiredMethod && 'Invite Value'}
             </Typography>
           </Grid>
@@ -260,7 +285,7 @@ function AuthorInviteModal({ onClose = () => {}, onAuthorDetailsSubmit }) {
             xs={12}
             md={10}
             marginTop={{ xs: '12px', md: '18px' }}
-            className={!['email', 'phone', 'username'].includes(requiredMethod) && 'hidden'}
+            className={!['email', 'phone'].includes(requiredMethod) && 'hidden'}
           >
             <Input
               hookToForm
@@ -268,7 +293,6 @@ function AuthorInviteModal({ onClose = () => {}, onAuthorDetailsSubmit }) {
                 (() => {
                   if (requiredMethod === 'email') return 'Enter the author\'s Email';
                   if (requiredMethod === 'phone') return 'Enter the author\'s Phone';
-                  if (requiredMethod === 'username') return 'Enter the author\'s Name';
                   return '';
                 })()
               }
@@ -379,7 +403,7 @@ export default function StepTwo({
                 options={[
                   { value: 'image', label: 'Image' },
                   { value: 'video', label: 'Video' },
-                  { value: 'sound', label: 'Sound' },
+                  { value: 'audio', label: 'Sound' },
                   { value: 'document', label: 'Document' },
                 ]}
               />

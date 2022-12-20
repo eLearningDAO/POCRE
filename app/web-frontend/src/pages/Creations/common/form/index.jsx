@@ -120,7 +120,7 @@ function CreationForm({ id = null, onCreationFetch = () => {} }) {
           <StepTwo
             onBack={handleBack}
             onComplete={handleValues}
-            initialMaterials={creationDraft.materials || []}
+            initialMaterials={creationDraft?.materials || []}
             authorSuggestions={authorSuggestions}
             onAuthorInputChange={handleAuthorInputChange}
           />
