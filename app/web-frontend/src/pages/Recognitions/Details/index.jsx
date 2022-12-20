@@ -34,6 +34,8 @@ export default function CreationDetails() {
   const [showPreview, setShowPreview] = useState(false);
   const [showSocialMediaSharePreview, setShowSocialMediaSharePreview] = useState(false);
   const shareUrl = `${window.location.origin}/recognitions/${id}`;
+  let recognitionStatus = '';
+  let recognitionBg = '';
 
   const {
     recognitionDetails,
@@ -66,6 +68,16 @@ export default function CreationDetails() {
         {fetchRecognitionDetailsStatus.error}
       </h2>
     );
+  }
+  if (recognitionDetails?.status === 'pending') {
+    recognitionStatus = 'Pending';
+    recognitionBg = 'bg-orange';
+  } else if (recognitionDetails?.status === 'accepted') {
+    recognitionStatus = 'Accepted On';
+    recognitionBg = 'bg-green';
+  } else {
+    recognitionStatus = 'Declined On';
+    recognitionBg = 'bg-red';
   }
 
   return (
@@ -243,8 +255,8 @@ export default function CreationDetails() {
             : (
               <Chip
                 style={{ fontSize: '16px', margin: 0, marginLeft: 'auto' }}
-                className={`mr-auto color-white ${recognitionDetails?.status === 'accepted' ? 'bg-green' : 'bg-red'}`}
-                label={`${recognitionDetails?.status === 'accepted' ? 'Accepted on' : 'Declined on'} ${moment(recognitionDetails?.status_updated).format('DD/MM/YYYY')}`}
+                className={`mr-auto color-white ${recognitionBg}`}
+                label={`${recognitionStatus} ${moment(recognitionDetails?.status_updated).format('DD/MM/YYYY')}`}
               />
             )}
         </Grid>
