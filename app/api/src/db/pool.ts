@@ -27,7 +27,7 @@ const init = async (): Promise<QueryResult<any>> => {
     /* ************************************ */
 
     DO $$ BEGIN
-      CREATE TYPE material_type_enums AS ENUM ('image', 'video', 'audio', 'document');
+      CREATE TYPE material_type_enums AS ENUM ('image', 'video', 'audio', 'document','pdf');
     EXCEPTION
         WHEN duplicate_object THEN null;
     END $$;
@@ -119,6 +119,7 @@ const init = async (): Promise<QueryResult<any>> => {
       creation_title character varying NOT NULL,
       creation_description text,
       creation_link character varying NOT NULL,
+      creation_type material_type_enums NOT NULL,
       author_id UUID NOT NULL,
       tags UUID[],
       materials UUID[],

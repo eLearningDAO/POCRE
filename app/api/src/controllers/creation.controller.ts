@@ -1,8 +1,5 @@
 import httpStatus from 'http-status';
-import got from 'got';
-import FileType from 'file-type';
 import config from '../config/config';
-import logger from '../config/logger';
 import statusTypes from '../constants/statusTypes';
 import * as creationService from '../services/creation.service';
 import * as litigationService from '../services/litigation.service';
@@ -13,6 +10,7 @@ import { IUserDoc } from '../services/user.service';
 import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/catchAsync';
 import { generateProofOfCreation } from '../utils/generateProofOfCreation';
+import { getFileTypeFromLink } from '../utils/getFileTypeFromLink';
 
 export const queryCreations = catchAsync(async (req, res): Promise<void> => {
   const creation = await creationService.queryCreations(req.query as any);
@@ -63,8 +61,9 @@ export const createCreation = catchAsync(async (req, res): Promise<void> => {
   await Promise.all(req.body.tags.map((id: string) => getTagById(id))); // verify tags, will throw an error if any tag is not found
   if (req.body.materials) await Promise.all(req.body.materials.map((id: string) => getMaterialById(id))); // verify materials, will throw an error if any material is not found
 
+  const creation_type: string | undefined = await getFileTypeFromLink(req.body.creation_link);
   // make the creation
-  const newCreation = await creationService.createCreation({ ...req.body, author_id: (req.user as IUserDoc).user_id });
+  const newCreation = await creationService.createCreation({ ...req.body, author_id: (req.user as IUserDoc).user_id, creation_type: creation_type });
 
   // send recognitions to material authors if the creation is published
   if (!req.body.is_draft && req.body.materials && req.body.materials.length > 0) {
@@ -166,13 +165,4 @@ export const updateCreationById = catchAsync(async (req, res): Promise<void> => 
   }
 
   res.send(updatedCreation);
-});
-
-export const getCreationLinkFileType = catchAsync(async (req, res): Promise<void> => {
-  const url = req.body.creation_link;
-  const stream = got.stream(url);
-  const fileType = await FileType.fromStream(stream);
-  logger.info(fileType);
-  const result = { ...fileType, mime: fileType?.mime.split('/')[0] };
-  res.send(result);
 });

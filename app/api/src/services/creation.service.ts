@@ -3,11 +3,16 @@ import statusTypes from '../constants/statusTypes';
 import { populator } from '../db/plugins/populator';
 import * as db from '../db/pool';
 import ApiError from '../utils/ApiError';
+import materialTypes from '../constants/materialTypes';
+
+const types = Object.values(materialTypes);
+type TCreationType = typeof types[number];
 
 interface ICreation {
   creation_title: string;
   creation_description?: string;
   creation_link: string;
+  creation_type: TCreationType;
   author_id: string;
   tags: string[];
   materials?: string[];
@@ -39,6 +44,7 @@ interface ICreationDoc {
   creation_title: string;
   creation_description: string;
   creation_link: string;
+  creation_type: TCreationType;
   author_id: string;
   tags: string[];
   materials: string[];
@@ -58,17 +64,17 @@ export const verifyCreationTagDuplicates = async (tags: string[], exclude_creati
     try {
       const result = exclude_creation
         ? await db.query(
-            `SELECT * FROM creation WHERE creation_id <> $1 AND tags && '{${tags.reduce(
-              (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
-            )}}';`,
-            [exclude_creation]
-          )
+          `SELECT * FROM creation WHERE creation_id <> $1 AND tags && '{${tags.reduce(
+            (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
+          )}}';`,
+          [exclude_creation]
+        )
         : await db.query(
-            `SELECT * FROM creation WHERE tags && '{${tags.reduce(
-              (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
-            )}}';`,
-            []
-          );
+          `SELECT * FROM creation WHERE tags && '{${tags.reduce(
+            (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
+          )}}';`,
+          []
+        );
       return result.rows[0];
     } catch {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
@@ -89,17 +95,17 @@ export const verifyCreationMaterialDuplicates = async (materials: string[], excl
     try {
       const result = exclude_creation
         ? await db.query(
-            `SELECT * FROM creation WHERE creation_id <> $1 AND materials && '{${materials.reduce(
-              (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
-            )}}';`,
-            [exclude_creation]
-          )
+          `SELECT * FROM creation WHERE creation_id <> $1 AND materials && '{${materials.reduce(
+            (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
+          )}}';`,
+          [exclude_creation]
+        )
         : await db.query(
-            `SELECT * FROM creation WHERE materials && '{${materials.reduce(
-              (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
-            )}}';`,
-            []
-          );
+          `SELECT * FROM creation WHERE materials && '{${materials.reduce(
+            (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
+          )}}';`,
+          []
+        );
       return result.rows[0];
     } catch {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
@@ -125,6 +131,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
         creation_title,
         creation_description,
         creation_link,
+        creation_type,
         author_id,
         tags,
         materials,
@@ -139,6 +146,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
         creationBody.creation_title,
         creationBody.creation_description,
         creationBody.creation_link,
+        creationBody.creation_type,
         creationBody.author_id,
         creationBody.tags,
         creationBody.materials || [],
@@ -165,18 +173,17 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
     const search =
       options.search_fields && options.search_fields.length > 0
         ? `WHERE ${options.search_fields
-            .map(
-              (field) => `
-              ${field === 'material_id' ? `'${options.query}'` : field === 'creation_title' ? `LOWER(${field})` : field} ${
-                ['author_id'].includes(field)
-                  ? `= '${options.query}'`
-                  : ['material_id'].includes(field)
+          .map(
+            (field) => `
+              ${field === 'material_id' ? `'${options.query}'` : field === 'creation_title' ? `LOWER(${field})` : field} ${['author_id'].includes(field)
+                ? `= '${options.query}'`
+                : ['material_id'].includes(field)
                   ? ` = ANY(materials)`
                   : `LIKE ${field === 'creation_title' ? `LOWER('%${options.query}%')` : `'%${options.query}%'`}`
               }
               `
-            )
-            .join(' OR ')}`
+          )
+          .join(' OR ')}`
         : '';
 
     // order
@@ -186,9 +193,8 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
       (options.descend_fields || []).length > 0 ? `${options.descend_fields.map((x) => `${x} DESC`).join(', ')}` : '';
     const order =
       (options.ascend_fields || options.descend_fields || []).length > 0
-        ? `ORDER BY ${ascendOrder} ${
-            (options.ascend_fields || []).length > 0 && (options.descend_fields || []).length > 0 ? ', ' : ''
-          } ${descendOrder}`
+        ? `ORDER BY ${ascendOrder} ${(options.ascend_fields || []).length > 0 && (options.descend_fields || []).length > 0 ? ', ' : ''
+        } ${descendOrder}`
         : '';
 
     // list of queries
@@ -205,9 +211,9 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
         query: `SELECT 
                 *
                 ${populator({
-                  tableAlias: 'c',
-                  fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
-                })} 
+          tableAlias: 'c',
+          fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+        })} 
                 FROM 
                 creation c 
                 ${search} 
@@ -230,9 +236,9 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
         query: `SELECT 
                 * 
                 ${populator({
-                  tableAlias: 'c',
-                  fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
-                })} 
+          tableAlias: 'c',
+          fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+        })} 
                 FROM 
                 creation c 
                 ${search} 
@@ -256,9 +262,8 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                   ) 
                 as material_recognition 
                 WHERE 
-                material_recognition.status ${
-                  options.is_fully_assigned ? `= '${statusTypes.ACCEPTED}'` : `<> '${statusTypes.DECLINED}'`
-                } 
+                material_recognition.status ${options.is_fully_assigned ? `= '${statusTypes.ACCEPTED}'` : `<> '${statusTypes.DECLINED}'`
+          } 
                 AND 
                 material_recognition.material_id = ANY(materials)
                 ) 
@@ -291,9 +296,8 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                   as 
                   material_recognition 
                   WHERE 
-                  material_recognition.status ${
-                    options.is_fully_assigned ? `= '${statusTypes.ACCEPTED}'` : `<> '${statusTypes.DECLINED}'`
-                  } 
+                  material_recognition.status ${options.is_fully_assigned ? `= '${statusTypes.ACCEPTED}'` : `<> '${statusTypes.DECLINED}'`
+          } 
                   AND 
                   material_recognition.material_id = ANY(materials)
                 )`,
@@ -304,8 +308,8 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
       options.is_trending
         ? queryModes.trending.query
         : options.is_fully_assigned || options.is_partially_assigned
-        ? queryModes.assigned.query
-        : queryModes.default.query,
+          ? queryModes.assigned.query
+          : queryModes.default.query,
       [options.page === 1 ? '0' : (options.page - 1) * options.limit, options.limit]
     );
     const creations = result.rows;
@@ -315,8 +319,8 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
         options.is_trending
           ? queryModes.trending.count
           : options.is_fully_assigned || options.is_partially_assigned
-          ? queryModes.assigned.count
-          : queryModes.default.count,
+            ? queryModes.assigned.count
+            : queryModes.default.count,
         []
       )
     ).rows[0];
