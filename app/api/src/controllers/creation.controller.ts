@@ -62,6 +62,9 @@ export const createCreation = catchAsync(async (req, res): Promise<void> => {
   if (req.body.materials) await Promise.all(req.body.materials.map((id: string) => getMaterialById(id))); // verify materials, will throw an error if any material is not found
 
   const creation_type: string | undefined = await getFileTypeFromLink(req.body.creation_link);
+  if(!creation_type){
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `invalid file type`);
+  }
   // make the creation
   const newCreation = await creationService.createCreation({ ...req.body, author_id: (req.user as IUserDoc).user_id, creation_type: creation_type });
 
