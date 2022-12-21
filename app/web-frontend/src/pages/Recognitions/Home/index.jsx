@@ -38,13 +38,13 @@ function Recognition() {
           className={`btn ${activeTab === 'co-author-recognition' && 'btn-active'}`}
           onClick={() => setActiveTab('co-author-recognition')}
         >
-          My Co-author Recognitions
+          I am a recognised co-author
         </Button>
         <Button
           className={`btn ${activeTab === 'co-creations-recognized' && 'btn-active'}`}
           onClick={() => setActiveTab('co-creations-recognized')}
         >
-          Co-creations Recognized by me
+          I recognized other co-authors
         </Button>
       </div>
 

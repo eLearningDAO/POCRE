@@ -198,7 +198,7 @@ export default function StepOne({
             <Typography className="heading" />
           </Grid>
           <Grid xs={12} md={9} lg={10} marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center" justifyContent="center">
-            <Typography className="heading">or point to it</Typography>
+            <Typography className="heading">or points to its link</Typography>
           </Grid>
 
           <Grid md={2} xs={12} marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center">
