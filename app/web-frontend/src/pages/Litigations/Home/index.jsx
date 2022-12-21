@@ -1,5 +1,5 @@
 import {
-  Alert, Button, Grid, Snackbar, Typography,
+  Alert, Button, Grid, Snackbar,
 } from '@mui/material';
 import Loader from 'components/uicore/Loader';
 import moment from 'moment';
@@ -73,11 +73,8 @@ function Litigation() {
       )}
       <Grid container className="Litigation">
         <Grid display="flex" justifyContent="space-between" alignItems="center" width="100%">
-          <Typography className="inviationHeaderTitle" variant="h6">
-            Litigation
-          </Typography>
           <Button onClick={redirectToCreateLitigation} className="btn btn-primary">
-            + Add Claim
+            + Claim your work
           </Button>
         </Grid>
 
