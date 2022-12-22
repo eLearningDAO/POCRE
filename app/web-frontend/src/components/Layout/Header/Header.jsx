@@ -61,9 +61,9 @@ function HomeHeader({ displayNav = false }) {
               <li className={location.pathname === '/recognitions' ? 'activeSidebarMenu' : ''}>
                 <Link to="/recognitions">Recognitions</Link>
               </li>
-              <li className={location.pathname === '/litigations' ? 'activeSidebarMenu' : ''}>
+              {/* <li className={location.pathname === '/litigations' ? 'activeSidebarMenu' : ''}>
                 <Link to="/litigations">Litigations</Link>
-              </li>
+              </li> */}
               <li className={location.pathname === '/wallet' ? 'activeSidebarMenu' : ''}>
                 <Link to="/wallet">Wallet</Link>
               </li>
