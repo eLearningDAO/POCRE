@@ -10,6 +10,7 @@ import { IUserDoc } from '../services/user.service';
 import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/catchAsync';
 import { generateProofOfCreation } from '../utils/generateProofOfCreation';
+import { getFileTypeFromLink } from '../utils/getFileTypeFromLink';
 
 export const queryCreations = catchAsync(async (req, res): Promise<void> => {
   const creation = await creationService.queryCreations(req.query as any);
@@ -61,8 +62,12 @@ export const createCreation = catchAsync(async (req, res): Promise<void> => {
   await Promise.all(req.body.tags.map((id: string) => getTagById(id))); // verify tags, will throw an error if any tag is not found
   if (req.body.materials) await Promise.all(req.body.materials.map((id: string) => getMaterialById(id))); // verify materials, will throw an error if any material is not found
 
+  const creation_type: string | undefined = await getFileTypeFromLink(req.body.creation_link);
+  if(!creation_type){
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `invalid file type`);
+  }
   // make the creation
-  const newCreation = await creationService.createCreation({ ...req.body, author_id: (req.user as IUserDoc).user_id });
+  const newCreation = await creationService.createCreation({ ...req.body, author_id: (req.user as IUserDoc).user_id, creation_type: creation_type });
 
   // send recognitions to material authors if the creation is published
   if (!req.body.is_draft && req.body.materials && req.body.materials.length > 0) {
