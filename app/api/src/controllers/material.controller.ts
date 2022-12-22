@@ -1,3 +1,4 @@
+import httpStatus from 'http-status';
 import config from '../config/config';
 import * as materialService from '../services/material.service';
 import { getRecognitionById } from '../services/recognition.service';
@@ -5,6 +6,8 @@ import { getUserById, IUserDoc } from '../services/user.service';
 import catchAsync from '../utils/catchAsync';
 import { sendMail } from '../utils/email';
 import { encode } from '../utils/jwt';
+import { getFileTypeFromLink } from '../utils/getFileTypeFromLink';
+import ApiError from '../utils/ApiError';
 
 export const queryMaterials = catchAsync(async (req, res): Promise<void> => {
   const creation = await materialService.queryMaterials(req.query as any);
@@ -25,11 +28,15 @@ export const createMaterial = catchAsync(async (req, res): Promise<void> => {
   if (req.body.author_id && req.body.author_id !== (req.user as IUserDoc).user_id) {
     foundUser = await getUserById(req.body.author_id as string); // verify author id (if present), will throw an error if not found
   }
-
+  const material_type: string | undefined = await getFileTypeFromLink(req.body.material_link);
+  if (!material_type) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `invalid file type`);
+  }
   // create material
   const newMaterial = await materialService.createMaterial({
     ...req.body,
     author_id: req.body.author_id || (req.user as IUserDoc).user_id,
+    material_type: material_type
   });
 
   // send email to the invited user if found
@@ -58,8 +65,14 @@ export const deleteMaterialById = catchAsync(async (req, res): Promise<void> => 
 export const updateMaterialById = catchAsync(async (req, res): Promise<void> => {
   // check if reference docs exist
   if (req.body.recognition_id) await getRecognitionById(req.body.recognition_id as string); // verify recognition, will throw an error if recognition not found
-
-  const material = await materialService.updateMaterialById(req.params.material_id, req.body, {
+  let material_type: string | undefined;
+  if(req.body.material_link){
+    material_type = await getFileTypeFromLink(req.body.material_link);
+    if (!material_type) {
+      throw new ApiError(httpStatus.NOT_ACCEPTABLE, `invalid file type`);
+    }
+  }
+  const material = await materialService.updateMaterialById(req.params.material_id, req.body.material_link?{ ...req.body, material_type: material_type }:req.body, {
     owner_id: (req.user as IUserDoc).user_id,
   });
   res.send(material);
