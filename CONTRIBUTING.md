@@ -48,3 +48,7 @@ If you are looking to contribute to `Frontend`, please follow this workflow
 1. Create a new branch based off of [main](https://github.com/e-Learning-DAO/POCRE/tree/main) branch
 2. Make your changes and create a PR to merge your changes in the [main](https://github.com/e-Learning-DAO/POCRE/tree/main) branch
 3. Once your changes are merged to [main](https://github.com/e-Learning-DAO/POCRE/tree/main) branch, they will be deployed to live site.
+
+### How to complete your PR
+1. When your PR is related to a specific ticket of the project, you have to document the correctness of the implementation adding in the comment a screenshot or a video or anything that confirms visually the accomplishment of the ticket objectives.
+2. If your PR is successfully merged after approval and the ticket can be considered complete, you have to switch the ticket status to "Done" and close the ticket itself by clicking "Close issue".
