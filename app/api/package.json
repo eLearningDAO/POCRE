@@ -15,8 +15,7 @@
     "prettier": "prettier --check ./src/**/*.ts",
     "prettier:fix": "prettier --write src/**/*.ts",
     "docker:up": "docker-compose -f docker-compose.yml up",
-    "docker:down": "docker-compose -f docker-compose.yml down",
-    "prepare": "husky install"
+    "docker:down": "docker-compose -f docker-compose.yml down"
   },
   "dependencies": {
     "@babel/runtime": "^7.14.6",
