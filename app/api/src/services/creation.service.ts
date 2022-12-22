@@ -3,11 +3,16 @@ import statusTypes from '../constants/statusTypes';
 import { populator } from '../db/plugins/populator';
 import * as db from '../db/pool';
 import ApiError from '../utils/ApiError';
+import materialTypes from '../constants/materialTypes';
+
+const types = Object.values(materialTypes);
+type TCreationType = typeof types[number];
 
 interface ICreation {
   creation_title: string;
   creation_description?: string;
   creation_link: string;
+  creation_type: TCreationType;
   author_id: string;
   tags: string[];
   materials?: string[];
@@ -39,6 +44,7 @@ interface ICreationDoc {
   creation_title: string;
   creation_description: string;
   creation_link: string;
+  creation_type: TCreationType;
   author_id: string;
   tags: string[];
   materials: string[];
@@ -125,6 +131,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
         creation_title,
         creation_description,
         creation_link,
+        creation_type,
         author_id,
         tags,
         materials,
@@ -139,6 +146,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
         creationBody.creation_title,
         creationBody.creation_description,
         creationBody.creation_link,
+        creationBody.creation_type,
         creationBody.author_id,
         creationBody.tags,
         creationBody.materials || [],
