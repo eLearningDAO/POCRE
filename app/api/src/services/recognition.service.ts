@@ -45,10 +45,6 @@ interface IRecognitionDoc {
  * @returns {Promise<IRecognitionDoc>}
  */
 export const createRecognition = async (recognitionBody: IRecognition): Promise<IRecognitionDoc> => {
-  if (recognitionBody.recognition_by === recognitionBody.recognition_for) {
-    throw new ApiError(httpStatus.CONFLICT, `user cannot recognize themselve`);
-  }
-
   try {
     const result = await db.query(
       `
@@ -71,7 +67,7 @@ export const createRecognition = async (recognitionBody: IRecognition): Promise<
         recognitionBody.recognition_by,
         recognitionBody.recognition_for,
         recognitionBody.recognition_description,
-        recognitionBody.status,
+        recognitionBody.recognition_by === recognitionBody.recognition_for ? statusTypes.ACCEPTED : recognitionBody.status,
         recognitionBody.status_updated,
       ]
     );
@@ -221,7 +217,8 @@ export const updateRecognitionById = async (
       updateBody.recognition_by === foundRecognition?.recognition_for) ||
     (updateBody.recognition_by && updateBody.recognition_for && updateBody.recognition_by === updateBody.recognition_for)
   ) {
-    throw new ApiError(httpStatus.CONFLICT, `user cannot recognize themselve`);
+    // eslint-disable-next-line no-param-reassign
+    updateBody.status = statusTypes.ACCEPTED;
   }
 
   // build sql conditions and values
