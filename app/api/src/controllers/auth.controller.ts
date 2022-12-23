@@ -1,4 +1,5 @@
 import httpStatus from 'http-status';
+import statusTypes from '../constants/statusTypes';
 import { updateMaterialsInBulk } from '../services/material.service';
 import { updateRecognitionsInBulk } from '../services/recognition.service';
 import * as userService from '../services/user.service';
@@ -56,7 +57,29 @@ export const signup = catchAsync(async (req, res): Promise<any> => {
     await updateMaterialsInBulk('author_id', foundInvitedUser.user_id, foundExistingUser.user_id);
 
     // update all recognitions with existing user id
-    await updateRecognitionsInBulk('recognition_for', foundInvitedUser.user_id, foundExistingUser.user_id);
+    await updateRecognitionsInBulk({
+      updateField: 'recognition_for',
+      existingValue: foundInvitedUser.user_id,
+      updatedValue: foundExistingUser.user_id,
+      conditions: [],
+    });
+
+    // update all recognitions with existing user id to have accepted status from pending status
+    await updateRecognitionsInBulk({
+      updateField: 'status',
+      existingValue: statusTypes.PENDING,
+      updatedValue: statusTypes.ACCEPTED,
+      conditions: [
+        {
+          matchField: 'recognition_for',
+          matchValue: foundExistingUser.user_id,
+        },
+        {
+          matchField: 'recognition_by',
+          matchValue: foundExistingUser.user_id,
+        },
+      ],
+    });
 
     // merge invited and existing accounts
     user = { ...foundExistingUser };
