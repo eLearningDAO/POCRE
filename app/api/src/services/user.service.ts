@@ -56,7 +56,7 @@ interface IUserCriteria {
  */
 export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
   try {
-    const result = await db.query(
+    const result = await db.instance.query(
       `INSERT INTO users 
       (
         user_name,
@@ -180,14 +180,14 @@ export const queryUsers = async (options: IUserQuery): Promise<IUserQueryResult>
       },
     };
 
-    const result = await db.query(options.top_authors ? queryModes.topAuthors.query : queryModes.default.query, [
+    const result = await db.instance.query(options.top_authors ? queryModes.topAuthors.query : queryModes.default.query, [
       options.page === 1 ? '0' : (options.page - 1) * options.limit,
       options.limit,
     ]);
     const users = result.rows;
 
     const count = await (
-      await db.query(options.top_authors ? queryModes.topAuthors.count : queryModes.default.count, [])
+      await db.instance.query(options.top_authors ? queryModes.topAuthors.count : queryModes.default.count, [])
     ).rows[0];
 
     return {
@@ -214,7 +214,7 @@ export const getUserByCriteria = async (
 ): Promise<IUserDoc | null> => {
   const user = await (async () => {
     try {
-      const result = await db.query(
+      const result = await db.instance.query(
         `
         SELECT 
         * 
@@ -302,7 +302,7 @@ export const updateUserById = async (id: string, updateBody: Partial<IUser>): Pr
   });
   // update user
   try {
-    const updateQry = await db.query(
+    const updateQry = await db.instance.query(
       `
         UPDATE users SET
         ${conditions.filter(Boolean).join(',')}
@@ -325,7 +325,7 @@ export const deleteUserById = async (id: string): Promise<IUserDoc | null> => {
   const user = await getUserById(id); // check if user exists, throws error if not found
 
   try {
-    await db.query(`DELETE FROM users WHERE user_id = $1;`, [id]);
+    await db.instance.query(`DELETE FROM users WHERE user_id = $1;`, [id]);
     return user;
   } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
@@ -343,7 +343,7 @@ export const getReputedUsers = async (criteria: IUserCriteria): Promise<Array<IU
       criteria.exclude_users && criteria.exclude_users.length > 0
         ? `WHERE ${criteria.exclude_users?.map((user_id) => `user_id <> '${user_id}'`).join(' AND ')}`
         : '';
-    const result = await db.query(`SELECT * FROM users ${conditions} LIMIT $1;`, [criteria.required_users]);
+    const result = await db.instance.query(`SELECT * FROM users ${conditions} LIMIT $1;`, [criteria.required_users]);
     const users = result.rows as Array<IUserDoc>;
     return users;
   } catch {

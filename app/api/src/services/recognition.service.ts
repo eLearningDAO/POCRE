@@ -56,7 +56,7 @@ interface IRecognitionBlukUpdate {
  */
 export const createRecognition = async (recognitionBody: IRecognition): Promise<IRecognitionDoc> => {
   try {
-    const result = await db.query(
+    const result = await db.instance.query(
       `
       INSERT 
       INTO 
@@ -121,7 +121,7 @@ export const queryRecognitions = async (options: IRecognitionQuery): Promise<IRe
           } ${descendOrder}`
         : '';
 
-    const result = await db.query(
+    const result = await db.instance.query(
       `SELECT * ${populator({
         tableAlias: 'r',
         fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
@@ -130,7 +130,9 @@ export const queryRecognitions = async (options: IRecognitionQuery): Promise<IRe
     );
     const recognitions = result.rows;
 
-    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM recognition ${search};`, [])).rows[0];
+    const count = await (
+      await db.instance.query(`SELECT COUNT(*) as total_results FROM recognition ${search};`, [])
+    ).rows[0];
 
     return {
       results: recognitions,
@@ -162,7 +164,7 @@ export const getRecognitionById = async (
 ): Promise<IRecognitionDoc | null> => {
   const recognition = await (async () => {
     try {
-      const result = await db.query(
+      const result = await db.instance.query(
         `SELECT 
         * 
         ${populator({
@@ -242,7 +244,7 @@ export const updateRecognitionById = async (
 
   // update recognition
   try {
-    const updateQry = await db.query(
+    const updateQry = await db.instance.query(
       `
       UPDATE recognition SET
       ${conditions.filter(Boolean).join(',')}
@@ -272,7 +274,7 @@ export const updateRecognitionsInBulk = async ({
   conditions,
 }: IRecognitionBlukUpdate): Promise<IRecognitionDoc[] | null> => {
   try {
-    const updateQry = await db.query(
+    const updateQry = await db.instance.query(
       `
       UPDATE 
       recognition 
@@ -305,8 +307,8 @@ export const deleteRecognitionById = async (
   const recognition = await getRecognitionById(id, { owner_id: options?.owner_id });
 
   try {
-    await db.query(`DELETE FROM recognition WHERE recognition_id = $1;`, [id]);
-    await db.query(`CALL remove_recognition_references($1);`, [id]); // remove this recognition from everywhere it is used
+    await db.instance.query(`DELETE FROM recognition WHERE recognition_id = $1;`, [id]);
+    await db.instance.query(`CALL remove_recognition_references($1);`, [id]); // remove this recognition from everywhere it is used
     return recognition;
   } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');

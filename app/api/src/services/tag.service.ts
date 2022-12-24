@@ -34,7 +34,7 @@ interface ITagDoc {
  */
 export const createTag = async (tagBody: ITag): Promise<ITagDoc> => {
   try {
-    const result = await db.query(`INSERT INTO tag (tag_name,tag_description) values ($1,$2) RETURNING *;`, [
+    const result = await db.instance.query(`INSERT INTO tag (tag_name,tag_description) values ($1,$2) RETURNING *;`, [
       tagBody.tag_name,
       tagBody.tag_description,
     ]);
@@ -61,13 +61,13 @@ export const queryTags = async (options: ITagQuery): Promise<ITagQueryResult> =>
         ? `WHERE ${options.search_fields.map((field) => `LOWER(${field}) LIKE LOWER('%${options.query}%')`).join(' OR ')}`
         : '';
 
-    const result = await db.query(`SELECT * FROM tag ${search} OFFSET $1 LIMIT $2;`, [
+    const result = await db.instance.query(`SELECT * FROM tag ${search} OFFSET $1 LIMIT $2;`, [
       options.page === 1 ? '0' : (options.page - 1) * options.limit,
       options.limit,
     ]);
     const tags = result.rows;
 
-    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM tag ${search};`, [])).rows[0];
+    const count = await (await db.instance.query(`SELECT COUNT(*) as total_results FROM tag ${search};`, [])).rows[0];
 
     return {
       results: tags,
@@ -90,7 +90,7 @@ export const queryTags = async (options: ITagQuery): Promise<ITagQueryResult> =>
 export const getTagByCriteria = async (criteria: 'tag_id' | 'tag_name', equals: string): Promise<ITagDoc | null> => {
   const tag = await (async () => {
     try {
-      const result = await db.query(
+      const result = await db.instance.query(
         `
         SELECT 
         * 
@@ -151,7 +151,7 @@ export const updateTagById = async (id: string, updateBody: Partial<ITag>): Prom
 
   // update tag
   try {
-    const updateQry = await db.query(
+    const updateQry = await db.instance.query(
       `
         UPDATE tag SET
         ${conditions.filter(Boolean).join(',')}
@@ -180,8 +180,8 @@ export const deleteTagById = async (id: string): Promise<ITagDoc | null> => {
   const tag = await getTagById(id); // check if tag exists, throws error if not found
 
   try {
-    await db.query(`DELETE FROM tag WHERE tag_id = $1;`, [id]);
-    await db.query(`CALL remove_tag_references($1);`, [id]); // remove this tag from everywhere it is used
+    await db.instance.query(`DELETE FROM tag WHERE tag_id = $1;`, [id]);
+    await db.instance.query(`CALL remove_tag_references($1);`, [id]); // remove this tag from everywhere it is used
     return tag;
   } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');

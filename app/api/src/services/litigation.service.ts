@@ -83,7 +83,7 @@ export const verifyLitigationPossibilityForCreation = async (creation_id: string
     // verify if litigation/s already exists for creation
     const litigations = await (async () => {
       try {
-        const result = await db.query(`SELECT * FROM litigation WHERE creation_id = $1;`, [creation_id]);
+        const result = await db.instance.query(`SELECT * FROM litigation WHERE creation_id = $1;`, [creation_id]);
         return result.rows;
       } catch {
         throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
@@ -106,13 +106,13 @@ export const verifyLitigationDecisionDuplicates = async (
   const foundDecision = await (async () => {
     try {
       const result = exclude_litigation
-        ? await db.query(
+        ? await db.instance.query(
             `SELECT * FROM litigation WHERE litigation_id <> $1 AND decisions && '{${decisions.reduce(
               (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
             )}}';`,
             [exclude_litigation]
           )
-        : await db.query(
+        : await db.instance.query(
             `SELECT * FROM litigation WHERE decisions && '{${decisions.reduce(
               (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
             )}}';`,
@@ -142,7 +142,7 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
   }
 
   try {
-    const result = await db.query(
+    const result = await db.instance.query(
       `INSERT INTO litigation
       (
         litigation_title,
@@ -325,13 +325,15 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
       },
     };
 
-    const result = await db.query(options.judged_by ? queryModes.judged.query : queryModes.default.query, [
+    const result = await db.instance.query(options.judged_by ? queryModes.judged.query : queryModes.default.query, [
       options.page === 1 ? '0' : (options.page - 1) * options.limit,
       options.limit,
     ]);
     const litigations = result.rows;
 
-    const count = await (await db.query(options.judged_by ? queryModes.judged.count : queryModes.default.count, [])).rows[0];
+    const count = await (
+      await db.instance.query(options.judged_by ? queryModes.judged.count : queryModes.default.count, [])
+    ).rows[0];
 
     return {
       results: litigations,
@@ -364,7 +366,7 @@ export const getLitigationByCriteria = async (
 ): Promise<ILitigationDoc | null> => {
   const litigation = await (async () => {
     try {
-      const result = await db.query(
+      const result = await db.instance.query(
         `SELECT 
         * 
         ${populator({
@@ -471,7 +473,7 @@ export const updateLitigationById = async (
 
   // update litigation
   try {
-    const updateQry = await db.query(
+    const updateQry = await db.instance.query(
       `
         UPDATE litigation SET
         ${conditions.filter(Boolean).join(',')}
@@ -504,7 +506,7 @@ export const deleteLitigationById = async (id: string, options?: { owner_id?: st
   const litigation = await getLitigationById(id, { owner_id: options?.owner_id });
 
   try {
-    await db.query(`DELETE FROM litigation WHERE litigation_id = $1;`, [id]);
+    await db.instance.query(`DELETE FROM litigation WHERE litigation_id = $1;`, [id]);
     return litigation;
   } catch (e) {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
