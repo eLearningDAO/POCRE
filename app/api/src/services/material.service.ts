@@ -52,7 +52,7 @@ interface IMaterialDoc {
  */
 export const createMaterial = async (materialBody: IMaterial): Promise<IMaterialDoc> => {
   try {
-    const result = await db.query(
+    const result = await db.instance.query(
       `INSERT INTO material (
         material_title,
         material_description,
@@ -218,7 +218,7 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
       },
     };
 
-    const result = await db.query(
+    const result = await db.instance.query(
       options.is_recognized === true ||
         options.is_recognized === false ||
         options.is_claimed === true ||
@@ -230,7 +230,7 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
     const materials = result.rows;
 
     const count = await (
-      await db.query(
+      await db.instance.query(
         options.is_recognized === true ||
           options.is_recognized === false ||
           options.is_claimed === true ||
@@ -270,7 +270,7 @@ export const getMaterialById = async (
 ): Promise<IMaterialDoc | null> => {
   const material = await (async () => {
     try {
-      const result = await db.query(
+      const result = await db.instance.query(
         `SELECT 
         * 
         ${populator({
@@ -323,7 +323,7 @@ export const updateMaterialById = async (
 
   // update material
   try {
-    const updateQry = await db.query(
+    const updateQry = await db.instance.query(
       `
       UPDATE material SET
       ${conditions.filter(Boolean).join(',')}
@@ -357,7 +357,7 @@ export const updateMaterialsInBulk = async (
   updatedValue: string
 ): Promise<IMaterialDoc[] | null> => {
   try {
-    const updateQry = await db.query(`UPDATE material SET ${field} = $1 WHERE ${field} = $2 RETURNING *;`, [
+    const updateQry = await db.instance.query(`UPDATE material SET ${field} = $1 WHERE ${field} = $2 RETURNING *;`, [
       updatedValue,
       existingValue,
     ]);
@@ -380,8 +380,8 @@ export const deleteMaterialById = async (id: string, options?: { owner_id?: stri
   const material = await getMaterialById(id, { owner_id: options?.owner_id });
 
   try {
-    await db.query(`DELETE FROM material WHERE material_id = $1;`, [id]);
-    await db.query(`CALL remove_material_references($1);`, [id]); // remove this material from everywhere it is used
+    await db.instance.query(`DELETE FROM material WHERE material_id = $1;`, [id]);
+    await db.instance.query(`CALL remove_material_references($1);`, [id]); // remove this material from everywhere it is used
     return material;
   } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');

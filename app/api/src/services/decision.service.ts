@@ -20,7 +20,7 @@ interface IDecisionDoc {
  */
 export const createDecision = async (decisionBody: IDecision): Promise<IDecisionDoc> => {
   try {
-    const result = await db.query(`INSERT INTO decision (decision_status,maker_id) values ($1,$2) RETURNING *;`, [
+    const result = await db.instance.query(`INSERT INTO decision (decision_status,maker_id) values ($1,$2) RETURNING *;`, [
       decisionBody.decision_status,
       decisionBody.maker_id,
     ]);
@@ -48,7 +48,7 @@ export const getDecisionById = async (
 ): Promise<IDecisionDoc | null> => {
   const decision = await (async () => {
     try {
-      const result = await db.query(
+      const result = await db.instance.query(
         `SELECT 
         * 
         ${populator({
@@ -97,8 +97,8 @@ export const deleteDecisionById = async (id: string, options?: { owner_id?: stri
   });
 
   try {
-    await db.query(`DELETE FROM decision WHERE decision_id = $1;`, [id]);
-    await db.query(`CALL remove_decision_references($1);`, [id]); // remove this decision from everywhere it is used
+    await db.instance.query(`DELETE FROM decision WHERE decision_id = $1;`, [id]);
+    await db.instance.query(`CALL remove_decision_references($1);`, [id]); // remove this decision from everywhere it is used
     return decision;
   } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
