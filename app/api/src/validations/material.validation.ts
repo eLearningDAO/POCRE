@@ -28,6 +28,7 @@ export const queryMaterials = {
     }),
     is_recognized: Joi.bool().optional(),
     is_claimed: Joi.bool().optional(),
+    is_image: Joi.bool().optional(),
     populate: Joi.alternatives()
       .try(Joi.string().valid(...materialDeepFields), Joi.array().items(Joi.string().valid(...materialDeepFields)))
       .optional(),

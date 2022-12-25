@@ -1,10 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { Material, User, Creation } from 'api/requests';
-import SliderImage1 from 'assets/images/slider-01.jpg';
-import SliderImage2 from 'assets/images/slider-02.jpg';
-import SliderImage3 from 'assets/images/slider-03.jpg';
-import SliderImage4 from 'assets/images/slider-04.jpg';
-import SliderImage5 from 'assets/images/slider-05.jpg';
 
 const useHome = () => {
   const {
@@ -51,28 +46,20 @@ const useHome = () => {
     },
     staleTime: 60_000, // cache for 60 seconds
   });
-  const sliderImages = [
-    {
-      id: 1,
-      imageUrl: SliderImage1,
+  const {
+    data: sliderImages,
+    isLoading: isSliderImagesFetched,
+  } = useQuery({
+    queryKey: ['imageMaterial'],
+    queryFn: async () => {
+      let imageMaterialResponse = Material.getAll(
+        `limit=6&page=${1}&is_recognized=true&is_claimed=false&is_image=true`,
+      );
+      imageMaterialResponse = await imageMaterialResponse;
+      return imageMaterialResponse.results;
     },
-    {
-      id: 2,
-      imageUrl: SliderImage2,
-    },
-    {
-      id: 3,
-      imageUrl: SliderImage3,
-    },
-    {
-      id: 4,
-      imageUrl: SliderImage4,
-    },
-    {
-      id: 5,
-      imageUrl: SliderImage5,
-    },
-  ];
+    staleTime: 60_000, // cache for 60 seconds
+  });
 
   return {
     materialList,
@@ -81,6 +68,7 @@ const useHome = () => {
     isTopAuthorListFetched,
     trendingList,
     isTrendingListFetched,
+    isSliderImagesFetched,
     sliderImages,
   };
 };

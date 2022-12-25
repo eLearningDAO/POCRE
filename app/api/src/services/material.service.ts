@@ -25,6 +25,7 @@ interface IMaterialQuery {
   search_fields: string[];
   is_recognized: boolean;
   is_claimed: boolean;
+  is_image: boolean;
   populate?: string | string[];
 }
 interface IMaterialQueryResult {
@@ -121,6 +122,30 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
           fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
         })} FROM material m ${search} OFFSET $1 LIMIT $2;`,
         count: `SELECT COUNT(*) as total_results FROM material ${search};`,
+      },
+      imageMaterials:{
+        query: `SELECT * ${populator({
+          tableAlias: 'm',
+          fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+        })} FROM material m ${search} WHERE m.material_type='image' and m.author_id = ANY(
+          ARRAY(
+            SELECT 
+            author_id 
+            FROM (
+              SELECT 
+              author_id, 
+              COUNT(author_id) value_occurrence 
+              FROM 
+              creation 
+              GROUP BY 
+              author_id 
+              ORDER BY 
+              value_occurrence 
+              DESC
+            )
+            AS authors
+          )
+        ) OFFSET $1 LIMIT $2;`,
       },
       recognizedOrClaimed: {
         query: `SELECT 
@@ -219,6 +244,7 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
     };
 
     const result = await db.instance.query(
+      options.is_image ? queryModes.imageMaterials.query:
       options.is_recognized === true ||
         options.is_recognized === false ||
         options.is_claimed === true ||

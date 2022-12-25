@@ -8,6 +8,21 @@ import Slider from 'components/slider';
 import TrendingCard from 'components/cards/TrendingCard';
 import useHome from './useHome';
 
+const getSliderImages = (imageMaterials) => {
+  const sliderImages = [];
+  imageMaterials.map(
+    (material, index) => {
+      sliderImages.push(
+        {
+          id: index + 1,
+          imageUrl: material.material_link,
+        },
+      );
+      return 1;
+    },
+  );
+  return sliderImages;
+};
 function Home() {
   const navigate = useNavigate();
 
@@ -18,6 +33,7 @@ function Home() {
     isTrendingListFetched,
     isTopAuthorListFetched,
     isMaterialListFetched,
+    isSliderImagesFetched,
     sliderImages,
   } = useHome();
   const handleAuthorCardClick = (userId) => {
@@ -34,7 +50,14 @@ function Home() {
 
   return (
     <div className="container">
-      <Slider handleSlidClick={handleSlidClick} slideImageList={sliderImages} />
+      {
+        isSliderImagesFetched ? <Loader /> : (
+          <Slider
+            handleSlidClick={handleSlidClick}
+            slideImageList={getSliderImages(sliderImages)}
+          />
+        )
+          }
       <Grid container spacing={3}>
         <Grid item md={5} xs={12} sm={12} className="trending-container">
           <h4 className="home-title">Latest Co-Creations</h4>
