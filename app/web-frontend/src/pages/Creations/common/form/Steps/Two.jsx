@@ -9,6 +9,7 @@ import Input from 'components/uicore/Input';
 import Select from 'components/uicore/Select';
 import TagInput from 'components/uicore/TagInput';
 import { useState } from 'react';
+import authUser from 'utils/helpers/authUser';
 import { stepTwoAuthorInviteValidation, stepTwoMaterialValidation } from './validation';
 
 function NewMaterial({
@@ -317,6 +318,7 @@ export default function StepTwo({
   authorSuggestions = [],
   onAuthorInputChange = () => {},
 }) {
+  const user = authUser.getUser();
   const [formKey, setFormKey] = useState(new Date().toISOString());
   const [materials, setMaterials] = useState(initialMaterials);
   const [showInviteAuthorDialog, setShowInviteAuthorDialog] = useState(false);
@@ -428,7 +430,7 @@ export default function StepTwo({
                 onInput={onAuthorInputChange}
                 selectedTags={invitedAuthor ? [invitedAuthor] : []}
                 placeholder="Type author name and select from suggestions below"
-                tagSuggestions={authorSuggestions.map((x) => x.user_name) || []}
+                tagSuggestions={authorSuggestions.map((x) => (`${x.user_name}${user.user_id === x?.user_id ? ' (You)' : ''}`)) || []}
               />
               <Button className="inviteButton" style={{ width: 'fit-content', paddingLeft: '24px', paddingRight: '24px' }} onClick={() => setShowInviteAuthorDialog(true)}>
                 <img width={17} style={{ marginRight: '10px' }} alt="invite-icon" src={InviteIcon} />

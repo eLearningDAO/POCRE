@@ -80,18 +80,6 @@ export default router;
  *                 value:
  *                   code: 404
  *                   message: user not found
- *       "409":
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                 - $ref: '#/components/responses/UserCannotRecognizeThemselve'
- *             examples:
- *               UserCannotRecognizeThemselve:
- *                 summary: user cannot recognize themselve
- *                 value:
- *                   code: 409
- *                   message: user cannot recognize themselve
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *
@@ -269,18 +257,6 @@ export default router;
  *                 value:
  *                   code: 404
  *                   message: user not found
- *       "409":
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                 - $ref: '#/components/responses/UserCannotRecognizeThemselve'
- *             examples:
- *               UserCannotRecognizeThemselve:
- *                 summary: user cannot recognize themselve
- *                 value:
- *                   code: 409
- *                   message: user cannot recognize themselve
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  *

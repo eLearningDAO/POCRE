@@ -66,6 +66,12 @@ const makeCommonResource = async (
           return temporaryAuthor;
         }
 
+        // check if its the creation author trying to own material
+        const user = authUser.getUser();
+        if (authorName === `${user?.user_name} (You)`) {
+          return user;
+        }
+
         // return if author found from suggestions
         temporaryAuthor = authorSuggestions.find(
           (suggestion) => suggestion.user_name.trim() === authorName,
@@ -100,9 +106,6 @@ const makeCommonResource = async (
   return { tags, materials };
 };
 
-// get auth user
-const user = authUser.getUser();
-
 const useCreationForm = ({
   onCreationFetch = () => {},
 }) => {
@@ -127,7 +130,6 @@ const useCreationForm = ({
     handleSuggestionInputChange: handleAuthorInputChange,
   } = useSuggestions({
     search: 'users',
-    filterSuggestion: user?.user_name?.trim(),
   });
 
   // get creation details

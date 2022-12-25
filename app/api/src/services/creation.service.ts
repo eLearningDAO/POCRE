@@ -58,13 +58,13 @@ export const verifyCreationTagDuplicates = async (tags: string[], exclude_creati
   const foundTag = await (async () => {
     try {
       const result = exclude_creation
-        ? await db.query(
+        ? await db.instance.query(
             `SELECT * FROM creation WHERE creation_id <> $1 AND tags && '{${tags.reduce(
               (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
             )}}';`,
             [exclude_creation]
           )
-        : await db.query(
+        : await db.instance.query(
             `SELECT * FROM creation WHERE tags && '{${tags.reduce(
               (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
             )}}';`,
@@ -89,13 +89,13 @@ export const verifyCreationMaterialDuplicates = async (materials: string[], excl
   const foundMaterial = await (async () => {
     try {
       const result = exclude_creation
-        ? await db.query(
+        ? await db.instance.query(
             `SELECT * FROM creation WHERE creation_id <> $1 AND materials && '{${materials.reduce(
               (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
             )}}';`,
             [exclude_creation]
           )
-        : await db.query(
+        : await db.instance.query(
             `SELECT * FROM creation WHERE materials && '{${materials.reduce(
               (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
             )}}';`,
@@ -120,7 +120,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
   if (creationBody.materials) await verifyCreationMaterialDuplicates(creationBody.materials);
 
   try {
-    const result = await db.query(
+    const result = await db.instance.query(
       `INSERT INTO creation 
       (
         creation_title,
@@ -340,7 +340,7 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
       },
     };
 
-    const result = await db.query(
+    const result = await db.instance.query(
       options.top_authors?
       queryModes.topAuthors.query:
       options.is_trending
@@ -353,7 +353,7 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
     const creations = result.rows;
 
     const count = await (
-      await db.query(
+      await db.instance.query(
         options.is_trending
           ? queryModes.trending.count
           : options.is_fully_assigned || options.is_partially_assigned
@@ -392,7 +392,7 @@ export const getCreationById = async (
 ): Promise<ICreationDoc | null> => {
   const creation = await (async () => {
     try {
-      const result = await db.query(
+      const result = await db.instance.query(
         `SELECT 
         * 
         ${populator({
@@ -450,7 +450,7 @@ export const updateCreationById = async (
 
   // update creation
   try {
-    const updateQry = await db.query(
+    const updateQry = await db.instance.query(
       `
         UPDATE creation SET
         ${conditions.filter(Boolean).join(',')}
@@ -477,7 +477,7 @@ export const deleteCreationById = async (id: string, options?: { owner_id?: stri
   const creation = await getCreationById(id, { owner_id: options?.owner_id });
 
   try {
-    await db.query(`DELETE FROM creation WHERE creation_id = $1;`, [id]);
+    await db.instance.query(`DELETE FROM creation WHERE creation_id = $1;`, [id]);
     return creation;
   } catch (e) {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');

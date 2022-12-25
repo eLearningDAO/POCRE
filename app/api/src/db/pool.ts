@@ -11,10 +11,6 @@ const pool = new Pool({
   ...(config.env === 'development' && { log: (msg) => logger.info(`DB: ${msg}`) }),
 });
 
-const query = async (text: string, params: Array<any>): Promise<QueryResult<any>> => {
-  return pool.query(text, params);
-};
-
 const instance = pool;
 
 const init = async (): Promise<QueryResult<any>> => {
@@ -208,4 +204,4 @@ const init = async (): Promise<QueryResult<any>> => {
   );
 };
 
-export { query, init, instance };
+export { init, instance };

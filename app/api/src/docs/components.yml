@@ -410,15 +410,6 @@ components:
           example:
             code: 409
             message: issuer already assigned to a litigation
-    UserCannotRecognizeThemselve:
-      description: User cannot recognize themselve
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 409
-            message: user cannot recognize themselve
     DecisionNotFound:
       description: Decision not found
       content:

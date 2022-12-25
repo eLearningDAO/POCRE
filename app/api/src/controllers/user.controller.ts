@@ -35,14 +35,15 @@ export const inviteUser = catchAsync(async (req, res): Promise<any> => {
   const { invite_method: inviteMethod, invite_value: inviteValue } = req.body;
   const username = (req.body.invite_method === 'username' ? req.body.invite_value : null) || req.body.user_name;
 
-  const inviteMethods: any = {
-    phone: userService.getUserByPhone,
-    username: userService.getUserByUsername,
-    email: userService.getUserByEmailAddress,
-  };
+  const serviceMethod = (() => {
+    if (inviteMethod === 'phone') return userService.getUserByPhone;
+    if (inviteMethod === 'username') return userService.getUserByUsername;
+    if (inviteMethod === 'email') return userService.getUserByEmailAddress;
+    return async () => {};
+  })();
 
   // check if the user exists
-  const foundUser = await inviteMethods[inviteMethod as any](inviteValue).catch(() => null);
+  const foundUser = await serviceMethod(inviteValue).catch(() => null);
 
   // check if the user is already invited
   if (foundUser && foundUser.is_invited) return res.send(foundUser);

@@ -38,6 +38,16 @@ interface IRecognitionDoc {
   status: TStatusType;
   status_updated: string;
 }
+interface IRecognitionBlukUpdateConditions {
+  matchField: 'status' | 'recognition_for' | 'recognition_by';
+  matchValue: string;
+}
+interface IRecognitionBlukUpdate {
+  updateField: 'recognition_for' | 'status';
+  existingValue: string;
+  updatedValue: string;
+  conditions: IRecognitionBlukUpdateConditions[];
+}
 
 /**
  * Create a recognition
@@ -45,12 +55,8 @@ interface IRecognitionDoc {
  * @returns {Promise<IRecognitionDoc>}
  */
 export const createRecognition = async (recognitionBody: IRecognition): Promise<IRecognitionDoc> => {
-  if (recognitionBody.recognition_by === recognitionBody.recognition_for) {
-    throw new ApiError(httpStatus.CONFLICT, `user cannot recognize themselve`);
-  }
-
   try {
-    const result = await db.query(
+    const result = await db.instance.query(
       `
       INSERT 
       INTO 
@@ -71,7 +77,7 @@ export const createRecognition = async (recognitionBody: IRecognition): Promise<
         recognitionBody.recognition_by,
         recognitionBody.recognition_for,
         recognitionBody.recognition_description,
-        recognitionBody.status,
+        recognitionBody.recognition_by === recognitionBody.recognition_for ? statusTypes.ACCEPTED : recognitionBody.status,
         recognitionBody.status_updated,
       ]
     );
@@ -115,7 +121,7 @@ export const queryRecognitions = async (options: IRecognitionQuery): Promise<IRe
           } ${descendOrder}`
         : '';
 
-    const result = await db.query(
+    const result = await db.instance.query(
       `SELECT * ${populator({
         tableAlias: 'r',
         fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
@@ -124,7 +130,9 @@ export const queryRecognitions = async (options: IRecognitionQuery): Promise<IRe
     );
     const recognitions = result.rows;
 
-    const count = await (await db.query(`SELECT COUNT(*) as total_results FROM recognition ${search};`, [])).rows[0];
+    const count = await (
+      await db.instance.query(`SELECT COUNT(*) as total_results FROM recognition ${search};`, [])
+    ).rows[0];
 
     return {
       results: recognitions,
@@ -156,7 +164,7 @@ export const getRecognitionById = async (
 ): Promise<IRecognitionDoc | null> => {
   const recognition = await (async () => {
     try {
-      const result = await db.query(
+      const result = await db.instance.query(
         `SELECT 
         * 
         ${populator({
@@ -221,7 +229,8 @@ export const updateRecognitionById = async (
       updateBody.recognition_by === foundRecognition?.recognition_for) ||
     (updateBody.recognition_by && updateBody.recognition_for && updateBody.recognition_by === updateBody.recognition_for)
   ) {
-    throw new ApiError(httpStatus.CONFLICT, `user cannot recognize themselve`);
+    // eslint-disable-next-line no-param-reassign
+    updateBody.status = statusTypes.ACCEPTED;
   }
 
   // build sql conditions and values
@@ -235,7 +244,7 @@ export const updateRecognitionById = async (
 
   // update recognition
   try {
-    const updateQry = await db.query(
+    const updateQry = await db.instance.query(
       `
       UPDATE recognition SET
       ${conditions.filter(Boolean).join(',')}
@@ -252,21 +261,30 @@ export const updateRecognitionById = async (
 
 /**
  * Update recognition in bulk
- * @param {string} field - the field to match and update
+ * @param {string} updateField - the field to match and update
  * @param {string} existingValue - the present value of field
  * @param {string} updatedValue - the new value of field
+ * @param {string} conditions - the conditions on which to update
  * @returns {Promise<IRecognitionDoc|null>}
  */
-export const updateRecognitionsInBulk = async (
-  field: 'recognition_for',
-  existingValue: string,
-  updatedValue: string
-): Promise<IRecognitionDoc[] | null> => {
+export const updateRecognitionsInBulk = async ({
+  updateField,
+  existingValue,
+  updatedValue,
+  conditions,
+}: IRecognitionBlukUpdate): Promise<IRecognitionDoc[] | null> => {
   try {
-    const updateQry = await db.query(`UPDATE recognition SET ${field} = $1 WHERE ${field} = $2 RETURNING *;`, [
-      updatedValue,
-      existingValue,
-    ]);
+    const updateQry = await db.instance.query(
+      `
+      UPDATE 
+      recognition 
+      SET ${updateField} = $1 
+      WHERE ${updateField} = $2 
+      ${conditions.length > 0 ? conditions.map((x, index) => ` AND ${x.matchField} = $${index + 3} `).join(' ') : ''}
+      RETURNING *;
+    `,
+      [updatedValue, existingValue, ...(conditions || []).map((x) => x.matchValue)].filter(Boolean)
+    );
     const recognitions = updateQry.rows;
     return recognitions;
   } catch {
@@ -289,8 +307,8 @@ export const deleteRecognitionById = async (
   const recognition = await getRecognitionById(id, { owner_id: options?.owner_id });
 
   try {
-    await db.query(`DELETE FROM recognition WHERE recognition_id = $1;`, [id]);
-    await db.query(`CALL remove_recognition_references($1);`, [id]); // remove this recognition from everywhere it is used
+    await db.instance.query(`DELETE FROM recognition WHERE recognition_id = $1;`, [id]);
+    await db.instance.query(`CALL remove_recognition_references($1);`, [id]); // remove this recognition from everywhere it is used
     return recognition;
   } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
