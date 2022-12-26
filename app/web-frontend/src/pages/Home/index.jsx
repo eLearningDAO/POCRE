@@ -10,17 +10,19 @@ import useHome from './useHome';
 
 const getSliderImages = (imageMaterials) => {
   const sliderImages = [];
-  imageMaterials.map(
-    (material, index) => {
-      sliderImages.push(
-        {
-          id: index + 1,
-          imageUrl: material.material_link,
-        },
-      );
-      return 1;
-    },
-  );
+  if (imageMaterials) {
+    imageMaterials.map(
+      (material, index) => {
+        sliderImages.push(
+          {
+            id: index + 1,
+            imageUrl: material.material_link,
+          },
+        );
+        return 1;
+      },
+    );
+  }
   return sliderImages;
 };
 function Home() {
@@ -52,10 +54,12 @@ function Home() {
     <div className="container">
       {
         isSliderImagesFetched ? <Loader /> : (
+          sliderImages && (
           <Slider
             handleSlideClick={handleSlideClick}
             slideImageList={getSliderImages(sliderImages)}
           />
+          )
         )
           }
       <Grid container spacing={3}>
