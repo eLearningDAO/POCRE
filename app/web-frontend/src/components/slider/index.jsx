@@ -8,7 +8,7 @@ import LeftIcon from 'assets/images/left.png';
 import './index.css';
 import { accessibleOnClick } from 'utils/helpers/accessibleOnClick';
 
-export default function Slider({ handleSlidClicked, slideImageList }) {
+export default function Slider({ handleSlideClick, slideImageList }) {
   const [car, setCar] = React.useState(null);
   useEffect(() => {
     if (slideImageList) {
@@ -46,7 +46,7 @@ export default function Slider({ handleSlidClicked, slideImageList }) {
           slideImageList && slideImageList.map((slide, index) => (
             <a
               className="carousel-item"
-              {...accessibleOnClick(handleSlidClicked, index)}
+              {...accessibleOnClick(handleSlideClick, index)}
             >
               <img src={slide.imageUrl} alt={slide.id} />
             </a>

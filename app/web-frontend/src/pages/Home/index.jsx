@@ -44,7 +44,7 @@ function Home() {
     navigate(`/creations/${creationId}`);
   };
 
-  const handleSlidClick = () => {
+  const handleSlideClick = () => {
     navigate('/creations');
   };
 
@@ -53,7 +53,7 @@ function Home() {
       {
         isSliderImagesFetched ? <Loader /> : (
           <Slider
-            handleSlidClick={handleSlidClick}
+            handleSlideClick={handleSlideClick}
             slideImageList={getSliderImages(sliderImages)}
           />
         )
