@@ -26,6 +26,7 @@ interface IMaterialQuery {
   is_recognized: boolean;
   is_claimed: boolean;
   is_image: boolean;
+  top_authors: boolean;
   populate?: string | string[];
 }
 interface IMaterialQueryResult {
@@ -244,7 +245,7 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
     };
 
     const result = await db.instance.query(
-      options.is_image ? queryModes.imageMaterials.query:
+      options.is_image === true && options.top_authors === true ? queryModes.imageMaterials.query:
       options.is_recognized === true ||
         options.is_recognized === false ||
         options.is_claimed === true ||
