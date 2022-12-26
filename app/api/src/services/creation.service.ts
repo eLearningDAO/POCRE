@@ -242,10 +242,7 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                           DESC)
                 ${order} 
                 OFFSET $1 LIMIT $2`,
-                count:`SELECT COUNT(*) ${populator({
-                  tableAlias: 'c',
-                  fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
-                })} FROM creation c where not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
+                count:`SELECT COUNT(*) as total_results FROM creation c where not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
                 (SELECT user_id, 
                                 (
                                   SELECT 

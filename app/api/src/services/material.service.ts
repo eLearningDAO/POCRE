@@ -147,6 +147,25 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
             AS authors
           )
         ) OFFSET $1 LIMIT $2;`,
+        count: `SELECT COUNT(*) as total_results FROM material m ${search} WHERE m.material_type='image' and m.author_id = ANY(
+          ARRAY(
+            SELECT 
+            author_id 
+            FROM (
+              SELECT 
+              author_id, 
+              COUNT(author_id) value_occurrence 
+              FROM 
+              creation 
+              GROUP BY 
+              author_id 
+              ORDER BY 
+              value_occurrence 
+              DESC
+            )
+            AS authors
+          )
+        ) OFFSET $1 LIMIT $2;`
       },
       recognizedOrClaimed: {
         query: `SELECT 
