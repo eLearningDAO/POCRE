@@ -202,7 +202,10 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
         count: `SELECT COUNT(*) as total_results FROM creation ${search};`,
       },
       topAuthors:{
-        query: `select distinct creation_link, author_id from creation c where not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
+        query: `SELECT * ${populator({
+          tableAlias: 'c',
+          fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+        })} FROM creation c where not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
         (SELECT user_id, 
                         (
                           SELECT 
@@ -239,6 +242,46 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                           DESC)
                 ${order} 
                 OFFSET $1 LIMIT $2`,
+                count:`SELECT COUNT(*) ${populator({
+                  tableAlias: 'c',
+                  fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+                })} FROM creation c where not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
+                (SELECT user_id, 
+                                (
+                                  SELECT 
+                                  COUNT(author_id) value_occurrence 
+                                  FROM 
+                                  creation 
+                                  WHERE 
+                                  author_id = u.user_id
+                                ) 
+                                as total_creations
+                                FROM 
+                                VIEW_users_public_fields u  WHERE 
+                                u.user_id = ANY(
+                                              ARRAY(
+                                                SELECT 
+                                                author_id 
+                                                FROM (
+                                                  SELECT 
+                                                  author_id, 
+                                                  COUNT(author_id) value_occurrence 
+                                                  FROM 
+                                                  creation 
+                                                  GROUP BY 
+                                                  author_id 
+                                                  ORDER BY 
+                                                  value_occurrence 
+                                                  DESC
+                                                )
+                                                AS authors
+                                              )
+                                            )
+                                  ORDER BY 
+                                  total_creations
+                                  DESC)
+                        ${order} 
+                        OFFSET $1 LIMIT $2`,
       },
       trending: {
         // opened creations without any litigation
