@@ -14,7 +14,7 @@ function Footer() {
         <a href="https://twitter.com/eLearningDAO">
           <img src={TwitterIcon} alt="eLearningDAO Twitter profile" width={30} height={30} />
         </a>
-        <a href="https://github.com/e-Learning-DAO">
+        <a href="https://github.com/eLearningDAO">
           <img src={GithubIcon} alt="eLearningDAO GitHub project page" width={30} height={30} />
         </a>
         <a href="https://www.pocre.net/">
