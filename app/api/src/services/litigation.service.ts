@@ -105,19 +105,12 @@ export const verifyLitigationDecisionDuplicates = async (
 ): Promise<void> => {
   const foundDecision = await (async () => {
     try {
-      const result = exclude_litigation
-        ? await db.instance.query(
-            `SELECT * FROM litigation WHERE litigation_id <> $1 AND decisions && '{${decisions.reduce(
-              (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
-            )}}';`,
-            [exclude_litigation]
-          )
-        : await db.instance.query(
-            `SELECT * FROM litigation WHERE decisions && '{${decisions.reduce(
-              (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
-            )}}';`,
-            []
-          );
+      const result = await db.instance.query(
+        `SELECT * FROM litigation WHERE decisions && $1 ${exclude_litigation ? 'AND litigation_id <> $2' : ''};`,
+        [`{${decisions.reduce((x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`)}}`, exclude_litigation].filter(
+          Boolean
+        )
+      );
       return result.rows[0];
     } catch {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
