@@ -3,8 +3,6 @@
 import {
   Box, Button, Grid, TextField, Typography,
 } from '@mui/material';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import authUser from 'utils/helpers/authUser';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -116,11 +114,6 @@ export default function StepThree({
                 </Button>
                 )}
               </Grid>
-              {qrcodeBase64 && (
-              <div className="create-collection-verify-box" style={{ marginTop: '18px' }}>
-                <FormControlLabel control={<Checkbox defaultChecked />} label="I’m human" />
-              </div>
-              )}
             </Grid>
 
             <Grid md={qrcodeBase64 ? 4 : 3} xs={12} paddingRight="12px" height="fit-content" marginTop={!qrcodeBase64 ? { xs: '12px', md: '24px' } : {}}>
@@ -135,18 +128,6 @@ export default function StepThree({
                 <img src={PreviewIcon} height="36" width="36" alt="" />
               </Button>
             </Grid>
-
-            {!qrcodeBase64
-              && (
-              <>
-                <Grid md={3} xs={12} paddingRight="12px" height="fit-content" marginTop={{ xs: '12px', md: '18px' }} />
-                <Grid md={9} xs={12} height="fit-content" marginTop={{ xs: '12px', md: '18px' }}>
-                  <div className="create-collection-verify-box" style={{ marginTop: '18px' }}>
-                    <FormControlLabel control={<Checkbox defaultChecked />} label="I’m human" />
-                  </div>
-                </Grid>
-              </>
-              )}
           </Grid>
 
           {qrcodeBase64 && (

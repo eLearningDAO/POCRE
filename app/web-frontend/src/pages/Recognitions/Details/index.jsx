@@ -121,7 +121,7 @@ export default function CreationDetails() {
             className={updatedRecognitionStatus.success ? 'bg-green color-white' : 'bg-red color-white'}
             sx={{ width: '100%' }}
           >
-            {updatedRecognitionStatus.success ? 'Status Accepted!' : updatedRecognitionStatus.error}
+            {updatedRecognitionStatus.success ? 'Status Updated!' : updatedRecognitionStatus.error}
           </Alert>
         </Snackbar>
       )}
