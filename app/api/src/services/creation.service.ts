@@ -56,19 +56,10 @@ interface ICreationDoc {
 export const verifyCreationTagDuplicates = async (tags: string[], exclude_creation?: string): Promise<void> => {
   const foundTag = await (async () => {
     try {
-      const result = exclude_creation
-        ? await db.instance.query(
-            `SELECT * FROM creation WHERE creation_id <> $1 AND tags && '{${tags.reduce(
-              (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
-            )}}';`,
-            [exclude_creation]
-          )
-        : await db.instance.query(
-            `SELECT * FROM creation WHERE tags && '{${tags.reduce(
-              (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
-            )}}';`,
-            []
-          );
+      const result = await db.instance.query(
+        `SELECT * FROM creation WHERE tags && $1 ${exclude_creation ? 'AND creation_id <> $2' : ''};`,
+        [`{${tags.reduce((x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`)}}`, exclude_creation].filter(Boolean)
+      );
       return result.rows[0];
     } catch {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
@@ -87,19 +78,10 @@ export const verifyCreationTagDuplicates = async (tags: string[], exclude_creati
 export const verifyCreationMaterialDuplicates = async (materials: string[], exclude_creation?: string): Promise<void> => {
   const foundMaterial = await (async () => {
     try {
-      const result = exclude_creation
-        ? await db.instance.query(
-            `SELECT * FROM creation WHERE creation_id <> $1 AND materials && '{${materials.reduce(
-              (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
-            )}}';`,
-            [exclude_creation]
-          )
-        : await db.instance.query(
-            `SELECT * FROM creation WHERE materials && '{${materials.reduce(
-              (x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`
-            )}}';`,
-            []
-          );
+      const result = await db.instance.query(
+        `SELECT * FROM creation WHERE materials && $1 ${exclude_creation ? 'AND creation_id <> $2' : ''};`,
+        [`{${materials.reduce((x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`)}}`, exclude_creation].filter(Boolean)
+      );
       return result.rows[0];
     } catch {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
@@ -157,7 +139,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
 
 /**
  * Query for creation
- * @returns {Promise<Array<ICreation>}
+ * @returns {Promise<Array<ICreation>>}
  */
 export const queryCreations = async (options: ICreationQuery): Promise<ICreationQueryResult> => {
   try {
