@@ -1,4 +1,5 @@
 import './index.css';
+import ProfilePlaceholder from 'assets/images/profile-placeholder.png';
 import { accessibleOnClick } from 'utils/helpers/accessibleOnClick';
 
 function TopAuthorCard({ author, handleAuthorCardClick }) {
@@ -8,7 +9,7 @@ function TopAuthorCard({ author, handleAuthorCardClick }) {
       {...accessibleOnClick(handleAuthorCardClick, author.user_id)}
     >
       <div className="topauthor-image">
-        <img alt="author" src={author.image_url != null ? author.image_url : 'http://res.cloudinary.com/dia0ztihb/image/upload/v1669676677/Screenshot_2022-11-29_at_2.54.07_AM_xo13v8.png'} />
+        <img alt="author" src={author.image_url != null ? author.image_url : ProfilePlaceholder} />
       </div>
       <div className="topauthor-body">
         <h6>
