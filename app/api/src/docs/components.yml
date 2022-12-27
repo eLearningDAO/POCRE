@@ -42,10 +42,14 @@ components:
         maker_id:
           type: string
           format: uuid
+        created_at:
+          type: string
+          format: date-time
       example:
         decision_id: db71f5fa-4ee6-4d6d-893b-af08a4e2d575
         decision_status: true
         maker_id: c83a8680-e5db-4a79-8646-c6e3d010ec6b
+        created_at: 2022-09-05T19:00:00.000Z
 
     Recognition:
       type: object
@@ -69,6 +73,9 @@ components:
         status_updated:
           type: string
           format: date-time
+        created_at:
+          type: string
+          format: date-time
       example:
         recognition_id: 8d098580-1e4c-40c8-95f3-9c78de09a121
         recognition_by: d5cef9e4-d497-45ea-bd68-609aba268886
@@ -77,6 +84,7 @@ components:
         recognition_issued: 2022-09-07T19:00:00.000Z
         status: pending
         status_updated: 2022-09-07T19:00:00.000Z
+        created_at: 2022-09-05T19:00:00.000Z
 
     Material:
       type: object
@@ -100,6 +108,9 @@ components:
           format: uuid
         is_claimable:
           type: bool
+        created_at:
+          type: string
+          format: date-time
       example:
         material_id: 5d6ad369-55d8-469d-bf26-4a90017861dd
         material_title: plastic
@@ -108,6 +119,7 @@ components:
         material_type: audio
         recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
         author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
+        created_at: 2022-09-05T19:00:00.000Z
         is_claimable: true
 
     Tag:
@@ -161,6 +173,9 @@ components:
           type: bool
         is_claimable:
           type: bool
+        created_at:
+          type: string
+          format: date-time
       example:
         creation_id: b1171878-797e-4f8a-a726-961f761bb8fc
         creation_title: my first creation
@@ -170,6 +185,7 @@ components:
         tags: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
         materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
         creation_date: 2022-09-16T19:00:00.000Z
+        created_at: 2022-09-05T19:00:00.000Z
         is_draft: false
         is_claimable: true
 
@@ -315,6 +331,9 @@ components:
           type: bool
         ownership_transferred:
           type: bool
+        created_at:
+          type: string
+          format: date-time
       example:
         litigation_id: b1171878-797e-4f8a-a726-961f761bb8fc
         litigation_title: my first creation
@@ -328,6 +347,7 @@ components:
         litigation_start: 2022-09-06T19:00:00.000Z
         litigation_end: 2022-09-06T19:00:00.000Z
         reconcilate: false
+        created_at: 2022-09-05T19:00:00.000Z
         ownership_transferred: false
     
     Token:
