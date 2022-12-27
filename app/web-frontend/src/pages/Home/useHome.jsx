@@ -49,6 +49,8 @@ const useHome = () => {
   const {
     data: sliderImages,
     isLoading: isSliderImagesFetched,
+    isSuccess: isSliderImagesFetchedSuccess,
+    error: fetchSliderImagesError,
   } = useQuery({
     queryKey: ['imageMaterial'],
     queryFn: async () => {
@@ -69,6 +71,10 @@ const useHome = () => {
     trendingList,
     isTrendingListFetched,
     isSliderImagesFetched,
+    sliderImagesStatus: {
+      success: isSliderImagesFetchedSuccess,
+      error: fetchSliderImagesError?.message || null,
+    },
     sliderImages,
   };
 };

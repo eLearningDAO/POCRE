@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Grid, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import LatestNewsCard from 'components/cards/LatestNews';
 import TopAuthorCard from 'components/cards/TopAuthorCard';
@@ -36,6 +36,7 @@ function Home() {
     isTopAuthorListFetched,
     isMaterialListFetched,
     isSliderImagesFetched,
+    sliderImagesStatus,
     sliderImages,
   } = useHome();
   const handleAuthorCardClick = (userId) => {
@@ -52,6 +53,12 @@ function Home() {
 
   return (
     <div className="container">
+      {(sliderImagesStatus.error || sliderImagesStatus.success)
+              && (
+              <Box width="100%" className={`${sliderImagesStatus.success ? 'bg-green' : 'bg-red'} color-white`} padding="16px" borderRadius="12px" fontSize="16px" style={{ margin: 'auto', marginTop: '18px' }}>
+                {sliderImagesStatus.success ? 'Success! A new litigation was made.' : sliderImagesStatus.error}
+              </Box>
+              )}
       {
         isSliderImagesFetched ? <Loader /> : (
           sliderImages && (
