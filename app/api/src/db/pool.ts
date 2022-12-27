@@ -62,7 +62,7 @@ const init = async (): Promise<QueryResult<any>> => {
       decision_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       decision_status bool default false,
       maker_id UUID NOT NULL,
-      created_at DATE NOT NULL DEFAULT CURRENT_DATE,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
       CONSTRAINT maker_id
           FOREIGN KEY(maker_id) 
           REFERENCES users(user_id)
@@ -77,7 +77,7 @@ const init = async (): Promise<QueryResult<any>> => {
       recognition_issued DATE NOT NULL DEFAULT CURRENT_DATE,
       status recognition_status_enums NOT NULL,
       status_updated DATE NOT NULL DEFAULT CURRENT_DATE,
-      created_at DATE NOT NULL DEFAULT CURRENT_DATE,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
       CONSTRAINT recognition_by
           FOREIGN KEY(recognition_by) 
           REFERENCES users(user_id)
@@ -104,7 +104,7 @@ const init = async (): Promise<QueryResult<any>> => {
       recognition_id UUID UNIQUE,
       author_id UUID NOT NULL,
       is_claimable bool default true,
-      created_at DATE NOT NULL DEFAULT CURRENT_DATE,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
       CONSTRAINT recognition_id
           FOREIGN KEY(recognition_id) 
           REFERENCES recognition(recognition_id),
@@ -125,7 +125,7 @@ const init = async (): Promise<QueryResult<any>> => {
       creation_date DATE NOT NULL DEFAULT CURRENT_DATE,
       is_draft bool default false,
       is_claimable bool default true,
-      created_at DATE NOT NULL DEFAULT CURRENT_DATE,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
       CONSTRAINT author_id
           FOREIGN KEY(author_id) 
           REFERENCES users(user_id)
@@ -147,7 +147,7 @@ const init = async (): Promise<QueryResult<any>> => {
       litigation_end DATE,
       litigation_status litigation_status_enums NOT NULL,
       ownership_transferred bool default false,
-      created_at DATE NOT NULL DEFAULT CURRENT_DATE,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
       CONSTRAINT material_id
           FOREIGN KEY(material_id) 
           REFERENCES material(material_id)
