@@ -25,7 +25,7 @@ interface IMaterialQuery {
   search_fields: string[];
   is_recognized: boolean;
   is_claimed: boolean;
-  is_image: boolean;
+  material_type: string;
   top_authors: boolean;
   populate?: string | string[];
 }
@@ -105,6 +105,7 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
 export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterialQueryResult> => {
   try {
     // search
+    console.log("These are the ooptions",options)
     const search =
       options.search_fields && options.search_fields.length > 0
         ? `WHERE ${options.search_fields
@@ -124,11 +125,18 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
         })} FROM material m ${search} OFFSET $1 LIMIT $2;`,
         count: `SELECT COUNT(*) as total_results FROM material ${search};`,
       },
-      imageMaterials:{
+      materialsByType:{
         query: `SELECT * ${populator({
           tableAlias: 'm',
           fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
-        })} FROM material m ${search} WHERE m.material_type='image' and m.author_id = ANY(
+        })} FROM material m ${search} WHERE m.material_type='${options.material_type}' OFFSET $1 LIMIT $2;`,
+        count: `SELECT COUNT(*) as total_results FROM material m ${search} WHERE m.material_type='${options.material_type}' OFFSET $1 LIMIT $2;`
+      },
+      materialsByTypeTopAuthors:{
+        query: `SELECT * ${populator({
+          tableAlias: 'm',
+          fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+        })} FROM material m ${search} WHERE m.material_type='${options.material_type}' and m.author_id = ANY(
           ARRAY(
             SELECT 
             author_id 
@@ -147,7 +155,7 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
             AS authors
           )
         ) OFFSET $1 LIMIT $2;`,
-        count: `SELECT COUNT(*) as total_results FROM material m ${search} WHERE m.material_type='image' and m.author_id = ANY(
+        count: `SELECT COUNT(*) as total_results FROM material m ${search} WHERE m.material_type='${options.material_type}' and m.author_id = ANY(
           ARRAY(
             SELECT 
             author_id 
@@ -262,9 +270,10 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
                 }`,
       },
     };
-
+    console.log("THissi the material type", queryModes.materialsByTypeTopAuthors.query)
     const result = await db.instance.query(
-      options.is_image === true && options.top_authors === true ? queryModes.imageMaterials.query:
+      typeof options.material_type === 'string' && options.top_authors === true ? queryModes.materialsByTypeTopAuthors.query:
+      typeof options.material_type === 'string' && options.top_authors === false ? queryModes.materialsByType.query:
       options.is_recognized === true ||
         options.is_recognized === false ||
         options.is_claimed === true ||

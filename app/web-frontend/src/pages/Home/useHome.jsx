@@ -55,7 +55,7 @@ const useHome = () => {
     queryKey: ['imageMaterial'],
     queryFn: async () => {
       let imageMaterialResponse = Material.getAll(
-        `limit=6&page=${1}&is_recognized=true&is_claimed=false&is_image=true&top_authors=true`,
+        `limit=6&page=${1}&is_recognized=true&is_claimed=false&material_type=image&top_authors=true`,
       );
       imageMaterialResponse = await imageMaterialResponse;
       return imageMaterialResponse.results;

@@ -6,6 +6,7 @@ import Loader from 'components/uicore/Loader';
 import './index.css';
 import Slider from 'components/slider';
 import TrendingCard from 'components/cards/TrendingCard';
+import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import useHome from './useHome';
 
 const getSliderImages = (imageMaterials) => {
@@ -13,12 +14,14 @@ const getSliderImages = (imageMaterials) => {
   if (imageMaterials) {
     imageMaterials.map(
       (material, index) => {
-        sliderImages.push(
-          {
-            id: index + 1,
-            imageUrl: material.material_link,
-          },
-        );
+        if (getUrlFileType(material.material_link) === 'image') {
+          sliderImages.push(
+            {
+              id: index + 1,
+              imageUrl: material.material_link,
+            },
+          );
+        }
         return 1;
       },
     );
@@ -53,7 +56,7 @@ function Home() {
 
   return (
     <div className="container">
-      {(sliderImagesStatus.error || sliderImagesStatus.success)
+      {(sliderImagesStatus.error)
               && (
               <Box width="100%" className={`${sliderImagesStatus.success ? 'bg-green' : 'bg-red'} color-white`} padding="16px" borderRadius="12px" fontSize="16px" style={{ margin: 'auto', marginTop: '18px' }}>
                 {sliderImagesStatus.success ? 'Success! A new litigation was made.' : sliderImagesStatus.error}
