@@ -44,6 +44,11 @@ const useRecognitions = () => {
       // filter out falsy data
       response.results = response.results.filter((x) => x.material);
 
+      // sort by latest first
+      response.results = [...response.results].sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at),
+      );
+
       return response;
     },
     staleTime: 100_000, // delete cached data after 100 seconds

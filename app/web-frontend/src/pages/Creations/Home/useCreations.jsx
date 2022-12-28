@@ -16,9 +16,17 @@ const useCreations = () => {
     queryKey: ['creations'],
     queryFn: async () => {
       const toPopulate = ['author_id', 'materials', 'materials.author_id'];
-      return await Creation.getAll(
+      const unsortedCreations = await Creation.getAll(
         `page=${1}&limit=100&descend_fields[]=creation_date&query=${user.user_id}&search_fields[]=author_id&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       );
+
+      // sort by latest first
+      return {
+        ...unsortedCreations,
+        results: [...unsortedCreations.results].sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at),
+        ),
+      };
     },
     staleTime: 60_000, // cache for 60 seconds
   });
