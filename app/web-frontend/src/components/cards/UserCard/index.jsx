@@ -1,6 +1,5 @@
-import { Button, Chip, Typography } from '@mui/material';
+import { Chip, Typography } from '@mui/material';
 import PlaceholderImage from 'assets/images/top-learner-user.png';
-import FingerPrintIcon from 'assets/svgs/fingerprint.svg';
 import './index.css';
 import { Link } from 'react-router-dom';
 
@@ -32,9 +31,6 @@ function UserCard({
             </Link>
           </Typography>
           )}
-          <Button className={`user-card-action-btn user-card-action-btn-${variant}`}>
-            <img src={FingerPrintIcon} alt="" />
-          </Button>
         </div>
         {role && <Typography variant="span">{role}</Typography>}
 
