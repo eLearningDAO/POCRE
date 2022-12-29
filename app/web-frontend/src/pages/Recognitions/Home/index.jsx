@@ -1,6 +1,5 @@
 import { Button, Grid } from '@mui/material';
 import RecognitionCard from 'components/cards/RecognitionCard';
-import moment from 'moment';
 import { useEffect, useState } from 'react';
 import authUser from 'utils/helpers/authUser';
 import useRecognition from '../common/hooks/useRecognitions';
@@ -78,9 +77,9 @@ function Recognition() {
               // eslint-disable-next-line unicorn/prefer-module
               userImage={x?.recognition_by?.image_url || require('assets/images/profile-placeholder.png')}
               userProfileId={x?.recognition_by?.user_id}
-              creationDate={moment(x?.recognition_issued).format('Do MMMM YYYY')}
-              acceptedOn={x?.status !== 'accepted' ? null : moment(x?.status_updated).format('Do MMMM YYYY')}
-              declinedOn={x?.status !== 'declined' ? null : moment(x?.status_updated).format('Do MMMM YYYY')}
+              creationDate={x?.recognition_issued}
+              acceptedOn={x?.status !== 'accepted' ? null : x?.status_updated}
+              declinedOn={x?.status !== 'declined' ? null : x?.status_updated}
               isPending={x?.status === 'pending'}
               canAccept={x?.status === 'pending'}
               canDecline={x?.status === 'pending'}
@@ -118,7 +117,7 @@ function Recognition() {
                     description={x?.material?.material_description}
                     recognizedByUserName={null}
                     awaitingRecognitionByUserName={x?.recognition_for?.user_name}
-                    creationDate={moment(x?.recognition_issued).format('Do MMMM YYYY')}
+                    creationDate={x?.recognition_issued}
                     // eslint-disable-next-line unicorn/prefer-module
                     userImage={x?.recognition_for?.image_url || require('assets/images/profile-placeholder.png')}
                     userProfileId={x?.recognition_for?.user_id}

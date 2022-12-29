@@ -56,7 +56,12 @@ const useDetails = () => {
       litigationResponse.voteStatus = !vote ? voteStatusTypes.IMPARTIAL
         : (vote.decision_status ? voteStatusTypes.AGREED : voteStatusTypes.DISAGREED);
 
-      return { ...litigationResponse, decisions: litigationResponse?.decisions || [] };
+      return {
+        ...litigationResponse,
+        decisions: litigationResponse?.decisions || [],
+        litigation_start: moment(litigationResponse?.litigation_start).format('DD/MM/YYYY'), // moment auto converts utc to local time
+        litigation_end: moment(litigationResponse?.litigation_end).format('DD/MM/YYYY'), // moment auto converts utc to local time
+      };
     },
     staleTime: 100_000, // delete cached data after 100 seconds
     enabled: !!litigationId,

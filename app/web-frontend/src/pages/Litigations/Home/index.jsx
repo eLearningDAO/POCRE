@@ -2,7 +2,6 @@ import {
   Alert, Button, Grid, Snackbar,
 } from '@mui/material';
 import Loader from 'components/uicore/Loader';
-import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './index.css';
@@ -124,8 +123,8 @@ function Litigation() {
                   // eslint-disable-next-line unicorn/prefer-module
                   image: x?.assumed_author?.image_url || require('assets/images/profile-placeholder.png'),
                 }}
-                startDate={moment(x?.litigation_start).format('DD/MM/YYYY')}
-                endDate={moment(x?.litigation_end).format('DD/MM/YYYY')}
+                startDate={x?.litigation_start}
+                endDate={x?.litigation_end}
                 mode={
                   (activeLitigation === 'opening' && 'info')
                   || (activeLitigation === 'openedAgainstMe' && 'litigate')
