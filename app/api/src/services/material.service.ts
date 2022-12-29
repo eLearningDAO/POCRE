@@ -105,7 +105,6 @@ export const createMaterial = async (materialBody: IMaterial): Promise<IMaterial
 export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterialQueryResult> => {
   try {
     // search
-    console.log("These are the ooptions",options)
     const search =
       options.search_fields && options.search_fields.length > 0
         ? `WHERE ${options.search_fields
@@ -270,7 +269,6 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
                 }`,
       },
     };
-    console.log("THissi the material type", queryModes.materialsByTypeTopAuthors.query)
     const result = await db.instance.query(
       typeof options.material_type === 'string' && options.top_authors === true ? queryModes.materialsByTypeTopAuthors.query:
       typeof options.material_type === 'string' && options.top_authors === false ? queryModes.materialsByType.query:
