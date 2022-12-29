@@ -170,8 +170,6 @@ const init = async (): Promise<QueryResult<any>> => {
         user_name,
         user_bio,
         image_url,
-        email_address,
-        phone,
         reputation_stars,
         date_joined,
         is_invited
