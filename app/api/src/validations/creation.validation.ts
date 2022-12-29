@@ -40,6 +40,7 @@ export const queryCreations = {
     populate: Joi.alternatives()
       .try(Joi.string().valid(...creationDeepFields), Joi.array().items(Joi.string().valid(...creationDeepFields)))
       .optional(),
+    top_authors: Joi.bool().optional(),
   }),
 };
 

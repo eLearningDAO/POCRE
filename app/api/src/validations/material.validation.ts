@@ -28,6 +28,8 @@ export const queryMaterials = {
     }),
     is_recognized: Joi.bool().optional(),
     is_claimed: Joi.bool().optional(),
+    material_type: Joi.string().valid(...Object.values(materialTypes)).optional(),
+    top_authors: Joi.bool().default(false).optional(),
     populate: Joi.alternatives()
       .try(Joi.string().valid(...materialDeepFields), Joi.array().items(Joi.string().valid(...materialDeepFields)))
       .optional(),

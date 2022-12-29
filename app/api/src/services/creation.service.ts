@@ -23,6 +23,7 @@ interface ICreationQuery {
   ascend_fields: string[];
   descend_fields: string[];
   is_trending?: boolean;
+  top_authors?: boolean;
   is_partially_assigned?: boolean;
   is_fully_assigned?: boolean;
   populate?: string | string[];
@@ -182,6 +183,85 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
         })} FROM creation c ${search} ${order} OFFSET $1 LIMIT $2;`,
         count: `SELECT COUNT(*) as total_results FROM creation ${search};`,
       },
+      topAuthors:{
+        query: `SELECT * ${populator({
+          tableAlias: 'c',
+          fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+        })} FROM creation c where not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
+        (SELECT user_id, 
+                        (
+                          SELECT 
+                          COUNT(author_id) value_occurrence 
+                          FROM 
+                          creation 
+                          WHERE 
+                          author_id = u.user_id
+                        ) 
+                        as total_creations
+                        FROM 
+                        VIEW_users_public_fields u  WHERE 
+                        u.user_id = ANY(
+                                      ARRAY(
+                                        SELECT 
+                                        author_id 
+                                        FROM (
+                                          SELECT 
+                                          author_id, 
+                                          COUNT(author_id) value_occurrence 
+                                          FROM 
+                                          creation 
+                                          GROUP BY 
+                                          author_id 
+                                          ORDER BY 
+                                          value_occurrence 
+                                          DESC
+                                        )
+                                        AS authors
+                                      )
+                                    )
+                          ORDER BY 
+                          total_creations
+                          DESC)
+                ${order} 
+                OFFSET $1 LIMIT $2`,
+                count:`SELECT COUNT(*) as total_results FROM creation c where not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
+                (SELECT user_id, 
+                                (
+                                  SELECT 
+                                  COUNT(author_id) value_occurrence 
+                                  FROM 
+                                  creation 
+                                  WHERE 
+                                  author_id = u.user_id
+                                ) 
+                                as total_creations
+                                FROM 
+                                VIEW_users_public_fields u  WHERE 
+                                u.user_id = ANY(
+                                              ARRAY(
+                                                SELECT 
+                                                author_id 
+                                                FROM (
+                                                  SELECT 
+                                                  author_id, 
+                                                  COUNT(author_id) value_occurrence 
+                                                  FROM 
+                                                  creation 
+                                                  GROUP BY 
+                                                  author_id 
+                                                  ORDER BY 
+                                                  value_occurrence 
+                                                  DESC
+                                                )
+                                                AS authors
+                                              )
+                                            )
+                                  ORDER BY 
+                                  total_creations
+                                  DESC)
+                        ${order} 
+                        OFFSET $1 LIMIT $2`,
+      },
       trending: {
         // opened creations without any litigation
         query: `SELECT 
@@ -283,6 +363,8 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
     };
 
     const result = await db.instance.query(
+      options.top_authors?
+      queryModes.topAuthors.query:
       options.is_trending
         ? queryModes.trending.query
         : options.is_fully_assigned || options.is_partially_assigned
