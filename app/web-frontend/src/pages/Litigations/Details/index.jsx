@@ -12,7 +12,6 @@ import { ReactComponent as ThumbPinIcon } from 'assets/svgs/thumb-pin.svg';
 import MaterialCard from 'components/cards/MaterialCard';
 import UserCard from 'components/cards/UserCard';
 import Loader from 'components/uicore/Loader';
-import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import './index.css';
@@ -83,8 +82,8 @@ export default function LitigationDetails() {
           alignItems="flex-end"
           gap="8px"
         >
-          <Chip className="bg-orange color-white" label={`Starts on ${moment(litigation?.litigation_start).format('DD/MM/YYYY')}`} />
-          <Chip className="bg-orange color-white" label={`Ends on ${moment(litigation?.litigation_end).format('DD/MM/YYYY')}`} />
+          <Chip className="bg-orange color-white" label={`Starts on ${litigation?.litigation_start}`} />
+          <Chip className="bg-orange color-white" label={`Ends on ${litigation?.litigation_end}`} />
         </Grid>
       </Grid>
 

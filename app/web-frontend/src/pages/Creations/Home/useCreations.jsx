@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Creation } from 'api/requests';
 import authUser from 'utils/helpers/authUser';
+import moment from 'moment';
 
 // get auth user
 const user = authUser.getUser();
@@ -25,7 +26,7 @@ const useCreations = () => {
         ...unsortedCreations,
         results: [...unsortedCreations.results].sort(
           (a, b) => new Date(b.created_at) - new Date(a.created_at),
-        ),
+        ).map((x) => ({ ...x, creation_date: moment(x?.creation_date).format('Do MMMM YYYY') })),
       };
     },
     staleTime: 60_000, // cache for 60 seconds

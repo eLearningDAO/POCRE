@@ -148,7 +148,7 @@ const useCreationForm = ({
       // transform creation
       const temporaryTransformedCreation = {
         id: responseCreation.creation_id,
-        date: moment(responseCreation.creation_date).format('YYYY-MM-DD'),
+        date: moment(responseCreation.creation_date).format('YYYY-MM-DD'), // moment auto converts utc to local time
         description: responseCreation.creation_description,
         title: responseCreation.creation_title,
         is_draft: responseCreation.is_draft,
@@ -201,7 +201,7 @@ const useCreationForm = ({
         creation_link: creationBody.source,
         tags: tags.map((tag) => tag.tag_id),
         ...(materials.length > 0 && { materials: materials.map((x) => x.material_id) }),
-        creation_date: new Date(creationBody.date).toISOString(),
+        creation_date: new Date(creationBody.date).toISOString(), // send date in utc
         is_draft: creationBody.is_draft,
       });
 
@@ -225,7 +225,7 @@ const useCreationForm = ({
       const updatedCreation = {
         creation_title: updateBody.title,
         creation_description: updateBody.description,
-        creation_date: new Date(updateBody.date).toISOString(),
+        creation_date: new Date(updateBody.date).toISOString(), // send date in utc
         ...((creation.original.materials || []).length > 0 && {
           materials: creation.original.materials || [],
         }),
