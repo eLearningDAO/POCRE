@@ -153,6 +153,8 @@ components:
           type: string
         creation_link:
           type: string
+        creation_type:
+          type: string
         author_id:
           type: string
           format: uuid
@@ -181,6 +183,7 @@ components:
         creation_title: my first creation
         creation_description: an example creation
         creation_link: https://example.com
+        creation_type: image
         author_id: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
         tags: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
         materials: [7b3439c6-a691-4a60-9e09-8235804c33fe]
