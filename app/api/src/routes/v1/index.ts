@@ -9,6 +9,7 @@ import litigationRoute from './litigation.route';
 import tokenRoute from './token.route';
 import authRoute from './auth.route';
 import docsRoute from './docs.route';
+import filesRoute from './files.route';
 import config from '../../config/config';
 
 const router = express.Router();
@@ -49,6 +50,10 @@ const defaultRoutes = [
   {
     path: '/auth',
     route: authRoute,
+  },
+  {
+    path: '/files',
+    route: filesRoute,
   },
 ];
 
