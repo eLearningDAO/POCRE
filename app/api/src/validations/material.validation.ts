@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import materialTypes from '../constants/materialTypes';
+import supportedMediaTypes from '../constants/supportedMediaTypes';
 import { materialDeepFields } from '../db/map';
 
 export const createMaterial = {
@@ -7,9 +7,6 @@ export const createMaterial = {
     material_title: Joi.string().required(),
     material_description: Joi.string().optional().allow('').allow(null),
     material_link: Joi.string().uri().required(),
-    material_type: Joi.string()
-      .valid(...Object.values(materialTypes))
-      .required(),
     recognition_id: Joi.string().uuid().optional().allow('').allow(null),
     author_id: Joi.string().uuid().optional(),
     is_claimable: Joi.bool().default(true),
@@ -28,7 +25,9 @@ export const queryMaterials = {
     }),
     is_recognized: Joi.bool().optional(),
     is_claimed: Joi.bool().optional(),
-    material_type: Joi.string().valid(...Object.values(materialTypes)).optional(),
+    material_type: Joi.string()
+      .valid(...Object.values(supportedMediaTypes))
+      .optional(),
     top_authors: Joi.bool().default(false).optional(),
     populate: Joi.alternatives()
       .try(Joi.string().valid(...materialDeepFields), Joi.array().items(Joi.string().valid(...materialDeepFields)))
@@ -56,9 +55,6 @@ export const updateMaterial = {
       material_title: Joi.string().optional(),
       material_description: Joi.string().optional().allow('').allow(null),
       material_link: Joi.string().uri().optional(),
-      material_type: Joi.string()
-        .valid(...Object.values(materialTypes))
-        .optional(),
       recognition_id: Joi.string().uuid().optional().allow('').allow(null),
       is_claimable: Joi.bool(),
     })
