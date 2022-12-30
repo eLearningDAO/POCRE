@@ -64,7 +64,7 @@ function Home() {
         )}
       {
         isSliderImagesFetched ? <Loader /> : (
-          sliderImages && (
+          sliderImages && getSliderImages(sliderImages).length > 0 && (
             <Slider
               handleSlideClick={handleSlideClick}
               slideImageList={getSliderImages(sliderImages)}
