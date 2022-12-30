@@ -1,33 +1,32 @@
-import { Grid, Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Box, Grid } from '@mui/material';
 import LatestNewsCard from 'components/cards/LatestNews';
 import TopAuthorCard from 'components/cards/TopAuthorCard';
-import Loader from 'components/uicore/Loader';
-import './index.css';
-// import Slider from 'components/slider';
 import TrendingCard from 'components/cards/TrendingCard';
-// import { getUrlFileType } from 'utils/helpers/getUrlFileType';
+import Slider from 'components/slider';
+import Loader from 'components/uicore/Loader';
+import { useNavigate } from 'react-router-dom';
+import './index.css';
 import useHome from './useHome';
 
-// const getSliderImages = (imageMaterials) => {
-//   const sliderImages = [];
-//   if (imageMaterials) {
-//     imageMaterials.map(
-//       (material, index) => {
-//         if (getUrlFileType(material.material_link) === 'image') {
-//           sliderImages.push(
-//             {
-//               id: index + 1,
-//               imageUrl: material.material_link,
-//             },
-//           );
-//         }
-//         return 1;
-//       },
-//     );
-//   }
-//   return sliderImages;
-// };
+const getSliderImages = (imageMaterials) => {
+  const sliderImages = [];
+  if (imageMaterials) {
+    imageMaterials.map(
+      (material, index) => {
+        if (material.material_type === 'image') {
+          sliderImages.push(
+            {
+              id: index + 1,
+              imageUrl: material.material_link,
+            },
+          );
+        }
+        return 1;
+      },
+    );
+  }
+  return sliderImages;
+};
 
 function Home() {
   const navigate = useNavigate();
@@ -39,9 +38,9 @@ function Home() {
     isTrendingListFetched,
     isTopAuthorListFetched,
     isMaterialListFetched,
-    // isSliderImagesFetched,
+    isSliderImagesFetched,
     sliderImagesStatus,
-    // sliderImages,
+    sliderImages,
   } = useHome();
   const handleAuthorCardClick = (userId) => {
     navigate(`/wallet/${userId}`);
@@ -51,28 +50,28 @@ function Home() {
     navigate(`/creations/${creationId}`);
   };
 
-  // const handleSlideClick = () => {
-  //   navigate('/creations');
-  // };
+  const handleSlideClick = () => {
+    navigate('/creations');
+  };
 
   return (
     <div className="container">
       {(sliderImagesStatus.error)
-              && (
-              <Box width="100%" className={`${sliderImagesStatus.success ? 'bg-green' : 'bg-red'} color-white`} padding="16px" borderRadius="12px" fontSize="16px" style={{ margin: 'auto', marginTop: '18px' }}>
-                {sliderImagesStatus.success ? 'Success! A new litigation was made.' : sliderImagesStatus.error}
-              </Box>
-              )}
-      {/* {
+        && (
+          <Box width="100%" className={`${sliderImagesStatus.success ? 'bg-green' : 'bg-red'} color-white`} padding="16px" borderRadius="12px" fontSize="16px" style={{ margin: 'auto', marginTop: '18px' }}>
+            {sliderImagesStatus.success ? 'Success! A new litigation was made.' : sliderImagesStatus.error}
+          </Box>
+        )}
+      {
         isSliderImagesFetched ? <Loader /> : (
           sliderImages && (
-          <Slider
-            handleSlideClick={handleSlideClick}
-            slideImageList={getSliderImages(sliderImages)}
-          />
+            <Slider
+              handleSlideClick={handleSlideClick}
+              slideImageList={getSliderImages(sliderImages)}
+            />
           )
         )
-          } */}
+      }
       <Grid container spacing={3}>
         <Grid item md={5} xs={12} sm={12} className="trending-container">
           <h4 className="home-title">Latest Co-Creations</h4>
