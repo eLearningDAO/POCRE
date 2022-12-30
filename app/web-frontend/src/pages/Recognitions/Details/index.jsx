@@ -6,9 +6,9 @@ import {
   Button, Chip,
   Grid, Snackbar, Typography,
 } from '@mui/material';
-import DownloadIconSVG from 'assets/svgs/download.svg';
 import PreviewButton from 'components/cards/CreationCard/btns/PreviewButton';
 import ShareButton from 'components/cards/CreationCard/btns/ShareButton';
+import MediaBlock from 'components/media/block';
 import CreationPreview from 'components/previews/CreationPreview';
 import SocialMediaModal from 'components/shared/socialmediaSharingModal';
 import Loader from 'components/uicore/Loader';
@@ -16,9 +16,8 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
-import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import useRecognitions from '../common/hooks/useRecognitions';
 import './index.css';
 
@@ -28,8 +27,6 @@ const user = authUser.getUser();
 export default function CreationDetails() {
   const { id } = useParams();
 
-  const [mediaType, setMediaType] = useState(null);
-  const [creationMediaType, setCreationMediaType] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [showSocialMediaSharePreview, setShowSocialMediaSharePreview] = useState(false);
   const shareUrl = `${window.location.origin}/recognitions/${id}`;
@@ -50,14 +47,6 @@ export default function CreationDetails() {
   useEffect(() => {
     if (id) fetchRecognitionDetails(id);
   }, [id]);
-
-  useEffect(() => {
-    const recognitionFileType = getUrlFileType(recognitionDetails?.material?.material_link);
-    setMediaType(recognitionFileType);
-
-    const creationFileType = getUrlFileType(recognitionDetails?.material?.material_link);
-    setCreationMediaType(creationFileType);
-  }, [recognitionDetails]);
 
   if (isFetchingRecognitionDetails) return <Loader />;
 
@@ -147,42 +136,10 @@ export default function CreationDetails() {
           marginTop="18px"
           width="100%"
         >
-          <div
-            className="creation-media"
-          >
-            {mediaType === 'image' && (
-              <img alt="collection-card-hero" src={recognitionDetails?.material?.material_link} />
-            )}
-            {mediaType === 'video' && (
-              <video
-                src={recognitionDetails?.material?.material_link}
-                preload="metadata"
-                controls
-              />
-            )}
-            {mediaType === 'audio' && (
-              <audio src={recognitionDetails?.material?.material_link} controls />
-            )}
-            {(mediaType === 'document' && recognitionDetails?.material?.material_link?.includes('.pdf')) && (
-              <embed src={recognitionDetails?.material?.material_link} />
-            )}
-            {mediaType === 'document' && !recognitionDetails?.material?.material_link?.includes('.pdf') && (
-              <div className="unsupported-file-type">
-                <h4 className="heading h4">Are you okay to download this file?</h4>
-                <a href={mediaType}>{recognitionDetails?.material?.material_link}</a>
-                <div className="media-preview-content-options">
-                  <Button
-                    className="btn btn-primary icon-btn"
-                    // eslint-disable-next-line security/detect-non-literal-fs-filename
-                    onClick={() => window.open(recognitionDetails?.material?.material_link)}
-                  >
-                    <img src={DownloadIconSVG} alt="" />
-                    Download
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
+          <MediaBlock
+            mediaType={recognitionDetails?.material?.material_type}
+            mediaUrl={recognitionDetails?.material?.material_link}
+          />
         </Grid>
 
         <Grid
@@ -289,42 +246,10 @@ export default function CreationDetails() {
           marginTop="18px"
           width="100%"
         >
-          <div
-            className="creation-media"
-          >
-            {creationMediaType === 'image' && (
-              <img alt="collection-card-hero" src={recognitionDetails?.creation?.creation_link} />
-            )}
-            {creationMediaType === 'video' && (
-              <video
-                src={recognitionDetails?.creation?.creation_link}
-                preload="metadata"
-                controls
-              />
-            )}
-            {creationMediaType === 'audio' && (
-              <audio src={recognitionDetails?.creation?.creation_link} controls />
-            )}
-            {(creationMediaType === 'document' && recognitionDetails?.creation?.creation_link?.includes('.pdf')) && (
-              <embed src={recognitionDetails?.creation?.creation_link} />
-            )}
-            {creationMediaType === 'document' && !recognitionDetails?.creation?.creation_link?.includes('.pdf') && (
-              <div className="unsupported-file-type">
-                <h4 className="heading h4">Are you okay to download this file?</h4>
-                <a href={creationMediaType}>{recognitionDetails?.creation?.creation_link}</a>
-                <div className="media-preview-content-options">
-                  <Button
-                    className="btn btn-primary icon-btn"
-                    // eslint-disable-next-line security/detect-non-literal-fs-filename
-                    onClick={() => window.open(recognitionDetails?.creation?.creation_link)}
-                  >
-                    <img src={DownloadIconSVG} alt="" />
-                    Download
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
+          <MediaBlock
+            mediaType={recognitionDetails?.creation?.creation_type}
+            mediaUrl={recognitionDetails?.creation?.creation_link}
+          />
         </Grid>
 
         <Grid item xs={12} marginTop="18px" marginLeft="auto">

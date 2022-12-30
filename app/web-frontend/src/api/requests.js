@@ -43,6 +43,7 @@ const Recognition = REQUEST_TEMPLATE('recognitions');
 const Litigation = REQUEST_TEMPLATE('litigations');
 const Tag = REQUEST_TEMPLATE('tags');
 const Auth = { login: REQUEST_TEMPLATE('auth/login').create, signup: REQUEST_TEMPLATE('auth/signup').create };
+const Files = { getMediaType: REQUEST_TEMPLATE('files/media-type').getAll };
 
 export {
   User,
@@ -53,4 +54,5 @@ export {
   Litigation,
   Tag,
   Auth,
+  Files,
 };

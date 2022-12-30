@@ -3,10 +3,10 @@ import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 import statusTypes from '../constants/statusTypes';
-import materialTypes from '../constants/materialTypes';
+import supportedMediaTypes from '../constants/supportedMediaTypes';
 import { populator } from '../db/plugins/populator';
 
-const types = Object.values(materialTypes);
+const types = Object.values(supportedMediaTypes);
 type TMaterialType = typeof types[number];
 
 interface IMaterial {
@@ -124,14 +124,14 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
         })} FROM material m ${search} OFFSET $1 LIMIT $2;`,
         count: `SELECT COUNT(*) as total_results FROM material ${search};`,
       },
-      materialsByType:{
+      materialsByType: {
         query: `SELECT * ${populator({
           tableAlias: 'm',
           fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
         })} FROM material m ${search} WHERE m.material_type='${options.material_type}' OFFSET $1 LIMIT $2;`,
-        count: `SELECT COUNT(*) as total_results FROM material m ${search} WHERE m.material_type='${options.material_type}' OFFSET $1 LIMIT $2;`
+        count: `SELECT COUNT(*) as total_results FROM material m ${search} WHERE m.material_type='${options.material_type}' OFFSET $1 LIMIT $2;`,
       },
-      materialsByTypeTopAuthors:{
+      materialsByTypeTopAuthors: {
         query: `SELECT * ${populator({
           tableAlias: 'm',
           fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
@@ -172,7 +172,7 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
             )
             AS authors
           )
-        ) OFFSET $1 LIMIT $2;`
+        ) OFFSET $1 LIMIT $2;`,
       },
       recognizedOrClaimed: {
         query: `SELECT 
@@ -270,12 +270,14 @@ export const queryMaterials = async (options: IMaterialQuery): Promise<IMaterial
       },
     };
     const result = await db.instance.query(
-      typeof options.material_type === 'string' && options.top_authors === true ? queryModes.materialsByTypeTopAuthors.query:
-      typeof options.material_type === 'string' && options.top_authors === false ? queryModes.materialsByType.query:
-      options.is_recognized === true ||
-        options.is_recognized === false ||
-        options.is_claimed === true ||
-        options.is_claimed === false
+      typeof options.material_type === 'string' && options.top_authors === true
+        ? queryModes.materialsByTypeTopAuthors.query
+        : typeof options.material_type === 'string' && options.top_authors === false
+        ? queryModes.materialsByType.query
+        : options.is_recognized === true ||
+          options.is_recognized === false ||
+          options.is_claimed === true ||
+          options.is_claimed === false
         ? queryModes.recognizedOrClaimed.query
         : queryModes.default.query,
       [options.page === 1 ? '0' : (options.page - 1) * options.limit, options.limit]

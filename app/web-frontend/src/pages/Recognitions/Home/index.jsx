@@ -72,6 +72,7 @@ function Recognition() {
               id={x.recognition_id}
               title={x?.material?.material_title}
               mediaUrl={x?.material?.material_link}
+              mediaType={x?.material?.material_type}
               description={x?.material?.material_description}
               recognizedByUserName={x?.recognition_by?.user_name}
               // eslint-disable-next-line unicorn/prefer-module
@@ -114,6 +115,7 @@ function Recognition() {
                     id={x.recognition_id}
                     title={x?.material?.material_title}
                     mediaUrl={x?.material?.material_link}
+                    mediaType={x?.material?.material_type}
                     description={x?.material?.material_description}
                     recognizedByUserName={null}
                     awaitingRecognitionByUserName={x?.recognition_for?.user_name}

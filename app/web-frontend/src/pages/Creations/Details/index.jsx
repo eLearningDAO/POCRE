@@ -2,29 +2,26 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 /* eslint-disable sonarjs/no-all-duplicated-branches */
 import {
-  Chip, Grid,
-  Typography, Box, Button,
-  Alert, Snackbar,
+  Alert, Box, Button, Chip, Grid, Snackbar, Typography,
 } from '@mui/material';
-import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import QRCode from 'qrcode';
-import MaterialCard from 'components/cards/MaterialCard';
-import Loader from 'components/uicore/Loader';
-import './index.css';
-import { getUrlFileType } from 'utils/helpers/getUrlFileType';
-import DownloadIconSVG from 'assets/svgs/download.svg';
 import PencilIcon from 'assets/images/pencil.png';
+import PreviewIcon from 'assets/images/preview.png';
 import ShareIcon from 'assets/images/share.png';
 import DeleteIconSVG from 'assets/svgs/delete.svg';
-import PreviewIcon from 'assets/images/preview.png';
-import SocialMediaModal from 'components/shared/socialmediaSharingModal';
-import CreationPreview from 'components/previews/CreationPreview';
 import { DeleteCofirmationDialog } from 'components/cards/CreationCard';
+import MaterialCard from 'components/cards/MaterialCard';
+import MediaBlock from 'components/media/block';
+import CreationPreview from 'components/previews/CreationPreview';
+import SocialMediaModal from 'components/shared/socialmediaSharingModal';
+import Loader from 'components/uicore/Loader';
+import moment from 'moment';
+import QRCode from 'qrcode';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
-import useDetails from './useDetails';
 import useCreationDelete from '../common/hooks/useCreationDelete';
+import './index.css';
+import useDetails from './useDetails';
 
 const user = authUser.getUser();
 
@@ -32,7 +29,6 @@ export default function CreationDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [mediaType, setMediaType] = useState(null);
   const [qrcodeBase64, setQrcodeBase64] = useState(null);
   const [showShareOptions, setShowShareOptions] = useState(null);
   const [showCreationDetailsPreview, setShowCreationDetailsPreview] = useState(null);
@@ -86,8 +82,6 @@ export default function CreationDetails() {
   }, [deleteCreationStatus.success]);
 
   useEffect(() => {
-    const x = getUrlFileType(creation?.creation_link);
-    setMediaType(x);
     if (creation?.creation_id) generateQRCodeBase64(creation?.creation_id);
   }, [creation]);
 
@@ -167,42 +161,7 @@ export default function CreationDetails() {
         marginTop="18px"
         width="100%"
       >
-        <div
-          className="creation-media"
-        >
-          {mediaType === 'image' && (
-            <img alt="collection-card-hero" src={creation?.creation_link} />
-          )}
-          {mediaType === 'video' && (
-            <video
-              src={creation?.creation_link}
-              preload="metadata"
-              controls
-            />
-          )}
-          {mediaType === 'audio' && (
-            <audio src={creation?.creation_link} controls />
-          )}
-          {(mediaType === 'document' && creation?.creation_link?.includes('.pdf')) && (
-            <embed src={creation?.creation_link} />
-          )}
-          {mediaType === 'document' && !creation?.creation_link?.includes('.pdf') && (
-            <div className="unsupported-file-type">
-              <h4 className="heading h4">Are you okay to download this file?</h4>
-              <a href={creation?.creation_link}>{creation?.creation_link}</a>
-              <div className="media-preview-content-options">
-                <Button
-                  className="btn btn-primary icon-btn"
-                  // eslint-disable-next-line security/detect-non-literal-fs-filename
-                  onClick={() => window.open(creation?.creation_link)}
-                >
-                  <img src={DownloadIconSVG} alt="" />
-                  Download
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
+        <MediaBlock mediaType={creation?.creation_type} mediaUrl={creation?.creation_link} />
       </Grid>
 
       <Grid
@@ -213,15 +172,15 @@ export default function CreationDetails() {
         width="100%"
       >
         {user?.user_id === creation?.author?.user_id && creation?.is_draft && (
-        <Button className="collection-card-action-btn collection-card-action-btn-border-dark" onClick={onEditClick}>
-          <img src={PencilIcon} alt="" />
-        </Button>
+          <Button className="collection-card-action-btn collection-card-action-btn-border-dark" onClick={onEditClick}>
+            <img src={PencilIcon} alt="" />
+          </Button>
         )}
 
         {user?.user_id === creation?.author?.user_id && (
-        <Button className="collection-card-action-btn collection-card-action-btn-border-dark" onClick={onDeleteClick}>
-          <img src={DeleteIconSVG} alt="" />
-        </Button>
+          <Button className="collection-card-action-btn collection-card-action-btn-border-dark" onClick={onDeleteClick}>
+            <img src={DeleteIconSVG} alt="" />
+          </Button>
         )}
 
         <Button className="collection-card-action-btn collection-card-action-btn-border-dark" onClick={onPreviewClick}>
@@ -304,6 +263,7 @@ export default function CreationDetails() {
               <MaterialCard
                 key={index}
                 mediaUrl={x?.material_link}
+                mediaType={x?.material_type}
                 link={x?.material_link}
                 title={x?.material_title}
                 description={x?.material_description}

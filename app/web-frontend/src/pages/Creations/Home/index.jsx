@@ -108,6 +108,7 @@ function Creations() {
                   creationDate={x?.creation_date}
                   interactionBtns
                   mediaUrl={x?.creation_link}
+                  mediaType={x?.creation_type}
                   author={x?.author?.user_name}
                   authorProfileId={x?.author?.user_id}
                   materials={x?.materials?.length > 0 ? x?.materials?.map((m) => ({

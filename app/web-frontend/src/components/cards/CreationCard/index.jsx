@@ -1,14 +1,13 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/media-has-caption */
 import {
   Box, Button, Chip, Grid, Typography,
 } from '@mui/material';
-import DownloadIconSVG from 'assets/svgs/download.svg';
+import MediaPreview from 'components/media/preview';
+import MediaTile from 'components/media/tile';
 import CreationPreview from 'components/previews/CreationPreview';
 import SocialMediaModal from 'components/shared/socialmediaSharingModal';
 import { useEffect, useState } from 'react';
-import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import { Link } from 'react-router-dom';
 import EditButton from './btns/EditButton';
 import PreviewButton from './btns/PreviewButton';
@@ -41,47 +40,6 @@ export function DeleteCofirmationDialog({ onClose, onConfirm }) {
   );
 }
 
-export function MediaPreview({ mediaType, mediaUrl, onClose }) {
-  return (
-    <div
-      className="media-preview-container"
-      onClick={(event) => event.target === event.currentTarget && onClose()}
-    >
-      <div
-        className={`media-preview-content ${mediaType === 'audio' && 'media-preview-content-audio'
-        } ${mediaType === 'document'
-          && !mediaUrl.includes('.pdf')
-          && 'media-preview-content-unsupported'
-        }`}
-      >
-        {mediaType === 'image' && <img src={mediaUrl} alt="" />}
-        {mediaType === 'video' && <video src={mediaUrl} controls />}
-        {mediaType === 'audio' && <audio src={mediaUrl} controls />}
-        {mediaType === 'document' && mediaUrl.includes('.pdf') && <embed src={mediaUrl} />}
-        {mediaType === 'document' && !mediaUrl.includes('.pdf') && (
-          <>
-            <h4 className="heading h4">Are you okay to download this file?</h4>
-            <a href={mediaUrl}>{mediaUrl}</a>
-            <div className="media-preview-content-options">
-              <Button className="btn btn-primary-outlined" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button
-                className="btn btn-primary icon-btn"
-                // eslint-disable-next-line security/detect-non-literal-fs-filename
-                onClick={() => window.open(mediaUrl)}
-              >
-                <img src={DownloadIconSVG} alt="" />
-                Download
-              </Button>
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
-
 function CreationCard({
   creationId = '',
   interactionBtns,
@@ -101,22 +59,17 @@ function CreationCard({
   author = '',
   authorProfileId = '',
   mediaUrl = '',
+  mediaType = '',
   canEdit = true,
   canDelete = true,
   onEditClick = () => {},
   onDeleteClick = () => {},
 }) {
-  const [mediaType, setMediaType] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(null);
   const [showMediaPreview, setShowMediaPreview] = useState(null);
   const [showCreationDetailsPreview, setShowCreationDetailsPreview] = useState(null);
   const [showSocialMediaSharePreview, setShowSocialMediaSharePreview] = useState(false);
   const shareUrl = `${window.location.origin}/creations/${creationId}`;
-
-  useEffect(() => {
-    const x = getUrlFileType(mediaUrl);
-    setMediaType(x);
-  }, []);
 
   useEffect(() => {
     if (showCreationDetailsPreview) {
@@ -198,73 +151,11 @@ function CreationCard({
           gap={{ xs: '12px', sm: '12px', md: '16px' }}
           height="fit-content"
         >
-          <div
-            className="collection-card-media-container"
-            onClick={() => setShowMediaPreview(true)}
-          >
-            {mediaType === 'image' && (
-              <img className="collection-card-media" alt="collection-card-hero" src={mediaUrl} />
-            )}
-            {mediaType === 'video' && (
-              <>
-                <video
-                  className="collection-card-media"
-                  src={`${mediaUrl}#t=0.5`}
-                  preload="metadata"
-                />
-                <div className="overlay-button">
-                  <svg
-                    stroke="#ffffff"
-                    fill="#ffffff"
-                    strokeWidth="0"
-                    viewBox="0 0 448 512"
-                    height="44px"
-                    width="44px"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z" />
-                  </svg>
-                </div>
-              </>
-            )}
-            {mediaType === 'audio' && (
-              <>
-                <div className="collection-card-media creation-card-media-overlay" />
-                <div className="overlay-button">
-                  <svg
-                    stroke="#ffffff"
-                    fill="#ffffff"
-                    strokeWidth="0"
-                    viewBox="0 0 448 512"
-                    height="44px"
-                    width="44px"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z" />
-                  </svg>
-                </div>
-              </>
-            )}
-            {(mediaType === 'document' || mediaType === null) && (
-              <>
-                <div className="collection-card-media creation-card-media-overlay" />
-                <div className="overlay-button">
-                  <svg
-                    stroke="#ffffff"
-                    fill="#ffffff"
-                    strokeWidth="0"
-                    viewBox="0 0 512 512"
-                    height="64px"
-                    width="64px"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M428 224H288a48 48 0 01-48-48V36a4 4 0 00-4-4h-92a64 64 0 00-64 64v320a64 64 0 0064 64h224a64 64 0 0064-64V228a4 4 0 00-4-4zm-92 160H176a16 16 0 010-32h160a16 16 0 010 32zm0-80H176a16 16 0 010-32h160a16 16 0 010 32z" />
-                    <path d="M419.22 188.59L275.41 44.78a2 2 0 00-3.41 1.41V176a16 16 0 0016 16h129.81a2 2 0 001.41-3.41z" />
-                  </svg>
-                </div>
-              </>
-            )}
-          </div>
+          <MediaTile
+            mediaType={mediaType}
+            mediaUrl={mediaUrl}
+            onMediaClick={() => setShowMediaPreview(true)}
+          />
           <Box
             alignItems="flex-start"
             display="flex"

@@ -95,7 +95,6 @@ const makeCommonResource = async (
       const material = await Material.create({
         material_title: x.title,
         material_link: x.link,
-        material_type: x.fileType,
         author_id: author.user_id,
       });
 

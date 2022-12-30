@@ -44,7 +44,6 @@ export default router;
  *             required:
  *               - material_title
  *               - material_link
- *               - material_type
  *             properties:
  *               material_title:
  *                 type: string
@@ -54,9 +53,6 @@ export default router;
  *               material_link:
  *                 type: string
  *                 description: can be null
- *               material_type:
- *                 type: string
- *                 enum: [image, video, audio, document]
  *               recognition_id:
  *                 type: string
  *                 format: uuid
@@ -70,7 +66,6 @@ export default router;
  *                material_title: plastic
  *                material_description: dangerous
  *                material_link: https://example.com
- *                material_type: audio
  *                recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
  *                author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
  *                is_claimable: true
@@ -258,9 +253,6 @@ export default router;
  *               material_link:
  *                 type: string
  *                 description: can be null
- *               material_type:
- *                 type: string
- *                 enum: [image, video, audio, document]
  *               recognition_id:
  *                 type: string
  *                 format: uuid
@@ -271,7 +263,6 @@ export default router;
  *                material_title: plastic
  *                material_description: dangerous
  *                material_link: https://example.com
- *                material_type: audio
  *                recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
  *                is_claimable: false
  *     responses:

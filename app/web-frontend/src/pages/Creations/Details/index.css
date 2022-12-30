@@ -28,28 +28,6 @@
     min-width: initial !important;
 }
 
-.creation-media {
-    width: 100%;
-}
-
-.creation-media>img,
-.creation-media>video {
-    aspect-ratio: 16/ 9;
-}
-
-.creation-media>img,
-.creation-media>video,
-.creation-media>audio,
-.creation-media>embed {
-    width: 100%;
-    box-sizing: border-box;
-    border-radius: 12px;
-}
-
-.creation-media>embed {
-    min-height: 800px;
-}
-
 .creation-author img {
     border-radius: 12px;
 }
@@ -93,18 +71,6 @@
 
 .header-lines>span:after {
     left: 100%;
-}
-
-.unsupported-file-type {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    justify-content: center;
-    align-items: center;
-    background-color: white;
-    border-radius: 16px;
-    width: 100%;
-    padding: 24px;
 }
 
 .creation-qr-code {
