@@ -3,7 +3,6 @@ import { DatabaseError } from 'pg';
 import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 import { getCreationById } from './creation.service';
-import { getMaterialById } from './material.service';
 import { populator } from '../db/plugins/populator';
 import litigationStatusTypes from '../constants/litigationStatusTypes';
 
