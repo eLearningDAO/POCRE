@@ -146,34 +146,3 @@
   background-color: var(--color-white);
   border-radius: 16px;
 }
-
-
-.collection-card-media-container {
-  width: 100%;
-  position: relative;
-  cursor: pointer;
-}
-
-.collection-card-media {
-  width: 100% !important;
-  min-width: 100% !important;
-  height: 100% !important;
-  object-fit: cover;
-}
-
-.creation-card-media-overlay {
-  background-color: var(--color-orange);
-}
-
-.overlay-button {
-  background-color: rgba(0,0,0,0.3);
-  width: 100% !important;
-  height: 100% !important;
-  position: absolute;
-  left: 0;
-  top: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
