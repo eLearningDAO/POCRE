@@ -10,6 +10,7 @@ import { IUserDoc } from '../services/user.service';
 import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/catchAsync';
 import { generateProofOfCreation } from '../utils/generateProofOfCreation';
+import { getSupportedFileTypeFromLink } from '../utils/getSupportedFileTypeFromLink';
 
 export const queryCreations = catchAsync(async (req, res): Promise<void> => {
   const creation = await creationService.queryCreations(req.query as any);
@@ -61,8 +62,15 @@ export const createCreation = catchAsync(async (req, res): Promise<void> => {
   await Promise.all(req.body.tags.map((id: string) => getTagById(id))); // verify tags, will throw an error if any tag is not found
   if (req.body.materials) await Promise.all(req.body.materials.map((id: string) => getMaterialById(id))); // verify materials, will throw an error if any material is not found
 
+  // get the creation type from link
+  const creationType = await getSupportedFileTypeFromLink(req.body.creation_link);
+
   // make the creation
-  const newCreation = await creationService.createCreation({ ...req.body, author_id: (req.user as IUserDoc).user_id });
+  const newCreation = await creationService.createCreation({
+    ...req.body,
+    creation_type: creationType,
+    author_id: (req.user as IUserDoc).user_id,
+  });
 
   // send recognitions to material authors if the creation is published
   if (!req.body.is_draft && req.body.materials && req.body.materials.length > 0) {
@@ -134,10 +142,22 @@ export const updateCreationById = catchAsync(async (req, res): Promise<void> => 
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `published creation cannot be updated`);
   }
 
+  // get the creation type from link
+  const creationType = req.body.creation_link
+    ? await getSupportedFileTypeFromLink(req.body.creation_link)
+    : foundCreation.creation_link;
+
   // update creation
-  const updatedCreation = await creationService.updateCreationById(req.params.creation_id, req.body, {
-    owner_id: (req.user as IUserDoc).user_id,
-  });
+  const updatedCreation = await creationService.updateCreationById(
+    req.params.creation_id,
+    {
+      ...req.body,
+      creation_type: creationType,
+    },
+    {
+      owner_id: (req.user as IUserDoc).user_id,
+    }
+  );
 
   // send recognitions to material authors if the creation is published
   if (foundCreation?.is_draft && req.body.is_draft === false && updatedCreation && updatedCreation.materials.length > 0) {

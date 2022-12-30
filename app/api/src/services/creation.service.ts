@@ -3,11 +3,16 @@ import statusTypes from '../constants/statusTypes';
 import { populator } from '../db/plugins/populator';
 import * as db from '../db/pool';
 import ApiError from '../utils/ApiError';
+import supportedMediaTypes from '../constants/supportedMediaTypes';
+
+const types = Object.values(supportedMediaTypes);
+type TCreationTypes = typeof types[number];
 
 interface ICreation {
   creation_title: string;
   creation_description?: string;
   creation_link: string;
+  creation_type: TCreationTypes;
   author_id: string;
   tags: string[];
   materials?: string[];
@@ -40,6 +45,7 @@ interface ICreationDoc {
   creation_title: string;
   creation_description: string;
   creation_link: string;
+  creation_type: TCreationTypes;
   author_id: string;
   tags: string[];
   materials: string[];
@@ -108,6 +114,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
         creation_title,
         creation_description,
         creation_link,
+        creation_type,
         author_id,
         tags,
         materials,
@@ -116,12 +123,13 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
         is_claimable
       ) 
       values 
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9) 
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) 
       RETURNING *;`,
       [
         creationBody.creation_title,
         creationBody.creation_description,
         creationBody.creation_link,
+        creationBody.creation_type,
         creationBody.author_id,
         creationBody.tags,
         creationBody.materials || [],
@@ -183,7 +191,7 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
         })} FROM creation c ${search} ${order} OFFSET $1 LIMIT $2;`,
         count: `SELECT COUNT(*) as total_results FROM creation ${search};`,
       },
-      topAuthors:{
+      topAuthors: {
         query: `SELECT * ${populator({
           tableAlias: 'c',
           fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
@@ -224,7 +232,7 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                           DESC)
                 ${order} 
                 OFFSET $1 LIMIT $2`,
-                count:`SELECT COUNT(*) as total_results FROM creation c where not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
+        count: `SELECT COUNT(*) as total_results FROM creation c where not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
                 (SELECT user_id, 
                                 (
                                   SELECT 
@@ -363,9 +371,9 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
     };
 
     const result = await db.instance.query(
-      options.top_authors?
-      queryModes.topAuthors.query:
-      options.is_trending
+      options.top_authors
+        ? queryModes.topAuthors.query
+        : options.is_trending
         ? queryModes.trending.query
         : options.is_fully_assigned || options.is_partially_assigned
         ? queryModes.assigned.query

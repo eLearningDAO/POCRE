@@ -119,6 +119,7 @@ const init = async (): Promise<QueryResult<any>> => {
       creation_title character varying NOT NULL,
       creation_description text,
       creation_link character varying NOT NULL,
+      creation_type media_type_enums NOT NULL,
       author_id UUID NOT NULL,
       tags UUID[],
       materials UUID[],
