@@ -54,8 +54,11 @@ const useHome = () => {
   } = useQuery({
     queryKey: ['imageMaterial'],
     queryFn: async () => {
-      let imageMaterialResponse = Material.getAll(
-        `limit=6&page=${1}&is_recognized=true&is_claimed=false&material_type=image&top_authors=true`,
+      let imageMaterialResponse = await Material.getAll(
+        'limit=1&is_recognized=true&is_claimed=false&material_type=image&top_authors=true',
+      );
+      imageMaterialResponse = await Material.getAll(
+        `limit=10&page=${imageMaterialResponse.total_pages > 1 ? imageMaterialResponse.total_pages : 1}&is_recognized=true&is_claimed=false&material_type=image&top_authors=true`,
       );
       imageMaterialResponse = await imageMaterialResponse;
       return imageMaterialResponse.results;
