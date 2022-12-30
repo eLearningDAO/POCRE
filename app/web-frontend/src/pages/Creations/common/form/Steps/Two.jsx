@@ -1,15 +1,17 @@
 import {
-  Button, Grid, Typography,
+  Box, Button, Grid, Typography,
 } from '@mui/material';
 import InviteIcon from 'assets/images/invite-icon.png';
 import MaterialCard from 'components/cards/MaterialCard';
 import Modal from 'components/Modal';
 import Form from 'components/uicore/Form';
 import Input from 'components/uicore/Input';
+import Loader from 'components/uicore/Loader';
 import Select from 'components/uicore/Select';
 import TagInput from 'components/uicore/TagInput';
 import { useState } from 'react';
 import authUser from 'utils/helpers/authUser';
+import useLinkValidation from './useLinkValidation';
 import { stepTwoAuthorInviteValidation, stepTwoMaterialValidation } from './validation';
 
 function NewMaterial({
@@ -21,7 +23,12 @@ function NewMaterial({
 }) {
   const [editMode, setEditMode] = useState(false);
 
-  const handleUpdate = (values) => {
+  const { linkError, validateLink, isValidatingLink } = useLinkValidation({ customErrorMessage: 'Invalid material link' });
+
+  const handleUpdate = async (values) => {
+    const response = await validateLink(values?.link);
+    if (!response) return;
+
     if (onUpdate) onUpdate(values);
     setEditMode(false);
   };
@@ -118,19 +125,33 @@ function NewMaterial({
               placeholder="Type author name and select from suggestions below"
               tagSuggestions={authorSuggestions.map((x) => x.user_name) || []}
             />
-            {/* <Button
-              className="inviteButton"
-              style={{
-                width: 'fit-content',
-                paddingLeft: '24px',
-                paddingRight: '24px',
-              }}
-            >
-              <img width={17} style={{ marginRight: '10px' }} alt="invite-icon" src={InviteIcon} />
-              {' '}
-              New author
-            </Button> */}
           </Grid>
+
+          {linkError
+            && (
+              <>
+                <Grid
+                  xs={12}
+                  md={2}
+                  marginTop={{ xs: '12px', md: '18px' }}
+                  display="flex"
+                  flexDirection="row"
+                  alignItems="center"
+                />
+                <Grid
+                  xs={12}
+                  md={10}
+                  marginTop={{ xs: '0px', md: '18px' }}
+                  display="flex"
+                  gap="8px"
+                  alignItems="center"
+                >
+                  <Box width="100%" className="bg-red color-white" padding="16px" borderRadius="12px" fontSize="16px">
+                    {linkError}
+                  </Box>
+                </Grid>
+              </>
+            )}
 
           <Grid
             xs={12}
@@ -165,7 +186,7 @@ function NewMaterial({
               }}
               type="submit"
             >
-              Update File
+              {isValidatingLink ? <Loader /> : 'Update File'}
             </Button>
           </Grid>
         </Grid>
@@ -298,7 +319,12 @@ export default function StepTwo({
   const [showInviteAuthorDialog, setShowInviteAuthorDialog] = useState(false);
   const [invitedAuthor, setInvitedAuthor] = useState(null);
 
-  const handleValues = (values) => {
+  const { linkError, validateLink, isValidatingLink } = useLinkValidation({ customErrorMessage: 'Invalid material link' });
+
+  const handleValues = async (values) => {
+    const response = await validateLink(values?.link);
+    if (!response) return;
+
     setMaterials([...materials, values]);
     setInvitedAuthor(null);
 
@@ -395,6 +421,17 @@ export default function StepTwo({
               </Button>
             </Grid>
 
+            {linkError && (
+              <>
+                <Grid xs={12} md={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center" />
+                <Grid xs={12} md={10} marginTop={{ xs: '0px', md: '18px' }} display="flex" alignItems="center">
+                  <Box width="100%" className="bg-red color-white" padding="16px" borderRadius="12px" fontSize="16px">
+                    {linkError}
+                  </Box>
+                </Grid>
+              </>
+            )}
+
             <Grid xs={12} md={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center" />
             <Grid xs={12} md={10} marginLeft="-20px" marginTop={{ xs: '0px', md: '18px' }} display="flex" alignItems="center">
               <Button
@@ -405,7 +442,7 @@ export default function StepTwo({
                 }}
                 type="submit"
               >
-                Add File
+                {isValidatingLink ? <Loader /> : 'Add File'}
               </Button>
             </Grid>
           </Grid>
