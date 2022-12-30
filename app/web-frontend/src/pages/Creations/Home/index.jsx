@@ -6,9 +6,19 @@ import Loader from 'components/uicore/Loader';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
+import Input from 'components/uicore/Input';
 import './index.css';
 import useCreations from './useCreations';
 import useCreationDelete from '../common/hooks/useCreationDelete';
+
+const getSuggestions = (suggestions) => {
+  if (suggestions) {
+    return suggestions.map(
+      (x) => ({ label: x.creation_title, id: x.creation_id }),
+    );
+  }
+  return [];
+};
 
 function Creations() {
   const navigate = useNavigate();
@@ -18,6 +28,8 @@ function Creations() {
   const {
     creations,
     isLoadingCreations,
+    creationSuggestions,
+    handleCreationInputChange,
   } = useCreations();
 
   const {
@@ -29,6 +41,12 @@ function Creations() {
 
   const add = () => {
     navigate('/creations/create');
+  };
+
+  const onCreationSelect = (event, value) => {
+    if (value?.id) {
+      navigate(`/creations/${value?.id}`);
+    }
   };
 
   const handleSearch = (event) => {
@@ -59,21 +77,23 @@ function Creations() {
         padding={{ xs: '12px', md: '0' }}
       >
         <Typography className="heading h4" variant="h4">
-          The original creations I made
+          {login ? 'The original creations I made' : 'Search Public Creations'}
         </Typography>
         <Grid gap={{ sm: '8px' }} display="flex" height="fit-content" flexDirection="row">
-          <TextField
-            variant="standard"
-            InputProps={{
-              disableUnderline: true,
-              padding: 0,
-            }}
-            fullWidth
-            className="input search-bar"
-            placeholder="Search creations"
-            id="fullWidth"
-            onChange={handleSearch}
-          />
+          {login && (
+            <TextField
+              variant="standard"
+              InputProps={{
+                disableUnderline: true,
+                padding: 0,
+              }}
+              fullWidth
+              className="input search-bar"
+              placeholder="Search creations"
+              id="fullWidth"
+              onChange={handleSearch}
+            />
+          )}
           {login && (
             <Button onClick={add} className="btn btn-primary">
               + Add New Creation
@@ -135,7 +155,19 @@ function Creations() {
           )}
         </Grid>
       ) : (
-        <h4 className="heading h4 result-msg">No Creations Found</h4>
+        <Grid xs={12} md={9} lg={10} marginTop={{ xs: '8px' }}>
+          <Input
+            variant="dark"
+            placeholder="Search Creations!"
+            name="creation"
+            onInput={(event_) => handleCreationInputChange(event_)}
+            autoComplete
+            onChange={onCreationSelect}
+            autoCompleteOptions={
+              getSuggestions(creationSuggestions)
+            }
+          />
+        </Grid>
       ))}
     </Grid>
   );
