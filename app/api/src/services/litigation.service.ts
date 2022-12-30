@@ -401,8 +401,6 @@ export const getLitigationByCriteria = async (
           options && options.participant_id ? options.participant_id : false,
         ].filter(Boolean)
       );
-      const foundMaterial = await getMaterialById(result.rows[0].material_id);
-      result.rows[0]['material'] = foundMaterial;
       return result.rows[0];
     } catch {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');

@@ -26,7 +26,7 @@ const useDetails = () => {
     queryKey: [`litigation-${litigationId}`],
     queryFn: async () => {
       // get litigation details
-      const toPopulate = ['issuer_id', 'assumed_author', 'winner', 'decisions', 'recognitions', 'recognitions.recognition_for'];
+      const toPopulate = ['issuer_id', 'assumed_author', 'winner', 'decisions', 'recognitions', 'recognitions.recognition_for', 'material_id'];
       const litigationResponse = await Litigation.getById(litigationId, toPopulate.map((x) => `populate=${x}`).join('&'));
 
       // calculate litigation status
