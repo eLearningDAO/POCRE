@@ -9,8 +9,6 @@
   "scripts": {
     "start": "pm2 start ecosystem.config.json --no-daemon",
     "dev": "cross-env NODE_ENV=development nodemon src/index.ts",
-    "db:local": "cross-env NODE_ENV=development nodemon src/db/local-test-script.ts",
-    "db:live": "cross-env NODE_ENV=development nodemon src/db/remote-db-update-script.ts",
     "build": "cross-env NODE_ENV=production babel src --config-file ./babel.config.js --out-dir ./dist --extensions .ts --out-file-extension .js --copy-files",
     "lint": "eslint . --ext .js,.ts",
     "lint:fix": "eslint . --ext .js,.ts --fix",

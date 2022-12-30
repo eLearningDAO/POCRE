@@ -44,7 +44,6 @@ export default router;
  *             required:
  *               - material_title
  *               - material_link
- *               - material_type
  *             properties:
  *               material_title:
  *                 type: string

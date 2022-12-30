@@ -367,7 +367,7 @@ components:
         user:
           $ref: '#/components/schemas/User'
         token: 
-          type: strin
+          type: string
       example: 
         user: 
           user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
@@ -378,6 +378,14 @@ components:
           reputation_stars: 0
           date_joined: 2022-09-05T19:00:00.000Z
         token: eyJhbGciOiJIUzI1NiJ9.MUExelAxZVA1UUdlZmkyRE1QVGZUTDVTTG12N0RpdmZOYQ.Qet6M0nRv2VD7gQgUfi9ivWo6L8IKojzGWuloFBkxvE
+
+    FileMediaType:
+      type: object
+      properties:
+        media_type:
+          type: string
+      example: 
+        media_type: image
 
     Error:
       type: object
@@ -396,7 +404,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 403
-            message: Forbidden
+            message: forbidden
     NotFound:
       description: Not found
       content:
@@ -631,6 +639,15 @@ components:
           example:
             code: 404
             message: litigation not found
+    InvalidMediaLink:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 406
+            message: invalid media link
 
   securitySchemes:
     bearerAuth:
