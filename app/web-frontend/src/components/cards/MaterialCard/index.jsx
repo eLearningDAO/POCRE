@@ -13,11 +13,10 @@ import RequestAcceptFilledIcon from 'assets/svgs/request-accept-filled.svg';
 import RequestAcceptOutlinedIcon from 'assets/svgs/request-accept-outlined.svg';
 import RequestDeclineFilledIcon from 'assets/svgs/request-decline-filled.svg';
 import RequestDeclineOutlinedIcon from 'assets/svgs/request-decline-outlined.svg';
-import MediaTile from 'components/media/tile';
 import MediaPreview from 'components/media/preview';
-import { useEffect, useState } from 'react';
+import MediaTile from 'components/media/tile';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import './index.css';
 
 function MaterialCard({
@@ -29,6 +28,7 @@ function MaterialCard({
   link = 'https://www.youtube.com/watch?v=2BjYPFBh4Zc',
   title = 'Mobile App Design',
   mediaUrl = CreationCardImg,
+  mediaType = '',
   showReconcilateOptions = true,
   onDeleteClick = () => {},
   onEditClick = () => {},
@@ -39,13 +39,7 @@ function MaterialCard({
   canDecline = true,
   recognitionStatus = null,
 }) {
-  const [mediaType, setMediaType] = useState(null);
   const [showMediaPreview, setShowMediaPreview] = useState(null);
-
-  useEffect(() => {
-    const x = getUrlFileType(mediaUrl);
-    setMediaType(x);
-  }, []);
 
   return (
     <>

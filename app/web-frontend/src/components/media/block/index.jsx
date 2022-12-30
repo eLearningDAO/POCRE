@@ -23,10 +23,10 @@ function MediaBlock({ mediaType, mediaUrl }) {
       {mediaType === 'audio' && (
         <audio src={mediaUrl} controls />
       )}
-      {(mediaType === 'document' && mediaUrl?.includes('.pdf')) && (
+      {mediaType === 'pdf' && (
         <embed src={mediaUrl} />
       )}
-      {mediaType === 'document' && !mediaUrl?.includes('.pdf') && (
+      {mediaType === 'document' && (
         <div className="unsupported-file-type">
           <h4 className="heading h4">Are you okay to download this file?</h4>
           <a href={mediaUrl}>{mediaUrl}</a>

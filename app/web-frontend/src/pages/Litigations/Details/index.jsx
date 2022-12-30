@@ -128,8 +128,9 @@ export default function LitigationDetails() {
 
       <Grid display="flex" marginTop="36px" width="100%">
         <MaterialCard
-          mediaUrl={litigation?.material?.material_link || litigation?.creation?.source?.site_url}
-          link={litigation?.material?.material_link || litigation?.creation?.source?.site_url}
+          mediaUrl={litigation?.material?.material_link || litigation?.creation?.creation_link}
+          mediaType={litigation?.material?.material_link || litigation?.creation?.creation_type}
+          link={litigation?.material?.material_link || litigation?.creation?.creation_link}
           title={litigation?.material?.material_title || litigation?.creation?.creation_title}
           description={litigation?.material?.material_description
             || litigation?.creation?.creation_description}

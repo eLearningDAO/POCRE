@@ -9,7 +9,6 @@ import CreationPreview from 'components/previews/CreationPreview';
 import SocialMediaModal from 'components/shared/socialmediaSharingModal';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import EditButton from './btns/EditButton';
 import PreviewButton from './btns/PreviewButton';
 import RemoveButton from './btns/RemoveButton';
@@ -60,22 +59,17 @@ function CreationCard({
   author = '',
   authorProfileId = '',
   mediaUrl = '',
+  mediaType = '',
   canEdit = true,
   canDelete = true,
   onEditClick = () => {},
   onDeleteClick = () => {},
 }) {
-  const [mediaType, setMediaType] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(null);
   const [showMediaPreview, setShowMediaPreview] = useState(null);
   const [showCreationDetailsPreview, setShowCreationDetailsPreview] = useState(null);
   const [showSocialMediaSharePreview, setShowSocialMediaSharePreview] = useState(false);
   const shareUrl = `${window.location.origin}/creations/${creationId}`;
-
-  useEffect(() => {
-    const x = getUrlFileType(mediaUrl);
-    setMediaType(x);
-  }, []);
 
   useEffect(() => {
     if (showCreationDetailsPreview) {

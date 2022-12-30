@@ -13,16 +13,14 @@ function MediaPreview({ mediaType, mediaUrl, onClose }) {
     >
       <div
         className={`media-preview-content ${mediaType === 'audio' && 'media-preview-content-audio'
-        } ${mediaType === 'document'
-          && !mediaUrl.includes('.pdf')
-          && 'media-preview-content-unsupported'
+        } ${mediaType === 'document' && 'media-preview-content-unsupported'
         }`}
       >
         {mediaType === 'image' && <img src={mediaUrl} alt="" />}
         {mediaType === 'video' && <video src={mediaUrl} controls />}
         {mediaType === 'audio' && <audio src={mediaUrl} controls />}
-        {mediaType === 'document' && mediaUrl.includes('.pdf') && <embed src={mediaUrl} />}
-        {mediaType === 'document' && !mediaUrl.includes('.pdf') && (
+        {mediaType === 'pdf' && <embed src={mediaUrl} />}
+        {mediaType === 'document' && (
           <>
             <h4 className="heading h4">Are you okay to download this file?</h4>
             <a href={mediaUrl}>{mediaUrl}</a>

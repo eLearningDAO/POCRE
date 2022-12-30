@@ -3,11 +3,10 @@
 import {
   Box, Chip, Grid, Typography,
 } from '@mui/material';
-import MediaTile from 'components/media/tile';
 import MediaPreview from 'components/media/preview';
-import { useEffect, useState } from 'react';
+import MediaTile from 'components/media/tile';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import './index.css';
 
 function RecognitionCard({
@@ -16,6 +15,7 @@ function RecognitionCard({
   title = 'Mobile App Design',
   description = '1000+ free files you can duplicate, remix, and reuse 1000+ free files',
   mediaUrl = 'https://images.pexels.com/photos/415071/pexels-photo-415071.jpeg?cs=srgb&dl=pexels-pixabay-415071.jpg&fm=jpg',
+  mediaType = '',
   recognizedByUserName = 'jack 58',
   awaitingRecognitionByUserName = '',
   userImage = '',
@@ -28,13 +28,7 @@ function RecognitionCard({
   declinedOn = null,
   canDecline = false,
 }) {
-  const [mediaType, setMediaType] = useState(null);
   const [showMediaPreview, setShowMediaPreview] = useState(null);
-
-  useEffect(() => {
-    const x = getUrlFileType(mediaUrl);
-    setMediaType(x);
-  }, []);
 
   return (
     <>

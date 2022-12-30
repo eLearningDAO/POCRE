@@ -52,7 +52,7 @@ function MediaTile({ mediaType, mediaUrl, onMediaClick }) {
         </div>
       </>
       )}
-      {(mediaType === 'document' || mediaType === null) && (
+      {(mediaType === 'document' || mediaType === 'pdf' || mediaType === null) && (
       <>
         <div className="collection-card-media creation-card-media-overlay" />
         <div className="overlay-button">

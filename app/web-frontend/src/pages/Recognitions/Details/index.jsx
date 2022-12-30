@@ -18,7 +18,6 @@ import {
 } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
-import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import useRecognitions from '../common/hooks/useRecognitions';
 import './index.css';
 
@@ -28,8 +27,6 @@ const user = authUser.getUser();
 export default function CreationDetails() {
   const { id } = useParams();
 
-  const [mediaType, setMediaType] = useState(null);
-  const [creationMediaType, setCreationMediaType] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [showSocialMediaSharePreview, setShowSocialMediaSharePreview] = useState(false);
   const shareUrl = `${window.location.origin}/recognitions/${id}`;
@@ -50,14 +47,6 @@ export default function CreationDetails() {
   useEffect(() => {
     if (id) fetchRecognitionDetails(id);
   }, [id]);
-
-  useEffect(() => {
-    const recognitionFileType = getUrlFileType(recognitionDetails?.material?.material_link);
-    setMediaType(recognitionFileType);
-
-    const creationFileType = getUrlFileType(recognitionDetails?.creation?.creation_link);
-    setCreationMediaType(creationFileType);
-  }, [recognitionDetails]);
 
   if (isFetchingRecognitionDetails) return <Loader />;
 
@@ -148,7 +137,7 @@ export default function CreationDetails() {
           width="100%"
         >
           <MediaBlock
-            mediaType={mediaType}
+            mediaType={recognitionDetails?.material?.material_type}
             mediaUrl={recognitionDetails?.material?.material_link}
           />
         </Grid>
@@ -258,7 +247,7 @@ export default function CreationDetails() {
           width="100%"
         >
           <MediaBlock
-            mediaType={creationMediaType}
+            mediaType={recognitionDetails?.creation?.creation_type}
             mediaUrl={recognitionDetails?.creation?.creation_link}
           />
         </Grid>

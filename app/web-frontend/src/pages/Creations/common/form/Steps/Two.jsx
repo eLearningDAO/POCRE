@@ -11,6 +11,7 @@ import Select from 'components/uicore/Select';
 import TagInput from 'components/uicore/TagInput';
 import { useState } from 'react';
 import authUser from 'utils/helpers/authUser';
+import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import useLinkValidation from './useLinkValidation';
 import { stepTwoAuthorInviteValidation, stepTwoMaterialValidation } from './validation';
 
@@ -40,6 +41,7 @@ function NewMaterial({
         title={material.title}
         link={material.link}
         mediaUrl={material.link}
+        mediaType={material?.type || getUrlFileType(material?.link)}
         username={material.author}
         interactionBtns
         onDeleteClick={onRemoveMaterial}

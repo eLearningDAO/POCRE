@@ -19,7 +19,6 @@ import QRCode from 'qrcode';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
-import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import useCreationDelete from '../common/hooks/useCreationDelete';
 import './index.css';
 import useDetails from './useDetails';
@@ -30,7 +29,6 @@ export default function CreationDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [mediaType, setMediaType] = useState(null);
   const [qrcodeBase64, setQrcodeBase64] = useState(null);
   const [showShareOptions, setShowShareOptions] = useState(null);
   const [showCreationDetailsPreview, setShowCreationDetailsPreview] = useState(null);
@@ -84,8 +82,6 @@ export default function CreationDetails() {
   }, [deleteCreationStatus.success]);
 
   useEffect(() => {
-    const x = getUrlFileType(creation?.creation_link);
-    setMediaType(x);
     if (creation?.creation_id) generateQRCodeBase64(creation?.creation_id);
   }, [creation]);
 
@@ -165,7 +161,7 @@ export default function CreationDetails() {
         marginTop="18px"
         width="100%"
       >
-        <MediaBlock mediaType={mediaType} mediaUrl={creation?.creation_link} />
+        <MediaBlock mediaType={creation?.creation_type} mediaUrl={creation?.creation_link} />
       </Grid>
 
       <Grid
@@ -267,6 +263,7 @@ export default function CreationDetails() {
               <MaterialCard
                 key={index}
                 mediaUrl={x?.material_link}
+                mediaType={x?.material_type}
                 link={x?.material_link}
                 title={x?.material_title}
                 description={x?.material_description}
