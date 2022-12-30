@@ -48,7 +48,6 @@ function NewMaterial({
         validationSchema={stepTwoMaterialValidation}
         initialValues={{
           title: material.title,
-          fileType: material.fileType,
           link: material.link,
           author: material.author,
         }}
@@ -62,33 +61,8 @@ function NewMaterial({
           <Grid md={2} xs={12} display="flex" flexDirection="row" alignItems="center">
             <Typography className="heading">Title</Typography>
           </Grid>
-          <Grid xs={12} md={4}>
+          <Grid xs={12} md={10}>
             <Input placeholder="Material title" name="title" hookToForm />
-          </Grid>
-
-          <Grid
-            md={2}
-            xs={12}
-            marginTop={{ xs: '12px', md: '0px' }}
-            paddingLeft={{ md: '24px' }}
-            display="flex"
-            flexDirection="row"
-            alignItems="center"
-          >
-            <Typography className="heading">File type</Typography>
-          </Grid>
-          <Grid xs={12} md={4}>
-            <Select
-              placeholder="Select File Type"
-              name="fileType"
-              hookToForm
-              options={[
-                { value: 'image', label: 'Image' },
-                { value: 'video', label: 'Video' },
-                { value: 'audio', label: 'Sound' },
-                { value: 'document', label: 'Document' },
-              ]}
-            />
           </Grid>
 
           <Grid
@@ -381,7 +355,6 @@ export default function StepTwo({
           validationSchema={stepTwoMaterialValidation}
           initialValues={{
             title: '',
-            fileType: '',
             link: '',
             author: [],
           }}
@@ -390,25 +363,8 @@ export default function StepTwo({
             <Grid md={2} xs={12} display="flex" flexDirection="row" alignItems="center">
               <Typography className="heading">Title</Typography>
             </Grid>
-            <Grid xs={12} md={4}>
+            <Grid xs={12} md={10}>
               <Input placeholder="Material title" name="title" hookToForm />
-            </Grid>
-
-            <Grid md={2} xs={12} marginTop={{ xs: '12px', md: '0px' }} paddingLeft={{ md: '24px' }} display="flex" flexDirection="row" alignItems="center">
-              <Typography className="heading">File type</Typography>
-            </Grid>
-            <Grid xs={12} md={4}>
-              <Select
-                placeholder="Select File Type"
-                name="fileType"
-                hookToForm
-                options={[
-                  { value: 'image', label: 'Image' },
-                  { value: 'video', label: 'Video' },
-                  { value: 'audio', label: 'Sound' },
-                  { value: 'document', label: 'Document' },
-                ]}
-              />
             </Grid>
 
             <Grid xs={12} md={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">

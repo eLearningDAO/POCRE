@@ -17,7 +17,6 @@ const stepOneValidation = Joi.object({
 
 const stepTwoMaterialValidation = Joi.object({
   title: Joi.string().required().messages({ 'string.empty': 'Title is required', 'string.required': 'Title is required' }),
-  fileType: Joi.string().required().messages({ 'string.empty': 'File type is required', 'string.required': 'File type is required' }),
   link: Joi.string().uri().required().messages({ 'string.empty': 'Link is required', 'string.required': 'Link is required', 'string.uri': 'Link must be a valid url' }),
   author: Joi.array().items(Joi.string()).min(1).max(1)
     .required()
