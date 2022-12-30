@@ -4,6 +4,7 @@ import {
 } from 'api/requests';
 import { useState } from 'react';
 import authUser from 'utils/helpers/authUser';
+import moment from 'moment';
 
 // get auth user
 const user = authUser.getUser();
@@ -49,6 +50,15 @@ const useRecognitions = () => {
         (a, b) => new Date(b.created_at) - new Date(a.created_at),
       );
 
+      // format dates
+      response.results = [...response.results].map(
+        (x) => ({
+          ...x,
+          recognition_issued: moment(x?.recognition_issued).format('Do MMMM YYYY'), // moment auto converts utc to local time
+          status_updated: moment(x?.status_updated).format('Do MMMM YYYY'), // moment auto converts utc to local time
+        }),
+      );
+
       return response;
     },
     staleTime: 100_000, // delete cached data after 100 seconds
@@ -80,8 +90,13 @@ const useRecognitions = () => {
 
       const transformedRecognition = {
         ...recognitionResponse,
+        status_updated: moment(recognitionResponse?.status_updated).format('DD/MM/YYYY'), // moment auto converts utc to local time
+        recognition_issued: moment(recognitionResponse?.recognition_issued).format('DD/MM/YYYY'), // moment auto converts utc to local time
         material,
-        creation: creation ? creation?.results?.[0] : null,
+        creation: creation ? {
+          ...creation?.results?.[0],
+          creation_date: moment(creation?.results?.[0]?.creation_date).format('DD/MM/YYYY'), // moment auto converts utc to local time
+        } : null,
       };
 
       return { ...transformedRecognition };

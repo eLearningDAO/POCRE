@@ -6,6 +6,12 @@ import authUser from 'utils/helpers/authUser';
 
 const user = authUser.getUser();
 
+const formatDates = (litigations) => litigations.map((x) => ({
+  ...x,
+  litigation_start: moment(x?.litigation_start).format('DD/MM/YYYY'), // moment auto converts utc to local time
+  litigation_end: moment(x?.litigation_end).format('DD/MM/YYYY'), // moment auto converts utc to local time
+}));
+
 const useHome = () => {
   const queryClient = useQueryClient();
   const [shouldFetchLitigations, setShouldFetchLitigations] = useState(false);
@@ -68,13 +74,21 @@ const useHome = () => {
         ),
       };
 
+      // convert litigation utc dates
+      litigationResponse = {
+        closed: formatDates(litigationResponse?.closed),
+        opening: formatDates(litigationResponse?.opening),
+        openedAgainstMe: formatDates(litigationResponse?.openedAgainstMe),
+        toJudge: formatDates(litigationResponse?.toJudge),
+      };
+
       return { ...litigationResponse };
     },
     staleTime: 100_000, // delete cached data after 100 seconds
     enabled: !!shouldFetchLitigations,
   });
 
-  // update recognition status
+  // update reconcilation status
   const {
     mutate: updateReconcilateStatus,
     isError: isReconcilateStatusUpdationError,

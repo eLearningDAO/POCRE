@@ -3,7 +3,6 @@ import {
 } from '@mui/material';
 import CreationCard from 'components/cards/CreationCard';
 import Loader from 'components/uicore/Loader';
-import moment from 'moment';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
@@ -106,7 +105,7 @@ function Creations() {
                   creationId={x.creation_id}
                   title={x?.creation_title}
                   description={x?.creation_description}
-                  creationDate={moment(x?.creation_date).format('Do MMMM YYYY')}
+                  creationDate={x?.creation_date}
                   interactionBtns
                   mediaUrl={x?.creation_link}
                   author={x?.author?.user_name}

@@ -25,8 +25,8 @@ function WalletPublic() {
       {fetchPublicProfileStatus.success && publicProfile && <WalletProfile
         name={publicProfile?.user_name}
         bio={publicProfile?.user_bio}
-        phone={publicProfile?.phone}
-        email={publicProfile?.email_address}
+        phone={'Private Info'}
+        email={'Private Info'}
         image={publicProfile?.image_url || require('assets/images/profile-placeholder.png')}
         isInvited={publicProfile?.is_invited}
         stars={publicProfile?.reputation_stars || 0}

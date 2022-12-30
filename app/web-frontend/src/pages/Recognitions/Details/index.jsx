@@ -12,7 +12,6 @@ import ShareButton from 'components/cards/CreationCard/btns/ShareButton';
 import CreationPreview from 'components/previews/CreationPreview';
 import SocialMediaModal from 'components/shared/socialmediaSharingModal';
 import Loader from 'components/uicore/Loader';
-import moment from 'moment';
 import {
   useEffect,
   useState,
@@ -90,7 +89,7 @@ export default function CreationDetails() {
           link={recognitionDetails?.creation?.creation_link}
           authorName={recognitionDetails?.creation?.author?.user_name}
           authorProfileId={recognitionDetails?.creation?.author?.user_id}
-          date={moment(recognitionDetails?.creation?.creation_date).format('DD/MM/YYYY')}
+          date={recognitionDetails?.creation?.creation_date}
           materials={recognitionDetails?.creation?.materials?.map((x) => ({
             title: x?.material_title,
             fileType: x?.material_type,
@@ -211,7 +210,7 @@ export default function CreationDetails() {
               </Link>
             </p>
           </div>
-          <Chip style={{ fontSize: '16px', margin: 0 }} className="mr-auto bg-orange color-white" label={`Recognized on ${moment(recognitionDetails?.recognition_issued).format('DD/MM/YYYY')}`} />
+          <Chip style={{ fontSize: '16px', margin: 0 }} className="mr-auto bg-orange color-white" label={`Recognized on ${recognitionDetails?.recognition_issued}`} />
         </Grid>
 
         <Grid
@@ -256,7 +255,7 @@ export default function CreationDetails() {
               <Chip
                 style={{ fontSize: '16px', margin: 0, marginLeft: 'auto' }}
                 className={`mr-auto color-white ${recognitionBg}`}
-                label={`${recognitionStatus} ${moment(recognitionDetails?.status_updated).format('DD/MM/YYYY')}`}
+                label={`${recognitionStatus} ${recognitionDetails?.status_updated}`}
               />
             )}
         </Grid>

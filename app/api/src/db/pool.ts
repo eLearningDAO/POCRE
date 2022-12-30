@@ -54,7 +54,7 @@ const init = async (): Promise<QueryResult<any>> => {
       phone character varying,
       verified_id character varying,
       reputation_stars integer  DEFAULT 0,
-      date_joined DATE NOT NULL DEFAULT CURRENT_DATE,
+      date_joined TIMESTAMP NOT NULL DEFAULT NOW(),
       is_invited bool default false
     );
 
@@ -74,9 +74,9 @@ const init = async (): Promise<QueryResult<any>> => {
       recognition_by UUID NOT NULL,
       recognition_for UUID NOT NULL,
       recognition_description text,
-      recognition_issued DATE NOT NULL DEFAULT CURRENT_DATE,
+      recognition_issued TIMESTAMP NOT NULL DEFAULT NOW(),
       status recognition_status_enums NOT NULL,
-      status_updated DATE NOT NULL DEFAULT CURRENT_DATE,
+      status_updated TIMESTAMP NOT NULL DEFAULT NOW(),
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
       CONSTRAINT recognition_by
           FOREIGN KEY(recognition_by) 
@@ -92,7 +92,7 @@ const init = async (): Promise<QueryResult<any>> => {
       tag_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       tag_name character varying UNIQUE NOT NULL,
       tag_description text,
-      tag_created DATE NOT NULL DEFAULT CURRENT_DATE
+      tag_created TIMESTAMP NOT NULL DEFAULT NOW()
     );
 
     CREATE TABLE IF NOT EXISTS material (
@@ -122,7 +122,7 @@ const init = async (): Promise<QueryResult<any>> => {
       author_id UUID NOT NULL,
       tags UUID[],
       materials UUID[],
-      creation_date DATE NOT NULL DEFAULT CURRENT_DATE,
+      creation_date TIMESTAMP NOT NULL DEFAULT NOW(),
       is_draft bool default false,
       is_claimable bool default true,
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -143,8 +143,8 @@ const init = async (): Promise<QueryResult<any>> => {
       winner UUID NOT NULL,
       recognitions UUID[],
       decisions UUID[],
-      litigation_start DATE NOT NULL DEFAULT CURRENT_DATE,
-      litigation_end DATE,
+      litigation_start TIMESTAMP NOT NULL DEFAULT NOW(),
+      litigation_end TIMESTAMP,
       litigation_status litigation_status_enums NOT NULL,
       ownership_transferred bool default false,
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -170,8 +170,6 @@ const init = async (): Promise<QueryResult<any>> => {
         user_name,
         user_bio,
         image_url,
-        email_address,
-        phone,
         reputation_stars,
         date_joined,
         is_invited
