@@ -13,7 +13,7 @@ import { generateProofOfCreation } from '../utils/generateProofOfCreation';
 import { getSupportedFileTypeFromLink } from '../utils/getSupportedFileTypeFromLink';
 
 export const queryCreations = catchAsync(async (req, res): Promise<void> => {
-  const creation = await creationService.queryCreations(req.query as any);
+  const creation = await creationService.queryCreations({ ...(req.query as any), is_draft: true });
   res.send(creation);
 });
 
