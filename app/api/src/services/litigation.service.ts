@@ -278,8 +278,6 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
                 litigation l 
                 ${search} 
                 ${search ? ' AND ' : ' WHERE '} 
-                ${validateParticipant}
-                ${validateParticipant && ' AND '} 
                 EXISTS 
                 (
                   SELECT 
@@ -300,9 +298,7 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
                 FROM 
                 litigation l 
                 ${search} 
-                ${search ? ' AND ' : ' WHERE '} 
-                ${validateParticipant}
-                ${validateParticipant && ' AND '}  
+                ${search ? ' AND ' : ' WHERE '}  
                 EXISTS 
                 (
                   SELECT 
