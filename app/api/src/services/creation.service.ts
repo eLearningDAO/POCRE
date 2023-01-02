@@ -32,6 +32,7 @@ interface ICreationQuery {
   is_partially_assigned?: boolean;
   is_fully_assigned?: boolean;
   populate?: string | string[];
+  is_draft: boolean;
 }
 interface ICreationQueryResult {
   results: Array<ICreationDoc>;
@@ -153,22 +154,34 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
 export const queryCreations = async (options: ICreationQuery): Promise<ICreationQueryResult> => {
   try {
     // search
-    const search =
-      options.search_fields && options.search_fields.length > 0
-        ? `WHERE ${options.search_fields
-            .map(
-              (field) => `
+    const search = (() => {
+      let baseSearch = '';
+
+      // search fields with search term
+      baseSearch =
+        options.search_fields && options.search_fields.length > 0
+          ? `WHERE ${options.search_fields
+              .map(
+                (field) => `
               ${field === 'material_id' ? `'${options.query}'` : field === 'creation_title' ? `LOWER(${field})` : field} ${
-                ['author_id'].includes(field)
-                  ? `= '${options.query}'`
-                  : ['material_id'].includes(field)
-                  ? ` = ANY(materials)`
-                  : `LIKE ${field === 'creation_title' ? `LOWER('%${options.query}%')` : `'%${options.query}%'`}`
-              }
+                  ['author_id'].includes(field)
+                    ? `= '${options.query}'`
+                    : ['material_id'].includes(field)
+                    ? ` = ANY(materials)`
+                    : `LIKE ${field === 'creation_title' ? `LOWER('%${options.query}%')` : `'%${options.query}%'`}`
+                }
               `
-            )
-            .join(' OR ')}`
-        : '';
+              )
+              .join(' OR ')}`
+          : '';
+
+      // search status
+      if (options.is_draft === true || options.is_draft === false) {
+        baseSearch += `${baseSearch.length > 0 ? ' AND ' : ' WHERE '} is_draft = ${options.is_draft}`;
+      }
+
+      return baseSearch;
+    })();
 
     // order
     const ascendOrder =
@@ -418,6 +431,7 @@ export const getCreationById = async (
   options?: {
     populate?: string | string[];
     owner_id?: string;
+    is_draft?: boolean;
   }
 ): Promise<ICreationDoc | null> => {
   const creation = await (async () => {
@@ -433,6 +447,7 @@ export const getCreationById = async (
         creation c 
         WHERE 
         creation_id = $1
+        ${options?.is_draft === true || options?.is_draft === false ? `AND is_draft = ${options.is_draft}` : ''}
         ${options && options.owner_id ? 'AND author_id = $2' : ''}
         ;`,
         [id, options && options.owner_id ? options.owner_id : false].filter(Boolean)

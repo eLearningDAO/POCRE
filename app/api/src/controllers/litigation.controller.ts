@@ -29,7 +29,7 @@ export const getLitigationById = catchAsync(async (req, res): Promise<void> => {
 
 export const createLitigation = catchAsync(async (req, res): Promise<void> => {
   // check if reference docs exist
-  const creation = await getCreationById(req.body.creation_id as string); // verify creation, will throw an error if creation not found
+  const creation = await getCreationById(req.body.creation_id as string, { is_draft: false }); // verify creation, will throw an error if creation not found
   let material;
   if (req.body.material_id) {
     material = await getMaterialById(req.body.material_id as string); // verify material, will throw an error if material not found
