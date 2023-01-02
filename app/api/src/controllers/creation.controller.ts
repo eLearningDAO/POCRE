@@ -13,7 +13,19 @@ import { generateProofOfCreation } from '../utils/generateProofOfCreation';
 import { getSupportedFileTypeFromLink } from '../utils/getSupportedFileTypeFromLink';
 
 export const queryCreations = catchAsync(async (req, res): Promise<void> => {
-  const creation = await creationService.queryCreations({ ...(req.query as any), is_draft: false });
+  // when req user is requesting their own creations (search_fields has author_id, and query matches auth user id)
+  const shouldReturnDraftCreations =
+    req.user &&
+    req.query.search_fields &&
+    req.query.search_fields.length &&
+    req.query.search_fields.length > 0 &&
+    (req.query?.search_fields as string[]).includes('author_id') &&
+    req.query.query === (req.user as IUserDoc).user_id;
+
+  const creation = await creationService.queryCreations({
+    ...(req.query as any),
+    ...(!shouldReturnDraftCreations && { is_draft: false }),
+  });
   res.send(creation);
 });
 
