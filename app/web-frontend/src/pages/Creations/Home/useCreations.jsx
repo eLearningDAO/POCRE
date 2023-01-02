@@ -1,12 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
 import { Creation } from 'api/requests';
 import authUser from 'utils/helpers/authUser';
+import useSuggestions from 'hooks/useSuggestions';
 import moment from 'moment';
 
 // get auth user
 const user = authUser.getUser();
 
 const useCreations = () => {
+  const {
+    suggestions: creationSuggestions,
+    suggestionsStatus: fetchCreationsSuggestionStatus,
+    handleSuggestionInputChange: handleCreationInputChange,
+  } = useSuggestions({
+    search: 'creations',
+  });
+
   // get creations
   const {
     data: creations,
@@ -39,6 +48,9 @@ const useCreations = () => {
       error: isFetchError ? 'Failed to fetch creations' : null,
     },
     creations,
+    creationSuggestions,
+    fetchCreationsSuggestionStatus,
+    handleCreationInputChange,
   };
 };
 
