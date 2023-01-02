@@ -55,15 +55,6 @@ export default function StepOne({
             Voting Process started
           </h4>
         </div>
-        {/* <FormControlLabel control={<Checkbox defaultChecked
-          onChange={handleInvitationSelectionChange} />}
-          label="Send Alart for pacific Reconciliation"
-          style={{ margin: 'auto', marginTop: '18px' }} /> */}
-
-        {/* <div className="create-collection-verify-box"
-         style={{ margin: 'auto', marginTop: '18px' }}>
-          <FormControlLabel control={<Checkbox defaultChecked />} label="I’m human" />
-        </div> */}
 
         {(status.error || status.success)
               && (
