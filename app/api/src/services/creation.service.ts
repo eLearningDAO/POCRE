@@ -431,6 +431,7 @@ export const getCreationById = async (
   options?: {
     populate?: string | string[];
     owner_id?: string;
+    is_draft?: boolean;
   }
 ): Promise<ICreationDoc | null> => {
   const creation = await (async () => {
@@ -446,6 +447,7 @@ export const getCreationById = async (
         creation c 
         WHERE 
         creation_id = $1
+        ${options?.is_draft === true || options?.is_draft === false ? `AND is_draft = ${options.is_draft}` : ''}
         ${options && options.owner_id ? 'AND author_id = $2' : ''}
         ;`,
         [id, options && options.owner_id ? options.owner_id : false].filter(Boolean)
