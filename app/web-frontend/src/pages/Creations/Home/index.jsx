@@ -156,17 +156,21 @@ function Creations() {
         </Grid>
       ) : (
         <Grid xs={12} md={9} lg={10} marginTop={{ xs: '8px' }}>
-          <Input
-            variant="dark"
-            placeholder="Search Creations!"
-            name="creation"
-            onInput={(event_) => handleCreationInputChange(event_)}
-            autoComplete
-            onChange={onCreationSelect}
-            autoCompleteOptions={
-              getSuggestions(creationSuggestions)
-            }
-          />
+          {
+            !login ? (
+              <Input
+                variant="dark"
+                placeholder="Search Creations!"
+                name="creation"
+                onInput={(event_) => handleCreationInputChange(event_)}
+                autoComplete
+                onChange={onCreationSelect}
+                autoCompleteOptions={
+                  getSuggestions(creationSuggestions)
+                }
+              />
+            ) : <Typography className="heading h4" variant="h4">No Creations Found</Typography>
+          }
         </Grid>
       ))}
     </Grid>
