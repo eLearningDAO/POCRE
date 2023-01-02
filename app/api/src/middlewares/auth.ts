@@ -21,14 +21,18 @@ const verifyCallback = (
   };
 };
 
+interface IAuthParams {
+  is_optional?: boolean;
+}
+
 const auth =
-  (): RequestHandler =>
+  (options: IAuthParams = { is_optional: false }): RequestHandler =>
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     return new Promise<void>((resolve, reject) => {
       passport.authenticate('jwt', { session: false }, verifyCallback(req, resolve, reject))(req, res, next);
     })
       .then(() => next())
-      .catch((err) => next(err));
+      .catch((err) => (options.is_optional ? next() : next(err)));
   };
 
 export default auth;
