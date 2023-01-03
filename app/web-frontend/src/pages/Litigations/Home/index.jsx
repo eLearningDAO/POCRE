@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import './index.css';
 import LitigationCard from 'components/cards/LitigationCard';
 import authUser from 'utils/helpers/authUser';
+import statusTypes from 'utils/constants/statusTypes';
 import useHome from './useHome';
 
 const user = authUser.getUser();
@@ -20,10 +21,10 @@ function Litigation() {
     isFetchingLitigations,
     litigations,
     fetchLitigations,
-    isUpdatingReconcilateStatus,
-    updatedReconcilateStatus,
-    updateReconcilateStatus,
-    resetReconcilateStatus,
+    isUpdatingLitigationStatus,
+    updatedLitigationStatus,
+    updateLitigationStatus,
+    resetLitigationStatus,
     isTransferringOwnership,
     transferOwnershipStatus,
     resetTransferOwnershipStatus,
@@ -43,7 +44,7 @@ function Litigation() {
   return (
     <>
       {isTransferringOwnership && <Loader withBackdrop size="large" />}
-      {isUpdatingReconcilateStatus && <Loader withBackdrop size="large" />}
+      {isUpdatingLitigationStatus && <Loader withBackdrop size="large" />}
       {(transferOwnershipStatus.success || transferOwnershipStatus.error) && (
         <Snackbar open onClose={resetTransferOwnershipStatus}>
           <Alert
@@ -57,16 +58,16 @@ function Litigation() {
           </Alert>
         </Snackbar>
       )}
-      {(updatedReconcilateStatus.success || updatedReconcilateStatus.error) && (
-        <Snackbar open onClose={resetReconcilateStatus}>
+      {(updatedLitigationStatus.success || updatedLitigationStatus.error) && (
+        <Snackbar open onClose={resetLitigationStatus}>
           <Alert
-            onClose={resetReconcilateStatus}
-            severity={updatedReconcilateStatus.success ? 'success' : 'error'}
+            onClose={resetLitigationStatus}
+            severity={updatedLitigationStatus.success ? 'success' : 'error'}
             sx={{ width: '100%' }}
           >
-            {updatedReconcilateStatus.success
+            {updatedLitigationStatus.success
               ? 'Litigation status updated!'
-              : updatedReconcilateStatus.error}
+              : updatedLitigationStatus.error}
           </Alert>
         </Snackbar>
       )}
@@ -151,18 +152,18 @@ function Litigation() {
                   )
                 }
                 totalJuryMembers={x?.recognitions?.length}
-                canWithdraw={!x?.toJudge ? x?.reconcilate === null : null}
+                canWithdraw={!x?.toJudge ? x?.litigation_status === statusTypes.PENDING : null}
                 // eslint-disable-next-line no-return-await
-                onWithdraw={async () => await updateReconcilateStatus({
+                onWithdraw={async () => await updateLitigationStatus({
                   id: x?.litigation_id,
-                  reconcilate: true,
+                  litigationStatus: statusTypes.WITHDRAWN,
                 })}
-                canAccept={!x?.toJudge ? x?.reconcilate === null : null}
-                isDeclined={!x?.toJudge ? x?.reconcilate : null}
+                canAccept={!x?.toJudge ? x?.litigation_status === statusTypes.PENDING : null}
+                isDeclined={!x?.toJudge ? x?.litigation_status === statusTypes.WITHDRAWN : null}
                 // eslint-disable-next-line no-return-await
-                onAccept={async () => await updateReconcilateStatus({
+                onAccept={async () => await updateLitigationStatus({
                   id: x?.litigation_id,
-                  reconcilate: false,
+                  litigationStatus: statusTypes.STARTED,
                 })}
                 canRedeem={!x?.toJudge
                   ? x?.winner?.user_id === user?.user_id : null}

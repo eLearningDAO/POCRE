@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Litigation } from 'api/requests';
 import moment from 'moment';
 import { useState } from 'react';
+import statusTypes from 'utils/constants/statusTypes';
 import authUser from 'utils/helpers/authUser';
 
 const user = authUser.getUser();
@@ -50,7 +51,11 @@ const useHome = () => {
       // calculate open/closed and in progress litigations
       litigationResponse = {
         closed: litigationResponse?.results?.filter(
-          (x) => moment(x.litigation_end).isBefore(new Date().toISOString()) || x.reconcilate,
+          (x) => (
+            moment(x.litigation_end).isBefore(new Date().toISOString())
+            && x.litigation_status === statusTypes.STARTED
+          )
+            || x.litigation_status === statusTypes.WITHDRAWN,
         ),
         opening: [
           ...litigationResponse?.results?.filter(
@@ -59,18 +64,29 @@ const useHome = () => {
           ...litigationResponse?.results?.filter(
             (x) => moment(x.litigation_start).isBefore(new Date().toISOString())
               && moment(x.litigation_end).isAfter(new Date().toISOString())
-              && x?.issuer?.user_id === user?.user_id && !x.reconcilate && !x.toJudge,
+              && x?.issuer?.user_id === user?.user_id
+              && (
+                x.litigation_status === statusTypes.PENDING
+                || x.litigation_status === statusTypes.STARTED
+              )
+              && !x.toJudge,
           ) || [],
         ],
         openedAgainstMe: litigationResponse?.results?.filter(
           (x) => moment(x.litigation_start).isBefore(new Date().toISOString())
             && moment(x.litigation_end).isAfter(new Date().toISOString())
-            && x?.assumed_author?.user_id === user?.user_id && !x.reconcilate && !x.toJudge,
+            && x?.assumed_author?.user_id === user?.user_id
+            && (
+              x.litigation_status === statusTypes.PENDING
+              || x.litigation_status === statusTypes.STARTED
+            )
+            && !x.toJudge,
         ),
         toJudge: litigationResponse?.results?.filter(
           (x) => moment(x.litigation_start).isBefore(new Date().toISOString())
             && moment(x.litigation_end).isAfter(new Date().toISOString())
-            && !x.reconcilate && x.toJudge,
+            && x.litigation_status === statusTypes.STARTED
+            && x.toJudge,
         ),
       };
 
@@ -88,37 +104,38 @@ const useHome = () => {
     enabled: !!shouldFetchLitigations,
   });
 
-  // update reconcilation status
+  // update litigation status
   const {
-    mutate: updateReconcilateStatus,
-    isError: isReconcilateStatusUpdationError,
-    isSuccess: isReconcilateStatusUpdated,
-    isLoading: isUpdatingReconcilateStatus,
-    reset: resetReconcilateStatus,
+    mutate: updateLitigationStatus,
+    isError: isLitigationStatusUpdationError,
+    isSuccess: isLitigationStatusUpdated,
+    isLoading: isUpdatingLitigationStatus,
+    reset: resetLitigationStatus,
   } = useMutation({
     mutationFn: async (
       {
         id,
-        reconcilate,
+        litigationStatus,
       },
     ) => {
       // make api call to update the litigation
-      await Litigation.update(id, { reconcilate });
+      await Litigation.update(id, { litigation_status: litigationStatus });
 
       // update litigation
       const updatedLitigations = { ...litigations };
       const foundLitigation = updatedLitigations?.openedAgainstMe?.find(
         (x) => x.litigation_id === id,
       );
-      foundLitigation.reconcilate = reconcilate;
-      if (reconcilate) {
+      foundLitigation.litigation_status = litigationStatus;
+      if (litigationStatus === statusTypes.WITHDRAWN) {
         // update ownership status
         foundLitigation.ownership_transferred = true;
 
         // remove from opened
         updatedLitigations.openedAgainstMe = [
           ...updatedLitigations.openedAgainstMe,
-        ].filter((x) => !x.reconcilate);
+        ].filter((x) => x.litigation_status === statusTypes.PENDING
+        || x.litigation_status === statusTypes.STARTED);
 
         // add to closed
         updatedLitigations.closed = [
@@ -168,13 +185,13 @@ const useHome = () => {
     litigations,
     fetchLitigations: () => setShouldFetchLitigations(true),
     // update status
-    isUpdatingReconcilateStatus,
-    updatedReconcilateStatus: {
-      success: isReconcilateStatusUpdated,
-      error: isReconcilateStatusUpdationError ? 'Failed to update litigation status' : null,
+    isUpdatingLitigationStatus,
+    updatedLitigationStatus: {
+      success: isLitigationStatusUpdated,
+      error: isLitigationStatusUpdationError ? 'Failed to update litigation status' : null,
     },
-    updateReconcilateStatus,
-    resetReconcilateStatus,
+    updateLitigationStatus,
+    resetLitigationStatus,
     // transfer ownership
     isTransferringOwnership,
     transferOwnershipStatus: {
