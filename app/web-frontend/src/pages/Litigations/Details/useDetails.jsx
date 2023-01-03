@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Decision, Litigation } from 'api/requests';
 import moment from 'moment';
 import { useState } from 'react';
+import statusTypes from 'utils/constants/statusTypes';
 import authUser from 'utils/helpers/authUser';
 
 const user = authUser.getUser();
@@ -31,17 +32,67 @@ const useDetails = () => {
 
       // calculate litigation status
       litigationResponse.status = (() => {
-        if (moment(litigationResponse.litigation_end).isBefore(new Date().toISOString()) || litigationResponse.reconcilate) return 'Closed';
-        if (moment(litigationResponse.litigation_start).isAfter(new Date().toISOString())) return 'Opened';
-        if (moment(litigationResponse.litigation_start).isBefore(new Date().toISOString()) && moment(litigationResponse.litigation_end).isAfter(new Date().toISOString())) return 'Waiting authorship recognition';
+        if (
+          (
+            moment(litigationResponse.litigation_end).isBefore(new Date().toISOString())
+            && litigationResponse.litigation_status === statusTypes.STARTED
+          )
+          || litigationResponse.litigation_status === statusTypes.WITHDRAWN
+        ) {
+          return 'Closed';
+        }
+
+        if (
+          moment(litigationResponse.litigation_start).isBefore(new Date().toISOString())
+          && moment(litigationResponse.litigation_end).isAfter(new Date().toISOString())
+          && litigationResponse.litigation_status === statusTypes.STARTED
+          && litigationResponse.recognitions?.find(
+            (x) => x?.recognition_for?.user_id === user?.user_id,
+          )
+        ) {
+          return 'Awaiting Judgement';
+        }
+
+        if (
+          moment(litigationResponse.litigation_start).isBefore(new Date().toISOString())
+          && moment(litigationResponse.litigation_end).isAfter(new Date().toISOString())
+          && litigationResponse?.assumed_author?.user_id === user?.user_id
+          && (
+            litigationResponse.litigation_status === statusTypes.PENDING
+            || litigationResponse.litigation_status === statusTypes.STARTED
+          )
+          && !litigationResponse.recognitions?.find(
+            (x) => x?.recognition_for?.user_id === user?.user_id,
+          )
+        ) {
+          if (litigationResponse.litigation_status === statusTypes.STARTED) {
+            return 'In voting process';
+          }
+          return 'Awaiting author response';
+        }
+
+        if (
+          moment(litigationResponse.litigation_start).isBefore(new Date().toISOString())
+          && moment(litigationResponse.litigation_end).isAfter(new Date().toISOString())
+          && (
+            litigationResponse.litigation_status === statusTypes.PENDING
+            || litigationResponse.litigation_status === statusTypes.STARTED
+          )
+        ) {
+          return 'Waiting authorship recognition';
+        }
+
         return null;
       })();
 
       // check if closed
       litigationResponse.isClosed = false;
       if (
-        moment(litigationResponse.litigation_end).isBefore(new Date().toISOString())
-      || litigationResponse.reconcilate
+        (
+          moment(litigationResponse.litigation_end).isBefore(new Date().toISOString())
+          && litigationResponse.litigation_status === statusTypes.STARTED
+        )
+        || litigationResponse.litigation_status === statusTypes.WITHDRAWN
       ) {
         litigationResponse.isClosed = true;
       }
