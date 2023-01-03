@@ -27,11 +27,11 @@ interface ILitigation {
 interface ILitigationQuery {
   limit: number;
   page: number;
-  query: string;
-  search_fields: string[];
+  query?: string;
+  search_fields?: string[];
   ascend_fields: string[];
   descend_fields: string[];
-  judged_by: string;
+  judged_by?: string;
   populate?: string | string[];
   participant_id?: string;
 }
@@ -371,20 +371,22 @@ export const getLitigationByCriteria = async (
           options && options.participant_id
             ? `
             AND 
-            issuer_id = ${!options.owner_id ? '$2' : '$3'}
-            OR 
-            assumed_author = ${!options.owner_id ? '$2' : '$3'}
-            OR
-            EXISTS
             (
-              SELECT 
-              recognition_for 
-              FROM 
-              recognition 
-              WHERE 
-              recognition_for = ${!options.owner_id ? '$2' : '$3'}
-              AND
-              recognition_id = ANY(l.recognitions)
+              issuer_id = ${!options.owner_id ? '$2' : '$3'}
+              OR 
+              assumed_author = ${!options.owner_id ? '$2' : '$3'}
+              OR
+              EXISTS
+              (
+                SELECT 
+                recognition_for 
+                FROM 
+                recognition 
+                WHERE 
+                recognition_for = ${!options.owner_id ? '$2' : '$3'}
+                AND
+                recognition_id = ANY(l.recognitions)
+              )
             )
             `
             : ''
