@@ -14,6 +14,7 @@ import UserCard from 'components/cards/UserCard';
 import Loader from 'components/uicore/Loader';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import statusTypes from 'utils/constants/statusTypes';
 import './index.css';
 import useDetails from './useDetails';
 
@@ -129,7 +130,7 @@ export default function LitigationDetails() {
       <Grid display="flex" marginTop="36px" width="100%">
         <MaterialCard
           mediaUrl={litigation?.material?.material_link || litigation?.creation?.creation_link}
-          mediaType={litigation?.material?.material_link || litigation?.creation?.creation_type}
+          mediaType={litigation?.material?.material_type || litigation?.creation?.creation_type}
           link={litigation?.material?.material_link || litigation?.creation?.creation_link}
           title={litigation?.material?.material_title || litigation?.creation?.creation_title}
           description={litigation?.material?.material_description
@@ -141,7 +142,7 @@ export default function LitigationDetails() {
           recognitionStatus={
             litigation?.material && litigation?.material?.recognition?.status?.status_name
               ? litigation?.material?.recognition?.status?.status_name
-              : null
+              : statusTypes.ACCEPTED
           }
         />
       </Grid>
