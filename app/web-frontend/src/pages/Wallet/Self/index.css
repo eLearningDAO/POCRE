@@ -124,6 +124,28 @@
 .rating-color {
     color: white !important;
 }
+
+.suggestion-text-container {
+    padding: 10px;
+}
+
+.suggestion-text-container  .rating-color{
+    color: #0969da !important;
+}
+
+.suggestion-text-container:hover .rating-color{
+    color: white !important;
+}
+
+.suggestion-text-container:hover{
+    padding: 10px;
+    background-color: #0969da;
+    color: white !important;
+}
+
+.suggestion-text-name{
+    min-width: 150px;
+}
 /* .wallet-profile-info-right
  > div {
     width: 100%;
