@@ -290,8 +290,8 @@ export const getUserByUsername = async (username: string): Promise<IUserDoc | nu
  */
 export const updateUserById = async (id: string, updateBody: Partial<IUser>): Promise<IUserDoc | null> => {
   await getUserById(id); // check if user exists, throws error if not found
-
-  updateBody.reputation_stars = getStar(updateBody); // update the stars field according to aviable user fields .
+  const starCount = getStar(updateBody)
+  if (typeof(starCount)==='number') updateBody.reputation_stars = starCount; // update the stars field according to aviable user fields .
   // build sql conditions and values
   const conditions: string[] = [];
   const values: (string | number | null | boolean)[] = [];

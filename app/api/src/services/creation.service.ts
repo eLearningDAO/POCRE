@@ -2,7 +2,9 @@ import httpStatus from 'http-status';
 import statusTypes from '../constants/statusTypes';
 import { populator } from '../db/plugins/populator';
 import * as db from '../db/pool';
+import { getUserById,IUser,IUserDoc } from './user.service';
 import ApiError from '../utils/ApiError';
+import { getStar } from '../utils/userStarCalculation';
 import supportedMediaTypes from '../constants/supportedMediaTypes';
 
 const types = Object.values(supportedMediaTypes);
@@ -107,7 +109,7 @@ export const verifyCreationMaterialDuplicates = async (materials: string[], excl
 export const createCreation = async (creationBody: ICreation): Promise<ICreationDoc> => {
   // verify if material/s already exist for a creation, throw error if a material is found
   if (creationBody.materials) await verifyCreationMaterialDuplicates(creationBody.materials);
-
+  const user:Partial<IUserDoc | null> = await getUserById(creationBody.author_id);
   try {
     const result = await db.instance.query(
       `INSERT INTO creation 
@@ -140,7 +142,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
       ]
     );
     const creation = result.rows[0];
-
+    if(user) getStar(user)
     return creation;
   } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
