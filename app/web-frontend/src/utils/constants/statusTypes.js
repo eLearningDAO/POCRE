@@ -3,4 +3,5 @@ export default Object.freeze({
   WITHDRAWN: 'withdrawn',
   STARTED: 'started',
   CLOSED: 'closed',
+  ACCEPTED: 'accepted',
 });

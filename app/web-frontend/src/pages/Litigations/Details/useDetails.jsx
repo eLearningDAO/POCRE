@@ -27,14 +27,18 @@ const useDetails = () => {
     queryKey: [`litigation-${litigationId}`],
     queryFn: async () => {
       // get litigation details
-      const toPopulate = ['issuer_id', 'assumed_author', 'winner', 'decisions', 'recognitions', 'recognitions.recognition_for', 'material_id'];
+      const toPopulate = ['issuer_id', 'assumed_author', 'winner', 'decisions', 'recognitions', 'recognitions.recognition_for', 'creation_id', 'material_id'];
       const litigationResponse = await Litigation.getById(litigationId, toPopulate.map((x) => `populate=${x}`).join('&'));
+
+      // getting the current date without timestamp, as the litigation start/end dates also have
+      // dates without timestamps
+      const isoDateToday = `${moment().format('YYYY-MM-DDT00:00:00.000')}Z`;
 
       // calculate litigation status
       litigationResponse.status = (() => {
         if (
           (
-            moment(litigationResponse.litigation_end).isBefore(new Date().toISOString())
+            moment(litigationResponse.litigation_end).isBefore(isoDateToday)
             && litigationResponse.litigation_status === statusTypes.STARTED
           )
           || litigationResponse.litigation_status === statusTypes.WITHDRAWN
@@ -43,53 +47,41 @@ const useDetails = () => {
         }
 
         if (
-          moment(litigationResponse.litigation_start).isBefore(new Date().toISOString())
-          && moment(litigationResponse.litigation_end).isAfter(new Date().toISOString())
-          && litigationResponse.litigation_status === statusTypes.STARTED
-          && litigationResponse.recognitions?.find(
-            (x) => x?.recognition_for?.user_id === user?.user_id,
-          )
+          moment(litigationResponse.litigation_start).isSameOrBefore(isoDateToday)
+          && moment(litigationResponse.litigation_end).isAfter(isoDateToday)
         ) {
-          return 'Awaiting Judgement';
-        }
+          const isToJudge = litigationResponse.recognitions?.find(
+            (x) => x?.recognition_for?.user_id === user?.user_id,
+          );
 
-        if (
-          moment(litigationResponse.litigation_start).isBefore(new Date().toISOString())
-          && moment(litigationResponse.litigation_end).isAfter(new Date().toISOString())
-          && litigationResponse?.assumed_author?.user_id === user?.user_id
-          && (
-            litigationResponse.litigation_status === statusTypes.PENDING
-            || litigationResponse.litigation_status === statusTypes.STARTED
-          )
-          && !litigationResponse.recognitions?.find(
-            (x) => x?.recognition_for?.user_id === user?.user_id,
-          )
-        ) {
-          if (litigationResponse.litigation_status === statusTypes.STARTED) {
-            return 'In voting process';
+          const isPendingOrStarted = litigationResponse.litigation_status === statusTypes.PENDING
+            || litigationResponse.litigation_status === statusTypes.STARTED;
+
+          if (
+            litigationResponse.litigation_status === statusTypes.STARTED
+            && isToJudge
+          ) {
+            return 'Awaiting Judgement';
           }
-          return 'Awaiting author response';
+
+          if (isPendingOrStarted && !isToJudge) {
+            if (litigationResponse.litigation_status === statusTypes.STARTED) {
+              return 'In voting process';
+            }
+
+            return 'Awaiting author response';
+          }
         }
 
-        if (
-          moment(litigationResponse.litigation_start).isBefore(new Date().toISOString())
-          && moment(litigationResponse.litigation_end).isAfter(new Date().toISOString())
-          && (
-            litigationResponse.litigation_status === statusTypes.PENDING
-            || litigationResponse.litigation_status === statusTypes.STARTED
-          )
-        ) {
-          return 'Waiting authorship recognition';
-        }
-
-        return null;
+        // default status is to wait for authorship recognition
+        return 'Waiting authorship recognition';
       })();
 
       // check if closed
       litigationResponse.isClosed = false;
       if (
         (
-          moment(litigationResponse.litigation_end).isBefore(new Date().toISOString())
+          moment(litigationResponse.litigation_end).isBefore(isoDateToday)
           && litigationResponse.litigation_status === statusTypes.STARTED
         )
         || litigationResponse.litigation_status === statusTypes.WITHDRAWN
@@ -99,7 +91,7 @@ const useDetails = () => {
 
       // calculate if auth user is a judge
       litigationResponse.isJudging = !!litigationResponse.recognitions.some(
-        (x) => x.recognition_for.user_id === user?.user_id,
+        (x) => x?.recognition_for?.user_id === user?.user_id,
       );
 
       // calculate vote status
@@ -117,6 +109,8 @@ const useDetails = () => {
     staleTime: 100_000, // delete cached data after 100 seconds
     enabled: !!litigationId,
   });
+
+  console.log('litigation =>', litigation);
 
   // cast litigation vote
   const {

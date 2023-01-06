@@ -14,6 +14,7 @@ import UserCard from 'components/cards/UserCard';
 import Loader from 'components/uicore/Loader';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import statusTypes from 'utils/constants/statusTypes';
 import './index.css';
 import useDetails from './useDetails';
 
@@ -57,6 +58,7 @@ export default function LitigationDetails() {
 
   const alreadyVoted = litigation?.decisions?.find((x) => x?.maker_id === user?.user_id)
     ?.decision_status;
+
   return (
     <Grid item xs={12}>
       {isCastingVote && <Loader size="large" withBackdrop />}
@@ -129,7 +131,7 @@ export default function LitigationDetails() {
       <Grid display="flex" marginTop="36px" width="100%">
         <MaterialCard
           mediaUrl={litigation?.material?.material_link || litigation?.creation?.creation_link}
-          mediaType={litigation?.material?.material_link || litigation?.creation?.creation_type}
+          mediaType={litigation?.material?.material_type || litigation?.creation?.creation_type}
           link={litigation?.material?.material_link || litigation?.creation?.creation_link}
           title={litigation?.material?.material_title || litigation?.creation?.creation_title}
           description={litigation?.material?.material_description
@@ -141,7 +143,7 @@ export default function LitigationDetails() {
           recognitionStatus={
             litigation?.material && litigation?.material?.recognition?.status?.status_name
               ? litigation?.material?.recognition?.status?.status_name
-              : null
+              : statusTypes.ACCEPTED
           }
         />
       </Grid>
@@ -154,7 +156,12 @@ export default function LitigationDetails() {
         className="litigation-vote-container"
       >
         {
-          (litigation?.isJudging && !litigation?.isClosed && alreadyVoted)
+          (
+            litigation?.isJudging
+            && !litigation?.isClosed
+            && !alreadyVoted
+            && litigation?.litigation_status === statusTypes.STARTED
+          )
             ? (
               <>
                 <Button
@@ -273,28 +280,30 @@ export default function LitigationDetails() {
         className="secondary-section-container"
       >
         <div className="carousel-container">
-          {litigation?.recognitions?.map(
-            (recognition, index) => (index === slideNumber - 1 || index === slideNumber
-              ? (
-                <UserCard
-                  key={index}
-                  // eslint-disable-next-line jsx-a11y/aria-role
-                  role={(() => {
-                    const vote = litigation?.decisions?.find(
-                      (x) => x?.maker_id === recognition?.recognition_for?.user_id,
-                    )?.decision_status;
+          <div className="carousel-container-cards">
+            {litigation?.recognitions?.map(
+              (recognition, index) => (index === slideNumber - 1 || index === slideNumber
+                ? (
+                  <UserCard
+                    key={index}
+                    // eslint-disable-next-line jsx-a11y/aria-role
+                    role={(() => {
+                      const vote = litigation?.decisions?.find(
+                        (x) => x?.maker_id === recognition?.recognition_for?.user_id,
+                      )?.decision_status;
 
-                    return vote === false ? 'Voted in opposition' : (vote === true ? 'Voted in favor' : 'Vote not casted');
-                  })()}
-                  userProfileId={recognition?.recognition_for?.user_id}
-                  username={recognition?.recognition_for?.user_name}
-                  // eslint-disable-next-line unicorn/prefer-module
-                  imageUrl={recognition?.recognition_for?.image_url || require('assets/images/profile-placeholder.png')}
-                  totalCreationsAuthored={Math.floor(Math.random())}
-                />
-              )
-              : null),
-          )}
+                      return vote === false ? 'Voted in opposition' : (vote === true ? 'Voted in favor' : 'Vote not casted');
+                    })()}
+                    userProfileId={recognition?.recognition_for?.user_id}
+                    username={recognition?.recognition_for?.user_name}
+                    // eslint-disable-next-line unicorn/prefer-module
+                    imageUrl={recognition?.recognition_for?.image_url || require('assets/images/profile-placeholder.png')}
+                    totalCreationsAuthored={Math.floor(Math.random())}
+                  />
+                )
+                : null),
+            )}
+          </div>
           <div className="carousel-slide-btns-container">
             <Button onClick={previous}>
               <img src={LeftIcon} alt="" />
