@@ -156,7 +156,12 @@ export default function LitigationDetails() {
         className="litigation-vote-container"
       >
         {
-          (litigation?.isJudging && !litigation?.isClosed && !alreadyVoted)
+          (
+            litigation?.isJudging
+            && !litigation?.isClosed
+            && !alreadyVoted
+            && litigation?.litigation_status === statusTypes.STARTED
+          )
             ? (
               <>
                 <Button
