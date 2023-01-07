@@ -210,7 +210,8 @@ export const queryUsers = async (options: IUserQuery): Promise<IUserQueryResult>
  */
 export const getUserByCriteria = async (
   criteria: 'user_id' | 'wallet_address' | 'user_name' | 'email_address' | 'phone',
-  equals: string
+  equals: string,
+  starsCalculation?:boolean
 ): Promise<IUserDoc | null> => {
   const user = await (async () => {
     try {
@@ -219,7 +220,7 @@ export const getUserByCriteria = async (
         SELECT 
         * 
         FROM 
-        ${criteria === 'wallet_address' ? 'users' : 'VIEW_users_public_fields'} 
+        ${criteria === 'wallet_address' || starsCalculation ? 'users' : 'VIEW_users_public_fields'} 
         WHERE 
         ${criteria} = $1 
         LIMIT 1
@@ -242,8 +243,8 @@ export const getUserByCriteria = async (
  * @param {string} id
  * @returns {Promise<IUserDoc|null>}
  */
-export const getUserById = async (id: string): Promise<IUserDoc | null> => {
-  return getUserByCriteria('user_id', id);
+export const getUserById = async (id: string,starsCalculation?:boolean): Promise<IUserDoc | null> => {
+  return getUserByCriteria('user_id', id,starsCalculation);
 };
 
 /**
@@ -290,7 +291,8 @@ export const getUserByUsername = async (username: string): Promise<IUserDoc | nu
  */
 export const updateUserById = async (id: string, updateBody: Partial<IUser>): Promise<IUserDoc | null> => {
   await getUserById(id); // check if user exists, throws error if not found
-  const starCount = getStar(updateBody)
+  const starCount = await getStar(updateBody,id)
+  console.log("This is the star count",starCount)
   if (typeof(starCount)==='number') updateBody.reputation_stars = starCount; // update the stars field according to aviable user fields .
   // build sql conditions and values
   const conditions: string[] = [];
