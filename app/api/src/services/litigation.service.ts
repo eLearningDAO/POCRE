@@ -220,20 +220,22 @@ export const queryLitigations = async (options: ILitigationQuery): Promise<ILiti
     const validateParticipant =
       options && options.participant_id
         ? `
-        issuer_id = '${options.participant_id}' 
-        OR 
-        assumed_author = '${options.participant_id}'
-        OR
-        EXISTS
         (
-          SELECT 
-          recognition_for 
-          FROM 
-          recognition 
-          WHERE 
-          recognition_for = '${options.participant_id}'
-          AND
-          recognition_id = ANY(l.recognitions)
+          issuer_id = '${options.participant_id}' 
+          OR 
+          assumed_author = '${options.participant_id}'
+          OR
+          EXISTS
+          (
+            SELECT 
+            recognition_for 
+            FROM 
+            recognition 
+            WHERE 
+            recognition_for = '${options.participant_id}'
+            AND
+            recognition_id = ANY(l.recognitions)
+          )
         )
         `
         : '';
