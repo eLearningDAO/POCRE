@@ -280,28 +280,30 @@ export default function LitigationDetails() {
         className="secondary-section-container"
       >
         <div className="carousel-container">
-          {litigation?.recognitions?.map(
-            (recognition, index) => (index === slideNumber - 1 || index === slideNumber
-              ? (
-                <UserCard
-                  key={index}
-                  // eslint-disable-next-line jsx-a11y/aria-role
-                  role={(() => {
-                    const vote = litigation?.decisions?.find(
-                      (x) => x?.maker_id === recognition?.recognition_for?.user_id,
-                    )?.decision_status;
+          <div className="carousel-container-cards">
+            {litigation?.recognitions?.map(
+              (recognition, index) => (index === slideNumber - 1 || index === slideNumber
+                ? (
+                  <UserCard
+                    key={index}
+                    // eslint-disable-next-line jsx-a11y/aria-role
+                    role={(() => {
+                      const vote = litigation?.decisions?.find(
+                        (x) => x?.maker_id === recognition?.recognition_for?.user_id,
+                      )?.decision_status;
 
-                    return vote === false ? 'Voted in opposition' : (vote === true ? 'Voted in favor' : 'Vote not casted');
-                  })()}
-                  userProfileId={recognition?.recognition_for?.user_id}
-                  username={recognition?.recognition_for?.user_name}
-                  // eslint-disable-next-line unicorn/prefer-module
-                  imageUrl={recognition?.recognition_for?.image_url || require('assets/images/profile-placeholder.png')}
-                  totalCreationsAuthored={Math.floor(Math.random())}
-                />
-              )
-              : null),
-          )}
+                      return vote === false ? 'Voted in opposition' : (vote === true ? 'Voted in favor' : 'Vote not casted');
+                    })()}
+                    userProfileId={recognition?.recognition_for?.user_id}
+                    username={recognition?.recognition_for?.user_name}
+                    // eslint-disable-next-line unicorn/prefer-module
+                    imageUrl={recognition?.recognition_for?.image_url || require('assets/images/profile-placeholder.png')}
+                    totalCreationsAuthored={Math.floor(Math.random())}
+                  />
+                )
+                : null),
+            )}
+          </div>
           <div className="carousel-slide-btns-container">
             <Button onClick={previous}>
               <img src={LeftIcon} alt="" />

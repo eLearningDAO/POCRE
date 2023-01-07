@@ -7,17 +7,24 @@
 }
 
 .carousel-container {
+    width: 90%;
+    position: relative;
+}
+
+.carousel-container-cards {
     display: flex;
     align-items: center;
     width: 100%;
     gap: 24px;
-    position: relative;
+    z-index: 2;
 }
 
 .carousel-slide-btns-container {
     position: absolute;
-    width: calc(100% + 54px);
-    margin-left: -27px;
+    width: calc(120%);
+    margin-left: -10%;
+    padding: 0 15px;
+    z-index: 1;
     display: flex;
     justify-content: space-between;
 }
