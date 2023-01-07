@@ -58,6 +58,7 @@ export default function LitigationDetails() {
 
   const alreadyVoted = litigation?.decisions?.find((x) => x?.maker_id === user?.user_id)
     ?.decision_status;
+
   return (
     <Grid item xs={12}>
       {isCastingVote && <Loader size="large" withBackdrop />}
@@ -155,7 +156,7 @@ export default function LitigationDetails() {
         className="litigation-vote-container"
       >
         {
-          (litigation?.isJudging && !litigation?.isClosed && alreadyVoted)
+          (litigation?.isJudging && !litigation?.isClosed && !alreadyVoted)
             ? (
               <>
                 <Button
