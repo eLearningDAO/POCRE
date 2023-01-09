@@ -1,9 +1,8 @@
-import { Button } from '@mui/material';
 import { useState } from 'react';
 import LoginModal from 'components/LoginModal';
 import Input from 'components/uicore/Input';
 import { useNavigate } from 'react-router-dom';
-import useExplore from './useExplore';
+import useExplore from '../common/hooks/useExplore';
 import UserSuggestions from '../common/components/userSuggestions';
 
 // const getSuggestions = (suggestions) => {
@@ -22,10 +21,10 @@ function WalletExplore() {
     }
   };
 
-  const { userWalletSuggestions, handleUserWalletInputChange } = useExplore();
+  const { walletSuggestions, handleWalletInputChange } = useExplore();
 
   return (
-    <div className="wallet-container">
+    <div className="wallet-container-public-user">
       {showLoginForm && (
         <LoginModal
           onClose={() => setShowLoginForm(false)}
@@ -40,15 +39,12 @@ function WalletExplore() {
           variant="dark"
           placeholder="Search User Wallets!"
           name="creation"
-          onInput={(event_) => handleUserWalletInputChange(event_)}
+          onInput={(event_) => handleWalletInputChange(event_)}
           autoComplete
         />
-        <Button onClick={() => setShowLoginForm(true)} className="bg-black color-white">
-          Login with your wallet
-        </Button>
       </div>
-      {userWalletSuggestions
-      && userWalletSuggestions.slice(0, 5).map((user) => UserSuggestions({ user, onWalletSelect }))}
+      {walletSuggestions
+      && walletSuggestions.slice(0, 5).map((wallet) => UserSuggestions({ wallet, onWalletSelect }))}
     </div>
   );
 }

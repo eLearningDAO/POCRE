@@ -3,16 +3,16 @@ import useSuggestions from 'hooks/useSuggestions';
 const useExplore = () => {
   // author suggestions
   const {
-    suggestions: userWalletSuggestions,
+    suggestions: walletSuggestions,
     suggestionsStatus: findUserWalletStatus,
-    handleSuggestionInputChange: handleUserWalletInputChange,
+    handleSuggestionInputChange: handleWalletInputChange,
   } = useSuggestions({
     search: 'users',
   });
   return {
     findUserWalletStatus,
-    userWalletSuggestions,
-    handleUserWalletInputChange,
+    walletSuggestions,
+    handleWalletInputChange,
   };
 };
 

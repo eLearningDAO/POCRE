@@ -1,17 +1,17 @@
 import { Grid, Rating } from '@mui/material';
 
-function UserSuggestions({ user = {}, onWalletSelect = () => {} }) {
+function UserSuggestions({ wallet = {}, onWalletSelect = () => {} }) {
   return (
-    <Grid container direction="column">
-      <Grid container className="suggestion-text-container" onClick={() => onWalletSelect(user)}>
-        <p className="suggestion-text-name">{user?.user_name}</p>
+    <Grid container direction="column" className="suggestion-text-root">
+      <Grid container className="suggestion-text-container" onClick={() => onWalletSelect(wallet)}>
+        <p className="suggestion-text-name">{wallet?.user_name}</p>
         <Rating
-          key={user?.reputation_stars || 0}
+          key={wallet?.reputation_stars || 0}
           name="simple-controlled"
           color="red"
           className="rating-color"
           readOnly
-          value={user?.reputation_stars || 0}
+          value={wallet?.reputation_stars || 0}
         />
       </Grid>
     </Grid>
