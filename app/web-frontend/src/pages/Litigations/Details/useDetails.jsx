@@ -110,8 +110,6 @@ const useDetails = () => {
     enabled: !!litigationId,
   });
 
-  console.log('litigation =>', litigation);
-
   // cast litigation vote
   const {
     mutate: castLitigationVote,
