@@ -79,6 +79,10 @@ export const verifyCreationTagDuplicates = async (tags: string[], exclude_creati
   if (foundTag) throw new ApiError(httpStatus.NOT_FOUND, 'tag already assigned to a creation');
 };
 
+export const getAuthorCreationsCount = async (user_id?: string) => {
+  const resCreation = await db.instance.query(`SELECT COUNT(*) as total_results FROM creation where author_id='${user_id}';`);
+  return parseInt(resCreation.rows[0].total_results);
+}
 /**
  * Check if a creation has duplicate materials
  * @param {string[]} materials
