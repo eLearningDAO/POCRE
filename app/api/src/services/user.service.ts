@@ -243,8 +243,8 @@ export const getUserByCriteria = async (
  * @param {string} id
  * @returns {Promise<IUserDoc|null>}
  */
-export const getUserById = async (id: string,return_public_data?:boolean): Promise<IUserDoc | null> => {
-  return getUserByCriteria('user_id', id,return_public_data);
+export const getUserById = async (id: string): Promise<IUserDoc | null> => {
+  return getUserByCriteria('user_id', id);
 };
 
 /**

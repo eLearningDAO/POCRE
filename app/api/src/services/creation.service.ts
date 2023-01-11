@@ -2,7 +2,7 @@ import httpStatus from 'http-status';
 import statusTypes from '../constants/statusTypes';
 import { populator } from '../db/plugins/populator';
 import * as db from '../db/pool';
-import { getUserById,IUser,IUserDoc, updateUserById } from './user.service';
+import { getUserByCriteria,IUser,IUserDoc, updateUserById } from './user.service';
 import ApiError from '../utils/ApiError';
 import { getStar } from '../utils/userStarCalculation';
 import supportedMediaTypes from '../constants/supportedMediaTypes';
@@ -109,7 +109,7 @@ export const verifyCreationMaterialDuplicates = async (materials: string[], excl
 export const createCreation = async (creationBody: ICreation): Promise<ICreationDoc> => {
   // verify if material/s already exist for a creation, throw error if a material is found
   if (creationBody.materials) await verifyCreationMaterialDuplicates(creationBody.materials);
-  const user:Partial<IUserDoc | null> = await getUserById(creationBody.author_id,true);
+  const user:Partial<IUserDoc | null> = await getUserByCriteria('user_id',creationBody.author_id,true);
   try {
     const result = await db.instance.query(
       `INSERT INTO creation 
