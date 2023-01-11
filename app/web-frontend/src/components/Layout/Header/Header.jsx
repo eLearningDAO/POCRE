@@ -111,7 +111,7 @@ function HomeHeader({ displayNav = false }) {
       >
         {loggedInUser && (
           <div className="loggedin-user">
-            <Link to={`/wallet/${loggedInUser?.user_id}`}>
+            <Link to={`/wallet`}>
               <img
                 alt=""
                 src={loggedInUser.image_url}
