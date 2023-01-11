@@ -211,7 +211,7 @@ export const queryUsers = async (options: IUserQuery): Promise<IUserQueryResult>
 export const getUserByCriteria = async (
   criteria: 'user_id' | 'wallet_address' | 'user_name' | 'email_address' | 'phone',
   equals: string,
-  starsCalculation?:boolean
+  return_public_data?:boolean
 ): Promise<IUserDoc | null> => {
   const user = await (async () => {
     try {
@@ -220,7 +220,7 @@ export const getUserByCriteria = async (
         SELECT 
         * 
         FROM 
-        ${criteria === 'wallet_address' || starsCalculation ? 'users' : 'VIEW_users_public_fields'} 
+        ${criteria === 'wallet_address' || return_public_data ? 'users' : 'VIEW_users_public_fields'} 
         WHERE 
         ${criteria} = $1 
         LIMIT 1
@@ -243,8 +243,8 @@ export const getUserByCriteria = async (
  * @param {string} id
  * @returns {Promise<IUserDoc|null>}
  */
-export const getUserById = async (id: string,starsCalculation?:boolean): Promise<IUserDoc | null> => {
-  return getUserByCriteria('user_id', id,starsCalculation);
+export const getUserById = async (id: string,return_public_data?:boolean): Promise<IUserDoc | null> => {
+  return getUserByCriteria('user_id', id,return_public_data);
 };
 
 /**
