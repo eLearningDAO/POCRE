@@ -93,7 +93,7 @@ export const verifyLitigationPossibilityForCreation = async (creation_id: string
   }
 };
 
-export const getUserJudgedLitigationsCount  = async (user_id?: string) => {
+export const getUserJudgedLitigationsCount  = async (author_id?: string) => {
   const resJury = await db.instance.query(`SELECT 
   COUNT(*) as total_results 
   FROM 
@@ -106,10 +106,10 @@ export const getUserJudgedLitigationsCount  = async (user_id?: string) => {
     FROM 
     recognition 
     WHERE 
-    recognition_for = '${user_id}' 
+    recognition_for = $1 
     AND 
     recognition_id = ANY(l.recognitions)
-  )`);
+  )`, [author_id]);
   return parseInt(resJury.rows[0].total_results);
 }
 
