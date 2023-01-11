@@ -1,6 +1,6 @@
 import { IUserDoc } from '../services/user.service';
 import { getAuthorCreationsCount } from '../services/creation.service';
-import { getUserJudgedLitigations } from '../services/litigation.service';
+import { getUserJudgedLitigationsCount } from '../services/litigation.service';
 import * as db from '../db/pool';
 
 /**
@@ -14,7 +14,7 @@ export const getStar = async (user: Partial<IUserDoc>, user_id?: string) => {
   let creationCount: number = 0;
   let juryMembershipCount: number = 0;
   creationCount = await getAuthorCreationsCount(id)
-  juryMembershipCount = await getAuthorCreationsCount(id)
+  juryMembershipCount = await getUserJudgedLitigationsCount(id)
   if (typeof juryMembershipCount === 'number' && juryMembershipCount > 0) return 5;
   else if (user.email_address && user.phone && user.verified_id && creationCount >= 10) {
     return 4;
