@@ -3,7 +3,7 @@ import { QueryResult } from 'pg';
 import { reputation } from '../constants/statusTypes';
 import * as db from '../db/pool';
 import ApiError from '../utils/ApiError';
-import { getStar } from '../utils/userStarCalculation';
+import { getStar } from './creation.service';
 
 export interface IUser {
   user_name: string;
