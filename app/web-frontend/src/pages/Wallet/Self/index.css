@@ -3,11 +3,35 @@
     border: 2px solid #EBEFF0;
     border-radius: 25px;
     margin-top: 5%;
+    width: 100%;
 }
+
+.wallet-container-public-user {
+    background: #FFFFFF;
+    border: 2px solid #EBEFF0;
+    border-radius: 25px;
+    margin-top: 5%;
+    width: 50%;
+}
+.wallet-explore-root .suggestion-text-root{
+    width: 50%;
+}
+
+.wallet-explore-root input{
+    width: 50%;
+}
+
+.wallet-explore-root .wallet-explore-header {
+    display: flex;
+    gap: 12px;
+    width: 50%;
+    align-items: center;
+}
+
 .wallet-explore-header {
     display: flex;
     gap: 12px;
-    width: 100%;
+    width: 50%;
     align-items: center;
 }
 .user-profile-avatar {
@@ -123,6 +147,31 @@
 }
 .rating-color {
     color: white !important;
+}
+
+.suggestion-text-container {
+    padding: 10px;
+    background-color: white;
+}
+
+.suggestion-text-container  .rating-color{
+    color: #0969da !important;
+    
+}
+
+.suggestion-text-container:hover .rating-color{
+    color: white !important;
+}
+
+.suggestion-text-container:hover{
+    padding: 10px;
+    background-color: #0969da;
+    color: white !important;
+}
+
+.suggestion-text-name{
+    min-width: 150px;
+    color: black;
 }
 /* .wallet-profile-info-right
  > div {

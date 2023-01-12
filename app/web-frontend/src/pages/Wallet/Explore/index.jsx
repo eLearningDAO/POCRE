@@ -1,31 +1,50 @@
-import { Button } from '@mui/material';
 import { useState } from 'react';
 import LoginModal from 'components/LoginModal';
 import Input from 'components/uicore/Input';
+import { useNavigate } from 'react-router-dom';
+import useExplore from '../common/hooks/useExplore';
+import UserSuggestions from '../common/components/userSuggestions';
+
+// const getSuggestions = (suggestions) => {
+//   if (suggestions) {
+//     return suggestions.map((x) => ({ label: x.user_name, id: x.user_id }));
+//   }
+//   return [];
+// };
 
 function WalletExplore() {
+  const navigate = useNavigate();
   const [showLoginForm, setShowLoginForm] = useState(false);
+  const onWalletSelect = (value) => {
+    if (value?.user_id) {
+      navigate(`/wallet/${value?.user_id}`);
+    }
+  };
+
+  const { walletSuggestions, handleWalletInputChange } = useExplore();
 
   return (
-    <div className="wallet-container">
+    <div className="wallet-container-public-user">
       {showLoginForm && (
-      <LoginModal
-        onClose={() => setShowLoginForm(false)}
-        onLoggedIn={() => {
-          // eslint-disable-next-line no-self-assign
-          window.location = window.location;
-        }}
-      />
+        <LoginModal
+          onClose={() => setShowLoginForm(false)}
+          onLoggedIn={() => {
+            // eslint-disable-next-line no-self-assign
+            window.location = window.location;
+          }}
+        />
       )}
       <div className="wallet-explore-header">
-        <Input variant="dark" placeholder="Search Public Wallets [coming soon]" />
-        <Button onClick={() => setShowLoginForm(true)} className="bg-black color-white">
-          Login with your wallet
-        </Button>
+        <Input
+          variant="dark"
+          placeholder="Search User Wallets!"
+          name="creation"
+          onInput={(event_) => handleWalletInputChange(event_)}
+          autoComplete
+        />
       </div>
-      <div className="color-black h4 m-auto mt-24 text-center">
-        Search Results will be displayed here
-      </div>
+      {walletSuggestions
+      && walletSuggestions.slice(0, 5).map((wallet) => UserSuggestions({ wallet, onWalletSelect }))}
     </div>
   );
 }

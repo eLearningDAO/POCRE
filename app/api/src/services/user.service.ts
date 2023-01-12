@@ -210,7 +210,8 @@ export const queryUsers = async (options: IUserQuery): Promise<IUserQueryResult>
  */
 export const getUserByCriteria = async (
   criteria: 'user_id' | 'wallet_address' | 'user_name' | 'email_address' | 'phone',
-  equals: string
+  equals: string,
+  return_public_data?:boolean
 ): Promise<IUserDoc | null> => {
   const user = await (async () => {
     try {
@@ -219,7 +220,7 @@ export const getUserByCriteria = async (
         SELECT 
         * 
         FROM 
-        ${criteria === 'wallet_address' ? 'users' : 'VIEW_users_public_fields'} 
+        ${criteria === 'wallet_address' || return_public_data ? 'users' : 'VIEW_users_public_fields'} 
         WHERE 
         ${criteria} = $1 
         LIMIT 1
@@ -290,8 +291,8 @@ export const getUserByUsername = async (username: string): Promise<IUserDoc | nu
  */
 export const updateUserById = async (id: string, updateBody: Partial<IUser>): Promise<IUserDoc | null> => {
   await getUserById(id); // check if user exists, throws error if not found
-
-  updateBody.reputation_stars = getStar(updateBody); // update the stars field according to aviable user fields .
+  const starCount = await getStar(updateBody,id)
+  if (typeof(starCount)==='number') updateBody.reputation_stars = starCount; // update the stars field according to aviable user fields .
   // build sql conditions and values
   const conditions: string[] = [];
   const values: (string | number | null | boolean)[] = [];

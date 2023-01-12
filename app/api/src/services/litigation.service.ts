@@ -93,6 +93,26 @@ export const verifyLitigationPossibilityForCreation = async (creation_id: string
   }
 };
 
+export const getUserJudgedLitigationsCount  = async (author_id?: string) => {
+  const resJury = await db.instance.query(`SELECT 
+  COUNT(*) as total_results 
+  FROM 
+  litigation l WHERE
+  EXISTS 
+  (
+    SELECT 
+    recognition_id,
+    recognition_for 
+    FROM 
+    recognition 
+    WHERE 
+    recognition_for = $1 
+    AND 
+    recognition_id = ANY(l.recognitions)
+  )`, [author_id]);
+  return parseInt(resJury.rows[0].total_results);
+}
+
 /**
  * Check if a litigation has duplicate decisions
  * @param {string[]} decisions
