@@ -29,7 +29,7 @@ interface ICreationQuery {
   ascend_fields: string[];
   descend_fields: string[];
   is_trending?: boolean;
-  top_authors: boolean;
+  top_authors?: boolean;
   creation_type: string;
   is_partially_assigned?: boolean;
   is_fully_assigned?: boolean;
@@ -166,7 +166,6 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
  * @returns {Promise<Array<ICreation>>}
  */
 export const queryCreations = async (options: ICreationQuery): Promise<ICreationQueryResult> => {
-  console.log("THis is the options",options)
   try {
     // search
     const search = (() => {
@@ -485,7 +484,6 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
       },
     };
 
-    console.log("THis is the top author query",options)
     const result = await db.instance.query(
       typeof options.creation_type === 'string' && options.top_authors === true
       ? queryModes.creationByTypetopAuthors.query
