@@ -126,6 +126,7 @@ export default function CreationDetails() {
           title={creation?.creation_title}
           description={creation?.creation_description}
           link={creation?.creation_link}
+          ipfsHash={creation?.ipfs_hash}
           date={moment(creation?.creation_date).format('Do MMMM YYYY')}
           authorName={creation?.author?.user_name}
           authorProfileId={creation?.author?.user_id}

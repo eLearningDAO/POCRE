@@ -129,6 +129,7 @@ function Creations() {
                   interactionBtns
                   mediaUrl={x?.creation_link}
                   mediaType={x?.creation_type}
+                  ipfsHash={x?.ipfs_hash}
                   author={x?.author?.user_name}
                   authorProfileId={x?.author?.user_id}
                   materials={x?.materials?.length > 0 ? x?.materials?.map((m) => ({

@@ -68,6 +68,7 @@ export default function StepThree({
          link={creationDraft?.source}
          authorName={user?.user_name}
          date={creationDraft?.date}
+         ipfsHash={creationDraft?.ipfsHash || 'Available after creation is created'}
          materials={creationDraft?.materials?.map((x) => ({
            title: x?.title,
            fileType: x?.fileType,

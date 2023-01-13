@@ -60,6 +60,7 @@ function CreationCard({
   authorProfileId = '',
   mediaUrl = '',
   mediaType = '',
+  ipfsHash = '',
   canEdit = true,
   canDelete = true,
   onEditClick = () => {},
@@ -113,6 +114,7 @@ function CreationCard({
           title={title}
           description={description}
           link={mediaUrl}
+          ipfsHash={ipfsHash}
           date={creationDate}
           authorName={author}
           authorProfileId={authorProfileId}
