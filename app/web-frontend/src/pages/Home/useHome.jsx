@@ -52,16 +52,17 @@ const useHome = () => {
     isSuccess: isSliderImagesFetchedSuccess,
     error: fetchSliderImagesError,
   } = useQuery({
-    queryKey: ['imageMaterial'],
+    queryKey: ['imageCreation'],
     queryFn: async () => {
-      let imageMaterialResponse = await Material.getAll(
-        'limit=1&is_recognized=true&is_claimed=false&material_type=image&top_authors=true',
+      const toPopulate = ['author_id'];
+      let imageCreationResponse = await Creation.getAll(
+        `page=${1}&limit=100&creation_type=image&top_authors=true&descend_fields[]=creation_date&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       );
-      imageMaterialResponse = await Material.getAll(
-        `limit=10&page=${imageMaterialResponse.total_pages > 1 ? imageMaterialResponse.total_pages : 1}&is_recognized=true&is_claimed=false&material_type=image&top_authors=true`,
+      imageCreationResponse = await Creation.getAll(
+        `page=${imageCreationResponse.total_pages > 1 ? imageCreationResponse.total_pages : 1}&limit=100&creation_type=image&top_authors=true&descend_fields[]=creation_date&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       );
-      imageMaterialResponse = await imageMaterialResponse;
-      return imageMaterialResponse.results;
+      imageCreationResponse = await imageCreationResponse;
+      return imageCreationResponse.results;
     },
     staleTime: 60_000, // cache for 60 seconds
   });

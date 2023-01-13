@@ -29,7 +29,8 @@ interface ICreationQuery {
   ascend_fields: string[];
   descend_fields: string[];
   is_trending?: boolean;
-  top_authors?: boolean;
+  top_authors: boolean;
+  creation_type: string;
   is_partially_assigned?: boolean;
   is_fully_assigned?: boolean;
   populate?: string | string[];
@@ -165,6 +166,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
  * @returns {Promise<Array<ICreation>>}
  */
 export const queryCreations = async (options: ICreationQuery): Promise<ICreationQueryResult> => {
+  console.log("THis is the options",options)
   try {
     // search
     const search = (() => {
@@ -216,6 +218,93 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
           fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
         })} FROM creation c ${search} ${order} OFFSET $1 LIMIT $2;`,
         count: `SELECT COUNT(*) as total_results FROM creation ${search};`,
+      },
+      creationByType: {
+        query: `SELECT * ${populator({
+          tableAlias: 'c',
+          fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+        })} FROM creation c where c.creation_type='${options.creation_type}' and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id) OFFSET $1 LIMIT $2;`,
+        count: `SELECT COUNT(*) as total_results FROM creation c where c.creation_type='${options.creation_type}' and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)
+                        OFFSET $1 LIMIT $2`,
+      },
+      creationByTypetopAuthors: {
+        query: `SELECT * ${populator({
+          tableAlias: 'c',
+          fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+        })} FROM creation c where c.creation_type='${options.creation_type}' and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
+        (SELECT user_id, 
+                        (
+                          SELECT 
+                          COUNT(author_id) value_occurrence 
+                          FROM 
+                          creation 
+                          WHERE 
+                          author_id = u.user_id
+                        ) 
+                        as total_creations
+                        FROM 
+                        VIEW_users_public_fields u  WHERE 
+                        u.user_id = ANY(
+                                      ARRAY(
+                                        SELECT 
+                                        author_id 
+                                        FROM (
+                                          SELECT 
+                                          author_id, 
+                                          COUNT(author_id) value_occurrence 
+                                          FROM 
+                                          creation 
+                                          GROUP BY 
+                                          author_id 
+                                          ORDER BY 
+                                          value_occurrence 
+                                          DESC
+                                        )
+                                        AS authors
+                                      )
+                                    )
+                          ORDER BY 
+                          total_creations
+                          DESC)
+                ${order} 
+                OFFSET $1 LIMIT $2`,
+        count: `SELECT COUNT(*) as total_results FROM creation c where c.creation_type='${options.creation_type}' and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
+                (SELECT user_id, 
+                                (
+                                  SELECT 
+                                  COUNT(author_id) value_occurrence 
+                                  FROM 
+                                  creation 
+                                  WHERE 
+                                  author_id = u.user_id
+                                ) 
+                                as total_creations
+                                FROM 
+                                VIEW_users_public_fields u  WHERE 
+                                u.user_id = ANY(
+                                              ARRAY(
+                                                SELECT 
+                                                author_id 
+                                                FROM (
+                                                  SELECT 
+                                                  author_id, 
+                                                  COUNT(author_id) value_occurrence 
+                                                  FROM 
+                                                  creation 
+                                                  GROUP BY 
+                                                  author_id 
+                                                  ORDER BY 
+                                                  value_occurrence 
+                                                  DESC
+                                                )
+                                                AS authors
+                                              )
+                                            )
+                                  ORDER BY 
+                                  total_creations
+                                  DESC)
+                        ${order} 
+                        OFFSET $1 LIMIT $2`,
       },
       topAuthors: {
         query: `SELECT * ${populator({
@@ -396,7 +485,12 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
       },
     };
 
+    console.log("THis is the top author query",options)
     const result = await db.instance.query(
+      typeof options.creation_type === 'string' && options.top_authors === true
+      ? queryModes.creationByTypetopAuthors.query
+        : typeof options.creation_type === 'string' && options.top_authors === false
+        ? queryModes.creationByType.query :
       options.top_authors
         ? queryModes.topAuthors.query
         : options.is_trending

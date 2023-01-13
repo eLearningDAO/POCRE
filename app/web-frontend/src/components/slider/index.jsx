@@ -43,10 +43,10 @@ export default function Slider({ handleSlideClick, slideImageList }) {
         className="carousel"
       >
         {
-          slideImageList && slideImageList.map((slide, index) => (
+          slideImageList && slideImageList.map((slide) => (
             <a
               className="carousel-item"
-              {...accessibleOnClick(handleSlideClick, index)}
+              {...accessibleOnClick(handleSlideClick, slide.id)}
             >
               <img src={slide.imageUrl} alt={slide.id} />
             </a>

@@ -32,6 +32,8 @@ export const queryCreations = {
       then: Joi.forbidden(),
       otherwise: Joi.optional(),
     }),
+    creation_type: Joi.string()
+      .optional(),
     is_fully_assigned: Joi.bool().when('is_trending', {
       is: Joi.bool().exist(),
       then: Joi.forbidden(),
@@ -40,7 +42,7 @@ export const queryCreations = {
     populate: Joi.alternatives()
       .try(Joi.string().valid(...creationDeepFields), Joi.array().items(Joi.string().valid(...creationDeepFields)))
       .optional(),
-    top_authors: Joi.bool().optional(),
+      top_authors: Joi.bool().default(false).optional(),
   }),
 };
 
