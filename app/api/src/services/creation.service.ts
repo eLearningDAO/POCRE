@@ -2,7 +2,7 @@ import httpStatus from 'http-status';
 import statusTypes from '../constants/statusTypes';
 import { populator } from '../db/plugins/populator';
 import * as db from '../db/pool';
-import { getUserByCriteria,IUser,IUserDoc, updateUserById } from './user.service';
+import { getUserByCriteria, IUser, IUserDoc, updateUserById } from './user.service';
 import ApiError from '../utils/ApiError';
 import supportedMediaTypes from '../constants/supportedMediaTypes';
 
@@ -20,6 +20,7 @@ interface ICreation {
   creation_date: string;
   is_draft: boolean;
   is_claimable: boolean;
+  ipfs_hash: string;
 }
 interface ICreationQuery {
   limit: number;
@@ -54,6 +55,7 @@ interface ICreationDoc {
   creation_date: string;
   is_draft: boolean;
   is_claimable: boolean;
+  ipfs_hash: string;
 }
 
 /**
@@ -85,9 +87,11 @@ export const verifyCreationTagDuplicates = async (tags: string[], exclude_creati
 };
 
 export const getAuthorCreationsCount = async (author_id?: string) => {
-  const resCreation = await db.instance.query(`SELECT COUNT(*) as total_results FROM creation where author_id = $1;`, [author_id]);
+  const resCreation = await db.instance.query(`SELECT COUNT(*) as total_results FROM creation where author_id = $1;`, [
+    author_id,
+  ]);
   return parseInt(resCreation.rows[0].total_results);
-}
+};
 /**
  * Check if a creation has duplicate materials
  * @param {string[]} materials
@@ -118,7 +122,7 @@ export const verifyCreationMaterialDuplicates = async (materials: string[], excl
 export const createCreation = async (creationBody: ICreation): Promise<ICreationDoc> => {
   // verify if material/s already exist for a creation, throw error if a material is found
   if (creationBody.materials) await verifyCreationMaterialDuplicates(creationBody.materials);
-  const user:Partial<IUserDoc | null> = await getUserByCriteria('user_id',creationBody.author_id,true);
+  const user: Partial<IUserDoc | null> = await getUserByCriteria('user_id', creationBody.author_id, true);
   try {
     const result = await db.instance.query(
       `INSERT INTO creation 
@@ -153,7 +157,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
     const creation = result.rows[0];
     // when the updateUserById is called it recalculates the stars
     // recalling it after creation of material
-    if(user) await updateUserById(creationBody.author_id,user)
+    if (user) await updateUserById(creationBody.author_id, user);
     return creation;
   } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
