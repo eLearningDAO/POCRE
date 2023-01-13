@@ -64,11 +64,7 @@ const useDetails = () => {
             return 'Awaiting Judgement';
           }
 
-          if (
-            litigationResponse?.assumed_author?.user_id === user?.user_id
-            && isPendingOrStarted
-            && !isToJudge
-          ) {
+          if (isPendingOrStarted && !isToJudge) {
             if (litigationResponse.litigation_status === statusTypes.STARTED) {
               return 'In voting process';
             }
@@ -113,6 +109,8 @@ const useDetails = () => {
     staleTime: 100_000, // delete cached data after 100 seconds
     enabled: !!litigationId,
   });
+
+  console.log('litigation =>', litigation);
 
   // cast litigation vote
   const {
