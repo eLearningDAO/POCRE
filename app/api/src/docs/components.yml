@@ -621,6 +621,15 @@ components:
           example:
             code: 409
             message: creation is not claimable
+    CreationIPFSFailedUpload:
+      description: Failed to upload creation to ipfs
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 500
+            message: failed to upload creation to ipfs
     PublishedCreationNotAllowedUpdate:
       description: Published creation cannot be updated
       content:
