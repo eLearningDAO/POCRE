@@ -11,7 +11,7 @@ import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/catchAsync';
 import { generateProofOfCreation } from '../utils/generateProofOfCreation';
 import { getSupportedFileTypeFromLink } from '../utils/getSupportedFileTypeFromLink';
-import { pinJSON } from '../utils/ipfs';
+import { pinJSON, unpinData } from '../utils/ipfs';
 
 export const queryCreations = catchAsync(async (req, res): Promise<void> => {
   // when req user is requesting their own creations (search_fields has author_id, and query matches auth user id)
@@ -151,7 +151,10 @@ export const deleteCreationById = catchAsync(async (req, res): Promise<void> => 
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `creation has ongoing litigation process`);
   }
 
-  // delete the creation
+  // delete the creation from ipfs
+  await unpinData(foundCreation?.ipfs_hash as string).catch(() => null);
+
+  // delete the creation from db
   await creationService.deleteCreationById(req.params.creation_id, {
     owner_id: (req.user as IUserDoc).user_id,
   });
