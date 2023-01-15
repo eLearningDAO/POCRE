@@ -153,6 +153,7 @@ const useCreationForm = ({
         is_draft: responseCreation.is_draft,
         author: responseCreation.author.user_name,
         source: responseCreation.creation_link,
+        ipfsHash: responseCreation.ipfs_hash,
         tags: responseCreation.tags.map((tag) => tag.tag_name),
         materials: (responseCreation?.materials || []).map((material) => (
           {

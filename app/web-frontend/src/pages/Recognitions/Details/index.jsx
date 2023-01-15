@@ -76,6 +76,7 @@ export default function CreationDetails() {
           title={recognitionDetails?.creation?.creation_title}
           description={recognitionDetails?.creation?.creation_description}
           link={recognitionDetails?.creation?.creation_link}
+          ipfsHash={recognitionDetails?.creation?.ipfs_hash}
           authorName={recognitionDetails?.creation?.author?.user_name}
           authorProfileId={recognitionDetails?.creation?.author?.user_id}
           date={recognitionDetails?.creation?.creation_date}

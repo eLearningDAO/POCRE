@@ -11,6 +11,7 @@ import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/catchAsync';
 import { generateProofOfCreation } from '../utils/generateProofOfCreation';
 import { getSupportedFileTypeFromLink } from '../utils/getSupportedFileTypeFromLink';
+import { pinJSON, unpinData } from '../utils/ipfs';
 
 export const queryCreations = catchAsync(async (req, res): Promise<void> => {
   // when req user is requesting their own creations (search_fields has author_id, and query matches auth user id)
@@ -105,7 +106,25 @@ export const createCreation = catchAsync(async (req, res): Promise<void> => {
     );
   }
 
-  res.send(newCreation);
+  // store the creation on ipfs
+  const ipfsHash = await (async () => {
+    // remove extra keys from creation json
+    const jsonCreation: any = newCreation;
+    delete jsonCreation.ipfs_hash;
+
+    const hash = await pinJSON(jsonCreation).catch(() => null);
+
+    if (!hash) throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `failed to upload creation to ipfs`);
+
+    return hash;
+  })();
+
+  // update creation with ipfs hash
+  const updatedCreation = await creationService.updateCreationById(newCreation.creation_id, {
+    ipfs_hash: ipfsHash,
+  });
+
+  res.send(updatedCreation);
 });
 
 export const deleteCreationById = catchAsync(async (req, res): Promise<void> => {
@@ -132,7 +151,10 @@ export const deleteCreationById = catchAsync(async (req, res): Promise<void> => 
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `creation has ongoing litigation process`);
   }
 
-  // delete the creation
+  // delete the creation from ipfs
+  await unpinData(foundCreation?.ipfs_hash as string).catch(() => null);
+
+  // delete the creation from db
   await creationService.deleteCreationById(req.params.creation_id, {
     owner_id: (req.user as IUserDoc).user_id,
   });

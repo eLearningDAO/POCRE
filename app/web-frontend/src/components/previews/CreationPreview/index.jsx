@@ -3,17 +3,18 @@
 import {
   Button, Typography,
 } from '@mui/material';
-import QRCode from 'qrcode';
-import React, { useState, useEffect } from 'react';
 import CloseIcon from 'assets/svgs/close.svg';
-import './index.css';
+import QRCode from 'qrcode';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import './index.css';
 
 function CreationPreview({
   id = '',
   title = '',
   description = '',
   link = '',
+  ipfsHash = '',
   date = '',
   authorName = '',
   authorProfileId = '',
@@ -67,6 +68,9 @@ function CreationPreview({
               <span className="heading">Source</span>
               <span>{link || '-'}</span>
 
+              <span className="heading">IPFS</span>
+              <span>{ipfsHash || '-'}</span>
+
               <span className="heading">Date</span>
               <span>{date || '-'}</span>
 
@@ -79,38 +83,38 @@ function CreationPreview({
             </span> */}
             </div>
             {id && (
-            <div className="creation-preview-codes">
-              <img className="creation-preview-qr-code" src={qrcodeBase64} alt="Qr Code" />
-              <h2>Unique ID</h2>
-              <p className="creation-preview-qr-code-id">{id}</p>
-            </div>
+              <div className="creation-preview-codes">
+                <img className="creation-preview-qr-code" src={qrcodeBase64} alt="Qr Code" />
+                <h2>Unique ID</h2>
+                <p className="creation-preview-qr-code-id">{id}</p>
+              </div>
             )}
           </div>
 
           {materials && materials?.length > 0 && (
-          <>
-            <h4 className="heading h4">External materials used</h4>
-            <table>
-              <tr>
-                <th>Title</th>
-                <th>Type</th>
-                <th>Link</th>
-                <th>Author</th>
-              </tr>
-              {materials?.map((x) => (
+            <>
+              <h4 className="heading h4">External materials used</h4>
+              <table>
                 <tr>
-                  <td>{x.title || '-'}</td>
-                  <td className="capitalize">{x.fileType || '-'}</td>
-                  <td><a href={x.link}>{x.link || '-'}</a></td>
-                  <td>
-                    {x?.authorProfileId
-                      ? <Link to={`/wallet/${x?.authorProfileId}`}>{x.authorName}</Link>
-                      : x.authorName || '-'}
-                  </td>
+                  <th>Title</th>
+                  <th>Type</th>
+                  <th>Link</th>
+                  <th>Author</th>
                 </tr>
-              ))}
-            </table>
-          </>
+                {materials?.map((x) => (
+                  <tr>
+                    <td>{x.title || '-'}</td>
+                    <td className="capitalize">{x.fileType || '-'}</td>
+                    <td><a href={x.link}>{x.link || '-'}</a></td>
+                    <td>
+                      {x?.authorProfileId
+                        ? <Link to={`/wallet/${x?.authorProfileId}`}>{x.authorName}</Link>
+                        : x.authorName || '-'}
+                    </td>
+                  </tr>
+                ))}
+              </table>
+            </>
           )}
         </div>
       </div>

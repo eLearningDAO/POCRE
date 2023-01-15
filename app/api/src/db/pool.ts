@@ -126,6 +126,7 @@ const init = async (): Promise<QueryResult<any>> => {
       creation_date TIMESTAMP NOT NULL DEFAULT NOW(),
       is_draft bool default false,
       is_claimable bool default true,
+      ipfs_hash character varying,
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
       CONSTRAINT author_id
           FOREIGN KEY(author_id) 

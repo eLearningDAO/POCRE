@@ -128,7 +128,23 @@ export default router;
  *                   code: 409
  *                   message: material already assigned to a creation
  *       "500":
- *         $ref: '#/components/responses/InternalServerError'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               oneOf:
+ *                 - $ref: '#/components/responses/InternalServerError'
+ *                 - $ref: '#/components/responses/CreationIPFSFailedUpload'
+ *             examples:
+ *               InternalServerError:
+ *                 summary: internal server error
+ *                 value:
+ *                   code: 500
+ *                   message: internal server error
+ *               CreationIPFSFailedUpload:
+ *                 summary: failed to upload creation to ipfs
+ *                 value:
+ *                   code: 500
+ *                   message: failed to upload creation to ipfs
  *
  *   get:
  *     summary: Get all creations

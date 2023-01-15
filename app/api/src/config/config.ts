@@ -26,6 +26,9 @@ const envVarsSchema = Joi.object()
     SENDGRID_MAIL_FROM_EMAIL: Joi.string().description('sendgrid mail from email used to send emails').required(),
     SENDGRID_MAIL_INVITE_TEMPLATE_ID: Joi.string().description('sendgrid invitation email template id').required(),
     WEB_CLIENT_BASE_URL: Joi.string().description('web client base url').required(),
+    PINATA_JWT_SECRET: Joi.string().description('pinata jwt secret used to store data on ipfs').required(),
+    PINATA_API_JSON_PIN_URL: Joi.string().description('pinata api url to pin json data').required(),
+    PINATA_API_UNPIN_URL: Joi.string().description('pinata api url to unpin data').required(),
   })
   .unknown();
 
@@ -64,4 +67,11 @@ export default {
     invite_template_id: envVars.SENDGRID_MAIL_INVITE_TEMPLATE_ID,
   },
   web_client_base_url: envVars.WEB_CLIENT_BASE_URL,
+  pinata: {
+    jwt_secret: envVars.PINATA_JWT_SECRET,
+    urls: {
+      json_pin: envVars.PINATA_API_JSON_PIN_URL,
+      unpin: envVars.PINATA_API_UNPIN_URL,
+    },
+  },
 };
