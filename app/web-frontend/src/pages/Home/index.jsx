@@ -8,16 +8,16 @@ import { useNavigate } from 'react-router-dom';
 import './index.css';
 import useHome from './useHome';
 
-const getSliderImages = (imageMaterials) => {
+const getSliderImages = (imageCreations) => {
   const sliderImages = [];
-  if (imageMaterials) {
-    imageMaterials.map(
-      (material, index) => {
-        if (material.material_type === 'image') {
+  if (imageCreations) {
+    imageCreations.map(
+      (creation) => {
+        if (creation.creation_type === 'image') {
           sliderImages.push(
             {
-              id: index + 1,
-              imageUrl: material.material_link,
+              id: creation.creation_id,
+              imageUrl: creation.creation_link,
             },
           );
         }
@@ -50,8 +50,8 @@ function Home() {
     navigate(`/creations/${creationId}`);
   };
 
-  const handleSlideClick = () => {
-    navigate('/creations');
+  const handleSlideClick = (creationId) => {
+    navigate(`/creations/${creationId}`);
   };
 
   return (

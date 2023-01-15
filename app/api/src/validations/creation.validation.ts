@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import { creationDeepFields } from '../db/map';
+import supportedMediaTypes from '../constants/supportedMediaTypes';
 
 export const createCreation = {
   body: Joi.object().keys({
@@ -32,6 +33,9 @@ export const queryCreations = {
       then: Joi.forbidden(),
       otherwise: Joi.optional(),
     }),
+    creation_type: Joi.string()
+    .valid(...Object.values(supportedMediaTypes))
+    .optional(),
     is_fully_assigned: Joi.bool().when('is_trending', {
       is: Joi.bool().exist(),
       then: Joi.forbidden(),
@@ -40,7 +44,7 @@ export const queryCreations = {
     populate: Joi.alternatives()
       .try(Joi.string().valid(...creationDeepFields), Joi.array().items(Joi.string().valid(...creationDeepFields)))
       .optional(),
-    top_authors: Joi.bool().optional(),
+      top_authors: Joi.bool().default(false).optional(),
   }),
 };
 
