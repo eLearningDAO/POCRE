@@ -3,7 +3,7 @@ import { QueryResult } from 'pg';
 import { reputation } from '../constants/statusTypes';
 import * as db from '../db/pool';
 import ApiError from '../utils/ApiError';
-import { getStar } from '../utils/userStarCalculation';
+import { getCreationsCount, getStar } from '../utils/userStarCalculation';
 
 export interface IUser {
   user_name: string;
@@ -13,6 +13,7 @@ export interface IUser {
   email_address?: string;
   verified_id?: string;
   reputation_stars?: number;
+  creation_count?: number;
   image_url?: string;
   is_invited?: boolean;
 }
@@ -39,6 +40,7 @@ export interface IUserDoc {
   email_address?: string;
   verified_id?: string;
   reputation_stars?: number;
+  creation_count?: number;
   authorship_duration?: string;
   date_joined: string;
   total_creations?: string;
@@ -292,7 +294,9 @@ export const getUserByUsername = async (username: string): Promise<IUserDoc | nu
 export const updateUserById = async (id: string, updateBody: Partial<IUser>): Promise<IUserDoc | null> => {
   await getUserById(id); // check if user exists, throws error if not found
   const starCount = await getStar(updateBody,id)
+  const creationCount = await getCreationsCount(updateBody,id)
   if (typeof(starCount)==='number') updateBody.reputation_stars = starCount; // update the stars field according to aviable user fields .
+  if (typeof(creationCount)==='number') updateBody.creation_count = creationCount;
   // build sql conditions and values
   const conditions: string[] = [];
   const values: (string | number | null | boolean)[] = [];

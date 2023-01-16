@@ -43,6 +43,7 @@ function WalletSelf() {
           email={user?.email_address}
           image={user?.image_url}
           stars={user?.reputation_stars || 0}
+          totalCreationsAuthored={user?.creation_count || 0}
           hashedWalletAddress={user?.hashedWalletAddress}
           canEdit
         />
