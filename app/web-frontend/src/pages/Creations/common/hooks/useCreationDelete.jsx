@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Creation } from 'api/requests';
 
-const useDetails = () => {
+const useDelete = () => {
   const queryClient = useQueryClient();
 
   // delete creation
@@ -40,4 +40,4 @@ const useDetails = () => {
   };
 };
 
-export default useDetails;
+export default useDelete;

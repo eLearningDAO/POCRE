@@ -1,25 +1,26 @@
-import { Address } from '@emurgo/cardano-serialization-lib-asmjs';
-// eslint-disable-next-line import/no-unresolved, unicorn/prefer-module
-const { Buffer } = require('buffer/');
+import { BrowserWallet } from '@meshsdk/core';
 
-const getAvailableWallets = () => {
-  const keys = [];
+const getAvailableWallets = async () => {
+  try {
+    const wallets = await BrowserWallet.getInstalledWallets();
 
-  for (const key in window.cardano) {
-    if (window.cardano[key].enable) {
-      keys.push(key);
-    }
+    return wallets.map((x) => x?.name);
+  } catch {
+    return null;
   }
-
-  return keys;
 };
 
 const getWalletAddress = async (walletName) => {
   try {
-    const API = await window.cardano[walletName].enable();
-    const raw = await API.getUsedAddresses();
-    const rawFirst = raw[0];
-    return Address.from_bytes(Buffer.from(rawFirst, 'hex')).to_bech32();
+    // connect to the wallet
+    const wallet = await BrowserWallet.enable(walletName);
+
+    // get used address in wallet
+    const usedAddresses = await wallet.getUsedAddresses();
+
+    if (usedAddresses.length === 0) throw new Error('no wallet address');
+
+    return usedAddresses[0];
   } catch {
     return null;
   }
