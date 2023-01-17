@@ -50,11 +50,11 @@ export default function StepOne({
             <Typography className="heading">Source</Typography>
           </Grid>
           <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
-            <Input variant="dark" placeholder="The link where your creation is published (Google drive, Youtube, etc)" name="source" hookToForm />
+            <Input variant="dark" placeholder="The link where your creation is published (Website, Youtube, etc)" name="source" hookToForm />
           </Grid>
 
           <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
-            <Typography className="heading">Date</Typography>
+            <Typography className="heading">Date of creation</Typography>
           </Grid>
           <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
             <Input type="date" variant="dark" placeholder="Creation Date" name="date" hookToForm />

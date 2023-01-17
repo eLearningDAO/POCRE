@@ -37,7 +37,7 @@ function WalletExplore() {
       <div className="wallet-explore-header">
         <Input
           variant="dark"
-          placeholder="Search User Wallets!"
+          placeholder="Search for other users"
           name="creation"
           onInput={(event_) => handleWalletInputChange(event_)}
           autoComplete

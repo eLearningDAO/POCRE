@@ -30,15 +30,6 @@
                     "githubUrl": ""
                 },
                 {
-                    "name": "Eric Valentine",
-                    "job": "Software Engineer",
-                    "bio": "We have to do things meaningful",
-                    "avatarUrl": "https://cdn.discordapp.com/attachments/989117788213874698/1026751484144140379/Selfie.png",
-                    "linkedinUrl": "https://www.linkedin.com/in/ericvale0128",
-                    "twitterUrl": "",
-                    "githubUrl": "https://github.com/ericvale0128"
-                },
-                {
                     "name": "Umair Mukhtar",
                     "job": "Full Stack Developer",
                     "bio": "Founder Aen Studios",
@@ -51,6 +42,12 @@
         },
         {
             "otherContributors": [
+                {
+                    "name": "Eric Valentine",
+                    "job": "Software Engineer",
+                    "avatarUrl": "https://cdn.discordapp.com/attachments/989117788213874698/1026751484144140379/Selfie.png",
+                    "profileUrl": "https://github.com/ericvale0128"
+                },
                 {
                     "name": "Jack Kostic",
                     "job": "Full Stack Developer",
