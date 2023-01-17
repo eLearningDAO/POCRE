@@ -175,6 +175,8 @@ components:
           type: bool
         is_claimable:
           type: bool
+        is_onchain:
+          type: bool
         created_at:
           type: string
           format: date-time
@@ -191,6 +193,7 @@ components:
         created_at: 2022-09-05T19:00:00.000Z
         is_draft: false
         is_claimable: true
+        is_onchain: false
 
     CreationProof:
       type: object
@@ -584,7 +587,16 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 406
-            message: creation has ongoing litigation process  
+            message: creation has ongoing litigation process 
+    CreationDraftNotAllowedOnchain:
+      description: Draft creation cannot be published onchain
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 406
+            message: draft creation cannot be published onchain  
     CreationAlreadyAssignedToLitigation:
       description: Creation already assigned to a litigation
       content:

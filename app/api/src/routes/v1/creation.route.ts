@@ -1,8 +1,8 @@
 import express from 'express';
-import validate from '../../middlewares/validate';
-import * as creationValidation from '../../validations/creation.validation';
 import * as creationController from '../../controllers/creation.controller';
 import auth from '../../middlewares/auth';
+import validate from '../../middlewares/validate';
+import * as creationValidation from '../../validations/creation.validation';
 
 const router = express.Router();
 
@@ -16,6 +16,10 @@ router
   .get(validate(creationValidation.getCreation), creationController.getCreationById)
   .patch(auth(), validate(creationValidation.updateCreation), creationController.updateCreationById)
   .delete(auth(), validate(creationValidation.deleteCreation), creationController.deleteCreationById);
+
+router
+  .route('/:creation_id/onchain')
+  .post(auth(), validate(creationValidation.publishCreationOnchain), creationController.publishCreationOnchain);
 
 router
   .route('/:creation_id/proof')
@@ -462,6 +466,30 @@ export default router;
  *                $ref: '#/components/schemas/CreationProof'
  *       "404":
  *         $ref: '#/components/responses/CreationNotFound'
+ *       "500":
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+
+/**
+ * @swagger
+ * /creations/{creation_id}/onchain:
+ *   post:
+ *     summary: Publish creation on chain
+ *     description: Stores the publish status of a creation on chain.
+ *     tags: [Creation]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       "201":
+ *         description: Created
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Creation'
+ *       "404":
+ *         $ref: '#/components/responses/CreationNotFound'
+ *       "406":
+ *         $ref: '#/components/responses/CreationDraftNotAllowedOnchain'
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  */

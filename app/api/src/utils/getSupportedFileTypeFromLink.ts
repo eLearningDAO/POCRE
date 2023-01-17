@@ -34,7 +34,7 @@ export const getSupportedFileTypeFromLink = async (url: string): Promise<TLinkVa
 
     // return document when file type is not detected
     return supportedMediaTypes.DOCUMENT;
-  } catch (error) {
+  } catch {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `invalid media link`);
   }
 };
