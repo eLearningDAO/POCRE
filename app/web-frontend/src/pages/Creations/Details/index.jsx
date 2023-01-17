@@ -20,6 +20,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
 import useCreationDelete from '../common/hooks/useCreationDelete';
+import useCreationPublish from '../common/hooks/useCreationPublish';
 import './index.css';
 import useDetails from './useDetails';
 
@@ -52,6 +53,13 @@ export default function CreationDetails() {
     deleteCreation,
     resetDeletionErrors,
   } = useCreationDelete();
+
+  const {
+    isPublishingCreation,
+    publishCreationStatus,
+    publishCreation,
+    resetPublishErrors,
+  } = useCreationPublish();
 
   const generateQRCodeBase64 = async (text) => {
     const code = await QRCode.toDataURL(`${window.location.origin}/creations/${text}`, {
@@ -102,7 +110,7 @@ export default function CreationDetails() {
 
   return (
     <Grid item xs={12}>
-      {isDeletingCreation && <Loader withBackdrop size="large" />}
+      {(isDeletingCreation || isPublishingCreation) && <Loader withBackdrop size="large" />}
       {(deleteCreationStatus.success || deleteCreationStatus.error) && (
         <Snackbar open onClose={resetDeletionErrors}>
           <Alert
@@ -113,6 +121,17 @@ export default function CreationDetails() {
             {deleteCreationStatus.success || deleteCreationStatus.error}
           </Alert>
         </Snackbar>
+      )}
+      {(publishCreationStatus.success || publishCreationStatus.error) && (
+      <Snackbar open onClose={resetPublishErrors}>
+        <Alert
+          onClose={resetPublishErrors}
+          severity={publishCreationStatus.success ? 'success' : 'error'}
+          sx={{ width: '100%' }}
+        >
+          {publishCreationStatus.success || publishCreationStatus.error}
+        </Alert>
+      </Snackbar>
       )}
       {showShareOptions && (
         <SocialMediaModal
@@ -172,6 +191,21 @@ export default function CreationDetails() {
         marginTop="18px"
         width="100%"
       >
+        {user?.user_id === creation?.author?.user_id
+          && !creation?.is_draft
+          && !creation?.is_onchain
+          && (
+            <Button
+              className="approveButton"
+              onClick={async () => await publishCreation({
+                id: creation?.creation_id,
+                ipfsHash: creation?.ipfs_hash,
+              })}
+            >
+              Publish
+            </Button>
+          )}
+
         {user?.user_id === creation?.author?.user_id && creation?.is_draft && (
           <Button className="collection-card-action-btn collection-card-action-btn-border-dark" onClick={onEditClick}>
             <img src={PencilIcon} alt="" />
@@ -237,6 +271,7 @@ export default function CreationDetails() {
               </h4>
               <Chip className="mr-auto bg-orange-dark color-white" label={`Created on ${moment(creation?.creation_date).format('DD/MM/YYYY')}`} />
               <Chip className="mr-auto bg-black color-white" label={`Unique ID: ${creation?.creation_id}`} />
+              {!creation?.is_draft && creation?.is_onchain && <Chip className="mr-auto bg-black color-white" label="Published" />}
             </Box>
           </Box>
           {creation?.creation_description && (

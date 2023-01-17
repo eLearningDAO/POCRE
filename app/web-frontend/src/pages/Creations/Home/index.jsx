@@ -2,19 +2,20 @@ import {
   Alert, Button, Grid, Snackbar, TextField, Typography,
 } from '@mui/material';
 import CreationCard from 'components/cards/CreationCard';
+import Input from 'components/uicore/Input';
 import Loader from 'components/uicore/Loader';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
-import Input from 'components/uicore/Input';
+import useCreationDelete from '../common/hooks/useCreationDelete';
+import useCreationPublish from '../common/hooks/useCreationPublish';
 import './index.css';
 import useCreations from './useCreations';
-import useCreationDelete from '../common/hooks/useCreationDelete';
 
 const getSuggestions = (suggestions) => {
   if (suggestions) {
     return suggestions.map(
-      (x) => ({ label: x.creation_title, id: x.creation_id }),
+      (x) => ({ label: x.creation_title, id: x?.creation_id }),
     );
   }
   return [];
@@ -39,6 +40,13 @@ function Creations() {
     resetDeletionErrors,
   } = useCreationDelete();
 
+  const {
+    isPublishingCreation,
+    publishCreationStatus,
+    publishCreation,
+    resetPublishErrors,
+  } = useCreationPublish();
+
   const add = () => {
     navigate('/creations/create');
   };
@@ -55,7 +63,7 @@ function Creations() {
 
   return (
     <Grid container spacing={2}>
-      {isDeletingCreation && <Loader withBackdrop size="large" />}
+      {(isDeletingCreation || isPublishingCreation) && <Loader withBackdrop size="large" />}
       {(deleteCreationStatus.success || deleteCreationStatus.error) && (
         <Snackbar open onClose={resetDeletionErrors}>
           <Alert
@@ -64,6 +72,17 @@ function Creations() {
             sx={{ width: '100%' }}
           >
             {deleteCreationStatus.success || deleteCreationStatus.error}
+          </Alert>
+        </Snackbar>
+      )}
+      {(publishCreationStatus.success || publishCreationStatus.error) && (
+        <Snackbar open onClose={resetPublishErrors}>
+          <Alert
+            onClose={resetPublishErrors}
+            severity={publishCreationStatus.success ? 'success' : 'error'}
+            sx={{ width: '100%' }}
+          >
+            {publishCreationStatus.success || publishCreationStatus.error}
           </Alert>
         </Snackbar>
       )}
@@ -122,7 +141,7 @@ function Creations() {
               ?.includes(search?.toLowerCase()) && (
                 <CreationCard
                   key={index}
-                  creationId={x.creation_id}
+                  creationId={x?.creation_id}
                   title={x?.creation_title}
                   description={x?.creation_description}
                   creationDate={x?.creation_date}
@@ -140,10 +159,16 @@ function Creations() {
                     author_image: m?.author?.image_url,
                     authorProfileId: m?.author?.user_id,
                   })) : []}
-                  canEdit={x.is_draft}
-                  onEditClick={() => navigate(`/creations/${x.creation_id}/update`)}
+                  canEdit={x?.is_draft}
+                  onEditClick={() => navigate(`/creations/${x?.creation_id}/update`)}
                   // eslint-disable-next-line no-return-await
-                  onDeleteClick={async () => await deleteCreation(x.creation_id)}
+                  onDeleteClick={async () => await deleteCreation(x?.creation_id)}
+                  canPublish={!x?.is_draft}
+                  onPublish={async () => await publishCreation({
+                    id: x?.creation_id,
+                    ipfsHash: x?.ipfs_hash,
+                  })}
+                  isPublished={x?.is_onchain}
                 />
             ),
           )}
