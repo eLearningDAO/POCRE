@@ -469,3 +469,27 @@ export default router;
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  */
+
+/**
+ * @swagger
+ * /creations/{creation_id}/onchain:
+ *   post:
+ *     summary: Publish creation on chain
+ *     description: Stores the publish status of a creation on chain.
+ *     tags: [Creation]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       "201":
+ *         description: Created
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Creation'
+ *       "404":
+ *         $ref: '#/components/responses/CreationNotFound'
+ *       "406":
+ *         $ref: '#/components/responses/CreationDraftNotAllowedOnchain'
+ *       "500":
+ *         $ref: '#/components/responses/InternalServerError'
+ */
