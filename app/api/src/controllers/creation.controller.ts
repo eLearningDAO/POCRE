@@ -219,3 +219,22 @@ export const updateCreationById = catchAsync(async (req, res): Promise<void> => 
 
   res.send(updatedCreation);
 });
+
+export const publishCreationOnchain = catchAsync(async (req, res): Promise<void> => {
+  // get original creation
+  const foundCreation = await creationService.getCreationById(req.params.creation_id);
+
+  // block publishing on chain if creation is draft
+  if (foundCreation?.is_draft) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `draft creation cannot be published onchain`);
+  }
+
+  // update creation
+  const updatedCreation = await creationService.updateCreationById(
+    req.params.creation_id,
+    { is_onchain: true },
+    { owner_id: (req.user as IUserDoc).user_id }
+  );
+
+  res.send(updatedCreation);
+});

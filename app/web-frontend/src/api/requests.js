@@ -37,7 +37,7 @@ const REQUEST_TEMPLATE = (endpoint) => ({
 
 const User = { ...REQUEST_TEMPLATE('users'), invite: REQUEST_TEMPLATE('users/invite').create };
 const Material = REQUEST_TEMPLATE('materials');
-const Creation = REQUEST_TEMPLATE('creations');
+const Creation = { ...REQUEST_TEMPLATE('creations'), storePublishStatus: async (id) => await REQUEST_TEMPLATE(`creations/${id}/onchain`).create() };
 const Decision = REQUEST_TEMPLATE('decision');
 const Recognition = REQUEST_TEMPLATE('recognitions');
 const Litigation = REQUEST_TEMPLATE('litigations');

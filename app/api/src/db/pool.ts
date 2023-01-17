@@ -128,6 +128,7 @@ const init = async (): Promise<QueryResult<any>> => {
       is_claimable bool default true,
       ipfs_hash character varying,
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+      is_onchain bool default false,
       CONSTRAINT author_id
           FOREIGN KEY(author_id) 
           REFERENCES users(user_id)

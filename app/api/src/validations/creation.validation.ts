@@ -34,8 +34,8 @@ export const queryCreations = {
       otherwise: Joi.optional(),
     }),
     creation_type: Joi.string()
-    .valid(...Object.values(supportedMediaTypes))
-    .optional(),
+      .valid(...Object.values(supportedMediaTypes))
+      .optional(),
     is_fully_assigned: Joi.bool().when('is_trending', {
       is: Joi.bool().exist(),
       then: Joi.forbidden(),
@@ -44,7 +44,7 @@ export const queryCreations = {
     populate: Joi.alternatives()
       .try(Joi.string().valid(...creationDeepFields), Joi.array().items(Joi.string().valid(...creationDeepFields)))
       .optional(),
-      top_authors: Joi.bool().default(false).optional(),
+    top_authors: Joi.bool().default(false).optional(),
   }),
 };
 
@@ -87,6 +87,12 @@ export const updateCreation = {
 };
 
 export const deleteCreation = {
+  params: Joi.object().keys({
+    creation_id: Joi.string().uuid().required(),
+  }),
+};
+
+export const publishCreationOnchain = {
   params: Joi.object().keys({
     creation_id: Joi.string().uuid().required(),
   }),

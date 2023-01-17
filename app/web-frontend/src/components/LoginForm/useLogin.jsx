@@ -11,7 +11,7 @@ const useLogin = ({ inviteToken = null }) => {
   const [selectedWalletAddressHashed, setSelectedWalletAddressHashed] = useState(null);
   const [availableWallets, setAvailableWallets] = useState([]);
 
-  const getWalletsList = () => setAvailableWallets(getAvailableWallets());
+  const getWalletsList = async () => setAvailableWallets(await getAvailableWallets());
 
   const getSelectedWalletAddress = async (wallet) => {
     try {
@@ -41,7 +41,7 @@ const useLogin = ({ inviteToken = null }) => {
     isSuccess: loginSuccess,
     isLoading: isLoggingIn,
   } = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (selectedWallet) => {
       // login with wallet
       const response = inviteToken
         ? await Auth.signup({
@@ -49,7 +49,13 @@ const useLogin = ({ inviteToken = null }) => {
           wallet_address: selectedWalletAddressOriginal,
         })
         : await Auth.login({ wallet_address: selectedWalletAddressOriginal });
-      authUser.setUser({ ...response.user, hashedWalletAddress: selectedWalletAddressHashed });
+
+      // store cookies
+      authUser.setUser({
+        ...response.user,
+        selectedWallet: selectedWallet.wallet,
+        hashedWalletAddress: selectedWalletAddressHashed,
+      });
       authUser.setJWTToken(response.token);
     },
   });
