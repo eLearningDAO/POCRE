@@ -27,6 +27,7 @@ export const login = catchAsync(async (req, res): Promise<void> => {
       user = await userService.createUser({
         user_name: 'anonymous',
         wallet_address: hashedWalletAddress,
+        is_invited: false,
       });
     }
   }
