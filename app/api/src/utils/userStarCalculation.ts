@@ -27,3 +27,10 @@ export const getStar = async (user: Partial<IUserDoc>, user_id?: string) => {
   }
   return 0;
 };
+
+export const getCreationsCount = async (user: Partial<IUserDoc>, user_id?: string) => {
+  let id = user_id || user.user_id;
+  let creationCount: number = 0;
+  creationCount = await getAuthorCreationsCount(id)
+  return creationCount
+};

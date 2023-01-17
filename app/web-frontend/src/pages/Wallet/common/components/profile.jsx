@@ -10,6 +10,7 @@ import Input from 'components/uicore/Input';
 import Loader from 'components/uicore/Loader';
 import useAppKeys from 'hooks/useAppKeys';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useProfile from './useProfile';
 import UserAvatar from './userAvatar';
 import { updateProfileValidation } from './validation';
@@ -27,10 +28,10 @@ function WalletProfile({
   canEdit = false,
 }) {
   const { updateAppKey } = useAppKeys();
-
+  const navigate = useNavigate();
   const [isEditMode, setEditMode] = useState(false);
   const [avatarImageFile, setAvatarImageFile] = useState();
-
+  const handleViewCreattion = () => navigate('/creations');
   const {
     isUpdatingUserProfile,
     updateUserProfile,
@@ -84,9 +85,11 @@ function WalletProfile({
         )}
         {!isEditMode && (
           <p className="wallet-profile-creations-count">
-            Author of
-            <span style={{ marginLeft: '4px', marginRight: '4px' }}>{totalCreationsAuthored}</span>
-            creations
+            <Button onClick={handleViewCreattion} style={{ color: 'black' }}>
+              Author of
+              <span style={{ marginLeft: '4px', marginRight: '4px' }}>{totalCreationsAuthored}</span>
+              creations
+            </Button>
           </p>
         )}
       </div>
