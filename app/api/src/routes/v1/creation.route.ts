@@ -1,8 +1,8 @@
 import express from 'express';
-import validate from '../../middlewares/validate';
-import * as creationValidation from '../../validations/creation.validation';
 import * as creationController from '../../controllers/creation.controller';
 import auth from '../../middlewares/auth';
+import validate from '../../middlewares/validate';
+import * as creationValidation from '../../validations/creation.validation';
 
 const router = express.Router();
 
@@ -16,6 +16,10 @@ router
   .get(validate(creationValidation.getCreation), creationController.getCreationById)
   .patch(auth(), validate(creationValidation.updateCreation), creationController.updateCreationById)
   .delete(auth(), validate(creationValidation.deleteCreation), creationController.deleteCreationById);
+
+router
+  .route('/:creation_id/onchain')
+  .post(auth(), validate(creationValidation.publishCreationOnchain), creationController.publishCreationOnchain);
 
 router
   .route('/:creation_id/proof')

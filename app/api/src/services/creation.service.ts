@@ -21,6 +21,7 @@ interface ICreation {
   is_draft: boolean;
   is_claimable: boolean;
   ipfs_hash: string;
+  is_onchain: boolean;
 }
 interface ICreationQuery {
   limit: number;
@@ -57,6 +58,7 @@ interface ICreationDoc {
   is_draft: boolean;
   is_claimable: boolean;
   ipfs_hash: string;
+  is_onchain: boolean;
 }
 
 /**
@@ -226,7 +228,9 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
         query: `SELECT * ${populator({
           tableAlias: 'c',
           fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
-        })} FROM creation c where c.creation_type='${options.creation_type}' and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id) OFFSET $1 LIMIT $2;`,
+        })} FROM creation c where c.creation_type='${
+          options.creation_type
+        }' and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id) OFFSET $1 LIMIT $2;`,
         count: `SELECT COUNT(*) as total_results FROM creation c where c.creation_type='${options.creation_type}' and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)
                         OFFSET $1 LIMIT $2`,
       },
@@ -234,7 +238,9 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
         query: `SELECT * ${populator({
           tableAlias: 'c',
           fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
-        })} FROM creation c where c.creation_type='${options.creation_type}' and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
+        })} FROM creation c where c.creation_type='${
+          options.creation_type
+        }' and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
         (SELECT user_id, 
                         (
                           SELECT 
@@ -490,10 +496,10 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
 
     const result = await db.instance.query(
       typeof options.creation_type === 'string' && options.top_authors === true
-      ? queryModes.creationByTypetopAuthors.query
+        ? queryModes.creationByTypetopAuthors.query
         : typeof options.creation_type === 'string' && options.top_authors === false
-        ? queryModes.creationByType.query :
-      options.top_authors
+        ? queryModes.creationByType.query
+        : options.top_authors
         ? queryModes.topAuthors.query
         : options.is_trending
         ? queryModes.trending.query
