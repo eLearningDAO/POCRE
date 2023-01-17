@@ -1,11 +1,11 @@
 import config from '../config/config';
 import * as materialService from '../services/material.service';
 import { getRecognitionById } from '../services/recognition.service';
-import { getUserById, IUserDoc } from '../services/user.service';
+import { getUserByCriteria, IUserDoc } from '../services/user.service';
 import catchAsync from '../utils/catchAsync';
 import { sendMail } from '../utils/email';
-import { encode } from '../utils/jwt';
 import { getSupportedFileTypeFromLink } from '../utils/getSupportedFileTypeFromLink';
+import { encode } from '../utils/jwt';
 
 export const queryMaterials = catchAsync(async (req, res): Promise<void> => {
   const creation = await materialService.queryMaterials(req.query as any);
@@ -24,7 +24,7 @@ export const createMaterial = catchAsync(async (req, res): Promise<void> => {
   let foundUser = null;
   if (req.body.recognition_id) await getRecognitionById(req.body.recognition_id as string); // verify recognition, will throw an error if recognition not found
   if (req.body.author_id && req.body.author_id !== (req.user as IUserDoc).user_id) {
-    foundUser = await getUserById(req.body.author_id as string); // verify author id (if present), will throw an error if not found
+    foundUser = await getUserByCriteria('user_id', req.body.author_id as string, true); // verify author id (if present), will throw an error if not found
   }
 
   // get the material type from link
