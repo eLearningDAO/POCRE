@@ -211,7 +211,7 @@ export const queryUsers = async (options: IUserQuery): Promise<IUserQueryResult>
 export const getUserByCriteria = async (
   criteria: 'user_id' | 'wallet_address' | 'user_name' | 'email_address' | 'phone',
   equals: string,
-  return_public_data?:boolean
+  return_public_data?: boolean
 ): Promise<IUserDoc | null> => {
   const user = await (async () => {
     try {
@@ -291,8 +291,8 @@ export const getUserByUsername = async (username: string): Promise<IUserDoc | nu
  */
 export const updateUserById = async (id: string, updateBody: Partial<IUser>): Promise<IUserDoc | null> => {
   await getUserById(id); // check if user exists, throws error if not found
-  const starCount = await getStar(updateBody,id)
-  if (typeof(starCount)==='number') updateBody.reputation_stars = starCount; // update the stars field according to aviable user fields .
+  const starCount = await getStar(updateBody, id);
+  if (typeof starCount === 'number') updateBody.reputation_stars = starCount; // update the stars field according to aviable user fields .
   // build sql conditions and values
   const conditions: string[] = [];
   const values: (string | number | null | boolean)[] = [];
@@ -334,7 +334,7 @@ export const deleteUserById = async (id: string): Promise<IUserDoc | null> => {
 };
 
 /**
- * Find users that pass a defined criteria
+ * Find onboarded users that pass a defined criteria
  * @param {IUserCriteria} criteria
  * @returns {Promise<Array<IUserDoc>>}
  */
@@ -344,7 +344,10 @@ export const getReputedUsers = async (criteria: IUserCriteria): Promise<Array<IU
       criteria.exclude_users && criteria.exclude_users.length > 0
         ? `WHERE ${criteria.exclude_users?.map((user_id) => `user_id <> '${user_id}'`).join(' AND ')}`
         : '';
-    const result = await db.instance.query(`SELECT * FROM users ${conditions} LIMIT $1;`, [criteria.required_users]);
+    const result = await db.instance.query(
+      `SELECT * FROM users ${conditions} ${conditions.length > 0 ? 'AND' : 'WHERE'} is_invited = $1 LIMIT $2;`,
+      [false, criteria.required_users]
+    );
     const users = result.rows as Array<IUserDoc>;
     return users;
   } catch {
