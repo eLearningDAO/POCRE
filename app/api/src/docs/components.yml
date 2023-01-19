@@ -177,6 +177,8 @@ components:
           type: bool
         is_onchain:
           type: bool
+        ipfs_hash:
+          type: string
         created_at:
           type: string
           format: date-time
@@ -194,6 +196,7 @@ components:
         is_draft: false
         is_claimable: true
         is_onchain: false
+        ipfs_hash: dd7a824bb0a94868bdbfcfa6bdd36629
 
     CreationProof:
       type: object
@@ -588,15 +591,15 @@ components:
           example:
             code: 406
             message: creation has ongoing litigation process 
-    CreationDraftNotAllowedOnchain:
-      description: Draft creation cannot be published onchain
+    CreationDraftNotAllowedToPublish:
+      description: Draft creation cannot be published
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
           example:
             code: 406
-            message: draft creation cannot be published onchain  
+            message: draft creation cannot be published  
     CreationAlreadyAssignedToLitigation:
       description: Creation already assigned to a litigation
       content:

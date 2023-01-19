@@ -132,23 +132,7 @@ export default router;
  *                   code: 409
  *                   message: material already assigned to a creation
  *       "500":
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                 - $ref: '#/components/responses/InternalServerError'
- *                 - $ref: '#/components/responses/CreationIPFSFailedUpload'
- *             examples:
- *               InternalServerError:
- *                 summary: internal server error
- *                 value:
- *                   code: 500
- *                   message: internal server error
- *               CreationIPFSFailedUpload:
- *                 summary: failed to upload creation to ipfs
- *                 value:
- *                   code: 500
- *                   message: failed to upload creation to ipfs
+ *         $ref: '#/components/responses/InternalServerError'
  *
  *   get:
  *     summary: Get all creations
@@ -472,13 +456,28 @@ export default router;
 
 /**
  * @swagger
- * /creations/{creation_id}/onchain:
+ * /creations/{creation_id}/publish:
  *   post:
- *     summary: Publish creation on chain
- *     description: Stores the publish status of a creation on chain.
+ *     summary: Publish a creation
+ *     description: Stores the publish status of a creation.
  *     tags: [Creation]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: creation_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Creation id
+ *       - in: body
+ *         name: publish_on
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - blochchain
+ *             - ipfs
+ *         description: The platform on which to publish the creation.
  *     responses:
  *       "201":
  *         description: Created
@@ -489,7 +488,23 @@ export default router;
  *       "404":
  *         $ref: '#/components/responses/CreationNotFound'
  *       "406":
- *         $ref: '#/components/responses/CreationDraftNotAllowedOnchain'
+ *         $ref: '#/components/responses/CreationDraftNotAllowedToPublish'
  *       "500":
- *         $ref: '#/components/responses/InternalServerError'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               oneOf:
+ *                 - $ref: '#/components/responses/InternalServerError'
+ *                 - $ref: '#/components/responses/CreationIPFSFailedUpload'
+ *             examples:
+ *               InternalServerError:
+ *                 summary: internal server error
+ *                 value:
+ *                   code: 500
+ *                   message: internal server error
+ *               CreationIPFSFailedUpload:
+ *                 summary: failed to upload creation to ipfs
+ *                 value:
+ *                   code: 500
+ *                   message: failed to upload creation to ipfs
  */
