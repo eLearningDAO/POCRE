@@ -6,7 +6,10 @@ import useSuggestions from 'hooks/useSuggestions';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import publishPlatforms from 'utils/constants/publishPlatforms';
 import authUser from 'utils/helpers/authUser';
+import { transactADAToPOCRE } from 'utils/helpers/wallet';
+import { IPFS_BASE_URL, CHARGES, TRANSACTION_PURPOSES } from 'config';
 
 const makeCommonResource = async (
   requestBody = {},
@@ -105,6 +108,23 @@ const makeCommonResource = async (
   return { tags, materials };
 };
 
+const publishIPFSCreationOnChain = async (creationId) => {
+  const creationOnIPFS = await Creation.publish(creationId, {
+    publish_on: publishPlatforms.IPFS,
+  });
+
+  // make transaction to store ipfs on chain
+  await transactADAToPOCRE({
+    amountADA: CHARGES.CREATION.PUBLISHING_ON_IPFS,
+    purposeDesc: TRANSACTION_PURPOSES.CREATION.PUBLISHING_ON_IPFS,
+    walletName: authUser.getUser()?.selectedWallet,
+    metaData: {
+      ipfsHash: creationOnIPFS.ipfs_hash,
+      ipfsURL: IPFS_BASE_URL,
+    },
+  });
+};
+
 const useCreationForm = ({
   onCreationFetch = () => {},
 }) => {
@@ -195,7 +215,7 @@ const useCreationForm = ({
       );
 
       // make a new creation
-      await Creation.create({
+      const newCreation = await Creation.create({
         creation_title: creationBody.title,
         creation_description: creationBody.description,
         creation_link: creationBody.source,
@@ -204,6 +224,11 @@ const useCreationForm = ({
         creation_date: new Date(creationBody.date).toISOString(), // send date in utc
         is_draft: creationBody.is_draft,
       });
+
+      // upload to ipfs if not draft
+      if (!newCreation.is_draft && !newCreation.ipfs_hash) {
+        await publishIPFSCreationOnChain(newCreation.creation_id);
+      }
 
       // remove queries cache
       queryClient.invalidateQueries({ queryKey: ['creations'] });
@@ -247,6 +272,9 @@ const useCreationForm = ({
 
       // update creation
       await Creation.update(creation.original.creation_id, { ...updatedCreation });
+
+      // upload to ipfs
+      await publishIPFSCreationOnChain(creation.original.creation_id);
 
       // remove queries cache
       queryClient.invalidateQueries({ queryKey: ['creations'] });
