@@ -3,6 +3,7 @@ import { IPFS_BASE_URL, CHARGES, TRANSACTION_PURPOSES } from 'config';
 import authUser from 'utils/helpers/authUser';
 import { transactADAToPOCRE } from 'utils/helpers/wallet';
 import { Creation } from 'api/requests';
+import publishPlatforms from 'utils/constants/publishPlatforms';
 
 const usePublish = () => {
   const queryClient = useQueryClient();
@@ -19,8 +20,8 @@ const usePublish = () => {
     mutationFn: async ({ id, ipfsHash }) => {
       // make transaction
       const txHash = await transactADAToPOCRE({
-        amountADA: CHARGES.CREATION_PUBLISHING_ADA,
-        purposeDesc: TRANSACTION_PURPOSES.CREATION_PUBLISHING,
+        amountADA: CHARGES.CREATION.FINALIZING_ON_CHAIN,
+        purposeDesc: TRANSACTION_PURPOSES.CREATION.FINALIZING_ON_CHAIN,
         walletName: authUser.getUser()?.selectedWallet,
         metaData: {
           ipfsHash,
@@ -29,7 +30,7 @@ const usePublish = () => {
       });
 
       // update in db
-      if (txHash) await Creation.storePublishStatus(id);
+      if (txHash) await Creation.publish(id, { publish_on: publishPlatforms.BLOCKCHAIN });
 
       // update queries
       queryClient.cancelQueries({ queryKey: ['creations'] });

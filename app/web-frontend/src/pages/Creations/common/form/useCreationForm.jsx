@@ -6,6 +6,7 @@ import useSuggestions from 'hooks/useSuggestions';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import publishPlatforms from 'utils/constants/publishPlatforms';
 import authUser from 'utils/helpers/authUser';
 
 const makeCommonResource = async (
@@ -195,7 +196,7 @@ const useCreationForm = ({
       );
 
       // make a new creation
-      await Creation.create({
+      const newCreation = await Creation.create({
         creation_title: creationBody.title,
         creation_description: creationBody.description,
         creation_link: creationBody.source,
@@ -204,6 +205,13 @@ const useCreationForm = ({
         creation_date: new Date(creationBody.date).toISOString(), // send date in utc
         is_draft: creationBody.is_draft,
       });
+
+      // upload to ipfs if not draft
+      if (!newCreation.is_draft && !newCreation.ipfs_hash) {
+        await Creation.publish(newCreation.creation_id, {
+          publish_on: publishPlatforms.IPFS,
+        });
+      }
 
       // remove queries cache
       queryClient.invalidateQueries({ queryKey: ['creations'] });
@@ -247,6 +255,11 @@ const useCreationForm = ({
 
       // update creation
       await Creation.update(creation.original.creation_id, { ...updatedCreation });
+
+      // upload to ipfs
+      await Creation.publish(creation.original.creation_id, {
+        publish_on: publishPlatforms.IPFS,
+      });
 
       // remove queries cache
       queryClient.invalidateQueries({ queryKey: ['creations'] });
