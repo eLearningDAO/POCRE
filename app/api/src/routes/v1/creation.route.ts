@@ -18,8 +18,8 @@ router
   .delete(auth(), validate(creationValidation.deleteCreation), creationController.deleteCreationById);
 
 router
-  .route('/:creation_id/onchain')
-  .post(auth(), validate(creationValidation.publishCreationOnchain), creationController.publishCreationOnchain);
+  .route('/:creation_id/publish')
+  .post(auth(), validate(creationValidation.publishCreation), creationController.publishCreation);
 
 router
   .route('/:creation_id/proof')

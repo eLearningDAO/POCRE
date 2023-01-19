@@ -1,5 +1,6 @@
 import httpStatus from 'http-status';
 import config from '../config/config';
+import publishPlatforms from '../constants/publishPlatforms';
 import statusTypes from '../constants/statusTypes';
 import * as creationService from '../services/creation.service';
 import * as litigationService from '../services/litigation.service';
@@ -220,19 +221,21 @@ export const updateCreationById = catchAsync(async (req, res): Promise<void> => 
   res.send(updatedCreation);
 });
 
-export const publishCreationOnchain = catchAsync(async (req, res): Promise<void> => {
+export const publishCreation = catchAsync(async (req, res): Promise<void> => {
   // get original creation
   const foundCreation = await creationService.getCreationById(req.params.creation_id);
 
-  // block publishing on chain if creation is draft
+  // block publishing if creation is draft
   if (foundCreation?.is_draft) {
-    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `draft creation cannot be published onchain`);
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `draft creation cannot be published`);
   }
 
   // update creation
   const updatedCreation = await creationService.updateCreationById(
     req.params.creation_id,
-    { is_onchain: true },
+    {
+      ...(req.body.publish_on === publishPlatforms.BLOCKCHAIN && { is_onchain: true }),
+    },
     { owner_id: (req.user as IUserDoc).user_id }
   );
 
