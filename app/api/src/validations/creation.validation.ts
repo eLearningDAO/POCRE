@@ -98,6 +98,6 @@ export const publishCreation = {
     creation_id: Joi.string().uuid().required(),
   }),
   body: Joi.object().keys({
-    publish_on: Joi.string().valid(publishPlatforms.BLOCKCHAIN).required(),
+    publish_on: Joi.string().valid(publishPlatforms.BLOCKCHAIN, publishPlatforms.IPFS).required(),
   }),
 };

@@ -107,25 +107,7 @@ export const createCreation = catchAsync(async (req, res): Promise<void> => {
     );
   }
 
-  // store the creation on ipfs
-  const ipfsHash = await (async () => {
-    // remove extra keys from creation json
-    const jsonCreation: any = newCreation;
-    delete jsonCreation.ipfs_hash;
-
-    const hash = await pinJSON(jsonCreation).catch(() => null);
-
-    if (!hash) throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `failed to upload creation to ipfs`);
-
-    return hash;
-  })();
-
-  // update creation with ipfs hash
-  const updatedCreation = await creationService.updateCreationById(newCreation.creation_id, {
-    ipfs_hash: ipfsHash,
-  });
-
-  res.send(updatedCreation);
+  res.send(newCreation);
 });
 
 export const deleteCreationById = catchAsync(async (req, res): Promise<void> => {
@@ -153,7 +135,7 @@ export const deleteCreationById = catchAsync(async (req, res): Promise<void> => 
   }
 
   // delete the creation from ipfs
-  await unpinData(foundCreation?.ipfs_hash as string).catch(() => null);
+  if (foundCreation?.ipfs_hash) await unpinData(foundCreation.ipfs_hash as string).catch(() => null);
 
   // delete the creation from db
   await creationService.deleteCreationById(req.params.creation_id, {
@@ -230,13 +212,32 @@ export const publishCreation = catchAsync(async (req, res): Promise<void> => {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `draft creation cannot be published`);
   }
 
+  const updateBody = await (async () => {
+    if (req.body.publish_on === publishPlatforms.BLOCKCHAIN) {
+      return { is_onchain: true };
+    }
+
+    if (req.body.publish_on === publishPlatforms.IPFS) {
+      // remove extra keys from creation json
+      const jsonForIPFS: any = foundCreation;
+      delete jsonForIPFS.ipfs_hash;
+
+      // store on ipfs
+      const hash = await pinJSON(jsonForIPFS).catch(() => null);
+
+      if (!hash) throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `failed to upload creation to ipfs`);
+
+      return { ipfs_hash: hash };
+    }
+  })();
+
   // update creation
   const updatedCreation = await creationService.updateCreationById(
     req.params.creation_id,
+    { ...(updateBody || {}) },
     {
-      ...(req.body.publish_on === publishPlatforms.BLOCKCHAIN && { is_onchain: true }),
-    },
-    { owner_id: (req.user as IUserDoc).user_id }
+      owner_id: (req.user as IUserDoc).user_id,
+    }
   );
 
   res.send(updatedCreation);
