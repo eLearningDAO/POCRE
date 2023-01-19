@@ -5,12 +5,14 @@ const POCRE_WALLET_ADDRESS = 'addr_test1qr0nvz3xurstmkj3h3a32knxsgpzvz4g8z3lvhhy
 const CHARGES = {
   CREATION: {
     PUBLISHING_ON_IPFS: 9,
+    FINALIZING_ON_CHAIN: 1,
   },
 };
 
 const TRANSACTION_PURPOSES = {
   CREATION: {
     PUBLISHING_ON_IPFS: 'CREATION_PENDING',
+    FINALIZING_ON_CHAIN: 'CREATION_FINALIZED',
   },
 };
 
