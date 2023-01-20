@@ -4,6 +4,8 @@ import moment from 'moment';
 import { useState } from 'react';
 import statusTypes from 'utils/constants/statusTypes';
 import authUser from 'utils/helpers/authUser';
+import { transactADAToPOCRE } from 'utils/helpers/wallet';
+import { CHARGES, TRANSACTION_PURPOSES } from 'config';
 
 const user = authUser.getUser();
 
@@ -190,15 +192,30 @@ const useHome = () => {
     reset: resetTransferOwnershipStatus,
   } = useMutation({
     mutationFn: async (id) => {
-      // make api call to edit the litigation
-      await Litigation.update(id, { ownership_transferred: true });
-
       // update litigation
       const updatedLitigations = { ...litigations };
       const foundLitigation = updatedLitigations?.closed?.find(
         (x) => x.litigation_id === id,
       );
       foundLitigation.ownership_transferred = true;
+
+      // make transaction
+      const txHash = await transactADAToPOCRE({
+        amountADA: CHARGES.LITIGATION.REDEEM,
+        purposeDesc: TRANSACTION_PURPOSES.LITIGATION.REDEEM,
+        walletName: authUser.getUser()?.selectedWallet,
+        metaData: {
+          redeemed_by: user?.user_id,
+          litigation_id: foundLitigation.litigation_id,
+          creation_id: foundLitigation.creation_id,
+          material_id: foundLitigation.material_id,
+        },
+      });
+
+      if (!txHash) throw new Error('Failed to make transaction');
+
+      // make api call to edit the litigation
+      await Litigation.update(id, { ownership_transferred: true });
 
       // update queries
       queryClient.cancelQueries({ queryKey: ['litigations'] });

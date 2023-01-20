@@ -12,6 +12,7 @@ const CHARGES = {
   LITIGATION: {
     START: 10,
     VOTE: 1,
+    REDEEM: 5,
   },
 };
 
@@ -24,6 +25,7 @@ const TRANSACTION_PURPOSES = {
   LITIGATION: {
     START: 'LITIGATION_START',
     VOTE: 'LITIGATION_VOTE',
+    REDEEM: 'LITIGATED_ITEM_REDEEM',
   },
 };
 
