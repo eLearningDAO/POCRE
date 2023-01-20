@@ -2,9 +2,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Creation, Material, Recognition,
 } from 'api/requests';
+import moment from 'moment';
 import { useState } from 'react';
 import authUser from 'utils/helpers/authUser';
-import moment from 'moment';
+import { IPFS_BASE_URL, CHARGES, TRANSACTION_PURPOSES } from 'config';
+import { transactADAToPOCRE } from 'utils/helpers/wallet';
+import statusTypes from 'utils/constants/statusTypes';
 
 // get auth user
 const user = authUser.getUser();
@@ -125,6 +128,27 @@ const useRecognitions = () => {
         ? recognitionDetails
         : (temporaryRecognitions.results || []).find((x) => x.recognition_id === recognitionId);
       if (!foundRecognition) return;
+
+      // require transaction if status is accepted
+      if (updatedStatus === statusTypes.ACCEPTED) {
+        const txHash = await transactADAToPOCRE({
+          amountADA: CHARGES.RECOGNITION_ACCEPT,
+          purposeDesc: TRANSACTION_PURPOSES.RECOGNITION_ACCEPT,
+          walletName: authUser.getUser()?.selectedWallet,
+          metaData: {
+            creation: {
+              ipfsHash: foundRecognition?.creation?.ipfs_hash,
+              ipfsURL: IPFS_BASE_URL,
+            },
+            recognition: {
+              host: window.location.origin,
+              path: window.location.pathname,
+            },
+          },
+        });
+
+        if (!txHash) throw new Error('Failed to accept material recognition');
+      }
 
       // update recognition status
       foundRecognition.status = updatedStatus;
