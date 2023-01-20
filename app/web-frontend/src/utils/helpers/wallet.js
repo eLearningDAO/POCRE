@@ -58,10 +58,14 @@ const transactADAToPOCRE = async ({
     // submit transaction
     return await wallet.submitTx(signedTx);
   } catch (error) {
-    const errorMessage = error?.message;
+    const errorMessage = error?.message?.toLowerCase();
 
     if (error === 'null not allowed in metadata') {
       throw new Error('Invalid transaction details');
+    }
+
+    if (errorMessage.includes('an error occurred during build: utxo balance insufficient')) {
+      throw new Error('Insufficient balance');
     }
 
     if (errorMessage.includes('"code":-3')) {
