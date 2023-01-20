@@ -5,6 +5,8 @@ import {
 import useSuggestions from 'hooks/useSuggestions';
 import { useState } from 'react';
 import authUser from 'utils/helpers/authUser';
+import { CHARGES, TRANSACTION_PURPOSES } from 'config';
+import { transactADAToPOCRE } from 'utils/helpers/wallet';
 
 // get auth user
 const user = authUser.getUser();
@@ -38,6 +40,20 @@ const useCreate = () => {
     isLoading: isCreatingLitigation,
   } = useMutation({
     mutationFn: async (litigationBody = {}) => {
+      // make transaction
+      const txHash = await transactADAToPOCRE({
+        amountADA: CHARGES.LITIGATION.START,
+        purposeDesc: TRANSACTION_PURPOSES.LITIGATION.START,
+        walletName: authUser.getUser()?.selectedWallet,
+        metaData: {
+          claimed_entity: litigationBody.material ? 'MATERIAL' : 'CREATION',
+          creation_id: litigationBody.creation,
+          material_id: litigationBody.material,
+        },
+      });
+
+      if (!txHash) throw new Error('Failed to make transaction');
+
       // make a new litigation
       const response = await Litigation.create({
         litigation_title: litigationBody.title.trim(),
@@ -49,11 +65,13 @@ const useCreate = () => {
       });
 
       // get data about recognized judges
-      response.recognitions = await Promise.all(response.recognitions.map(async (recognitionId) => {
-        const recognition = await Recognition.getById(recognitionId);
-        recognition.recognition_for = await User.getById(recognition.recognition_for);
-        return recognition;
-      }));
+      response.recognitions = await Promise.all(response.recognitions.map(
+        async (recognitionId) => {
+          const recognition = await Recognition.getById(recognitionId);
+          recognition.recognition_for = await User.getById(recognition.recognition_for);
+          return recognition;
+        },
+      ));
 
       setNewLitigation(response);
 
