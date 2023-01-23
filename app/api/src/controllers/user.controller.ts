@@ -1,8 +1,11 @@
+import config from '../config/config';
 import httpStatus from 'http-status';
 import catchAsync from '../utils/catchAsync';
 import * as userService from '../services/user.service';
 import { encrypt } from '../utils/crypt';
 import ApiError from '../utils/ApiError';
+import { sendMail } from '../utils/email';
+import { encode } from '../utils/jwt';
 
 export const queryUsers = catchAsync(async (req, res): Promise<void> => {
   const users = await userService.queryUsers(req.query as any);
@@ -13,6 +16,12 @@ export const getUserById = catchAsync(async (req, res): Promise<void> => {
   const user = await userService.getUserById(req.params.user_id);
   res.send(user);
 });
+
+export const verifyUserById = catchAsync(async (req, res): Promise<void> => {
+  const user = await userService.getUserById(req.params.user_id);
+  res.send(user);
+});
+
 
 export const createUser = catchAsync(async (req, res): Promise<any> => {
   const hashedWalletAddress = encrypt(req.body.wallet_address);
@@ -65,6 +74,30 @@ export const deleteUserById = catchAsync(async (req, res): Promise<void> => {
   }
 
   await userService.deleteUserById(req.params.user_id);
+  res.send();
+});
+
+
+export const verifyUserProfileById = catchAsync(async (req, res): Promise<void> => {
+  const body = {
+    "email_verified":true
+  }
+  const user = await userService.updateUserById(req.params.user_id, body);
+  res.send(user);
+});
+
+
+export const verifyUserEmail = catchAsync(async (req, res): Promise<void> => {
+  // only allow the auth user to delete itself
+  const foundUser = await userService.getUserByCriteria('user_id', req.body.user_id as string, true);
+  if (foundUser && foundUser.email_address) {
+    console.log('This is  the found user', foundUser)
+    await sendMail({
+      to: foundUser.email_address as string,
+      subject: `Verify your email`,
+      message: `This email need to be verified, please click on the link ${config.web_client_base_url}/verifyUserEmail/${foundUser.user_id}.`,
+    }).catch(() => null);
+  }
   res.send();
 });
 

@@ -53,6 +53,12 @@ export const getUser = {
   }),
 };
 
+export const verifyUserEmail = {
+  body: Joi.object().keys({
+    user_id: Joi.string().uuid().required(),
+  }),
+};
+
 export const updateUser = {
   params: Joi.object().keys({
     user_id: Joi.string().uuid().required(),

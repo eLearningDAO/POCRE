@@ -16,6 +16,7 @@ export interface IUser {
   creation_count?: number;
   image_url?: string;
   is_invited?: boolean;
+  email_verified?: boolean;
 }
 interface IUserQuery {
   limit: number;
