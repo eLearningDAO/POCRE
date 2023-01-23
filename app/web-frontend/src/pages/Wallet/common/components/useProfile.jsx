@@ -40,12 +40,29 @@ const useProfile = () => {
     },
   });
 
+  const {
+    mutate: sendVerificationEmail,
+    isLoading: isSendingVerificationEmail,
+    isError: isSendVerificationEmailError,
+    isSuccess: isSendVerificationEmailSuccess,
+  } = useMutation({
+    mutationFn: async () => {
+      await User.verifyEmail({ user_id: authUser.getUser().user_id });
+    },
+  });
+
   return {
     updateUserProfile,
+    sendVerificationEmail,
     isUpdatingUserProfile,
+    isSendingVerificationEmail,
     updateUserProfileStatus: {
       success: isUpdateProfileSuccess,
       error: isUpdateProfileError ? 'Failed to update profile' : null,
+    },
+    verficationEmailStatus: {
+      success: isSendVerificationEmailSuccess,
+      error: isSendVerificationEmailError ? 'Failed to send email' : null,
     },
     resetUserProfileStatus,
   };

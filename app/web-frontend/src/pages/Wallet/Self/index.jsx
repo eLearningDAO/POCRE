@@ -44,6 +44,7 @@ function WalletSelf() {
           image={user?.image_url}
           stars={user?.reputation_stars || 0}
           totalCreationsAuthored={user?.creation_count || 0}
+          emailVerified={user?.email_verified || false}
           hashedWalletAddress={user?.hashedWalletAddress}
           canEdit
         />
