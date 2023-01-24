@@ -47,7 +47,8 @@ const useProfile = () => {
     isSuccess: isSendVerificationEmailSuccess,
   } = useMutation({
     mutationFn: async () => {
-      await User.verifyEmail({ user_id: authUser.getUser().user_id });
+      const response = await User.verifyEmail({ user_id: authUser.getUser().user_id });
+      authUser.setUser({ ...authUser.getUser(), ...response });
     },
   });
 

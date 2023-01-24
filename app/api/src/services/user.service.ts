@@ -293,7 +293,14 @@ export const getUserByUsername = async (username: string): Promise<IUserDoc | nu
  * @returns {Promise<IUserDoc|null>}
  */
 export const updateUserById = async (id: string, updateBody: Partial<IUser>): Promise<IUserDoc | null> => {
-  await getUserById(id); // check if user exists, throws error if not found
+  const user = await getUserById(id); // check if user exists, throws error if not found
+  if(updateBody.email_address)
+  {
+    if(!user?.email_address?.includes(updateBody?.email_address))
+    {
+      updateBody.email_verified = false;
+    }
+  }
   const starCount = await getStar(updateBody,id)
   const creationCount = await getCreationsCount(updateBody,id)
   if (typeof(starCount)==='number') updateBody.reputation_stars = starCount; // update the stars field according to aviable user fields .
