@@ -60,7 +60,10 @@ const useHome = () => {
         closed: litigationResponse?.results?.filter(
           (x) => (
             moment(x.litigation_end).isBefore(isoDateToday)
-            && x.litigation_status === statusTypes.STARTED
+            // NOTE: [TEMP FIX]
+            // if the original author does not do something in reconcilation phase then
+            // the litigations status is pending
+            // && x.litigation_status === statusTypes.STARTED
           )
             || x.litigation_status === statusTypes.WITHDRAWN,
         ),
