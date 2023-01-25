@@ -26,6 +26,7 @@ function WalletProfile({
   hashedWalletAddress = '',
   totalCreationsAuthored = 0,
   canEdit = false,
+  emailVerified = false,
 }) {
   const { updateAppKey } = useAppKeys();
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ function WalletProfile({
   const {
     isUpdatingUserProfile,
     updateUserProfile,
+    sendVerificationEmail,
     updateUserProfileStatus,
     resetUserProfileStatus,
   } = useProfile();
@@ -141,8 +143,25 @@ function WalletProfile({
               <div className="wallet-profile-form-wrapper">
                 <img className="profile-info-right-icon" src={NameIcon} alt="" />
                 <p>{name}</p>
-                <img className="profile-info-right-icon" src={EmailIcon} alt="" />
-                <p>{email}</p>
+                {!emailVerified && (
+                  <Button
+                    onClick={async () => {
+                      await sendVerificationEmail();
+                    }}
+                    className="nextCollectionButton border-white"
+                  >
+                    Pending Verification
+                  </Button>
+                )}
+                {!emailVerified && (
+                  <p />
+                )}
+                {emailVerified && (
+                  <img className="profile-info-right-icon" src={EmailIcon} alt="" />
+                )}
+                {emailVerified && (
+                  <p>{email}</p>
+                )}
                 <img className="profile-info-right-icon" src={PhoneIcon} alt="" />
                 <p>{phone}</p>
               </div>

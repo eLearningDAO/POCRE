@@ -12,6 +12,8 @@ router
   .get(validate(userValidation.queryUsers), userController.queryUsers);
 
 router.route('/invite').post(validate(userValidation.inviteUser), userController.inviteUser);
+router.route('/verifyUserEmail').post(validate(userValidation.verifyUserEmail), userController.verifyUserEmail);
+router.route('/verifyUserEmail/:user_id').get(userController.verifyUserProfileById);
 
 router
   .route('/:user_id')
