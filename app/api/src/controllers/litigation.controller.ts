@@ -124,39 +124,92 @@ export const deleteLitigationById = catchAsync(async (req, res): Promise<void> =
 });
 
 export const updateLitigationById = catchAsync(async (req, res): Promise<void> => {
-  const litigation = await litigationService.getLitigationById(req.params.litigation_id);
-  let winner = litigation?.winner;
+  const participantId = (req.user as IUserDoc).user_id; // get req user id
 
-  // check if reference docs exist
-  if (req.body.decisions && req.body.decisions.length > 0) {
-    const decisions = await Promise.all(req.body.decisions.map((id: string) => getDecisionById(id))); // verify decisions, will throw an error if any decision is not found
+  // get the litigation
+  const litigation: any = await litigationService.getLitigationById(req.params.litigation_id, {
+    participant_id: participantId,
+  });
 
-    // get decision votes
-    const votes = {
-      agreed: decisions.filter((x) => x.decision_status === true).length,
-      opposed: decisions.filter((x) => x.decision_status === false).length,
-    };
+  // get the votes if any
+  const decisions = await Promise.all(
+    req.body.decisions && req.body.decisions.length > 0
+      ? req.body.decisions.map((id: string) => getDecisionById(id)) // verify decisions, will throw an error if any decision is not found
+      : null
+  );
 
-    // recalculate winner
-    winner = votes.agreed > votes.opposed ? litigation?.issuer_id : litigation?.assumed_author;
+  // calculate litigation phases/flags
+  const now = moment();
+  const toDate = (date: string) => new Date(date);
+  const isReconcilatePhase =
+    moment(toDate(litigation?.reconcilation_start)).isBefore(now) &&
+    moment(toDate(litigation?.reconcilation_end)).isAfter(now);
+  const isVotingPhase =
+    moment(toDate(litigation?.voting_start)).isBefore(now) && moment(toDate(litigation?.voting_end)).isAfter(now);
+  const isVotingDone = moment(toDate(litigation?.voting_end)).isBefore(now);
+  const isWithdrawn =
+    participantId === litigation?.assumed_author && req.body.litigation_status === litigationStatusTypes.WITHDRAWN; // the assumed author withdrew their claim
+  const isOwnershipAlreadyTransferred = !!litigation?.ownership_transferred;
+  const litigationStatus =
+    participantId === litigation?.assumed_author ? req.body.litigation_status : litigation?.litigation_status;
+
+  // if not voting phase, block votes
+  if (!isVotingPhase && decisions && decisions.length > 0) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `vote only allowed in voting phase`);
   }
 
-  // transfer ownership to correct author
-  const shouldTransferOwnership =
-    req.body.ownership_transferred || req.body.litigation_status === litigationStatusTypes.WITHDRAWN;
-  if (shouldTransferOwnership) {
-    // transfer material
-    if (litigation?.material_id) {
-      await updateMaterialById(litigation.material_id, {
-        author_id: req.body.litigation_status === litigationStatusTypes.WITHDRAWN ? litigation.issuer_id : winner,
-      });
+  // if not reconcilate phase, block reconcilation
+  if (!isReconcilatePhase && litigation?.litigation_status !== req.body.litigation_status) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `reconcilation only allowed in reconcilate phase`);
+  }
+
+  // if voting is not finised, block issuer from claiming
+  if (!isVotingDone && req.body.ownership_transferred === true) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigated item can only be claimed after voting phase`);
+  }
+
+  // find litigation winner
+  const winner = (() => {
+    if (isWithdrawn && isReconcilatePhase) return litigation?.issuer_id; // if withdrawn in reconcilate phase, the issuer is the winner
+
+    // find new winner based on votes
+    if (decisions && decisions.length > 0) {
+      const votes = {
+        agreed: decisions.filter((x) => x.decision_status === true).length,
+        opposed: decisions.filter((x) => x.decision_status === false).length,
+      };
+
+      return votes.agreed > votes.opposed ? litigation?.issuer_id : litigation?.assumed_author;
     }
 
-    // transfer creation
+    return litigation?.winner; // return the current winner
+  })();
+
+  // check if ownership needs to be transferred
+  const shouldTransferOwnership = (() => {
+    let tempShouldTransferOwnership = false;
+
+    // only allow to withdraw in reconcilation phase
+    if (isWithdrawn && isReconcilatePhase && !isOwnershipAlreadyTransferred) tempShouldTransferOwnership = true;
+
+    // allow the issuer to claim authorship after voting phase
+    if (isVotingDone && !isOwnershipAlreadyTransferred && req.body.ownership_transferred === true) {
+      tempShouldTransferOwnership = true;
+    }
+
+    return tempShouldTransferOwnership;
+  })();
+
+  // transfer ownership to correct author
+  if (shouldTransferOwnership) {
+    // if there is material, only transfer material
+    if (litigation?.material_id) {
+      await updateMaterialById(litigation?.material_id, { author_id: winner });
+    }
+
+    // else transfer creation
     else if (litigation?.creation_id) {
-      await updateCreationById(litigation.creation_id, {
-        author_id: req.body.litigation_status === litigationStatusTypes.WITHDRAWN ? litigation.issuer_id : winner,
-      });
+      await updateCreationById(litigation?.creation_id, { author_id: winner });
     }
   }
 
@@ -166,7 +219,9 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     {
       ...req.body,
       winner,
-      ownership_transferred: shouldTransferOwnership,
+      ownership_transferred: isOwnershipAlreadyTransferred,
+      litigation_status: litigationStatus,
+      ...(shouldTransferOwnership && { ownership_transferred: true }),
     },
     { participant_id: (req.user as IUserDoc).user_id }
   );
