@@ -32,23 +32,16 @@ function WalletProfile({
   const { updateAppKey } = useAppKeys();
   const navigate = useNavigate();
   const [isEditMode, setEditMode] = useState(false);
-  const [creationCount, setCreationCount] = useState(0);
   const [avatarImageFile, setAvatarImageFile] = useState();
   const handleViewCreattion = () => navigate('/creations');
   const {
     creations,
-    fetchCreationStatus,
     isUpdatingUserProfile,
     updateUserProfile,
     sendVerificationEmail,
     updateUserProfileStatus,
     resetUserProfileStatus,
   } = useProfile();
-  useEffect(() => {
-    if (fetchCreationStatus.success) {
-      setCreationCount(creations.total_results);
-    }
-  }, [fetchCreationStatus.success]);
   useEffect(() => {
     if (updateUserProfileStatus.success) {
       updateAppKey();
@@ -97,7 +90,7 @@ function WalletProfile({
           <p className="wallet-profile-creations-count">
             <Button onClick={handleViewCreattion} style={{ color: 'black' }}>
               Author of
-              <span style={{ marginLeft: '4px', marginRight: '4px' }}>{totalCreationsAuthored || creationCount}</span>
+              <span style={{ marginLeft: '4px', marginRight: '4px' }}>{totalCreationsAuthored || creations?.total_results}</span>
               creations
             </Button>
           </p>

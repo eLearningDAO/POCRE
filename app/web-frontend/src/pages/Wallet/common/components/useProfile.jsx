@@ -57,10 +57,8 @@ const useProfile = () => {
 
   const {
     data: creations,
-    isError: isFetchError,
-    isSuccess: isFetchSuccess,
   } = useQuery({
-    queryKey: ['creations'],
+    queryKey: ['creationsProfile'],
     queryFn: async () => {
       const toPopulate = ['author_id', 'materials', 'materials.author_id'];
       const unsortedCreations = await Creation.getAll(
@@ -81,10 +79,6 @@ const useProfile = () => {
   return {
     updateUserProfile,
     creations,
-    fetchCreationStatus: {
-      success: isFetchSuccess,
-      error: isFetchError ? 'Failed to fetch creation' : null,
-    },
     sendVerificationEmail,
     isUpdatingUserProfile,
     isSendingVerificationEmail,
