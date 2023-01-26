@@ -1,15 +1,16 @@
 import httpStatus from 'http-status';
-import catchAsync from '../utils/catchAsync';
+import moment from 'moment';
+import config from '../config/config';
+import litigationStatusTypes from '../constants/litigationStatusTypes';
+import statusTypes from '../constants/statusTypes';
+import { getCreationById, updateCreationById } from '../services/creation.service';
+import { getDecisionById } from '../services/decision.service';
 import * as litigationService from '../services/litigation.service';
-import { getReputedUsers, IUserDoc } from '../services/user.service';
 import { getMaterialById, updateMaterialById } from '../services/material.service';
 import { createRecognition } from '../services/recognition.service';
-import { getDecisionById } from '../services/decision.service';
-import { getCreationById, updateCreationById } from '../services/creation.service';
-import config from '../config/config';
+import { getReputedUsers, IUserDoc } from '../services/user.service';
 import ApiError from '../utils/ApiError';
-import statusTypes from '../constants/statusTypes';
-import litigationStatusTypes from '../constants/litigationStatusTypes';
+import catchAsync from '../utils/catchAsync';
 
 export const queryLitigations = catchAsync(async (req, res): Promise<void> => {
   const litigation = await litigationService.queryLitigations({
@@ -67,6 +68,8 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
     assumed_author: material ? material.author_id : creation?.author_id,
     issuer_id: issuerId,
     winner: issuerId,
+    litigation_start: moment().toISOString(),
+    litigation_end: moment().add(config.litigation.voting_days, 'days').toISOString(),
   });
 
   // make recognitions for litigators

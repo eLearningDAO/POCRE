@@ -9,8 +9,6 @@ export const createLitigation = {
     creation_id: Joi.string().uuid().required(),
     material_id: Joi.string().uuid().optional(),
     decisions: Joi.array().items(Joi.string().uuid()).unique().default([]),
-    litigation_start: Joi.date().iso().required(),
-    litigation_end: Joi.date().iso().greater(Joi.ref('litigation_start')).required(),
     litigation_status: Joi.string()
       .valid(...Object.values(litigationStatusTypes))
       .optional()
@@ -59,8 +57,6 @@ export const updateLitigation = {
       litigation_title: Joi.string().optional(),
       litigation_description: Joi.string().optional().allow('').allow(null),
       decisions: Joi.array().items(Joi.string().uuid()).unique().optional(),
-      litigation_start: Joi.date().iso().optional(),
-      litigation_end: Joi.date().iso().greater(Joi.ref('litigation_start')).optional(),
       litigation_status: Joi.string()
         .valid(...Object.values(litigationStatusTypes))
         .optional(),
