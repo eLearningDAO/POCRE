@@ -20,6 +20,10 @@ const envVarsSchema = Joi.object()
     MIN_LITIGATORS: Joi.number().description('min litigators per litigation').required().min(1),
     MAX_LITIGATORS: Joi.number().description('max litigators per litigation').required().min(2),
     LITIGATION_VOTING_DAYS: Joi.number().description('voting days for a litigation, must be more than 2').required().min(3),
+    LITIGATION_RECONCILATION_DAYS: Joi.number()
+      .description('reconcilation days for a litigation, must be more than 2')
+      .required()
+      .min(3),
     JWT_SECRET: Joi.string().required().description('JWT secret key'),
     HASHING_SALT_WALLET_ADDRESS: Joi.string().required().description('Hasing Salt for wallet address'),
     SENDGRID_MAIL_API_KEY: Joi.string().description('sendgrid api key used to send emails').required(),
@@ -57,6 +61,7 @@ export default {
   },
   litigation: {
     voting_days: envVars.LITIGATION_VOTING_DAYS,
+    reconcilation_days: envVars.LITIGATION_RECONCILATION_DAYS,
   },
   jwt: {
     secret: envVars.JWT_SECRET,

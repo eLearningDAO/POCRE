@@ -68,8 +68,14 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
     assumed_author: material ? material.author_id : creation?.author_id,
     issuer_id: issuerId,
     winner: issuerId,
-    voting_start: moment().toISOString(),
-    voting_end: moment().add(config.litigation.voting_days, 'days').toISOString(),
+    // reconcilation days
+    reconcilation_start: moment().toISOString(),
+    reconcilation_end: moment().add(config.litigation.reconcilation_days, 'days').toISOString(),
+    // voting days (start after reconcilation days)
+    voting_start: moment().add(config.litigation.reconcilation_days, 'days').toISOString(),
+    voting_end: moment()
+      .add(config.litigation.reconcilation_days + config.litigation.voting_days, 'days')
+      .toISOString(),
   });
 
   // make recognitions for litigators

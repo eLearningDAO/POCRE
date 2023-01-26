@@ -18,6 +18,8 @@ interface ILitigation {
   issuer_id: string;
   recognitions: string[];
   decisions: string[];
+  reconcilation_start: string;
+  reconcilation_end: string;
   voting_start: string;
   voting_end: string;
   litigation_status: TLitigationStatusTypes;
@@ -52,6 +54,8 @@ interface ILitigationDoc {
   issuer_id: string;
   recognitions: string[];
   decisions: string[];
+  reconcilation_start: string;
+  reconcilation_end: string;
   voting_start: string;
   voting_end: string;
   litigation_status: TLitigationStatusTypes;
@@ -169,13 +173,15 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         issuer_id,
         recognitions,
         decisions,
+        reconcilation_start,
+        reconcilation_end,
         voting_start,
         voting_end,
         litigation_status,
         winner
       ) 
       values 
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) 
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) 
       RETURNING *;`,
       [
         litigationBody.litigation_title,
@@ -186,6 +192,8 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         litigationBody.issuer_id,
         litigationBody.recognitions,
         litigationBody.decisions,
+        litigationBody.reconcilation_start,
+        litigationBody.reconcilation_end,
         litigationBody.voting_start,
         litigationBody.voting_end,
         litigationBody.litigation_status,
