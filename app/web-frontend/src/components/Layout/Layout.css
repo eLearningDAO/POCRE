@@ -787,6 +787,11 @@ a {
   border-radius: 15px !important;
 }
 
+.pendingVerificationText{
+  width: 150px !important;
+  margin-top: -20px;
+}
+
 .saveDraftButton {
   width: 150px;
   height: 50px;
