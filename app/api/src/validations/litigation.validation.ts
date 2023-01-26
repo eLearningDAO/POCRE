@@ -28,8 +28,8 @@ export const queryLitigations = {
         then: Joi.required(),
         otherwise: Joi.forbidden(),
       }),
-    ascend_fields: Joi.array().items(Joi.string().valid('litigation_start', 'litigation_end')).optional(),
-    descend_fields: Joi.array().items(Joi.string().valid('litigation_start', 'litigation_end')).optional(),
+    ascend_fields: Joi.array().items(Joi.string().valid('voting_start', 'voting_end')).optional(),
+    descend_fields: Joi.array().items(Joi.string().valid('voting_start', 'voting_end')).optional(),
     judged_by: Joi.string().uuid().optional(),
     populate: Joi.alternatives()
       .try(Joi.string().valid(...litigationDeepFields), Joi.array().items(Joi.string().valid(...litigationDeepFields)))
