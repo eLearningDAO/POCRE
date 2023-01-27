@@ -19,6 +19,7 @@ import WalletPublic from 'pages/Wallet/Public';
 import CreditsHome from 'pages/Credits/Home';
 import Home from 'pages/Home';
 import Signup from 'pages/Signup';
+import VerifyEmail from 'pages/VerifyEmail';
 import Page404 from 'pages/404';
 import Protected from './Protected';
 
@@ -39,6 +40,14 @@ function AppRoutes() {
           element={(
             <Layout>
               <Signup />
+            </Layout>
+          )}
+        />
+        <Route
+          path="/verify"
+          element={(
+            <Layout>
+              <VerifyEmail />
             </Layout>
           )}
         />

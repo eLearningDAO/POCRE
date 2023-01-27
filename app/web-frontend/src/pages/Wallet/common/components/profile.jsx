@@ -25,7 +25,6 @@ function WalletProfile({
   stars = 0,
   isInvited = false,
   hashedWalletAddress = '',
-  totalCreationsAuthored = 0,
   canEdit = false,
   emailVerified = false,
 }) {
@@ -90,7 +89,7 @@ function WalletProfile({
           <p className="wallet-profile-creations-count">
             <Button onClick={handleViewCreattion} style={{ color: 'black' }}>
               Author of
-              <span style={{ marginLeft: '4px', marginRight: '4px' }}>{totalCreationsAuthored || creations?.total_results}</span>
+              <span style={{ marginLeft: '4px', marginRight: '4px' }}>{creations?.total_results}</span>
               creations
             </Button>
           </p>
