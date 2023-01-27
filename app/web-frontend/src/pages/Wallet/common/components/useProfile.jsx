@@ -1,6 +1,9 @@
-import { useMutation } from '@tanstack/react-query';
-import { User } from 'api/requests';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { User, Creation } from 'api/requests';
 import authUser from 'utils/helpers/authUser';
+import moment from 'moment';
+
+const user = authUser.getUser();
 
 const useProfile = () => {
   // update user profile
@@ -52,8 +55,30 @@ const useProfile = () => {
     },
   });
 
+  const {
+    data: creations,
+  } = useQuery({
+    queryKey: ['creationsProfile'],
+    queryFn: async () => {
+      const toPopulate = ['author_id', 'materials', 'materials.author_id'];
+      const unsortedCreations = await Creation.getAll(
+        `descend_fields[]=creation_date&query=${user.user_id}&search_fields[]=author_id&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
+      );
+
+      // sort by latest first
+      return {
+        ...unsortedCreations,
+        results: [...unsortedCreations.results].sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at),
+        ).map((x) => ({ ...x, creation_date: moment(x?.creation_date).format('Do MMMM YYYY') })),
+      };
+    },
+    staleTime: 60_000, // cache for 60 seconds
+  });
+
   return {
     updateUserProfile,
+    creations,
     sendVerificationEmail,
     isUpdatingUserProfile,
     isSendingVerificationEmail,

@@ -3,6 +3,7 @@ import { Button } from '@mui/material';
 import Rating from '@mui/material/Rating';
 import EmailIcon from 'assets/svgs/emailIcon.svg';
 import FrameSVG from 'assets/svgs/frame.svg';
+import FrameUnverified from 'assets/images/user-not-verified.png';
 import NameIcon from 'assets/svgs/nameIcon.svg';
 import PhoneIcon from 'assets/svgs/phoneIcon.svg';
 import Form from 'components/uicore/Form';
@@ -24,7 +25,6 @@ function WalletProfile({
   stars = 0,
   isInvited = false,
   hashedWalletAddress = '',
-  totalCreationsAuthored = 0,
   canEdit = false,
   emailVerified = false,
 }) {
@@ -34,13 +34,13 @@ function WalletProfile({
   const [avatarImageFile, setAvatarImageFile] = useState();
   const handleViewCreattion = () => navigate('/creations');
   const {
+    creations,
     isUpdatingUserProfile,
     updateUserProfile,
     sendVerificationEmail,
     updateUserProfileStatus,
     resetUserProfileStatus,
   } = useProfile();
-
   useEffect(() => {
     if (updateUserProfileStatus.success) {
       updateAppKey();
@@ -89,7 +89,7 @@ function WalletProfile({
           <p className="wallet-profile-creations-count">
             <Button onClick={handleViewCreattion} style={{ color: 'black' }}>
               Author of
-              <span style={{ marginLeft: '4px', marginRight: '4px' }}>{totalCreationsAuthored}</span>
+              <span style={{ marginLeft: '4px', marginRight: '4px' }}>{creations?.total_results}</span>
               creations
             </Button>
           </p>
@@ -137,21 +137,29 @@ function WalletProfile({
                 readOnly
                 value={stars}
               />
-              <img src={FrameSVG} alt="" />
+              {!emailVerified ? (
+                <img src={FrameUnverified} alt="" />
+              ) : (
+                <img src={FrameSVG} alt="" />
+              )}
             </div>
             <div className="wallet-profile-form-container">
               <div className="wallet-profile-form-wrapper">
                 <img className="profile-info-right-icon" src={NameIcon} alt="" />
                 <p>{name}</p>
                 {!emailVerified && (
-                  <Button
-                    onClick={async () => {
-                      await sendVerificationEmail();
-                    }}
-                    className="nextCollectionButton border-white"
-                  >
-                    Pending Verification
-                  </Button>
+                  canEdit ? (
+                    <Button
+                      onClick={async () => {
+                        await sendVerificationEmail();
+                      }}
+                      className="nextCollectionButton border-white"
+                    >
+                      Pending Verification
+                    </Button>
+                  ) : (
+                    <p className="pendingVerificationText">Pending Verification</p>
+                  )
                 )}
                 {!emailVerified && (
                   <p />

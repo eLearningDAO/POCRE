@@ -95,6 +95,7 @@
 }
 .wallet-profile-container-full-rounded {
     border-radius: 25px;
+    background: linear-gradient(104.08deg,#fece76 -28.92%,#742926 76.85%);
 }
 .wallet-profile-info-left {
     display: flex;

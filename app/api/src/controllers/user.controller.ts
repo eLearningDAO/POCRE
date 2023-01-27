@@ -95,7 +95,7 @@ export const verifyUserEmail = catchAsync(async (req, res): Promise<void> => {
     await sendMail({
       to: foundUser.email_address as string,
       subject: `Verify your email`,
-      message: `This email need to be verified, please click on the link ${config.web_client_base_url}/verifyUserEmail/${foundUser.user_id}.`,
+      message: `This email need to be verified, please click on the link ${config.web_client_base_url}/verify?id=${foundUser.user_id}`,
     }).catch(() => null);
   }
   res.send();
