@@ -78,35 +78,6 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
       .toISOString(),
   });
 
-  // make recognitions for litigators
-  const recognitions = await (async () => {
-    // get valid litigators
-    const forbiddenLitigators = [newLitigation.issuer_id];
-    if (creation) forbiddenLitigators.push(creation.author_id);
-    if (material) forbiddenLitigators.push(material.author_id);
-    const randomUserLimit = Math.floor(
-      Math.random() * (config.litigators.max - config.litigators.min + 1) + config.litigators.min
-    );
-    const litigators = await getReputedUsers({ required_users: randomUserLimit, exclude_users: forbiddenLitigators });
-
-    // create recognitions for litigators
-    return Promise.all(
-      litigators.map(async (user) => {
-        // create new recognition
-        return createRecognition({
-          recognition_by: newLitigation.issuer_id,
-          recognition_for: user.user_id,
-          status: statusTypes.PENDING,
-          status_updated: new Date().toISOString(),
-        });
-      })
-    );
-  })();
-
-  // update litigation
-  newLitigation.recognitions = recognitions.map((recognition) => recognition.recognition_id);
-  await litigationService.updateLitigationById(newLitigation.litigation_id, { recognitions: newLitigation.recognitions });
-
   // make creation not claimable
   if (!material && creation) await updateCreationById(creation.creation_id, { is_claimable: false });
 
@@ -149,6 +120,8 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
   const isVotingDone = moment(toDate(litigation?.voting_end)).isBefore(now);
   const isWithdrawn =
     participantId === litigation?.assumed_author && req.body.litigation_status === litigationStatusTypes.WITHDRAWN; // the assumed author withdrew their claim
+  const isToLitigate =
+    participantId === litigation?.assumed_author && req.body.litigation_status === litigationStatusTypes.WITHDRAWN; // the assumed author decided to litigate
   const isOwnershipAlreadyTransferred = !!litigation?.ownership_transferred;
   const litigationStatus =
     participantId === litigation?.assumed_author ? req.body.litigation_status : litigation?.litigation_status;
@@ -167,6 +140,49 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
   if (!isVotingDone && req.body.ownership_transferred === true) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigated item can only be claimed after voting phase`);
   }
+
+  // check if jury needs to be picked
+  const recognitionIds = await (async () => {
+    // if litigation is not required then dont make jury recognitions
+    if (!(isToLitigate && isReconcilatePhase)) return litigation.recognitions;
+
+    // create recognition for jury
+    const tempRecognitions = await (async () => {
+      // find forbidden litigators
+      const forbiddenLitigators = [litigation.issuer_id];
+
+      // add creation author to forbidden litigators
+      const creation = await getCreationById(litigation.creation_id);
+      if (creation) forbiddenLitigators.push(creation.author_id);
+
+      // add material author to forbidden litigators
+      if (litigation.material_id) {
+        const material = await getMaterialById(litigation.material_id);
+        if (material) forbiddenLitigators.push(material.author_id);
+      }
+
+      // find valid litigators
+      const randomUserLimit = Math.floor(
+        Math.random() * (config.litigators.max - config.litigators.min + 1) + config.litigators.min
+      );
+      const validLitigators = await getReputedUsers({ required_users: randomUserLimit, exclude_users: forbiddenLitigators });
+
+      // create recognitions for valid litigators
+      return Promise.all(
+        validLitigators.map(async (user) => {
+          // create new recognition
+          return createRecognition({
+            recognition_by: litigation.issuer_id,
+            recognition_for: user.user_id,
+            status: statusTypes.ACCEPTED, // jury members cannot declined participation
+            status_updated: new Date().toISOString(),
+          });
+        })
+      );
+    })();
+
+    return tempRecognitions.map((recognition) => recognition.recognition_id);
+  })();
 
   // find litigation winner
   const winner = (() => {
@@ -189,7 +205,7 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
   const shouldTransferOwnership = (() => {
     let tempShouldTransferOwnership = false;
 
-    // only allow to withdraw in reconcilation phase
+    // transfer ownership if assumed author withdrew their claim in reconcilation phase
     if (isWithdrawn && isReconcilatePhase && !isOwnershipAlreadyTransferred) tempShouldTransferOwnership = true;
 
     // allow the issuer to claim authorship after voting phase
@@ -222,6 +238,7 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
       ownership_transferred: isOwnershipAlreadyTransferred,
       litigation_status: litigationStatus,
       ...(shouldTransferOwnership && { ownership_transferred: true }),
+      recognitions: recognitionIds,
     },
     { participant_id: (req.user as IUserDoc).user_id }
   );
