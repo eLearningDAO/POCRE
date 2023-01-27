@@ -131,6 +131,16 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `vote only allowed in voting phase`);
   }
 
+  // if assumed author did not respond in reconilate phase, block votes
+  if (
+    !isReconcilatePhase &&
+    litigation.litigation_status === litigationStatusTypes.PENDING &&
+    decisions &&
+    decisions.length > 0
+  ) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `vote only allowed in voting phase`);
+  }
+
   // if not reconcilate phase, block reconcilation
   if (!isReconcilatePhase && litigation?.litigation_status !== req.body.litigation_status) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `reconcilation only allowed in reconcilate phase`);
