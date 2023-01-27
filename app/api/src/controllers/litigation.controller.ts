@@ -188,6 +188,16 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
   const winner = (() => {
     if (isWithdrawn && isReconcilatePhase) return litigation?.issuer_id; // if withdrawn in reconcilate phase, the issuer is the winner
 
+    // if assumed author did not respond in reconilate phase, issuer is the winner
+    if (
+      !isReconcilatePhase &&
+      litigation.litigation_status === litigationStatusTypes.PENDING &&
+      litigation.issuer_id === participantId &&
+      req.body.ownership_transferred === true
+    ) {
+      return litigation.issuer_id;
+    }
+
     // find new winner based on votes
     if (decisions && decisions.length > 0) {
       const votes = {
@@ -208,8 +218,23 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     // transfer ownership if assumed author withdrew their claim in reconcilation phase
     if (isWithdrawn && isReconcilatePhase && !isOwnershipAlreadyTransferred) tempShouldTransferOwnership = true;
 
+    // transfer ownership if assumed author did not respond in reconilate phase, and issuer is claiming
+    if (
+      !isReconcilatePhase &&
+      litigation.litigation_status === litigationStatusTypes.PENDING &&
+      litigation.issuer_id === participantId &&
+      req.body.ownership_transferred === true
+    ) {
+      tempShouldTransferOwnership = true;
+    }
+
     // allow the issuer to claim authorship after voting phase
-    if (isVotingDone && !isOwnershipAlreadyTransferred && req.body.ownership_transferred === true) {
+    if (
+      isVotingDone &&
+      !isOwnershipAlreadyTransferred &&
+      litigation.issuer_id === participantId &&
+      req.body.ownership_transferred === true
+    ) {
       tempShouldTransferOwnership = true;
     }
 
@@ -235,10 +260,10 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     {
       ...req.body,
       winner,
-      ownership_transferred: isOwnershipAlreadyTransferred,
-      litigation_status: litigationStatus,
-      ...(shouldTransferOwnership && { ownership_transferred: true }),
       recognitions: recognitionIds,
+      litigation_status: litigationStatus,
+      ownership_transferred: isOwnershipAlreadyTransferred,
+      ...(shouldTransferOwnership && { ownership_transferred: true }),
     },
     { participant_id: (req.user as IUserDoc).user_id }
   );
