@@ -46,6 +46,7 @@ export interface IUserDoc {
   date_joined: string;
   total_creations?: string;
   is_invited: boolean;
+  email_verified: boolean;
 }
 interface IUserCriteria {
   required_users: number;

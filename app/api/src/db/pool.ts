@@ -177,7 +177,8 @@ const init = async (): Promise<QueryResult<any>> => {
         image_url,
         reputation_stars,
         date_joined,
-        is_invited
+        is_invited,
+        email_verified
     FROM 
     users;
 

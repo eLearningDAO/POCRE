@@ -26,9 +26,10 @@ function WalletPublic() {
         name={publicProfile?.user_name}
         bio={publicProfile?.user_bio}
         phone={'Private Info'}
-        email={'Private Info'}
+        email={publicProfile?.email_verified?'Email Verified':'Private Info'}
         image={publicProfile?.image_url || require('assets/images/profile-placeholder.png')}
         isInvited={publicProfile?.is_invited}
+        emailVerified={publicProfile?.email_verified || false}
         stars={publicProfile?.reputation_stars || 0}
       />}
     </div>
