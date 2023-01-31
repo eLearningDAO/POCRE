@@ -1,7 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  Recognition, Litigation, Material, User,
-} from 'api/requests';
+import { Litigation, Material } from 'api/requests';
 import useSuggestions from 'hooks/useSuggestions';
 import { useState } from 'react';
 import authUser from 'utils/helpers/authUser';
@@ -60,18 +58,7 @@ const useCreate = () => {
         litigation_description: litigationBody?.description?.trim(),
         creation_id: litigationBody.creation,
         material_id: litigationBody.material,
-        litigation_start: new Date(litigationBody.publicDate).toISOString(),
-        litigation_end: new Date(litigationBody.endDate).toISOString(),
       });
-
-      // get data about recognized judges
-      response.recognitions = await Promise.all(response.recognitions.map(
-        async (recognitionId) => {
-          const recognition = await Recognition.getById(recognitionId);
-          recognition.recognition_for = await User.getById(recognition.recognition_for);
-          return recognition;
-        },
-      ));
 
       setNewLitigation(response);
 
