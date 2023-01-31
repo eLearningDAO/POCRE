@@ -124,8 +124,8 @@ function Litigation() {
                   // eslint-disable-next-line unicorn/prefer-module
                   image: x?.assumed_author?.image_url || require('assets/images/profile-placeholder.png'),
                 }}
-                startDate={x?.litigation_start}
-                endDate={x?.litigation_end}
+                startDate={x?.voting_start}
+                endDate={x?.voting_end}
                 mode={
                   (activeLitigation === 'opening' && 'info')
                   || (activeLitigation === 'openedAgainstMe' && 'litigate')

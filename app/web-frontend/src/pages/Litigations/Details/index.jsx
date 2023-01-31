@@ -84,8 +84,8 @@ export default function LitigationDetails() {
           alignItems="flex-end"
           gap="8px"
         >
-          <Chip className="bg-orange color-white" label={`Starts on ${litigation?.litigation_start}`} />
-          <Chip className="bg-orange color-white" label={`Ends on ${litigation?.litigation_end}`} />
+          <Chip className="bg-orange color-white" label={`Starts on ${litigation?.voting_start}`} />
+          <Chip className="bg-orange color-white" label={`Ends on ${litigation?.voting_end}`} />
         </Grid>
       </Grid>
 

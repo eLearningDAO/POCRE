@@ -11,8 +11,8 @@ const user = authUser.getUser();
 
 const formatDates = (litigations) => litigations.map((x) => ({
   ...x,
-  litigation_start: moment(x?.litigation_start).format('DD/MM/YYYY'), // moment auto converts utc to local time
-  litigation_end: moment(x?.litigation_end).format('DD/MM/YYYY'), // moment auto converts utc to local time
+  voting_start: moment(x?.voting_start).format('DD/MM/YYYY'), // moment auto converts utc to local time
+  voting_end: moment(x?.voting_end).format('DD/MM/YYYY'), // moment auto converts utc to local time
 }));
 
 const useHome = () => {
@@ -59,7 +59,7 @@ const useHome = () => {
         // display all closed litigations in which the auth user is a judge, issuer or claimer
         closed: litigationResponse?.results?.filter(
           (x) => (
-            moment(x.litigation_end).isBefore(isoDateToday)
+            moment(x.voting_end).isBefore(isoDateToday)
             // NOTE: [TEMP FIX]
             // if the original author does not do something in reconcilation phase then
             // the litigations status is pending
@@ -71,13 +71,13 @@ const useHome = () => {
           // gives all litigations that are currently started or pending to start (end
           // date has not reached)
           const litigationsOpenedOrOpeningByDate = [...litigationResponse?.results?.filter(
-            (x) => moment(x?.litigation_end).isAfter(isoDateToday),
+            (x) => moment(x?.voting_end).isAfter(isoDateToday),
           ) || []];
 
           // gives all litigations that are currently started (start date has passed or is today
           // and end date has not reached)
           const litigationsOpenedByDate = [...litigationsOpenedOrOpeningByDate?.filter(
-            (x) => moment(x?.litigation_start).isSameOrBefore(isoDateToday),
+            (x) => moment(x?.voting_start).isSameOrBefore(isoDateToday),
           ) || []];
 
           // gives all litigations that are in started status (pending and started status are
@@ -100,7 +100,7 @@ const useHome = () => {
 
           // gives all litigations that are in pending status for judges and have not ended
           const litigationsPendingToJudge = [...litigationResponse?.results?.filter(
-            (x) => moment(x?.litigation_end).isAfter(isoDateToday)
+            (x) => moment(x?.voting_end).isAfter(isoDateToday)
               && x?.litigation_status === statusTypes.PENDING && x?.toJudge,
           ) || []];
 

@@ -40,28 +40,28 @@ const useDetails = () => {
       litigationResponse.status = (() => {
         if (
           (
-            moment(litigationResponse.litigation_end).isBefore(isoDateToday)
-            && litigationResponse.litigation_status === statusTypes.STARTED
+            moment(litigationResponse.voting_end).isBefore(isoDateToday)
+              && litigationResponse.litigation_status === statusTypes.STARTED
           )
-          || litigationResponse.litigation_status === statusTypes.WITHDRAWN
+            || litigationResponse.litigation_status === statusTypes.WITHDRAWN
         ) {
           return 'Closed';
         }
 
         if (
-          moment(litigationResponse.litigation_start).isSameOrBefore(isoDateToday)
-          && moment(litigationResponse.litigation_end).isAfter(isoDateToday)
+          moment(litigationResponse.voting_start).isSameOrBefore(isoDateToday)
+            && moment(litigationResponse.voting_end).isAfter(isoDateToday)
         ) {
           const isToJudge = litigationResponse.recognitions?.find(
             (x) => x?.recognition_for?.user_id === user?.user_id,
           );
 
           const isPendingOrStarted = litigationResponse.litigation_status === statusTypes.PENDING
-            || litigationResponse.litigation_status === statusTypes.STARTED;
+              || litigationResponse.litigation_status === statusTypes.STARTED;
 
           if (
             litigationResponse.litigation_status === statusTypes.STARTED
-            && isToJudge
+              && isToJudge
           ) {
             return 'Awaiting Judgement';
           }
@@ -83,16 +83,16 @@ const useDetails = () => {
       litigationResponse.isClosed = false;
       if (
         (
-          moment(litigationResponse.litigation_end).isBefore(isoDateToday)
-          && litigationResponse.litigation_status === statusTypes.STARTED
+          moment(litigationResponse.voting_end).isBefore(isoDateToday)
+            && litigationResponse.litigation_status === statusTypes.STARTED
         )
-        || litigationResponse.litigation_status === statusTypes.WITHDRAWN
+          || litigationResponse.litigation_status === statusTypes.WITHDRAWN
       ) {
         litigationResponse.isClosed = true;
       }
 
       // calculate if auth user is a judge
-      litigationResponse.isJudging = !!litigationResponse.recognitions.some(
+      litigationResponse.isJudging = !!(litigationResponse?.recognitions || []).some(
         (x) => x?.recognition_for?.user_id === user?.user_id,
       );
 
@@ -104,8 +104,8 @@ const useDetails = () => {
       return {
         ...litigationResponse,
         decisions: litigationResponse?.decisions || [],
-        litigation_start: moment(litigationResponse?.litigation_start).format('DD/MM/YYYY'), // moment auto converts utc to local time
-        litigation_end: moment(litigationResponse?.litigation_end).format('DD/MM/YYYY'), // moment auto converts utc to local time
+        voting_start: moment(litigationResponse?.voting_start).format('DD/MM/YYYY'), // moment auto converts utc to local time
+        voting_end: moment(litigationResponse?.voting_end).format('DD/MM/YYYY'), // moment auto converts utc to local time
       };
     },
     staleTime: 100_000, // delete cached data after 100 seconds
