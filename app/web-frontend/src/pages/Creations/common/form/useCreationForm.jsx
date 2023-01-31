@@ -82,7 +82,7 @@ const makeCommonResource = async (
         if (temporaryAuthor) return temporaryAuthor;
 
         // find if the author exists in db
-        temporaryAuthor = await User.getAll(`query=${x?.author?.trim()}&search_fields[]=user_name`);
+        temporaryAuthor = await User.getAll(`query=${authorName}&search_fields[]=user_name`);
         temporaryAuthor = temporaryAuthor?.results?.[0] || null;
         if (temporaryAuthor) return temporaryAuthor;
 
