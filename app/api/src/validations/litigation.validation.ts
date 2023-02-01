@@ -58,7 +58,7 @@ export const updateLitigation = {
       litigation_description: Joi.string().optional().allow('').allow(null),
       decisions: Joi.array().items(Joi.string().uuid()).unique().optional(),
       assumed_author_response: Joi.string()
-        .valid(...Object.values(litigationStatusTypes).filter(litigationStatusTypes.PENDING_RESPONSE))
+        .valid(...Object.values(litigationStatusTypes).filter((x) => x !== litigationStatusTypes.PENDING_RESPONSE))
         .optional(),
       ownership_transferred: Joi.bool().optional(),
     })
