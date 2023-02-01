@@ -21,10 +21,10 @@ function Litigation() {
     isFetchingLitigations,
     litigations,
     fetchLitigations,
-    isUpdatingLitigationStatus,
-    updatedLitigationStatus,
-    updateLitigationStatus,
-    resetLitigationStatus,
+    isUpdatingAssumedAuthorResponse,
+    updatedAssumedAuthorResponseStatus,
+    updateAssumedAuthorResponse,
+    resetAssumedAuthorResponseStatus,
     isTransferringOwnership,
     transferOwnershipStatus,
     resetTransferOwnershipStatus,
@@ -44,7 +44,7 @@ function Litigation() {
   return (
     <>
       {isTransferringOwnership && <Loader withBackdrop size="large" />}
-      {isUpdatingLitigationStatus && <Loader withBackdrop size="large" />}
+      {isUpdatingAssumedAuthorResponse && <Loader withBackdrop size="large" />}
       {(transferOwnershipStatus.success || transferOwnershipStatus.error) && (
         <Snackbar open onClose={resetTransferOwnershipStatus}>
           <Alert
@@ -58,16 +58,16 @@ function Litigation() {
           </Alert>
         </Snackbar>
       )}
-      {(updatedLitigationStatus.success || updatedLitigationStatus.error) && (
-        <Snackbar open onClose={resetLitigationStatus}>
+      {(updatedAssumedAuthorResponseStatus.success || updatedAssumedAuthorResponseStatus.error) && (
+        <Snackbar open onClose={resetAssumedAuthorResponseStatus}>
           <Alert
-            onClose={resetLitigationStatus}
-            severity={updatedLitigationStatus.success ? 'success' : 'error'}
+            onClose={resetAssumedAuthorResponseStatus}
+            severity={updatedAssumedAuthorResponseStatus.success ? 'success' : 'error'}
             sx={{ width: '100%' }}
           >
-            {updatedLitigationStatus.success
+            {updatedAssumedAuthorResponseStatus.success
               ? 'Litigation status updated!'
-              : updatedLitigationStatus.error}
+              : updatedAssumedAuthorResponseStatus.error}
           </Alert>
         </Snackbar>
       )}
@@ -143,15 +143,15 @@ function Litigation() {
                     mode: 'litigate',
                     canWithdraw: x?.assumed_author_response === statusTypes.PENDING_RESPONSE,
                     // eslint-disable-next-line no-return-await
-                    onWithdraw: async () => await updateLitigationStatus({
+                    onWithdraw: async () => await updateAssumedAuthorResponse({
                       id: x?.litigation_id,
-                      litigationStatus: statusTypes.WITHDRAW_CLAIM,
+                      assumedAuthorResponse: statusTypes.WITHDRAW_CLAIM,
                     }),
                     canAccept: x?.assumed_author_response === statusTypes.PENDING_RESPONSE,
                     // eslint-disable-next-line no-return-await
-                    onAccept: async () => await updateLitigationStatus({
+                    onAccept: async () => await updateAssumedAuthorResponse({
                       id: x?.litigation_id,
-                      litigationStatus: statusTypes.START_LITIGATION,
+                      assumedAuthorResponse: statusTypes.START_LITIGATION,
                     }),
                     isDeclined: x?.assumed_author_response === statusTypes.WITHDRAW_CLAIM,
                   }),
