@@ -7,7 +7,7 @@ import ApiError from '../utils/ApiError';
 import { getCreationById } from './creation.service';
 
 const types = Object.values(litigationStatusTypes);
-type TLitigationStatusTypes = typeof types[number];
+type TAssumedAuthorResponseTypes = typeof types[number];
 
 interface ILitigation {
   litigation_title: string;
@@ -22,7 +22,7 @@ interface ILitigation {
   reconcilation_end: string;
   voting_start: string;
   voting_end: string;
-  litigation_status: TLitigationStatusTypes;
+  assumed_author_response: TAssumedAuthorResponseTypes;
   winner: string;
   ownership_transferred: boolean;
 }
@@ -58,7 +58,7 @@ interface ILitigationDoc {
   reconcilation_end: string;
   voting_start: string;
   voting_end: string;
-  litigation_status: TLitigationStatusTypes;
+  assumed_author_response: TAssumedAuthorResponseTypes;
   winner: string;
   ownership_transferred: boolean;
 }
@@ -177,7 +177,7 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         reconcilation_end,
         voting_start,
         voting_end,
-        litigation_status,
+        assumed_author_response,
         winner
       ) 
       values 
@@ -196,7 +196,7 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         litigationBody.reconcilation_end,
         litigationBody.voting_start,
         litigationBody.voting_end,
-        litigationBody.litigation_status,
+        litigationBody.assumed_author_response,
         litigationBody.winner,
       ]
     );

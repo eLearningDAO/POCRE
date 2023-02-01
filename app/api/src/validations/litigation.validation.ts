@@ -9,10 +9,10 @@ export const createLitigation = {
     creation_id: Joi.string().uuid().required(),
     material_id: Joi.string().uuid().optional(),
     decisions: Joi.array().items(Joi.string().uuid()).unique().default([]),
-    litigation_status: Joi.string()
+    assumed_author_response: Joi.string()
       .valid(...Object.values(litigationStatusTypes))
       .optional()
-      .default(litigationStatusTypes.PENDING),
+      .default(litigationStatusTypes.PENDING_RESPONSE),
   }),
 };
 
@@ -57,8 +57,8 @@ export const updateLitigation = {
       litigation_title: Joi.string().optional(),
       litigation_description: Joi.string().optional().allow('').allow(null),
       decisions: Joi.array().items(Joi.string().uuid()).unique().optional(),
-      litigation_status: Joi.string()
-        .valid(...Object.values(litigationStatusTypes))
+      assumed_author_response: Joi.string()
+        .valid(...Object.values(litigationStatusTypes).filter(litigationStatusTypes.PENDING_RESPONSE))
         .optional(),
       ownership_transferred: Joi.bool().optional(),
     })

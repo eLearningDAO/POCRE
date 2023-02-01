@@ -103,11 +103,12 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
   });
 
   // get the votes if any
-  const decisions = await Promise.all(
+  const decisions =
     req.body.decisions && req.body.decisions.length > 0
-      ? req.body.decisions.map((id: string) => getDecisionById(id)) // verify decisions, will throw an error if any decision is not found
-      : null
-  );
+      ? await Promise.all(
+          req.body.decisions.map((id: string) => getDecisionById(id)) // verify decisions, will throw an error if any decision is not found
+        )
+      : null;
 
   // calculate litigation phases/flags
   const now = moment();
@@ -119,12 +120,14 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     moment(toDate(litigation?.voting_start)).isBefore(now) && moment(toDate(litigation?.voting_end)).isAfter(now);
   const isVotingDone = moment(toDate(litigation?.voting_end)).isBefore(now);
   const isWithdrawn =
-    participantId === litigation?.assumed_author && req.body.litigation_status === litigationStatusTypes.WITHDRAWN; // the assumed author withdrew their claim
+    participantId === litigation?.assumed_author &&
+    req.body.assumed_author_response === litigationStatusTypes.WITHDRAW_CLAIM; // the assumed author withdrew their claim
   const isToLitigate =
-    participantId === litigation?.assumed_author && req.body.litigation_status === litigationStatusTypes.WITHDRAWN; // the assumed author decided to litigate
+    participantId === litigation?.assumed_author &&
+    req.body.assumed_author_response === litigationStatusTypes.WITHDRAW_CLAIM; // the assumed author decided to litigate
   const isOwnershipAlreadyTransferred = !!litigation?.ownership_transferred;
   const litigationStatus =
-    participantId === litigation?.assumed_author ? req.body.litigation_status : litigation?.litigation_status;
+    participantId === litigation?.assumed_author ? req.body.assumed_author_response : litigation?.assumed_author_response;
 
   // if not voting phase, block votes
   if (!isVotingPhase && decisions && decisions.length > 0) {
@@ -134,7 +137,7 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
   // if assumed author did not respond in reconilate phase, block votes
   if (
     !isReconcilatePhase &&
-    litigation.litigation_status === litigationStatusTypes.PENDING &&
+    litigation.assumed_author_response === litigationStatusTypes.PENDING_RESPONSE &&
     decisions &&
     decisions.length > 0
   ) {
@@ -142,7 +145,7 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
   }
 
   // if not reconcilate phase, block reconcilation
-  if (!isReconcilatePhase && litigation?.litigation_status !== req.body.litigation_status) {
+  if (!isReconcilatePhase && litigation?.assumed_author_response !== req.body.assumed_author_response) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `reconcilation only allowed in reconcilate phase`);
   }
 
@@ -201,7 +204,7 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     // if assumed author did not respond in reconilate phase, issuer is the winner
     if (
       !isReconcilatePhase &&
-      litigation.litigation_status === litigationStatusTypes.PENDING &&
+      litigation.assumed_author_response === litigationStatusTypes.PENDING_RESPONSE &&
       litigation.issuer_id === participantId &&
       req.body.ownership_transferred === true
     ) {
@@ -231,7 +234,7 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     // transfer ownership if assumed author did not respond in reconilate phase, and issuer is claiming
     if (
       !isReconcilatePhase &&
-      litigation.litigation_status === litigationStatusTypes.PENDING &&
+      litigation.assumed_author_response === litigationStatusTypes.PENDING_RESPONSE &&
       litigation.issuer_id === participantId &&
       req.body.ownership_transferred === true
     ) {
@@ -271,7 +274,7 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
       ...req.body,
       winner,
       recognitions: recognitionIds,
-      litigation_status: litigationStatus,
+      assumed_author_response: litigationStatus,
       ownership_transferred: isOwnershipAlreadyTransferred,
       ...(shouldTransferOwnership && { ownership_transferred: true }),
     },
