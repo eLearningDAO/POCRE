@@ -209,19 +209,30 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
   })();
 
   // find reconcilation end date
-  const reconcilationEndDate = (() => {
-    const tempEndDate = litigation.reconcilation_end;
+  const dates = (() => {
+    const tempDates = {
+      reconcilation_start: litigation.reconcilation_start,
+      reconcilation_end: litigation.reconcilation_end,
+      voting_start: litigation.voting_start,
+      voting_end: litigation.voting_end,
+    };
 
     // if assumed author reconcilated, set reconcilation end to current date
     if (
-      [litigationStatusTypes.START_LITIGATION, litigationStatusTypes.PENDING_RESPONSE].includes(
+      [litigationStatusTypes.START_LITIGATION, litigationStatusTypes.WITHDRAW_CLAIM].includes(
         req.body.assumed_author_response
       )
     ) {
-      return moment().toISOString();
+      tempDates.reconcilation_end = moment().toISOString();
     }
 
-    return tempEndDate;
+    // if assumed author reconcilated for litigation
+    if (litigationStatusTypes.START_LITIGATION === req.body.assumed_author_response) {
+      tempDates.voting_start = moment().toISOString();
+      tempDates.voting_end = moment().add(config.litigation.voting_days, 'days').toISOString();
+    }
+
+    return tempDates;
   })();
 
   // find litigation winner
@@ -303,7 +314,7 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
       recognitions: recognitionIds,
       assumed_author_response: litigationStatus,
       ownership_transferred: isOwnershipAlreadyTransferred,
-      reconcilation_end: reconcilationEndDate,
+      ...dates,
       ...(shouldTransferOwnership && { ownership_transferred: true }),
     },
     { participant_id: (req.user as IUserDoc).user_id }
