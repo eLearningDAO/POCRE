@@ -41,9 +41,9 @@ const useDetails = () => {
         if (
           (
             moment(litigationResponse.voting_end).isBefore(isoDateToday)
-              && litigationResponse.litigation_status === statusTypes.STARTED
+              && litigationResponse.assumed_author_response === statusTypes.START_LITIGATION
           )
-            || litigationResponse.litigation_status === statusTypes.WITHDRAWN
+            || litigationResponse.assumed_author_response === statusTypes.WITHDRAW_CLAIM
         ) {
           return 'Closed';
         }
@@ -56,18 +56,22 @@ const useDetails = () => {
             (x) => x?.recognition_for?.user_id === user?.user_id,
           );
 
-          const isPendingOrStarted = litigationResponse.litigation_status === statusTypes.PENDING
-              || litigationResponse.litigation_status === statusTypes.STARTED;
+          const isPendingOrStarted = [
+            statusTypes.START_LITIGATION,
+            statusTypes.PENDING_RESPONSE,
+          ].includes(
+            litigationResponse.assumed_author_response,
+          );
 
           if (
-            litigationResponse.litigation_status === statusTypes.STARTED
+            litigationResponse.assumed_author_response === statusTypes.START_LITIGATION
               && isToJudge
           ) {
             return 'Awaiting Judgement';
           }
 
           if (isPendingOrStarted && !isToJudge) {
-            if (litigationResponse.litigation_status === statusTypes.STARTED) {
+            if (litigationResponse.assumed_author_response === statusTypes.START_LITIGATION) {
               return 'In voting process';
             }
 
@@ -84,9 +88,9 @@ const useDetails = () => {
       if (
         (
           moment(litigationResponse.voting_end).isBefore(isoDateToday)
-            && litigationResponse.litigation_status === statusTypes.STARTED
+            && litigationResponse.assumed_author_response === statusTypes.START_LITIGATION
         )
-          || litigationResponse.litigation_status === statusTypes.WITHDRAWN
+          || litigationResponse.assumed_author_response === statusTypes.WITHDRAW_CLAIM
       ) {
         litigationResponse.isClosed = true;
       }

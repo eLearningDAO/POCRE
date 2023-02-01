@@ -1,13 +1,13 @@
 import {
   Alert, Button, Grid, Snackbar,
 } from '@mui/material';
+import LitigationCard from 'components/cards/LitigationCard';
 import Loader from 'components/uicore/Loader';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './index.css';
-import LitigationCard from 'components/cards/LitigationCard';
-import authUser from 'utils/helpers/authUser';
 import statusTypes from 'utils/constants/statusTypes';
+import authUser from 'utils/helpers/authUser';
+import './index.css';
 import useHome from './useHome';
 
 const user = authUser.getUser();
@@ -16,7 +16,7 @@ function Litigation() {
   // get userInfo from the globale state with help of zustand store hook !
   // const user = useUserInfo((s) => s.user);
   const navigate = useNavigate();
-  const [activeLitigation, setActiveLitigation] = useState('opening');
+  const [activeLitigation, setActiveLitigation] = useState('inReconcilation');
   const {
     isFetchingLitigations,
     litigations,
@@ -80,28 +80,36 @@ function Litigation() {
 
         <div className="toggle-bar">
           <Button
-            className={`btn ${activeLitigation === 'opening' && 'btn-active'}`}
-            onClick={() => setActiveLitigation('opening')}
+            className={`btn ${activeLitigation === 'inReconcilation' && 'btn-active'}`}
+            onClick={() => setActiveLitigation('inReconcilation')}
           >
-            Waiting authorship recognition
+            In reconcilation (
+            {litigations?.inReconcilation?.length}
+            )
           </Button>
           <Button
-            className={`btn ${activeLitigation === 'openedAgainstMe' && 'btn-active'}`}
-            onClick={() => setActiveLitigation('openedAgainstMe')}
+            className={`btn ${activeLitigation === 'inVoting' && 'btn-active'}`}
+            onClick={() => setActiveLitigation('inVoting')}
           >
-            Opened against me
+            In voting (
+            {litigations?.inVoting?.length}
+            )
+          </Button>
+          <Button
+            className={`btn ${activeLitigation === 'toVote' && 'btn-active'}`}
+            onClick={() => setActiveLitigation('toVote')}
+          >
+            To vote (
+            {litigations?.toVote?.length}
+            )
           </Button>
           <Button
             className={`btn ${activeLitigation === 'closed' && 'btn-active'}`}
             onClick={() => setActiveLitigation('closed')}
           >
-            Closed
-          </Button>
-          <Button
-            className={`btn ${activeLitigation === 'toJudge' && 'btn-active'}`}
-            onClick={() => setActiveLitigation('toJudge')}
-          >
-            To judge
+            Closed (
+            {litigations?.closed?.length}
+            )
           </Button>
         </div>
 
@@ -124,60 +132,67 @@ function Litigation() {
                   // eslint-disable-next-line unicorn/prefer-module
                   image: x?.assumed_author?.image_url || require('assets/images/profile-placeholder.png'),
                 }}
-                startDate={x?.voting_start}
-                endDate={x?.voting_end}
-                mode={
-                  (activeLitigation === 'opening' && 'info')
-                  || (activeLitigation === 'openedAgainstMe' && 'litigate')
-                  || (activeLitigation === 'closed' && 'closed')
-                  || (activeLitigation === 'toJudge' && 'toJudge')
-                }
-                notVoted={
-                  x?.toJudge
-                  && (x?.decisions?.length === 0
-                  || !x?.decisions?.find((decision) => decision.maker_id === user.user_id))
-                }
-                votedInFavour={
-                  x?.toJudge
-                  && x?.decisions?.find(
-                    (decision) => decision.maker_id === user.user_id
-                    && decision.decision_status,
-                  )
-                }
-                votedInOpposition={
-                  x?.toJudge
-                  && x?.decisions?.find(
-                    (decision) => decision.maker_id === user.user_id
-                    && !decision.decision_status,
-                  )
-                }
-                totalJuryMembers={x?.recognitions?.length}
-                canWithdraw={!x?.toJudge ? x?.litigation_status === statusTypes.PENDING : null}
-                // eslint-disable-next-line no-return-await
-                onWithdraw={async () => await updateLitigationStatus({
-                  id: x?.litigation_id,
-                  litigationStatus: statusTypes.WITHDRAWN,
+                {...(activeLitigation === 'inVoting' && {
+                  mode: 'info',
                 })}
-                canAccept={!x?.toJudge ? x?.litigation_status === statusTypes.PENDING : null}
-                isDeclined={!x?.toJudge ? x?.litigation_status === statusTypes.WITHDRAWN : null}
-                // eslint-disable-next-line no-return-await
-                onAccept={async () => await updateLitigationStatus({
-                  id: x?.litigation_id,
-                  litigationStatus: statusTypes.STARTED,
+                {...(activeLitigation === 'inReconcilation' && {
+                  startDate: x?.reconcilation_start,
+                  endDate: x?.reconcilation_end,
+                  mode: 'info',
+                  ...(user?.user_id === x?.assumed_author?.user_id && {
+                    mode: 'litigate',
+                    canWithdraw: x?.assumed_author_response === statusTypes.PENDING_RESPONSE,
+                    // eslint-disable-next-line no-return-await
+                    onWithdraw: async () => await updateLitigationStatus({
+                      id: x?.litigation_id,
+                      litigationStatus: statusTypes.WITHDRAW_CLAIM,
+                    }),
+                    canAccept: x?.assumed_author_response === statusTypes.PENDING_RESPONSE,
+                    // eslint-disable-next-line no-return-await
+                    onAccept: async () => await updateLitigationStatus({
+                      id: x?.litigation_id,
+                      litigationStatus: statusTypes.START_LITIGATION,
+                    }),
+                    isDeclined: x?.assumed_author_response === statusTypes.WITHDRAW_CLAIM,
+                  }),
                 })}
-                canRedeem={!x?.toJudge
-                  ? x?.winner?.user_id === user?.user_id : null}
-                isRedeemed={!x?.toJudge ? x?.ownership_transferred : null}
-                lostClaim={!x?.toJudge
-                  ? x?.winner?.user_id !== user?.user_id : null}
-                // eslint-disable-next-line no-return-await
-                onRedeem={async () => await transferLitigatedItemOwnership(x?.litigation_id)}
-                winner={{
-                  profileId: x?.issuer?.user_id,
-                  name: x?.winner?.user_name,
-                  // eslint-disable-next-line unicorn/prefer-module
-                  image: x?.winner?.image_url || require('assets/images/profile-placeholder.png'),
-                }}
+                {...(activeLitigation === 'closed' && {
+                  mode: 'closed',
+                  startDate: x?.reconcilation_start,
+                  endDate: x?.voting_end,
+                  winner: {
+                    profileId: x?.winner?.user_id,
+                    name: x?.winner?.user_name,
+                    // eslint-disable-next-line unicorn/prefer-module
+                    image: x?.winner?.image_url || require('assets/images/profile-placeholder.png'),
+                  },
+                  canRedeem: x?.winner?.user_id === user?.user_id ? true : null,
+                  // eslint-disable-next-line no-return-await
+                  onRedeem: async () => await transferLitigatedItemOwnership(x?.litigation_id),
+                  isRedeemed: x?.winner?.user_id === user?.user_id
+                    ? x?.ownership_transferred : null,
+                  lostClaim: x?.winner?.user_id !== user?.user_id,
+                })}
+                {...(activeLitigation === 'toVote' && {
+                  mode: 'toJudge',
+                  notVoted: (x?.decisions?.length === 0
+                    || !x?.decisions?.find((decision) => decision.maker_id === user.user_id)),
+                  votedInFavour: x?.decisions?.find(
+                    (decision) => decision.maker_id === user.user_id
+                      && decision.decision_status,
+                  ),
+                  votedInOpposition: x?.decisions?.find(
+                    (decision) => decision.maker_id === user.user_id
+                      && !decision.decision_status,
+                  ),
+                })}
+                {...(['inVoting', 'toVote'].includes(activeLitigation) && {
+                  startDate: x?.voting_start,
+                  endDate: x?.voting_end,
+                })}
+                {...(['inVoting', 'toVote', 'closed'].includes(activeLitigation) && {
+                  totalJuryMembers: x?.recognitions?.length,
+                })}
               />
             ))}
           </div>

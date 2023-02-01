@@ -160,7 +160,7 @@ export default function LitigationDetails() {
             litigation?.isJudging
             && !litigation?.isClosed
             && !alreadyVoted
-            && litigation?.litigation_status === statusTypes.STARTED
+            && litigation?.assumed_author_response === statusTypes.START_LITIGATION
           )
             ? (
               <>
