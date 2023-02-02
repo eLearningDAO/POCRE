@@ -68,6 +68,14 @@ function AppRoutes() {
           )}
         />
         <Route
+          path="/creations/user/:id"
+          element={(
+            <Layout displaySidebar>
+              <CreationsHome />
+            </Layout>
+          )}
+        />
+        <Route
           path="/creations/create"
           element={(
             <Protected>

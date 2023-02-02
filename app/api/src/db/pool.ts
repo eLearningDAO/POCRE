@@ -56,6 +56,7 @@ const init = async (): Promise<QueryResult<any>> => {
       reputation_stars integer  DEFAULT 0,
       creation_count integer  DEFAULT 0,
       email_verified bool  DEFAULT false,
+      otp_code integer,
       date_joined TIMESTAMP NOT NULL DEFAULT NOW(),
       is_invited bool default false
     );

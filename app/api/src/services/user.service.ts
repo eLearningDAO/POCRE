@@ -17,6 +17,7 @@ export interface IUser {
   image_url?: string;
   is_invited?: boolean;
   email_verified?: boolean;
+  otp_code?: number
 }
 interface IUserQuery {
   limit: number;
@@ -47,6 +48,7 @@ export interface IUserDoc {
   total_creations?: string;
   is_invited: boolean;
   email_verified: boolean;
+  otp_code: number;
 }
 interface IUserCriteria {
   required_users: number;
