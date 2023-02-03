@@ -14,7 +14,11 @@ function VerifyEmail() {
   const handleProfileVerfication = async () => {
     const parameters = new URLSearchParams(window.location.search);
     const token = parameters.get('id');
-    await confirmUserEmail([token, otpCode]);
+    const verificationParameters = {
+      userId: token,
+      otpCode,
+    };
+    await confirmUserEmail(verificationParameters);
   };
   useEffect(() => {
     if (confirmationEmailStatus.success) {
