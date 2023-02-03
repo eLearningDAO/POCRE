@@ -79,7 +79,7 @@ export const deleteUserById = catchAsync(async (req, res): Promise<void> => {
 
 export const verifyUserProfileById = catchAsync(async (req, res): Promise<void> => {
   const foundUser = await userService.getUserByCriteria('user_id', req.params.user_id as string, true);
-  console.log("THis is the user",foundUser?.otp_code,typeof(req.query.otp_code),req.query.otp_code)
+  // console.log("THis is the user",foundUser?.otp_code,typeof(req.query.otp_code),req.query.otp_code)
   var otpCode = null
   if (typeof(req.query.otp_code)==='string')
   {
@@ -88,7 +88,7 @@ export const verifyUserProfileById = catchAsync(async (req, res): Promise<void> 
 
   if ( foundUser && foundUser.otp_code !== otpCode )
   {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Wrong OTP Provided');
+    throw new ApiError(httpStatus.NOT_FOUND, 'wrong otp provided');
   }
   const body = {
     "email_verified":true
