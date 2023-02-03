@@ -79,7 +79,6 @@ export const deleteUserById = catchAsync(async (req, res): Promise<void> => {
 
 export const verifyUserProfileById = catchAsync(async (req, res): Promise<void> => {
   const foundUser = await userService.getUserByCriteria('user_id', req.params.user_id as string, true);
-  // console.log("THis is the user",foundUser?.otp_code,typeof(req.query.otp_code),req.query.otp_code)
   var otpCode = null
   if (typeof(req.query.otp_code)==='string')
   {
