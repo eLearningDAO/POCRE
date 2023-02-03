@@ -32,10 +32,8 @@ const useHome = () => {
   } = useQuery({
     queryKey: ['litigations'],
     queryFn: async () => {
-      // get litigations
       const toPopulate = [
-        'assumed_author', 'winner', 'issuer_id', 'creation_id', 'creation_id.author_id', 'decisions',
-        'recognitions.recognition_for', 'material_id.author_id', 'material_id.author_id',
+        'assumed_author', 'winner', 'issuer_id', 'creation_id', 'creation_id.author_id', 'decisions', 'material_id.author_id',
       ];
 
       // get all litigations
@@ -63,7 +61,7 @@ const useHome = () => {
           (x) => (
             moment(toDate(x?.reconcilation_start)).isBefore(now)
             && moment(toDate(x?.reconcilation_end)).isAfter(now)
-            && x.assumed_author_response === statusTypes.PENDING_RESPONSE
+            && x?.assumed_author_response === statusTypes.PENDING_RESPONSE
           ),
         ),
         // displayed to assumed authors and claimers
@@ -71,8 +69,8 @@ const useHome = () => {
           (x) => (
             moment(toDate(x?.voting_start)).isBefore(now)
             && moment(toDate(x?.voting_end)).isAfter(now)
-            && x.assumed_author_response === statusTypes.START_LITIGATION
-            && !x.toJudge
+            && x?.assumed_author_response === statusTypes.START_LITIGATION
+            && !x?.toJudge
           ),
         ),
         // displayed to jury members only
@@ -80,19 +78,19 @@ const useHome = () => {
           (x) => (
             moment(toDate(x?.voting_start)).isBefore(now)
             && moment(toDate(x?.voting_end)).isAfter(now)
-            && x.assumed_author_response === statusTypes.START_LITIGATION
-            && x.toJudge
+            && x?.assumed_author_response === statusTypes.START_LITIGATION
+            && x?.toJudge
           ),
         ),
         // displayed to all users
         closed: litigationResponse?.results?.filter(
           (x) => (
             moment(toDate(x?.voting_end)).isBefore(now)
-            || x.assumed_author_response === statusTypes.WITHDRAW_CLAIM
+            || x?.assumed_author_response === statusTypes.WITHDRAW_CLAIM
             || (
               // no response from author in reconilation phase (author lost claim)
               moment(toDate(x?.reconcilation_end)).isBefore(now)
-              && x.assumed_author_response === statusTypes.PENDING_RESPONSE
+              && x?.assumed_author_response === statusTypes.PENDING_RESPONSE
             )
           ),
         ),
@@ -145,7 +143,7 @@ const useHome = () => {
       // filter this litigation from inReconcilation key
       updatedLitigations.inReconcilation = [
         ...updatedLitigations.inReconcilation,
-      ].filter((x) => x.litigation_id !== id);
+      ].filter((x) => x?.litigation_id !== id);
 
       if (assumedAuthorResponse === statusTypes.START_LITIGATION) {
         // add updated litigation inVoting key
@@ -181,7 +179,7 @@ const useHome = () => {
       // update litigation
       const updatedLitigations = { ...litigations };
       const foundLitigation = updatedLitigations?.closed?.find(
-        (x) => x.litigation_id === id,
+        (x) => x?.litigation_id === id,
       );
       foundLitigation.ownership_transferred = true;
 
