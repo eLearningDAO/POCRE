@@ -79,13 +79,13 @@ export const deleteUserById = catchAsync(async (req, res): Promise<void> => {
 
 export const verifyUserProfileById = catchAsync(async (req, res): Promise<void> => {
   const foundUser = await userService.getUserByCriteria('user_id', req.params.user_id as string, true);
-  var otpCode = null
+  
+  var otpCode = ""
   if (typeof(req.query.otp_code)==='string')
   {
-    otpCode = parseInt(req.query.otp_code)
+    otpCode = req.query.otp_code
   }
-
-  if ( foundUser && foundUser.otp_code !== otpCode )
+  if ( foundUser && !foundUser.otp_code.includes(otpCode) )
   {
     throw new ApiError(httpStatus.NOT_FOUND, 'wrong otp provided');
   }
@@ -101,9 +101,9 @@ export const verifyUserEmail = catchAsync(async (req, res): Promise<void> => {
   // only allow the auth user to delete itself
   const foundUser = await userService.getUserByCriteria('user_id', req.body.user_id as string, true);
   if (foundUser && foundUser.email_address) {
-    var otp_code = Math.floor(1000 + Math.random() * 9000);
+    var otp_code = Math.floor(100000 + Math.random() * 900000);
     const body = {
-      "otp_code": otp_code
+      "otp_code": otp_code.toString()
     }
     const user = await userService.updateUserById(req.body.user_id, body);
     await sendMail({
