@@ -80,7 +80,7 @@ export const deleteUserById = catchAsync(async (req, res): Promise<void> => {
 export const verifyUserProfileById = catchAsync(async (req, res): Promise<void> => {
   const foundUser = await userService.getUserByCriteria('user_id', req.params.user_id as string, true);
   
-  var otpCode = ""
+  let otpCode = ""
   if (typeof(req.query.otp_code)==='string')
   {
     otpCode = req.query.otp_code
