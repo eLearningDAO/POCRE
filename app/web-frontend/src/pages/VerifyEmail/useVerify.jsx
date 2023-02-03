@@ -9,8 +9,8 @@ const useVerify = () => {
     isError: isConfirmEmailError,
     isSuccess: isConfirmEmailSuccess,
   } = useMutation({
-    mutationFn: async (data) => {
-      const response = await User.confirmEmail(data.userId, `otp_code=${data.otpCode}`);
+    mutationFn: async ({ userId, otpCode }) => {
+      const response = await User.confirmEmail(userId, `otp_code=${otpCode}`);
       authUser.setUser({ ...authUser.getUser(), ...response });
     },
   });
