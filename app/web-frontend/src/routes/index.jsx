@@ -68,7 +68,7 @@ function AppRoutes() {
           )}
         />
         <Route
-          path="/creations/user/:id"
+          path="/creations/user/:userId"
           element={(
             <Layout displaySidebar>
               <CreationsHome />
