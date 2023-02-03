@@ -72,6 +72,7 @@ const useHome = () => {
             moment(toDate(x?.voting_start)).isBefore(now)
             && moment(toDate(x?.voting_end)).isAfter(now)
             && x.assumed_author_response === statusTypes.START_LITIGATION
+            && !x.toJudge
           ),
         ),
         // displayed to jury members only
@@ -79,13 +80,21 @@ const useHome = () => {
           (x) => (
             moment(toDate(x?.voting_start)).isBefore(now)
             && moment(toDate(x?.voting_end)).isAfter(now)
+            && x.assumed_author_response === statusTypes.START_LITIGATION
             && x.toJudge
           ),
         ),
         // displayed to all users
         closed: litigationResponse?.results?.filter(
-          (x) => moment(toDate(x?.voting_end)).isBefore(now)
-          || x.assumed_author_response === statusTypes.WITHDRAW_CLAIM,
+          (x) => (
+            moment(toDate(x?.voting_end)).isBefore(now)
+            || x.assumed_author_response === statusTypes.WITHDRAW_CLAIM
+            || (
+              // no response from author in reconilation phase (author lost claim)
+              moment(toDate(x?.reconcilation_end)).isBefore(now)
+              && x.assumed_author_response === statusTypes.PENDING_RESPONSE
+            )
+          ),
         ),
       };
 
