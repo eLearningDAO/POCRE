@@ -34,7 +34,7 @@ function WalletProfile({
   const navigate = useNavigate();
   const [isEditMode, setEditMode] = useState(false);
   const [avatarImageFile, setAvatarImageFile] = useState();
-  const handleViewCreattion = () => {
+  const handleViewCreation = () => {
     if (id) {
       navigate(`/creations/user/${id}`);
     } else {
@@ -95,7 +95,7 @@ function WalletProfile({
         )}
         {!isEditMode && (
           <p className="wallet-profile-creations-count">
-            <Button onClick={handleViewCreattion} style={{ color: 'black' }}>
+            <Button onClick={handleViewCreation} style={{ color: 'black' }}>
               Author of
               <span style={{ marginLeft: '4px', marginRight: '4px' }}>{creationCount || creations?.total_results}</span>
               creations

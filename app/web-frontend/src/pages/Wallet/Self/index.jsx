@@ -17,7 +17,7 @@ function WalletSelf() {
     }
   };
 
-  const handleViewCreattion = () => navigate('/creations');
+  const handleViewCreation = () => navigate('/creations');
   const handleCreateCreattion = () => navigate('/creations/create');
 
   const user = authUser.getUser();
@@ -52,7 +52,7 @@ function WalletSelf() {
           <Grid item md={12} sm={12} xs={12} className="wallet-collection-right">
             <Tile
               icon="gallery"
-              onClick={handleViewCreattion}
+              onClick={handleViewCreation}
               label="View my creations"
               variant="filled"
             />
