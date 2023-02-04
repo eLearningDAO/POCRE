@@ -7,7 +7,7 @@ import moment from 'moment';
 // get auth user
 const user = authUser.getUser();
 
-const useCreations = () => {
+const useCreations = (userId) => {
   const {
     suggestions: creationSuggestions,
     suggestionsStatus: fetchCreationsSuggestionStatus,
@@ -27,7 +27,7 @@ const useCreations = () => {
     queryFn: async () => {
       const toPopulate = ['author_id', 'materials', 'materials.author_id'];
       const unsortedCreations = await Creation.getAll(
-        `page=${1}&limit=100&descend_fields[]=creation_date&query=${user.user_id}&search_fields[]=author_id&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
+        `page=${1}&limit=100&descend_fields[]=creation_date&query=${userId || user.user_id}&search_fields[]=author_id&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       );
 
       // sort by latest first

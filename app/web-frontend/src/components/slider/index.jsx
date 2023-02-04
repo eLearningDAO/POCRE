@@ -16,9 +16,7 @@ export default function Slider({ handleSlideClick, slideImageList }) {
         duration: 300,
         indicators: true,
         dragged: false,
-        onCycleTo: () => {
-          // console.log('New Slide');
-        },
+        onCycleTo: () => {},
       };
       M.Carousel.init(car, options);
     }

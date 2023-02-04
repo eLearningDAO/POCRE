@@ -5,7 +5,7 @@ import CreationCard from 'components/cards/CreationCard';
 import Input from 'components/uicore/Input';
 import Loader from 'components/uicore/Loader';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
 import useCreationDelete from '../common/hooks/useCreationDelete';
 import useCreationPublish from '../common/hooks/useCreationPublish';
@@ -25,13 +25,13 @@ function Creations() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const login = authUser.getUser() && authUser.getJWTToken();
-
+  const { userId } = useParams();
   const {
     creations,
     isLoadingCreations,
     creationSuggestions,
     handleCreationInputChange,
-  } = useCreations();
+  } = useCreations(userId);
 
   const {
     isDeletingCreation,
@@ -96,7 +96,7 @@ function Creations() {
         padding={{ xs: '12px', md: '0' }}
       >
         <Typography className="heading h4" variant="h4">
-          {login ? 'The original creations I made' : 'Search Public Creations'}
+          {login ? `The original creations ${userId === login?.user_id || !creations ? 'I' : creations.results[0]?.author?.user_name} made` : 'Search Public Creations'}
         </Typography>
         <Grid gap={{ sm: '8px' }} display="flex" height="fit-content" flexDirection="row">
           {login && (
@@ -159,11 +159,12 @@ function Creations() {
                     author_image: m?.author?.image_url,
                     authorProfileId: m?.author?.user_id,
                   })) : []}
-                  canEdit={x?.is_draft}
+                  canEdit={x?.is_draft && userId === login?.user_id}
+                  canDelete={userId === login?.user_id}
                   onEditClick={() => navigate(`/creations/${x?.creation_id}/update`)}
                   // eslint-disable-next-line no-return-await
                   onDeleteClick={async () => await deleteCreation(x?.creation_id)}
-                  canPublish={!x?.is_draft}
+                  canPublish={!x?.is_draft && userId === login?.user_id}
                   onPublish={async () => await publishCreation({
                     id: x?.creation_id,
                     ipfsHash: x?.ipfs_hash,

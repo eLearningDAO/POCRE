@@ -24,6 +24,8 @@ function WalletProfile({
   phone = '',
   stars = 0,
   isInvited = false,
+  id = null,
+  creationCount = 0,
   hashedWalletAddress = '',
   canEdit = false,
   emailVerified = false,
@@ -32,7 +34,13 @@ function WalletProfile({
   const navigate = useNavigate();
   const [isEditMode, setEditMode] = useState(false);
   const [avatarImageFile, setAvatarImageFile] = useState();
-  const handleViewCreattion = () => navigate('/creations');
+  const handleViewCreation = () => {
+    if (id) {
+      navigate(`/creations/user/${id}`);
+    } else {
+      navigate('/creations');
+    }
+  };
   const {
     creations,
     isUpdatingUserProfile,
@@ -87,9 +95,9 @@ function WalletProfile({
         )}
         {!isEditMode && (
           <p className="wallet-profile-creations-count">
-            <Button onClick={handleViewCreattion} style={{ color: 'black' }}>
+            <Button onClick={handleViewCreation} style={{ color: 'black' }}>
               Author of
-              <span style={{ marginLeft: '4px', marginRight: '4px' }}>{creations?.total_results}</span>
+              <span style={{ marginLeft: '4px', marginRight: '4px' }}>{creationCount || creations?.total_results}</span>
               creations
             </Button>
           </p>

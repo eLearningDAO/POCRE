@@ -5,7 +5,6 @@ import * as userService from '../services/user.service';
 import { encrypt } from '../utils/crypt';
 import ApiError from '../utils/ApiError';
 import { sendMail } from '../utils/email';
-import { encode } from '../utils/jwt';
 
 export const queryUsers = catchAsync(async (req, res): Promise<void> => {
   const users = await userService.queryUsers(req.query as any);
@@ -79,6 +78,11 @@ export const deleteUserById = catchAsync(async (req, res): Promise<void> => {
 
 
 export const verifyUserProfileById = catchAsync(async (req, res): Promise<void> => {
+  const foundUser = await userService.getUserByCriteria('user_id', req.params.user_id as string, true);
+  if ( foundUser && !foundUser.otp_code.includes(req.query.otp_code as string) )
+  {
+    throw new ApiError(httpStatus.NOT_FOUND, 'wrong otp provided');
+  }
   const body = {
     "email_verified":true
   }
@@ -91,11 +95,15 @@ export const verifyUserEmail = catchAsync(async (req, res): Promise<void> => {
   // only allow the auth user to delete itself
   const foundUser = await userService.getUserByCriteria('user_id', req.body.user_id as string, true);
   if (foundUser && foundUser.email_address) {
-    console.log('This is  the found user', foundUser)
+    var otp_code = Math.floor(100000 + Math.random() * 900000);
+    const body = {
+      "otp_code": otp_code.toString()
+    }
+    const user = await userService.updateUserById(req.body.user_id, body);
     await sendMail({
       to: foundUser.email_address as string,
       subject: `Verify your email`,
-      message: `This email need to be verified, please click on the link ${config.web_client_base_url}/verify?id=${foundUser.user_id}`,
+      message: `This email need to be verified, Your OTP Code is ${otp_code}, please click on the link ${config.web_client_base_url}/verify?id=${foundUser.user_id}`,
     }).catch(() => null);
   }
   res.send();
