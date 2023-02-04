@@ -126,8 +126,10 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     participantId === litigation?.assumed_author &&
     req.body.assumed_author_response === litigationStatusTypes.START_LITIGATION; // the assumed author decided to litigate
   const isOwnershipAlreadyTransferred = !!litigation?.ownership_transferred;
-  const litigationStatus =
-    participantId === litigation?.assumed_author ? req.body.assumed_author_response : litigation?.assumed_author_response;
+  const assumedAuthorResponse =
+    participantId === litigation?.assumed_author && req.body.assumed_author_response
+      ? req.body.assumed_author_response
+      : litigation?.assumed_author_response;
 
   // if not voting phase, block votes
   if (!isVotingPhase && decisions && decisions.length > 0) {
@@ -145,13 +147,18 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
   }
 
   // if not reconcilate phase, block reconcilation
-  if (!isReconcilatePhase && litigation?.assumed_author_response !== req.body.assumed_author_response) {
+  if (
+    !isReconcilatePhase &&
+    req.body.assumed_author_response &&
+    litigation?.assumed_author_response !== req.body.assumed_author_response
+  ) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `reconcilation only allowed in reconcilate phase`);
   }
 
   // if reconcilate phase, dont allow to change already set reconcilation status
   if (
     isReconcilatePhase &&
+    req.body.assumed_author_response &&
     ((litigation?.assumed_author_response === litigationStatusTypes.START_LITIGATION &&
       req.body.assumed_author_response === litigationStatusTypes.WITHDRAW_CLAIM) ||
       (litigation?.assumed_author_response === litigationStatusTypes.WITHDRAW_CLAIM &&
@@ -160,8 +167,22 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `cannot change already set reconcilation status`);
   }
 
-  // if voting is not finised, block issuer from claiming
-  if (!isVotingDone && req.body.ownership_transferred === true) {
+  // only allow the claimer to claim
+  if (litigation.issuer_id !== participantId && [true, false].includes(req.body.ownership_transferred)) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigated item can only be claimed by the litigation issuer`);
+  }
+
+  // if litigation was in voting phase and voting is not finised, block issuer from claiming
+  if (
+    litigation?.assumed_author_response !== litigationStatusTypes.PENDING_RESPONSE &&
+    !isVotingDone &&
+    [true, false].includes(req.body.ownership_transferred)
+  ) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigated item can only be claimed after voting phase`);
+  }
+
+  // if litigation is in reconcilation phase, block issuer from claiming
+  if (isReconcilatePhase && [true, false].includes(req.body.ownership_transferred)) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigated item can only be claimed after voting phase`);
   }
 
@@ -219,6 +240,7 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
 
     // if assumed author reconcilated, set reconcilation end to current date
     if (
+      req.body.assumed_author_response &&
       [litigationStatusTypes.START_LITIGATION, litigationStatusTypes.WITHDRAW_CLAIM].includes(
         req.body.assumed_author_response
       )
@@ -227,7 +249,7 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     }
 
     // if assumed author reconcilated for litigation
-    if (litigationStatusTypes.START_LITIGATION === req.body.assumed_author_response) {
+    if (req.body.assumed_author_response && req.body.assumed_author_response === litigationStatusTypes.START_LITIGATION) {
       tempDates.voting_start = moment().toISOString();
       tempDates.voting_end = moment().add(config.litigation.voting_days, 'days').toISOString();
     }
@@ -312,7 +334,7 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
       ...req.body,
       winner,
       recognitions: recognitionIds,
-      assumed_author_response: litigationStatus,
+      assumed_author_response: assumedAuthorResponse,
       ownership_transferred: isOwnershipAlreadyTransferred,
       ...dates,
       ...(shouldTransferOwnership && { ownership_transferred: true }),
