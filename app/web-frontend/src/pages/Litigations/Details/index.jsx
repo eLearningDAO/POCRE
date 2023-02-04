@@ -97,8 +97,7 @@ export default function LitigationDetails() {
     );
   }
 
-  const alreadyVoted = litigation?.decisions?.find((x) => x?.maker_id === user?.user_id)
-    ?.decision_status;
+  const alreadyVoted = litigation?.decisions?.find((x) => x?.maker_id === user?.user_id);
 
   return (
     <Grid item xs={12}>
