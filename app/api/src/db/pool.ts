@@ -35,7 +35,7 @@ const init = async (): Promise<QueryResult<any>> => {
     END $$;
 
     DO $$ BEGIN
-      CREATE TYPE litigation_status_enums AS ENUM ('pending', 'started', 'withdrawn');
+      CREATE TYPE assumed_author_response_enums AS ENUM ('pending_response', 'start_litigation', 'withdraw_claim');
     EXCEPTION
         WHEN duplicate_object THEN null;
     END $$;
@@ -149,9 +149,11 @@ const init = async (): Promise<QueryResult<any>> => {
       winner UUID NOT NULL,
       recognitions UUID[],
       decisions UUID[],
-      litigation_start TIMESTAMP NOT NULL DEFAULT NOW(),
-      litigation_end TIMESTAMP,
-      litigation_status litigation_status_enums NOT NULL,
+      reconcilation_start TIMESTAMP NOT NULL,
+      reconcilation_end TIMESTAMP NOT NULL,
+      voting_start TIMESTAMP NOT NULL,
+      voting_end TIMESTAMP NOT NULL,
+      assumed_author_response assumed_author_response_enums NOT NULL,
       ownership_transferred bool default false,
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
       CONSTRAINT material_id

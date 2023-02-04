@@ -9,12 +9,10 @@ export const createLitigation = {
     creation_id: Joi.string().uuid().required(),
     material_id: Joi.string().uuid().optional(),
     decisions: Joi.array().items(Joi.string().uuid()).unique().default([]),
-    litigation_start: Joi.date().iso().required(),
-    litigation_end: Joi.date().iso().greater(Joi.ref('litigation_start')).required(),
-    litigation_status: Joi.string()
+    assumed_author_response: Joi.string()
       .valid(...Object.values(litigationStatusTypes))
       .optional()
-      .default(litigationStatusTypes.PENDING),
+      .default(litigationStatusTypes.PENDING_RESPONSE),
   }),
 };
 
@@ -30,8 +28,8 @@ export const queryLitigations = {
         then: Joi.required(),
         otherwise: Joi.forbidden(),
       }),
-    ascend_fields: Joi.array().items(Joi.string().valid('litigation_start', 'litigation_end')).optional(),
-    descend_fields: Joi.array().items(Joi.string().valid('litigation_start', 'litigation_end')).optional(),
+    ascend_fields: Joi.array().items(Joi.string().valid('voting_start', 'voting_end')).optional(),
+    descend_fields: Joi.array().items(Joi.string().valid('voting_start', 'voting_end')).optional(),
     judged_by: Joi.string().uuid().optional(),
     populate: Joi.alternatives()
       .try(Joi.string().valid(...litigationDeepFields), Joi.array().items(Joi.string().valid(...litigationDeepFields)))
@@ -59,10 +57,8 @@ export const updateLitigation = {
       litigation_title: Joi.string().optional(),
       litigation_description: Joi.string().optional().allow('').allow(null),
       decisions: Joi.array().items(Joi.string().uuid()).unique().optional(),
-      litigation_start: Joi.date().iso().optional(),
-      litigation_end: Joi.date().iso().greater(Joi.ref('litigation_start')).optional(),
-      litigation_status: Joi.string()
-        .valid(...Object.values(litigationStatusTypes))
+      assumed_author_response: Joi.string()
+        .valid(...Object.values(litigationStatusTypes).filter((x) => x !== litigationStatusTypes.PENDING_RESPONSE))
         .optional(),
       ownership_transferred: Joi.bool().optional(),
     })

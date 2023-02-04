@@ -1,19 +1,23 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Litigation } from 'api/requests';
+import { CHARGES, TRANSACTION_PURPOSES } from 'config';
 import moment from 'moment';
 import { useState } from 'react';
 import statusTypes from 'utils/constants/statusTypes';
 import authUser from 'utils/helpers/authUser';
 import { transactADAToPOCRE } from 'utils/helpers/wallet';
-import { CHARGES, TRANSACTION_PURPOSES } from 'config';
 
 const user = authUser.getUser();
 
-const formatDates = (litigations) => litigations.map((x) => ({
-  ...x,
-  litigation_start: moment(x?.litigation_start).format('DD/MM/YYYY'), // moment auto converts utc to local time
-  litigation_end: moment(x?.litigation_end).format('DD/MM/YYYY'), // moment auto converts utc to local time
-}));
+const toDate = (dateString) => new Date(dateString);
+
+const formatDates = (litigation) => ({
+  ...litigation,
+  reconcilation_start: moment(litigation?.reconcilation_start).format('DD/MM/YYYY'), // moment auto converts utc to local time
+  reconcilation_end: moment(litigation?.reconcilation_end).format('DD/MM/YYYY'), // moment auto converts utc to local time
+  voting_start: moment(litigation?.voting_start).format('DD/MM/YYYY'), // moment auto converts utc to local time
+  voting_end: moment(litigation?.voting_end).format('DD/MM/YYYY'), // moment auto converts utc to local time
+});
 
 const useHome = () => {
   const queryClient = useQueryClient();
@@ -28,10 +32,8 @@ const useHome = () => {
   } = useQuery({
     queryKey: ['litigations'],
     queryFn: async () => {
-      // get litigations
       const toPopulate = [
-        'assumed_author', 'winner', 'issuer_id', 'creation_id', 'creation_id.author_id', 'decisions',
-        'recognitions.recognition_for', 'material_id.author_id', 'material_id.author_id',
+        'assumed_author', 'winner', 'issuer_id', 'creation_id', 'creation_id.author_id', 'decisions', 'material_id.author_id',
       ];
 
       // get all litigations
@@ -50,88 +52,56 @@ const useHome = () => {
         ...(litigationToJudgeResponse?.results?.map((x) => ({ ...x, toJudge: true })) || []),
       ];
 
-      // getting the current date without timestamp, as the litigation start/end dates also have
-      // dates without timestamps
-      const isoDateToday = `${moment().format('YYYY-MM-DDT00:00:00.000')}Z`;
+      const now = moment();
 
       // calculate open/closed and in progress litigations
       litigationResponse = {
-        // display all closed litigations in which the auth user is a judge, issuer or claimer
+        // displayed to assumed authors and claimers
+        inReconcilation: litigationResponse?.results?.filter(
+          (x) => (
+            moment(toDate(x?.reconcilation_start)).isBefore(now)
+            && moment(toDate(x?.reconcilation_end)).isAfter(now)
+            && x?.assumed_author_response === statusTypes.PENDING_RESPONSE
+          ),
+        ),
+        // displayed to assumed authors and claimers
+        inVoting: litigationResponse?.results?.filter(
+          (x) => (
+            moment(toDate(x?.voting_start)).isBefore(now)
+            && moment(toDate(x?.voting_end)).isAfter(now)
+            && x?.assumed_author_response === statusTypes.START_LITIGATION
+            && !x?.toJudge
+          ),
+        ),
+        // displayed to jury members only
+        toVote: litigationResponse?.results?.filter(
+          (x) => (
+            moment(toDate(x?.voting_start)).isBefore(now)
+            && moment(toDate(x?.voting_end)).isAfter(now)
+            && x?.assumed_author_response === statusTypes.START_LITIGATION
+            && x?.toJudge
+          ),
+        ),
+        // displayed to all users
         closed: litigationResponse?.results?.filter(
           (x) => (
-            moment(x.litigation_end).isBefore(isoDateToday)
-            // NOTE: [TEMP FIX]
-            // if the original author does not do something in reconcilation phase then
-            // the litigations status is pending
-            // && x.litigation_status === statusTypes.STARTED
-          )
-            || x.litigation_status === statusTypes.WITHDRAWN,
-        ),
-        ...((() => {
-          // gives all litigations that are currently started or pending to start (end
-          // date has not reached)
-          const litigationsOpenedOrOpeningByDate = [...litigationResponse?.results?.filter(
-            (x) => moment(x?.litigation_end).isAfter(isoDateToday),
-          ) || []];
-
-          // gives all litigations that are currently started (start date has passed or is today
-          // and end date has not reached)
-          const litigationsOpenedByDate = [...litigationsOpenedOrOpeningByDate?.filter(
-            (x) => moment(x?.litigation_start).isSameOrBefore(isoDateToday),
-          ) || []];
-
-          // gives all litigations that are in started status (pending and started status are
-          // both treated as started, pending status is only used for the assumed author)
-          const getStartedLitigationsByStatus = (allLitigations) => allLitigations.filter((x) => (
-            (
-              x?.litigation_status === statusTypes.PENDING
-              || x?.litigation_status === statusTypes.STARTED
+            moment(toDate(x?.voting_end)).isBefore(now)
+            || x?.assumed_author_response === statusTypes.WITHDRAW_CLAIM
+            || (
+              // no response from author in reconilation phase (author lost claim)
+              moment(toDate(x?.reconcilation_end)).isBefore(now)
+              && x?.assumed_author_response === statusTypes.PENDING_RESPONSE
             )
-            && !x.toJudge
-          ));
-
-          // gives all litigations that are started for non judges
-          // eslint-disable-next-line max-len
-          const openedForNonJudges = getStartedLitigationsByStatus(litigationsOpenedByDate);
-
-          // gives all litigations that are opened or to be opened for non judges
-          // eslint-disable-next-line max-len
-          const openedOrOpeningForNonJudges = getStartedLitigationsByStatus(litigationsOpenedOrOpeningByDate);
-
-          // gives all litigations that are in pending status for judges and have not ended
-          const litigationsPendingToJudge = [...litigationResponse?.results?.filter(
-            (x) => moment(x?.litigation_end).isAfter(isoDateToday)
-              && x?.litigation_status === statusTypes.PENDING && x?.toJudge,
-          ) || []];
-
-          // gives all litigations that are in started status for judges
-          const litigationsCurrentlyToJudge = litigationsOpenedByDate.filter((x) => (
-            x?.litigation_status === statusTypes.STARTED && x?.toJudge
-          ));
-
-          return {
-            openedAgainstMe: [
-              ...openedForNonJudges.filter(
-                (x) => x?.assumed_author?.user_id === user?.user_id,
-              ),
-            ],
-            opening: [
-              ...openedOrOpeningForNonJudges.filter(
-                (x) => x?.issuer?.user_id === user?.user_id,
-              ),
-              ...litigationsPendingToJudge,
-            ],
-            toJudge: [...litigationsCurrentlyToJudge],
-          };
-        })()),
+          ),
+        ),
       };
 
       // convert litigation utc dates
       litigationResponse = {
-        closed: formatDates(litigationResponse?.closed),
-        opening: formatDates(litigationResponse?.opening),
-        openedAgainstMe: formatDates(litigationResponse?.openedAgainstMe),
-        toJudge: formatDates(litigationResponse?.toJudge),
+        inReconcilation: litigationResponse?.inReconcilation.map((x) => formatDates(x)),
+        inVoting: litigationResponse?.inVoting.map((x) => formatDates(x)),
+        toVote: litigationResponse?.toVote.map((x) => formatDates(x)),
+        closed: litigationResponse?.closed.map((x) => formatDates(x)),
       };
 
       return { ...litigationResponse };
@@ -140,43 +110,54 @@ const useHome = () => {
     enabled: !!shouldFetchLitigations,
   });
 
-  // update litigation status
+  // update assumed author response
   const {
-    mutate: updateLitigationStatus,
-    isError: isLitigationStatusUpdationError,
-    isSuccess: isLitigationStatusUpdated,
-    isLoading: isUpdatingLitigationStatus,
-    reset: resetLitigationStatus,
+    mutate: updateAssumedAuthorResponse,
+    isError: isUpdateAssumedAuthorResponseError,
+    isSuccess: isAssumedAuthorResponseUpdated,
+    isLoading: isUpdatingAssumedAuthorResponse,
+    reset: resetAssumedAuthorResponseStatus,
   } = useMutation({
     mutationFn: async (
       {
         id,
-        litigationStatus,
+        assumedAuthorResponse,
       },
     ) => {
       // make api call to update the litigation
-      await Litigation.update(id, { litigation_status: litigationStatus });
+      await Litigation.update(id, {
+        assumed_author_response: assumedAuthorResponse,
+      });
+
+      // get populated data
+      const toPopulate = [
+        'assumed_author', 'winner', 'issuer_id', 'creation_id', 'creation_id.author_id', 'decisions',
+        'recognitions.recognition_for', 'material_id.author_id', 'material_id.author_id',
+      ];
+      let updatedLitigationResponse = await Litigation.getById(id, toPopulate.map((x) => `populate=${x}`).join('&'));
+      updatedLitigationResponse = formatDates(updatedLitigationResponse);
 
       // update litigation
       const updatedLitigations = { ...litigations };
-      const foundLitigation = updatedLitigations?.openedAgainstMe?.find(
-        (x) => x.litigation_id === id,
-      );
-      foundLitigation.litigation_status = litigationStatus;
-      if (litigationStatus === statusTypes.WITHDRAWN) {
-        // update ownership status
-        foundLitigation.ownership_transferred = true;
 
-        // remove from opened
-        updatedLitigations.openedAgainstMe = [
-          ...updatedLitigations.openedAgainstMe,
-        ].filter((x) => x.litigation_status === statusTypes.PENDING
-          || x.litigation_status === statusTypes.STARTED);
+      // filter this litigation from inReconcilation key
+      updatedLitigations.inReconcilation = [
+        ...updatedLitigations.inReconcilation,
+      ].filter((x) => x?.litigation_id !== id);
 
-        // add to closed
+      if (assumedAuthorResponse === statusTypes.START_LITIGATION) {
+        // add updated litigation inVoting key
+        updatedLitigations.inVoting = [
+          updatedLitigationResponse,
+          ...updatedLitigations.inVoting,
+        ];
+      }
+
+      if (assumedAuthorResponse === statusTypes.WITHDRAW_CLAIM) {
+        // add updated litigation closed key
         updatedLitigations.closed = [
+          updatedLitigationResponse,
           ...updatedLitigations.closed,
-          { ...foundLitigation },
         ];
       }
 
@@ -198,7 +179,7 @@ const useHome = () => {
       // update litigation
       const updatedLitigations = { ...litigations };
       const foundLitigation = updatedLitigations?.closed?.find(
-        (x) => x.litigation_id === id,
+        (x) => x?.litigation_id === id,
       );
       foundLitigation.ownership_transferred = true;
 
@@ -236,13 +217,13 @@ const useHome = () => {
     litigations,
     fetchLitigations: () => setShouldFetchLitigations(true),
     // update status
-    isUpdatingLitigationStatus,
-    updatedLitigationStatus: {
-      success: isLitigationStatusUpdated,
-      error: isLitigationStatusUpdationError ? 'Failed to update litigation status' : null,
+    isUpdatingAssumedAuthorResponse,
+    updatedAssumedAuthorResponseStatus: {
+      success: isAssumedAuthorResponseUpdated,
+      error: isUpdateAssumedAuthorResponseError ? 'Failed to update litigation status' : null,
     },
-    updateLitigationStatus,
-    resetLitigationStatus,
+    updateAssumedAuthorResponse,
+    resetAssumedAuthorResponseStatus,
     // transfer ownership
     isTransferringOwnership,
     transferOwnershipStatus: {

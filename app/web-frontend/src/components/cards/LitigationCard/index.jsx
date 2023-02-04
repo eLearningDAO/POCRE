@@ -8,43 +8,42 @@ import { Link } from 'react-router-dom';
 
 function LitigationCard({
   id = '',
-  title = 'I want to reclaim',
+  title = '',
   claimer = {
     profileId: '',
-    name: 'bob',
+    name: '',
     image: '',
   },
   assumedAuthor = {
     profileId: '',
-    name: 'bob',
+    name: '',
     image: '',
   },
-  startDate = '27/10/2022',
-  endDate = '27/10/2022',
+  startDate,
+  endDate,
   mode = 'info',
   // mode = info
-  totalJuryMembers = 5,
+  totalJuryMembers,
   // mode = litigate
-  canWithdraw = false,
-  canAccept = false,
-  isDeclined = false,
+  canWithdraw,
+  canAccept,
+  isDeclined,
   onWithdraw = () => {},
   onAccept = () => {},
   // mode = closed
   winner = {
     profileId: '',
-    name: 'bob',
+    name: '',
     image: '',
   },
-  canRedeem = true,
-  isRedeemed = true,
+  canRedeem,
+  isRedeemed,
   onRedeem = () => {},
-  lostClaim = false,
+  lostClaim,
   // mode = closed or mode = toJudge
   votedInFavour = null,
   votedInOpposition = null,
   notVoted = null,
-
 }) {
   return (
     <div className="litigation-card1">
@@ -61,14 +60,14 @@ function LitigationCard({
           <Link to={`/wallet/${assumedAuthor?.profileId}`}>
             <img
               alt=""
-              src={assumedAuthor.image}
+              src={assumedAuthor?.image}
               className="profile-pic profile-pic-small profile-pic-rounded"
             />
           </Link>
           <Link to={`/wallet/${assumedAuthor?.profileId}`}>
-            <h4>{assumedAuthor.name}</h4>
+            <h4>{assumedAuthor?.name}</h4>
           </Link>
-          {mode === 'closed' && winner.name === assumedAuthor.name
+          {mode === 'closed' && winner?.name === assumedAuthor?.name
             && <span className="litigation-winner-label">Winner</span>}
         </div>
         <h1>vs</h1>
@@ -77,14 +76,14 @@ function LitigationCard({
           <Link to={`/wallet/${assumedAuthor?.profileId}`}>
             <img
               alt=""
-              src={claimer.image}
+              src={claimer?.image}
               className="profile-pic profile-pic-small profile-pic-rounded"
             />
           </Link>
           <Link to={`/wallet/${assumedAuthor?.profileId}`}>
-            <h4>{claimer.name}</h4>
+            <h4>{claimer?.name}</h4>
           </Link>
-          {mode === 'closed' && winner.name === claimer.name
+          {mode === 'closed' && winner?.name === claimer?.name
             && <span className="litigation-winner-label">Winner</span>}
         </div>
       </div>
@@ -168,7 +167,7 @@ function LitigationCard({
               In voting process
             </h3>
           )}
-        {mode === 'info' && (
+        {mode === 'info' && totalJuryMembers && (
           <h3 className="litigation-jury-members-count mr-auto">
             {totalJuryMembers}
             {' '}
