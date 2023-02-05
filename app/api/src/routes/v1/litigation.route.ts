@@ -44,8 +44,8 @@ export default router;
  *             required:
  *               - litigation_title
  *               - creation_id
- *               - litigation_start
- *               - litigation_end
+ *               - voting_start
+ *               - voting_end
  *             properties:
  *               litigation_title:
  *                 type: string
@@ -63,10 +63,10 @@ export default router;
  *                 items:
  *                    type: string
  *                    format: uuid
- *               litigation_start:
+ *               voting_start:
  *                 type: string
  *                 format: date-time
- *               litigation_end:
+ *               voting_end:
  *                 type: string
  *                 format: date-time
  *               reconcilate:
@@ -77,8 +77,8 @@ export default router;
  *                creation_id: fa52d76c-664a-41de-aebb-b311a74ef571
  *                material_id: fa52d76c-664a-41de-aebb-b311a74ef570
  *                decisions: [6087ac9e-7e15-4ad7-b256-7893a00c3577]
- *                litigation_start: 2022-09-09T19:00:00.000Z
- *                litigation_end: 2022-09-09T19:00:00.000Z
+ *                voting_start: 2022-09-09T19:00:00.000Z
+ *                voting_end: 2022-09-09T19:00:00.000Z
  *                reconcilate: false
  *                ownership_transferred: false
  *     responses:
@@ -376,10 +376,10 @@ export default router;
  *                 items:
  *                    type: string
  *                    format: uuid
- *               litigation_start:
+ *               voting_start:
  *                 type: string
  *                 format: date-time
- *               litigation_end:
+ *               voting_end:
  *                 type: string
  *                 format: date-time
  *               reconcilate:
@@ -392,8 +392,8 @@ export default router;
  *                material_id: fa52d76c-664a-41de-aebb-b311a74ef570
  *                assumed_author: b49cf4d8-341d-4cd6-b5ad-d002e87d933c
  *                decisions: [6087ac9e-7e15-4ad7-b256-7893a00c3577]
- *                litigation_start: 2022-09-09T19:00:00.000Z
- *                litigation_end: 2022-09-09T19:00:00.000Z
+ *                voting_start: 2022-09-09T19:00:00.000Z
+ *                voting_end: 2022-09-09T19:00:00.000Z
  *                reconcilate: false
  *                ownership_transferred: false
  *     responses:

@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
 import {
-  Grid, Typography, Button, Box,
+  Box, Button, Grid, Typography,
 } from '@mui/material';
+import { Creation, User } from 'api/requests';
 import Form from 'components/uicore/Form';
 import Input from 'components/uicore/Input';
 import Loader from 'components/uicore/Loader';
 import Select from 'components/uicore/Select';
-import { Creation, User } from 'api/requests';
+import { useState } from 'react';
 import { stepOneValidation } from './validation';
 
 export default function StepOne({
@@ -214,81 +214,47 @@ export default function StepOne({
           </Grid>
 
           {creationOrMaterialAuthor && (
-          <>
-            <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
-              <Typography className="heading">Authored By</Typography>
-            </Grid>
-            <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }} textAlign="center">
-              <h4 className="h4">
-                {creationOrMaterialAuthor?.user_name}
-              </h4>
-            </Grid>
-          </>
+            <>
+              <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
+                <Typography className="heading">Authored By</Typography>
+              </Grid>
+              <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }} textAlign="center">
+                <h4 className="h4">
+                  {creationOrMaterialAuthor?.user_name}
+                </h4>
+              </Grid>
+            </>
           )}
-
-          <Grid md={2} xs={12} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
-            <Typography className="heading">Public Date</Typography>
-          </Grid>
-          <Grid xs={12} md={4} marginTop={{ xs: '12px', md: '18px' }}>
-            <Input
-              type="date"
-              variant="dark"
-              placeholder="Creation Date"
-              name="publicDate"
-              hookToForm
-            />
-          </Grid>
-
-          <Grid
-            md={2}
-            xs={12}
-            marginTop={{ xs: '12px', md: '18px' }}
-            paddingLeft={{ md: '24px' }}
-            display="flex"
-            flexDirection="row"
-            alignItems="center"
-          >
-            <Typography className="heading">End Date</Typography>
-          </Grid>
-          <Grid xs={12} md={4} marginTop={{ xs: '12px', md: '18px' }}>
-            <Input
-              type="date"
-              variant="dark"
-              placeholder="Creation Date"
-              name="endDate"
-              hookToForm
-            />
-          </Grid>
 
           {materialsDetails && materialsDetails?.length > 0
-          && (
-          <>
-            <Grid
-              xs={12}
-              md={3}
-              lg={2}
-              marginTop={{ xs: '12px', md: '18px' }}
-              display="flex"
-              flexDirection="row"
-              alignItems="center"
-            >
-              <Typography className="heading">Material</Typography>
-            </Grid>
-            <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
-              <Select
-                variant="dark"
-                placeholder="Select the material with authorship infringement"
-                name="material"
-                hookToForm
-                options={
-                  materialsDetails.map(
-                    (x) => ({ value: x.material_id, label: x.material_title }),
-                  )
-              }
-              />
-            </Grid>
-          </>
-          )}
+            && (
+              <>
+                <Grid
+                  xs={12}
+                  md={3}
+                  lg={2}
+                  marginTop={{ xs: '12px', md: '18px' }}
+                  display="flex"
+                  flexDirection="row"
+                  alignItems="center"
+                >
+                  <Typography className="heading">Material</Typography>
+                </Grid>
+                <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
+                  <Select
+                    variant="dark"
+                    placeholder="Select the material with authorship infringement"
+                    name="material"
+                    hookToForm
+                    options={
+                      materialsDetails.map(
+                        (x) => ({ value: x.material_id, label: x.material_title }),
+                      )
+                    }
+                  />
+                </Grid>
+              </>
+            )}
 
           {error && (
             <>
@@ -305,9 +271,9 @@ export default function StepOne({
 
           {(status.error || status.success)
             && (
-            <Box width="100%" className={`${status.success ? 'bg-green' : 'bg-red'} color-white`} padding="16px" borderRadius="12px" fontSize="16px" style={{ margin: 'auto', marginTop: '18px' }}>
-              {status.success ? 'Success! A new litigation was made. Redirecting...' : status.error}
-            </Box>
+              <Box width="100%" className={`${status.success ? 'bg-green' : 'bg-red'} color-white`} padding="16px" borderRadius="12px" fontSize="16px" style={{ margin: 'auto', marginTop: '18px' }}>
+                {status.success ? 'Success! A new litigation was made. Redirecting...' : status.error}
+              </Box>
             )}
         </Grid>
       </Grid>

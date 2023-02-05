@@ -3,7 +3,6 @@ export default Object.freeze({
   // for creation
   'creation has ongoing litigation process': 'Cannot delete! Creation has an ongoing litigation process',
   // for litigation
-  '"litigation_end" must be greater than "ref:litigation_start"': 'End date must be greater than start date',
   'creation already assigned to a litigation': 'A litigation for this creation already exists',
   'material already assigned to a litigation': 'A litigation for this material already exists',
   'creation is not claimable': 'This creation has already been claimed by someone',

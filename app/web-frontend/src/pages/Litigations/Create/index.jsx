@@ -1,17 +1,10 @@
-import { useNavigate } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
-import React, { useState, useEffect } from 'react';
-import StepOne from './Steps/One';
-import StepTwo from './Steps/Two';
 import './index.css';
+import StepOne from './Steps/One';
 import useCreate from './useCreate';
 
 function CreateLitigation() {
-  const navigate = useNavigate();
-  const [step, setStep] = useState(1);
-
   const {
-    newLitigation,
     authorSuggestions,
     handleAuthorInputChange,
     creationSuggestions,
@@ -22,34 +15,16 @@ function CreateLitigation() {
     getMaterialDetail,
   } = useCreate();
 
-  useEffect(() => {
-    if (newLitigation) {
-      setStep(2);
-    }
-  }, [newLitigation]);
-
-  const handleValues = async (values) => {
-    if (step === 1) {
-      await makeNewLitigation({ ...values });
-    }
-
-    if (step === 2) {
-      navigate('/litigations');
-    }
-  };
-
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} padding={{ xs: '12px', md: '0' }}>
         <Typography className="heading h4" variant="h4">
-          Claim authorship of your creation - Step 0
-          {`${step}`}
+          Claim authorship of your creation
         </Typography>
       </Grid>
 
-      {step === 1 && (
       <StepOne
-        onComplete={handleValues}
+        onComplete={async (values) => await makeNewLitigation({ ...values })}
         authorSuggestions={authorSuggestions}
         onAuthorInputChange={handleAuthorInputChange}
         creationSuggestions={creationSuggestions}
@@ -58,15 +33,6 @@ function CreateLitigation() {
         status={newLitigationStatus}
         creatingLitigation={isCreatingLitigation}
       />
-      )}
-      {step === 2 && (
-      <StepTwo
-        onComplete={handleValues}
-        status={newLitigationStatus}
-        loading={isCreatingLitigation}
-        recognitions={newLitigation?.recognitions || []}
-      />
-      )}
     </Grid>
   );
 }

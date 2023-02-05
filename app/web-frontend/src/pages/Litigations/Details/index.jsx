@@ -18,6 +18,47 @@ import statusTypes from 'utils/constants/statusTypes';
 import './index.css';
 import useDetails from './useDetails';
 
+function VoteButton({
+  onClick,
+  label,
+  type, // agree, disagree, impartial,
+  isActive,
+}) {
+  const icons = {
+    agree: LikeIcon,
+    disagree: DislikeIcon,
+    impartial: ThumbPinIcon,
+  };
+  const colors = {
+    agree: 'green',
+    disagree: 'red',
+    impartial: 'purple',
+  };
+  const DerivedIcon = icons[type];
+  const color = colors[type];
+
+  return (
+    <Button
+      display="flex"
+      gap="4px"
+      className="vote-button"
+      alignItems="center"
+      style={{
+        backgroundColor: isActive ? `var(--color-${color})` : 'transparent',
+        color: isActive ? 'var(--color-white)' : 'var(--color-black)',
+      }}
+      onClick={onClick}
+    >
+      <DerivedIcon style={{
+        marginRight: '8px',
+        fill: isActive ? 'var(--color-white)' : `var(--color-${color})`,
+      }}
+      />
+      {label}
+    </Button>
+  );
+}
+
 export default function LitigationDetails() {
   const { id } = useParams();
 
@@ -56,8 +97,7 @@ export default function LitigationDetails() {
     );
   }
 
-  const alreadyVoted = litigation?.decisions?.find((x) => x?.maker_id === user?.user_id)
-    ?.decision_status;
+  const alreadyVoted = litigation?.decisions?.find((x) => x?.maker_id === user?.user_id);
 
   return (
     <Grid item xs={12}>
@@ -76,7 +116,7 @@ export default function LitigationDetails() {
       </Grid>
 
       <Grid display="flex" justifyContent="space-between" alignItems="flex-start" marginTop="18px" width="100%">
-        <Chip label={`STATUS: ${litigation?.status}`} className="bg-black color-white" />
+        <Chip label={`${litigation?.status}`} className="bg-black color-white" />
         <Grid
           display="flex"
           flexDirection="column"
@@ -84,8 +124,8 @@ export default function LitigationDetails() {
           alignItems="flex-end"
           gap="8px"
         >
-          <Chip className="bg-orange color-white" label={`Starts on ${litigation?.litigation_start}`} />
-          <Chip className="bg-orange color-white" label={`Ends on ${litigation?.litigation_end}`} />
+          <Chip className="bg-orange color-white" label={`Starts on ${litigation?.start_date}`} />
+          <Chip className="bg-orange color-white" label={`Ends on ${litigation?.end_date}`} />
         </Grid>
       </Grid>
 
@@ -147,173 +187,141 @@ export default function LitigationDetails() {
           }
         />
       </Grid>
-      <Grid
-        display="flex"
-        gap="48px"
-        marginTop="24px"
-        alignItems="center"
-        justifyContent="flex-end"
-        className="litigation-vote-container"
-      >
-        {
-          (
-            litigation?.isJudging
-            && !litigation?.isClosed
-            && !alreadyVoted
-            && litigation?.litigation_status === statusTypes.STARTED
-          )
-            ? (
-              <>
-                <Button
-                  display="flex"
-                  gap="4px"
-                  className="vote-button"
-                  alignItems="center"
-                  style={{
-                    backgroundColor: litigation.voteStatus === voteStatusTypes.AGREED ? 'var(--color-green)' : 'transparent',
-                    color: litigation.voteStatus === voteStatusTypes.AGREED ? 'var(--color-white)' : 'var(--color-black)',
-                  }}
-                  // eslint-disable-next-line no-return-await
-                  onClick={async () => await castLitigationVote(voteStatusTypes.AGREED)}
-                >
-                  <LikeIcon style={{
-                    marginRight: '8px',
-                    fill: litigation.voteStatus === voteStatusTypes.AGREED ? 'var(--color-white)' : 'var(--color-green)',
-                  }}
-                  />
-                  Agree
-                  {' '}
-                  {litigation?.decisions
-                    ? litigation?.decisions?.filter((x) => x?.decision_status)?.length
-                    : '0'}
-                </Button>
-                <Button
-                  display="flex"
-                  gap="4px"
-                  className="vote-button"
-                  alignItems="center"
-                  style={{
-                    backgroundColor: litigation.voteStatus === voteStatusTypes.DISAGREED ? 'var(--color-red)' : 'transparent',
-                    color: litigation.voteStatus === voteStatusTypes.DISAGREED ? 'var(--color-white)' : 'var(--color-black)',
-                  }}
-                  // eslint-disable-next-line no-return-await
-                  onClick={async () => await castLitigationVote(voteStatusTypes.DISAGREED)}
-                >
-                  <DislikeIcon style={{
-                    marginRight: '8px',
-                    fill: litigation.voteStatus === voteStatusTypes.DISAGREED ? 'var(--color-white)' : 'var(--color-red)',
-                  }}
-                  />
-                  Opposition
-                  {' '}
-                  {litigation?.decisions
-                    ? litigation?.decisions?.filter((x) => !x?.decision_status)?.length
-                    : '0'}
-                </Button>
-                <Button
-                  display="flex"
-                  gap="4px"
-                  className="vote-button"
-                  alignItems="center"
-                  style={{
-                    backgroundColor: litigation.voteStatus === voteStatusTypes.IMPARTIAL ? 'var(--color-purple)' : 'transparent',
-                    color: litigation.voteStatus === voteStatusTypes.IMPARTIAL ? 'var(--color-white)' : 'var(--color-black)',
-                  }}
-                  // eslint-disable-next-line no-return-await
-                  onClick={async () => await castLitigationVote(voteStatusTypes.IMPARTIAL)}
-                >
-                  <ThumbPinIcon style={{
-                    marginRight: '8px',
-                    fill: litigation.voteStatus === voteStatusTypes.IMPARTIAL ? 'var(--color-white)' : 'var(--color-purple)',
-                  }}
-                  />
-                  Impartial
-                  {' '}
-                  {litigation?.decisions
-                    ? (litigation?.recognitions?.length - litigation?.decisions?.length)
-                    : '0'}
-                </Button>
-              </>
-            )
-            : (
-              <>
-                <Box display="flex" gap="4px" alignItems="center">
-                  <LikeIcon style={{ marginRight: '8px' }} />
-                  Agree
-                  {' '}
-                  {litigation?.decisions?.filter((x) => x.decision_status)?.length}
-                </Box>
-                <Box display="flex" gap="4px" alignItems="center">
-                  <DislikeIcon style={{ marginRight: '8px' }} />
-                  Opposition
-                  {' '}
-                  {litigation?.decisions?.filter((x) => !x.decision_status)?.length}
-                </Box>
-                <Box display="flex" gap="4px" alignItems="center">
-                  <ThumbPinIcon style={{ marginRight: '8px' }} />
-                  Impartial
-                  {' '}
-                  {/* eslint-disable-next-line no-unsafe-optional-chaining */}
-                  {litigation?.recognitions?.length - litigation?.decisions?.length}
-                </Box>
-              </>
-            )
-        }
-      </Grid>
 
-      <Grid item xs={12} style={{ marginTop: '40px' }}>
-        <Typography className="litigationCloseTitle" variant="h6">
-          Recognized jury members (
-          {litigation?.recognitions?.length}
-          )
-        </Typography>
-      </Grid>
-
-      <Grid
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItem="center"
-        gap="24px"
-        padding="36px"
-        marginTop="16px"
-        className="secondary-section-container"
-      >
-        <div className="carousel-container">
-          <div className="carousel-container-cards">
-            {litigation?.recognitions?.map(
-              (recognition, index) => (index === slideNumber - 1 || index === slideNumber
+      {/* if there are judges */}
+      {litigation?.recognitions?.length > 0 && (
+        <>
+          <Grid
+            display="flex"
+            gap="48px"
+            marginTop="24px"
+            alignItems="center"
+            justifyContent="flex-end"
+            className="litigation-vote-container"
+          >
+            {
+              (
+                litigation?.isJudging
+                && !litigation?.isClosed
+                && !alreadyVoted
+                && litigation?.assumed_author_response === statusTypes.START_LITIGATION
+              )
                 ? (
-                  <UserCard
-                    key={index}
-                    // eslint-disable-next-line jsx-a11y/aria-role
-                    role={(() => {
-                      const vote = litigation?.decisions?.find(
-                        (x) => x?.maker_id === recognition?.recognition_for?.user_id,
-                      )?.decision_status;
-
-                      return vote === false ? 'Voted in opposition' : (vote === true ? 'Voted in favor' : 'Vote not casted');
-                    })()}
-                    userProfileId={recognition?.recognition_for?.user_id}
-                    username={recognition?.recognition_for?.user_name}
-                    // eslint-disable-next-line unicorn/prefer-module
-                    imageUrl={recognition?.recognition_for?.image_url || require('assets/images/profile-placeholder.png')}
-                    totalCreationsAuthored={Math.floor(Math.random())}
-                  />
+                  <>
+                    <VoteButton
+                      isActive={litigation.voteStatus === voteStatusTypes.AGREED}
+                      // eslint-disable-next-line no-return-await
+                      onClick={async () => await castLitigationVote(voteStatusTypes.AGREED)}
+                      type="agree"
+                      label={`Agree 
+                (${litigation?.decisions
+                        ? litigation?.decisions?.filter((x) => x?.decision_status)?.length
+                        : '0'})`}
+                    />
+                    <VoteButton
+                      isActive={litigation.voteStatus === voteStatusTypes.DISAGREED}
+                      // eslint-disable-next-line no-return-await
+                      onClick={async () => await castLitigationVote(voteStatusTypes.DISAGREED)}
+                      type="disagree"
+                      label={`Opposition 
+                (${litigation?.decisions
+                        ? litigation?.decisions?.filter((x) => !x?.decision_status)?.length
+                        : '0'})`}
+                    />
+                    <VoteButton
+                      isActive={litigation.voteStatus === voteStatusTypes.IMPARTIAL}
+                      // eslint-disable-next-line no-return-await
+                      onClick={async () => await castLitigationVote(voteStatusTypes.IMPARTIAL)}
+                      type="impartial"
+                      label={`Impartial 
+                (${litigation?.decisions && litigation?.recognitions
+                        ? (litigation?.recognitions?.length - litigation?.decisions?.length)
+                        : '0'})`}
+                    />
+                  </>
                 )
-                : null),
-            )}
-          </div>
-          <div className="carousel-slide-btns-container">
-            <Button onClick={previous}>
-              <img src={LeftIcon} alt="" />
-            </Button>
-            <Button onClick={next}>
-              <img src={RightIcon} alt="" />
-            </Button>
-          </div>
-        </div>
-      </Grid>
+                : (
+                  <>
+                    <Box display="flex" gap="4px" alignItems="center">
+                      <LikeIcon style={{ marginRight: '8px' }} />
+                      Agree
+                      {' '}
+                      {litigation?.decisions?.filter((x) => x.decision_status)?.length}
+                    </Box>
+                    <Box display="flex" gap="4px" alignItems="center">
+                      <DislikeIcon style={{ marginRight: '8px' }} />
+                      Opposition
+                      {' '}
+                      {litigation?.decisions?.filter((x) => !x.decision_status)?.length}
+                    </Box>
+                    <Box display="flex" gap="4px" alignItems="center">
+                      <ThumbPinIcon style={{ marginRight: '8px' }} />
+                      Impartial
+                      {' '}
+                      {/* eslint-disable-next-line no-unsafe-optional-chaining */}
+                      {(litigation?.recognitions?.length - litigation?.decisions?.length) || 0}
+                    </Box>
+                  </>
+                )
+            }
+          </Grid>
+
+          <Grid item xs={12} style={{ marginTop: '40px' }}>
+            <Typography className="litigationCloseTitle" variant="h6">
+              Recognized jury members (
+              {litigation?.recognitions?.length}
+              )
+            </Typography>
+          </Grid>
+
+          <Grid
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItem="center"
+            gap="24px"
+            padding="36px"
+            marginTop="16px"
+            className="secondary-section-container"
+          >
+            <div className="carousel-container">
+              <div className="carousel-container-cards">
+                {litigation?.recognitions?.map(
+                  (recognition, index) => (index === slideNumber - 1 || index === slideNumber
+                    ? (
+                      <UserCard
+                        key={index}
+                        // eslint-disable-next-line jsx-a11y/aria-role
+                        role={(() => {
+                          const vote = litigation?.decisions?.find(
+                            (x) => x?.maker_id === recognition?.recognition_for?.user_id,
+                          )?.decision_status;
+
+                          return vote === false ? 'Voted in opposition' : (vote === true ? 'Voted in favor' : 'Vote not casted');
+                        })()}
+                        userProfileId={recognition?.recognition_for?.user_id}
+                        username={recognition?.recognition_for?.user_name}
+                        // eslint-disable-next-line unicorn/prefer-module
+                        imageUrl={recognition?.recognition_for?.image_url || require('assets/images/profile-placeholder.png')}
+                        totalCreationsAuthored={Math.floor(Math.random())}
+                      />
+                    )
+                    : null),
+                )}
+              </div>
+              <div className="carousel-slide-btns-container">
+                <Button onClick={previous}>
+                  <img src={LeftIcon} alt="" />
+                </Button>
+                <Button onClick={next}>
+                  <img src={RightIcon} alt="" />
+                </Button>
+              </div>
+            </div>
+          </Grid>
+        </>
+      )}
+
     </Grid>
   );
 }

@@ -330,10 +330,10 @@ components:
           items:
             type: string
             format: uuid
-        litigation_start:
+        voting_start:
           type: string
           format: date-time
-        litigation_end:
+        voting_end:
           type: string
           format: date-time
         reconcilate:
@@ -353,8 +353,8 @@ components:
         winner: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
         recognitions: [476790e7-a6dc-4aea-8421-06bacfa2daf6]
         decisions: [7b3439c6-a691-4a60-9e09-8235804c33fe]
-        litigation_start: 2022-09-06T19:00:00.000Z
-        litigation_end: 2022-09-06T19:00:00.000Z
+        voting_start: 2022-09-06T19:00:00.000Z
+        voting_end: 2022-09-06T19:00:00.000Z
         reconcilate: false
         created_at: 2022-09-05T19:00:00.000Z
         ownership_transferred: false

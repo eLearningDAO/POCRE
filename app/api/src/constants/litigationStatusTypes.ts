@@ -1,5 +1,5 @@
 export default Object.freeze({
-  PENDING: 'pending',
-  STARTED: 'started',
-  WITHDRAWN: 'withdrawn',
+  START_LITIGATION: 'start_litigation',
+  PENDING_RESPONSE: 'pending_response',
+  WITHDRAW_CLAIM: 'withdraw_claim',
 });

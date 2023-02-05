@@ -1,13 +1,13 @@
 import httpStatus from 'http-status';
 import { DatabaseError } from 'pg';
-import ApiError from '../utils/ApiError';
-import * as db from '../db/pool';
-import { getCreationById } from './creation.service';
-import { populator } from '../db/plugins/populator';
 import litigationStatusTypes from '../constants/litigationStatusTypes';
+import { populator } from '../db/plugins/populator';
+import * as db from '../db/pool';
+import ApiError from '../utils/ApiError';
+import { getCreationById } from './creation.service';
 
 const types = Object.values(litigationStatusTypes);
-type TLitigationStatusTypes = typeof types[number];
+type TAssumedAuthorResponseTypes = typeof types[number];
 
 interface ILitigation {
   litigation_title: string;
@@ -18,9 +18,11 @@ interface ILitigation {
   issuer_id: string;
   recognitions: string[];
   decisions: string[];
-  litigation_start: string;
-  litigation_end: string;
-  litigation_status: TLitigationStatusTypes;
+  reconcilation_start: string;
+  reconcilation_end: string;
+  voting_start: string;
+  voting_end: string;
+  assumed_author_response: TAssumedAuthorResponseTypes;
   winner: string;
   ownership_transferred: boolean;
 }
@@ -52,9 +54,11 @@ interface ILitigationDoc {
   issuer_id: string;
   recognitions: string[];
   decisions: string[];
-  litigation_start: string;
-  litigation_end: string;
-  litigation_status: TLitigationStatusTypes;
+  reconcilation_start: string;
+  reconcilation_end: string;
+  voting_start: string;
+  voting_end: string;
+  assumed_author_response: TAssumedAuthorResponseTypes;
   winner: string;
   ownership_transferred: boolean;
 }
@@ -93,8 +97,9 @@ export const verifyLitigationPossibilityForCreation = async (creation_id: string
   }
 };
 
-export const getUserJudgedLitigationsCount  = async (author_id?: string) => {
-  const resJury = await db.instance.query(`SELECT 
+export const getUserJudgedLitigationsCount = async (author_id?: string) => {
+  const resJury = await db.instance.query(
+    `SELECT 
   COUNT(*) as total_results 
   FROM 
   litigation l WHERE
@@ -109,9 +114,11 @@ export const getUserJudgedLitigationsCount  = async (author_id?: string) => {
     recognition_for = $1 
     AND 
     recognition_id = ANY(l.recognitions)
-  )`, [author_id]);
+  )`,
+    [author_id]
+  );
   return parseInt(resJury.rows[0].total_results);
-}
+};
 
 /**
  * Check if a litigation has duplicate decisions
@@ -166,13 +173,15 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         issuer_id,
         recognitions,
         decisions,
-        litigation_start,
-        litigation_end,
-        litigation_status,
+        reconcilation_start,
+        reconcilation_end,
+        voting_start,
+        voting_end,
+        assumed_author_response,
         winner
       ) 
       values 
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) 
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) 
       RETURNING *;`,
       [
         litigationBody.litigation_title,
@@ -183,9 +192,11 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         litigationBody.issuer_id,
         litigationBody.recognitions,
         litigationBody.decisions,
-        litigationBody.litigation_start,
-        litigationBody.litigation_end,
-        litigationBody.litigation_status,
+        litigationBody.reconcilation_start,
+        litigationBody.reconcilation_end,
+        litigationBody.voting_start,
+        litigationBody.voting_end,
+        litigationBody.assumed_author_response,
         litigationBody.winner,
       ]
     );

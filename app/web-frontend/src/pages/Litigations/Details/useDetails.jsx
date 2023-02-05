@@ -15,11 +15,13 @@ const voteStatusTypes = {
   IMPARTIAL: 'impartial',
 };
 
+const toDate = (dateString) => new Date(dateString);
+
 const useDetails = () => {
   const queryClient = useQueryClient();
   const [litigationId, setLitigationId] = useState(null);
 
-  // fetch all litigations
+  // fetch the litigation
   const {
     data: litigation,
     isError: isFetchLitigationError,
@@ -29,72 +31,82 @@ const useDetails = () => {
     queryKey: [`litigation-${litigationId}`],
     queryFn: async () => {
       // get litigation details
-      const toPopulate = ['issuer_id', 'assumed_author', 'winner', 'decisions', 'recognitions', 'recognitions.recognition_for', 'creation_id', 'material_id'];
+      const toPopulate = [
+        'assumed_author', 'winner', 'issuer_id', 'creation_id', 'creation_id.author_id', 'decisions',
+        'decisions.maker_id', 'recognitions.recognition_for', 'material_id.author_id',
+      ];
       const litigationResponse = await Litigation.getById(litigationId, toPopulate.map((x) => `populate=${x}`).join('&'));
 
-      // getting the current date without timestamp, as the litigation start/end dates also have
-      // dates without timestamps
-      const isoDateToday = `${moment().format('YYYY-MM-DDT00:00:00.000')}Z`;
+      const now = moment();
+
+      // calculate if auth user is a judge
+      const isToJudge = !!(litigationResponse?.recognitions || []).some(
+        (x) => x?.recognition_for?.user_id === user?.user_id,
+      );
+      litigationResponse.isJudging = isToJudge;
+
+      // set default closed status
+      litigationResponse.isClosed = false;
 
       // calculate litigation status
       litigationResponse.status = (() => {
         if (
-          (
-            moment(litigationResponse.litigation_end).isBefore(isoDateToday)
-            && litigationResponse.litigation_status === statusTypes.STARTED
-          )
-          || litigationResponse.litigation_status === statusTypes.WITHDRAWN
+          moment(toDate(litigationResponse?.reconcilation_start)).isBefore(now)
+          && moment(toDate(litigationResponse?.reconcilation_end)).isAfter(now)
+          && litigationResponse?.assumed_author_response === statusTypes.PENDING_RESPONSE
         ) {
-          return 'Closed';
+          return 'In Reconcilation';
         }
 
         if (
-          moment(litigationResponse.litigation_start).isSameOrBefore(isoDateToday)
-          && moment(litigationResponse.litigation_end).isAfter(isoDateToday)
+          moment(toDate(litigationResponse?.voting_start)).isBefore(now)
+          && moment(toDate(litigationResponse?.voting_end)).isAfter(now)
+          && litigationResponse?.assumed_author_response === statusTypes.START_LITIGATION
+          && !isToJudge
         ) {
-          const isToJudge = litigationResponse.recognitions?.find(
-            (x) => x?.recognition_for?.user_id === user?.user_id,
-          );
-
-          const isPendingOrStarted = litigationResponse.litigation_status === statusTypes.PENDING
-            || litigationResponse.litigation_status === statusTypes.STARTED;
-
-          if (
-            litigationResponse.litigation_status === statusTypes.STARTED
-            && isToJudge
-          ) {
-            return 'Awaiting Judgement';
-          }
-
-          if (isPendingOrStarted && !isToJudge) {
-            if (litigationResponse.litigation_status === statusTypes.STARTED) {
-              return 'In voting process';
-            }
-
-            return 'Awaiting author response';
-          }
+          return 'In Voting';
         }
 
-        // default status is to wait for authorship recognition
-        return 'Waiting authorship recognition';
+        if (
+          moment(toDate(litigationResponse?.voting_start)).isBefore(now)
+          && moment(toDate(litigationResponse?.voting_end)).isAfter(now)
+          && litigationResponse?.assumed_author_response === statusTypes.START_LITIGATION
+          && isToJudge
+        ) {
+          return 'To vote';
+        }
+
+        if (
+          moment(toDate(litigationResponse?.voting_end)).isBefore(now)
+          || litigationResponse?.assumed_author_response === statusTypes.WITHDRAW_CLAIM
+          || (
+            // no response from author in reconilation phase (author lost claim)
+            moment(toDate(litigationResponse?.reconcilation_end)).isBefore(now)
+            && litigationResponse?.assumed_author_response === statusTypes.PENDING_RESPONSE
+          )) {
+          return 'Closed';
+        }
+
+        return null;
       })();
 
-      // check if closed
-      litigationResponse.isClosed = false;
-      if (
-        (
-          moment(litigationResponse.litigation_end).isBefore(isoDateToday)
-          && litigationResponse.litigation_status === statusTypes.STARTED
-        )
-        || litigationResponse.litigation_status === statusTypes.WITHDRAWN
-      ) {
+      if (litigationResponse.status === 'Closed') {
+        // update closed status
         litigationResponse.isClosed = true;
+
+        litigationResponse.start_date = litigationResponse.reconcilation_start;
+        litigationResponse.end_date = litigationResponse.voting_end;
       }
 
-      // calculate if auth user is a judge
-      litigationResponse.isJudging = !!litigationResponse.recognitions.some(
-        (x) => x?.recognition_for?.user_id === user?.user_id,
-      );
+      if (['To vote', 'In Voting'].includes(litigationResponse.status)) {
+        litigationResponse.start_date = litigationResponse.voting_start;
+        litigationResponse.end_date = litigationResponse.voting_end;
+      }
+
+      if (litigationResponse.status === 'In Reconcilation') {
+        litigationResponse.start_date = litigationResponse.reconcilation_start;
+        litigationResponse.end_date = litigationResponse.reconcilation_end;
+      }
 
       // calculate vote status
       const vote = litigationResponse?.decisions?.find((x) => x?.maker_id === user?.user_id);
@@ -104,8 +116,8 @@ const useDetails = () => {
       return {
         ...litigationResponse,
         decisions: litigationResponse?.decisions || [],
-        litigation_start: moment(litigationResponse?.litigation_start).format('DD/MM/YYYY'), // moment auto converts utc to local time
-        litigation_end: moment(litigationResponse?.litigation_end).format('DD/MM/YYYY'), // moment auto converts utc to local time
+        start_date: moment(litigationResponse?.start_date).format('DD/MM/YYYY'), // moment auto converts utc to local time
+        end_date: moment(litigationResponse?.end_date).format('DD/MM/YYYY'), // moment auto converts utc to local time
       };
     },
     staleTime: 100_000, // delete cached data after 100 seconds
