@@ -207,10 +207,15 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
       }
 
       // find valid litigators
+      const { litigators } = config.litigation;
       const randomUserLimit = Math.floor(
-        Math.random() * (config.litigators.max - config.litigators.min + 1) + config.litigators.min
+        Math.random() * (litigators.jury_count.max - litigators.jury_count.min + 1) + litigators.jury_count.min
       );
-      const validLitigators = await getReputedUsers({ required_users: randomUserLimit, exclude_users: forbiddenLitigators });
+      const validLitigators = await getReputedUsers({
+        required_users: randomUserLimit,
+        exclude_users: forbiddenLitigators,
+        reputation_stars: litigators.required_stars_for_jury,
+      });
 
       // create recognitions for valid litigators
       return Promise.all(

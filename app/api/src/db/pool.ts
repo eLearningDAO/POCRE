@@ -53,9 +53,9 @@ const init = async (): Promise<QueryResult<any>> => {
       email_address character varying,
       phone character varying,
       verified_id character varying,
-      reputation_stars integer  DEFAULT 0,
-      creation_count integer  DEFAULT 0,
-      email_verified bool  DEFAULT false,
+      reputation_stars integer NOT NULL DEFAULT 0,
+      creation_count integer NOT NULL DEFAULT 0,
+      email_verified bool DEFAULT false,
       otp_code text,
       date_joined TIMESTAMP NOT NULL DEFAULT NOW(),
       is_invited bool default false
