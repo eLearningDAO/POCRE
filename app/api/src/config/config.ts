@@ -27,6 +27,15 @@ const envVarsSchema = Joi.object()
     LITIGATION_JURY_REQUIRED_STARS: Joi.number()
       .description('stars required for a user to be a litigation jury member')
       .required(),
+    LITIGATION_DEFAULT_JURY_MEMBER_ID_1: Joi.string()
+      .description('default jury member-id-1 for litigation used when no jury matching criteria is found')
+      .required(),
+    LITIGATION_DEFAULT_JURY_MEMBER_ID_2: Joi.string()
+      .description('default jury member-id-2 for litigation used when no jury matching criteria is found')
+      .required(),
+    LITIGATION_DEFAULT_JURY_MEMBER_ID_3: Joi.string()
+      .description('default jury member-id-3 for litigation used when no jury matching criteria is found')
+      .required(),
     JWT_SECRET: Joi.string().required().description('JWT secret key'),
     HASHING_SALT_WALLET_ADDRESS: Joi.string().required().description('Hasing Salt for wallet address'),
     SENDGRID_MAIL_API_KEY: Joi.string().description('sendgrid api key used to send emails').required(),
@@ -62,6 +71,11 @@ export default {
     voting_days: envVars.LITIGATION_VOTING_DAYS,
     reconcilation_days: envVars.LITIGATION_RECONCILATION_DAYS,
     litigators: {
+      default_jury_member_ids: [
+        envVars.LITIGATION_DEFAULT_JURY_MEMBER_ID_1,
+        envVars.LITIGATION_DEFAULT_JURY_MEMBER_ID_2,
+        envVars.LITIGATION_DEFAULT_JURY_MEMBER_ID_3,
+      ].filter(Boolean),
       jury_count: {
         min: envVars.MIN_LITIGATORS,
         max: envVars.MAX_LITIGATORS,
