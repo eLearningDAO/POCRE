@@ -17,7 +17,7 @@ export interface IUser {
   image_url?: string;
   is_invited?: boolean;
   email_verified?: boolean;
-  otp_code?: string
+  otp_code?: string;
 }
 interface IUserQuery {
   limit: number;
@@ -53,6 +53,7 @@ export interface IUserDoc {
 interface IUserCriteria {
   required_users: number;
   exclude_users?: string[];
+  reputation_stars: number;
 }
 
 /**
@@ -297,17 +298,15 @@ export const getUserByUsername = async (username: string): Promise<IUserDoc | nu
  */
 export const updateUserById = async (id: string, updateBody: Partial<IUser>): Promise<IUserDoc | null> => {
   const user = await getUserById(id); // check if user exists, throws error if not found
-  if(updateBody.email_address)
-  {
-    if(!user?.email_address?.includes(updateBody?.email_address))
-    {
+  if (updateBody.email_address) {
+    if (!user?.email_address?.includes(updateBody?.email_address)) {
       updateBody.email_verified = false;
     }
   }
-  const starCount = await getStar(updateBody,id)
-  const creationCount = await getCreationsCount(updateBody,id)
-  if (typeof(starCount)==='number') updateBody.reputation_stars = starCount; // update the stars field according to aviable user fields .
-  if (typeof(creationCount)==='number') updateBody.creation_count = creationCount;
+  const starCount = await getStar(updateBody, id);
+  const creationCount = await getCreationsCount(updateBody, id);
+  if (typeof starCount === 'number') updateBody.reputation_stars = starCount; // update the stars field according to aviable user fields .
+  if (typeof creationCount === 'number') updateBody.creation_count = creationCount;
   // build sql conditions and values
   const conditions: string[] = [];
   const values: (string | number | null | boolean)[] = [];
@@ -353,15 +352,30 @@ export const deleteUserById = async (id: string): Promise<IUserDoc | null> => {
  * @param {IUserCriteria} criteria
  * @returns {Promise<Array<IUserDoc>>}
  */
-export const getReputedUsers = async (criteria: IUserCriteria): Promise<Array<IUserDoc>> => {
+export const getReputedUsers = async ({
+  exclude_users,
+  required_users,
+  reputation_stars,
+}: IUserCriteria): Promise<Array<IUserDoc>> => {
   try {
-    const conditions =
-      criteria.exclude_users && criteria.exclude_users.length > 0
-        ? `WHERE ${criteria.exclude_users?.map((user_id) => `user_id <> '${user_id}'`).join(' AND ')}`
+    const excludedUsers =
+      exclude_users && exclude_users.length > 0
+        ? `WHERE ${exclude_users?.map((user_id) => `user_id <> '${user_id}'`).join(' AND ')}`
         : '';
+
     const result = await db.instance.query(
-      `SELECT * FROM users ${conditions} ${conditions.length > 0 ? 'AND' : 'WHERE'} is_invited = $1 LIMIT $2;`,
-      [false, criteria.required_users]
+      `
+      SELECT 
+      * 
+      FROM 
+      users 
+      ${excludedUsers} 
+      ${excludedUsers.length > 0 ? 'AND' : 'WHERE'} 
+      is_invited = $1 
+      AND
+      reputation_stars = $2
+      LIMIT $3;`,
+      [false, reputation_stars, required_users]
     );
     const users = result.rows as Array<IUserDoc>;
     return users;
