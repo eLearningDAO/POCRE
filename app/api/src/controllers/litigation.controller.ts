@@ -207,18 +207,46 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
       }
 
       // find valid litigators
-      const randomUserLimit = Math.floor(
-        Math.random() * (config.litigators.max - config.litigators.min + 1) + config.litigators.min
-      );
-      const validLitigators = await getReputedUsers({ required_users: randomUserLimit, exclude_users: forbiddenLitigators });
+      const validLitigatorIds = await (async () => {
+        const { litigators } = config.litigation;
+        const randomUserLimit = Math.floor(
+          Math.random() * (litigators.jury_count.max - litigators.jury_count.min + 1) + litigators.jury_count.min
+        );
+
+        // find the litigators that match criteria
+        const validLitigators = await getReputedUsers({
+          required_users: randomUserLimit,
+          exclude_users: forbiddenLitigators,
+          reputation_stars: litigators.required_stars_for_jury,
+        });
+
+        const litigatorIds = validLitigators.map((x) => x.user_id);
+
+        // return if we found required litigators count (or more, more will never happen)
+        if (litigatorIds.length >= randomUserLimit) return litigatorIds;
+
+        // add default litigators to complete the default minimum jury count of 3
+        const defaultJuryMemberIdsShuffled = config.litigation.litigators.default_jury_member_ids
+          .map((value) => ({ value, sort: Math.random() }))
+          .sort((a, b) => a.sort - b.sort)
+          .map(({ value }) => value);
+
+        // verify if there are default litigators
+        if (defaultJuryMemberIdsShuffled.length === 0) {
+          throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `not enough jury members`);
+        }
+
+        // the default jury becomes the main jury
+        return defaultJuryMemberIdsShuffled;
+      })();
 
       // create recognitions for valid litigators
       return Promise.all(
-        validLitigators.map(async (user) => {
+        validLitigatorIds.map(async (id) => {
           // create new recognition
           return createRecognition({
             recognition_by: litigation.issuer_id,
-            recognition_for: user.user_id,
+            recognition_for: id,
             status: statusTypes.ACCEPTED, // jury members cannot declined participation
             status_updated: new Date().toISOString(),
           });
