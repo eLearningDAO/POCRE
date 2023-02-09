@@ -311,9 +311,7 @@ function AuthorInviteModal({ onClose = () => {}, onAuthorDetailsSubmit }) {
 const getAuthor = (author, user) => {
   let authorName = `${author.user_name}${user.user_id === author?.user_id ? ' (You) ' : ' '}`;
   if (author.reputation_stars) {
-    for (let index = 0; index < author.reputation_stars; index += 1) {
-      authorName += '★';
-    }
+    authorName += '★'.repeat(author.reputation_stars);
   }
   return authorName;
 };
