@@ -422,7 +422,7 @@ export default function StepTwo({
                 onInput={onAuthorInputChange}
                 selectedTags={invitedAuthor ? [invitedAuthor] : []}
                 placeholder="Type author name and select from suggestions below"
-                tagSuggestions={authorSuggestions.map((author) => getAuthor(author, user)) || []}
+                tagSuggestions={(authorSuggestions || []).map((author) => getAuthor(author, user))}
               />
               <Button className="inviteButton" style={{ width: 'fit-content', paddingLeft: '24px', paddingRight: '24px' }} onClick={() => setShowInviteAuthorDialog(true)}>
                 <img width={17} style={{ marginRight: '10px' }} alt="invite-icon" src={InviteIcon} />
