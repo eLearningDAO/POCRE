@@ -209,35 +209,46 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
       // find valid litigators
       const validLitigatorIds = await (async () => {
         const { litigators } = config.litigation;
-        const randomUserLimit = Math.floor(
+        const requiredUsersLimit = Math.floor(
           Math.random() * (litigators.jury_count.max - litigators.jury_count.min + 1) + litigators.jury_count.min
         );
 
-        // find the litigators that match criteria
-        const validLitigators = await getReputedUsers({
-          required_users: randomUserLimit,
-          exclude_users: forbiddenLitigators,
-          reputation_stars: litigators.required_stars_for_jury,
-        });
+        // if algo is enabled, find the litigators that match criteria
+        const validLitigators = config.litigation.jury_selection_algo_enabled
+          ? await getReputedUsers({
+              required_users: requiredUsersLimit,
+              exclude_users: forbiddenLitigators,
+              reputation_stars: litigators.required_stars_for_jury,
+            })
+          : [];
 
-        const litigatorIds = validLitigators.map((x) => x.user_id);
+        // if algo is not enabled OR valid litigators are not enough in number, pick default judges
+        const defaultJudges =
+          !config.litigation.jury_selection_algo_enabled || validLitigators.length < requiredUsersLimit
+            ? await getReputedUsers({
+                // if algo is not enabled AND valid litigators are not enough in number
+                ...(config.litigation.jury_selection_algo_enabled &&
+                  validLitigators.length < requiredUsersLimit && {
+                    required_users: validLitigators.length - requiredUsersLimit,
+                    exclude_users: [...forbiddenLitigators, ...validLitigators.map((x) => x.user_id)],
+                  }),
+                // if algo is not enabled
+                ...(!config.litigation.jury_selection_algo_enabled && {
+                  required_users: requiredUsersLimit,
+                  exclude_users: forbiddenLitigators,
+                }),
+                only_default_judges: true,
+              })
+            : [];
 
-        // return if we found required litigators count (or more, more will never happen)
-        if (litigatorIds.length >= randomUserLimit) return litigatorIds;
+        const litigatorIds = [...validLitigators.map((x) => x.user_id), ...defaultJudges.map((x) => x.user_id)];
 
-        // add default litigators to complete the default minimum jury count of 3
-        const defaultJuryMemberIdsShuffled = config.litigation.litigators.default_jury_member_ids
-          .map((value) => ({ value, sort: Math.random() }))
-          .sort((a, b) => a.sort - b.sort)
-          .map(({ value }) => value);
-
-        // verify if there are default litigators
-        if (defaultJuryMemberIdsShuffled.length === 0) {
+        // verify if there are enough litigators
+        if (litigatorIds.length === 0) {
           throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `not enough jury members`);
         }
 
-        // the default jury becomes the main jury
-        return defaultJuryMemberIdsShuffled;
+        return litigatorIds;
       })();
 
       // create recognitions for valid litigators
