@@ -229,7 +229,7 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
                 // if algo is not enabled AND valid litigators are not enough in number
                 ...(config.litigation.jury_selection_algo_enabled &&
                   validLitigators.length < requiredUsersLimit && {
-                    required_users: validLitigators.length - requiredUsersLimit,
+                    required_users: requiredUsersLimit - validLitigators.length,
                     exclude_users: [...forbiddenLitigators, ...validLitigators.map((x) => x.user_id)],
                   }),
                 // if algo is not enabled
