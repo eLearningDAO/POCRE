@@ -58,7 +58,8 @@ const init = async (): Promise<QueryResult<any>> => {
       email_verified bool DEFAULT false,
       otp_code text,
       date_joined TIMESTAMP NOT NULL DEFAULT NOW(),
-      is_invited bool default false
+      is_invited bool default false,
+      is_default_judge bool default false
     );
 
     CREATE TABLE IF NOT EXISTS decision (

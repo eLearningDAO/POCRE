@@ -24,17 +24,11 @@ const envVarsSchema = Joi.object()
       .description('reconcilation days for a litigation, must be more than 2')
       .required()
       .min(3),
+    ENABLE_LITIGATION_JURY_SELECTION_ALGO: Joi.boolean()
+      .description('let the system know whether to pick default judges or ones that have reputation stars')
+      .required(),
     LITIGATION_JURY_REQUIRED_STARS: Joi.number()
       .description('stars required for a user to be a litigation jury member')
-      .required(),
-    LITIGATION_DEFAULT_JURY_MEMBER_ID_1: Joi.string()
-      .description('default jury member-id-1 for litigation used when no jury matching criteria is found')
-      .required(),
-    LITIGATION_DEFAULT_JURY_MEMBER_ID_2: Joi.string()
-      .description('default jury member-id-2 for litigation used when no jury matching criteria is found')
-      .required(),
-    LITIGATION_DEFAULT_JURY_MEMBER_ID_3: Joi.string()
-      .description('default jury member-id-3 for litigation used when no jury matching criteria is found')
       .required(),
     JWT_SECRET: Joi.string().required().description('JWT secret key'),
     HASHING_SALT_WALLET_ADDRESS: Joi.string().required().description('Hasing Salt for wallet address'),
@@ -68,14 +62,10 @@ export default {
   docs_server_url: envVars.DOCS_SERVER_URL,
   creation_details_web_base_url: envVars.CREATION_DETAILS_WEB_BASE_URL,
   litigation: {
+    jury_selection_algo_enabled: envVars.ENABLE_LITIGATION_JURY_SELECTION_ALGO,
     voting_days: envVars.LITIGATION_VOTING_DAYS,
     reconcilation_days: envVars.LITIGATION_RECONCILATION_DAYS,
     litigators: {
-      default_jury_member_ids: [
-        envVars.LITIGATION_DEFAULT_JURY_MEMBER_ID_1,
-        envVars.LITIGATION_DEFAULT_JURY_MEMBER_ID_2,
-        envVars.LITIGATION_DEFAULT_JURY_MEMBER_ID_3,
-      ].filter(Boolean),
       jury_count: {
         min: envVars.MIN_LITIGATORS,
         max: envVars.MAX_LITIGATORS,

@@ -2,6 +2,7 @@ import httpStatus from 'http-status';
 import { QueryResult } from 'pg';
 import { reputation } from '../constants/statusTypes';
 import * as db from '../db/pool';
+import { RequireOnlyOne } from '../types/custom.types';
 import ApiError from '../utils/ApiError';
 import { getCreationsCount, getStar } from '../utils/userStarCalculation';
 
@@ -18,6 +19,7 @@ export interface IUser {
   is_invited?: boolean;
   email_verified?: boolean;
   otp_code?: string;
+  is_default_judge?: boolean;
 }
 interface IUserQuery {
   limit: number;
@@ -49,12 +51,17 @@ export interface IUserDoc {
   is_invited: boolean;
   email_verified: boolean;
   otp_code: string;
+  is_default_judge?: boolean;
 }
-interface IUserCriteria {
-  required_users: number;
-  exclude_users?: string[];
-  reputation_stars: number;
-}
+type IUserCriteria = RequireOnlyOne<
+  {
+    required_users: number;
+    exclude_users?: string[];
+    reputation_stars?: number;
+    only_default_judges?: boolean;
+  },
+  'reputation_stars' | 'only_default_judges'
+>;
 
 /**
  * Create a user
@@ -356,6 +363,7 @@ export const getReputedUsers = async ({
   exclude_users,
   required_users,
   reputation_stars,
+  only_default_judges,
 }: IUserCriteria): Promise<Array<IUserDoc>> => {
   try {
     const excludedUsers =
@@ -373,9 +381,9 @@ export const getReputedUsers = async ({
       ${excludedUsers.length > 0 ? 'AND' : 'WHERE'} 
       is_invited = $1 
       AND
-      reputation_stars = $2
+      ${only_default_judges ? 'is_default_judge' : 'reputation_stars'} = $2
       LIMIT $3;`,
-      [false, reputation_stars, required_users]
+      [false, only_default_judges || reputation_stars, required_users]
     );
     const users = result.rows as Array<IUserDoc>;
     return users;
