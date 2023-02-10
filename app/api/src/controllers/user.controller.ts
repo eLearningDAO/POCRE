@@ -95,7 +95,7 @@ export const verifyUserEmail = catchAsync(async (req, res): Promise<void> => {
   // only allow the auth user to delete itself
   const foundUser = await userService.getUserByCriteria('user_id', req.body.user_id as string, true);
   if (foundUser && foundUser.email_address) {
-    var otp_code = Math.floor(100000 + Math.random() * 900000);
+    let otp_code = Math.floor(100000 + Math.random() * 900000);
     const body = {
       "otp_code": otp_code.toString()
     }

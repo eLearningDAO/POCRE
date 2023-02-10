@@ -308,6 +308,14 @@ function AuthorInviteModal({ onClose = () => {}, onAuthorDetailsSubmit }) {
   );
 }
 
+const getAuthor = (author, user) => {
+  let authorName = `${author.user_name}${user.user_id === author?.user_id ? ' (You) ' : ' '}`;
+  if (author.reputation_stars) {
+    authorName += '★'.repeat(author.reputation_stars);
+  }
+  return authorName;
+};
+
 export default function StepTwo({
   onComplete = () => {},
   onBack = () => {},
@@ -414,7 +422,7 @@ export default function StepTwo({
                 onInput={onAuthorInputChange}
                 selectedTags={invitedAuthor ? [invitedAuthor] : []}
                 placeholder="Type author name and select from suggestions below"
-                tagSuggestions={authorSuggestions.map((x) => (`${x.user_name}${user.user_id === x?.user_id ? ' (You)' : ''}`)) || []}
+                tagSuggestions={(authorSuggestions || []).map((author) => getAuthor(author, user))}
               />
               <Button className="inviteButton" style={{ width: 'fit-content', paddingLeft: '24px', paddingRight: '24px' }} onClick={() => setShowInviteAuthorDialog(true)}>
                 <img width={17} style={{ marginRight: '10px' }} alt="invite-icon" src={InviteIcon} />
