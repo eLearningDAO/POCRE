@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Creation, Material, Tag, User,
 } from 'api/requests';
+import { CHARGES, IPFS_BASE_URL, TRANSACTION_PURPOSES } from 'config';
 import useSuggestions from 'hooks/useSuggestions';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
@@ -9,7 +10,6 @@ import { useNavigate } from 'react-router-dom';
 import publishPlatforms from 'utils/constants/publishPlatforms';
 import authUser from 'utils/helpers/authUser';
 import { transactADAToPOCRE } from 'utils/helpers/wallet';
-import { IPFS_BASE_URL, CHARGES, TRANSACTION_PURPOSES } from 'config';
 
 const makeCommonResource = async (
   requestBody = {},
@@ -125,6 +125,27 @@ const publishIPFSCreationOnChain = async (creationId) => {
   });
 };
 
+const transformCreationForForm = (creation) => ({
+  id: creation?.creation_id,
+  date: moment(creation?.creation_date).format('YYYY-MM-DD'), // moment auto converts utc to local time
+  description: creation?.creation_description,
+  title: creation?.creation_title,
+  is_draft: creation?.is_draft,
+  author: creation?.author?.user_name,
+  source: creation?.creation_link,
+  ipfsHash: creation?.ipfs_hash,
+  tags: creation?.tags?.map((tag) => tag?.tag_name),
+  materials: (creation?.materials || []).map((material) => (
+    {
+      id: material?.material_id,
+      author: material?.author?.user_name,
+      link: material?.material_link,
+      fileType: material?.material_type,
+      title: material?.material_title,
+    }
+  )),
+});
+
 const useCreationForm = ({
   onCreationFetch = () => {},
 }) => {
@@ -165,26 +186,7 @@ const useCreationForm = ({
       const responseCreation = await Creation.getById(creationId, toPopulate.map((x) => `populate=${x}`).join('&'));
 
       // transform creation
-      const temporaryTransformedCreation = {
-        id: responseCreation.creation_id,
-        date: moment(responseCreation.creation_date).format('YYYY-MM-DD'), // moment auto converts utc to local time
-        description: responseCreation.creation_description,
-        title: responseCreation.creation_title,
-        is_draft: responseCreation.is_draft,
-        author: responseCreation.author.user_name,
-        source: responseCreation.creation_link,
-        ipfsHash: responseCreation.ipfs_hash,
-        tags: responseCreation.tags.map((tag) => tag.tag_name),
-        materials: (responseCreation?.materials || []).map((material) => (
-          {
-            id: material.material_id,
-            author: material.author.user_name,
-            link: material.material_link,
-            fileType: material.material_type,
-            title: material.material_title,
-          }
-        )),
-      };
+      const temporaryTransformedCreation = transformCreationForForm(responseCreation);
 
       return {
         original: responseCreation,
@@ -201,17 +203,16 @@ const useCreationForm = ({
 
   // create creation
   const {
-    mutate: makeNewCreation,
+    mutate: makeCreation,
     isError: isCreationError,
     isSuccess: isCreationSuccess,
     isLoading: isCreatingCreation,
   } = useMutation({
     mutationFn: async (creationBody) => {
       // create common data
-      const { tags, materials } = await makeCommonResource(
+      const { tags } = await makeCommonResource(
         creationBody,
         tagSuggestions,
-        authorSuggestions,
       );
 
       // make a new creation
@@ -220,21 +221,15 @@ const useCreationForm = ({
         creation_description: creationBody.description,
         creation_link: creationBody.source,
         tags: tags.map((tag) => tag.tag_id),
-        ...(materials.length > 0 && { materials: materials.map((x) => x.material_id) }),
         creation_date: new Date(creationBody.date).toISOString(), // send date in utc
-        is_draft: creationBody.is_draft,
+        is_draft: true, // create in draft and finalize after fully updated
       });
-
-      // upload to ipfs if not draft
-      if (!newCreation.is_draft && !newCreation.ipfs_hash) {
-        await publishIPFSCreationOnChain(newCreation.creation_id);
-      }
 
       // remove queries cache
       queryClient.invalidateQueries({ queryKey: ['creations'] });
 
-      // redirect user to creations page
-      setTimeout(() => navigate('/creations'), 3000);
+      // redirect to update page
+      navigate(`/creations/${newCreation?.creation_id}/update?step=2`);
     },
   });
 
@@ -244,6 +239,7 @@ const useCreationForm = ({
     isError: isUpdateError,
     isSuccess: isUpdateSuccess,
     isLoading: isUpdatingCreation,
+    reset: resetCreationUpdate,
   } = useMutation({
     mutationFn: async (updateBody) => {
       // updated creation body
@@ -256,7 +252,7 @@ const useCreationForm = ({
         }),
         tags: creation.original.tags,
         creation_link: updateBody.source,
-        is_draft: false,
+        is_draft: updateBody.is_draft,
       };
 
       const { tags, materials } = await makeCommonResource(
@@ -273,14 +269,13 @@ const useCreationForm = ({
       // update creation
       await Creation.update(creation.original.creation_id, { ...updatedCreation });
 
-      // upload to ipfs
-      await publishIPFSCreationOnChain(creation.original.creation_id);
+      // upload to ipfs if not draft
+      if (!updateBody.is_draft) {
+        await publishIPFSCreationOnChain(creation.original.creation_id);
+      }
 
       // remove queries cache
       queryClient.invalidateQueries({ queryKey: ['creations'] });
-
-      // redirect user to creations page
-      setTimeout(() => navigate('/creations'), 3000);
     },
   });
 
@@ -290,7 +285,7 @@ const useCreationForm = ({
       success: isCreationSuccess,
       error: isCreationError ? 'Failed to make a new creation' : null,
     },
-    makeNewCreation,
+    makeCreation,
     isFetchingCreation,
     isUpdatingCreation,
     tagSuggestions,
@@ -310,6 +305,7 @@ const useCreationForm = ({
       error: isFetchError ? 'Creation Not Found' : null,
     },
     handleAuthorInputChange,
+    resetCreationUpdate,
   };
 };
 

@@ -123,14 +123,12 @@ export default function StepThree({
             ? (
               <>
                 <Button className="backCollectionButton" onClick={onBack}>Back</Button>
-                {!qrcodeBase64 && (
-                  <Button className="saveDraftButton" style={{ marginLeft: 'auto', marginRight: '12px' }} onClick={() => onComplete({ is_draft: true })}>
-                    {!loading ? 'Save Draft'
-                      : <div className="loader" />}
-                  </Button>
-                )}
-                <Button disabled={loading} type="submit" className="nextCollectionButton" onClick={onComplete}>
-                  {!loading ? (qrcodeBase64 ? 'Publish' : 'Finish')
+                <Button className="saveDraftButton" style={{ marginLeft: 'auto', marginRight: '12px' }} onClick={async () => await onComplete({ is_draft: true })}>
+                  {!loading ? 'Save Draft'
+                    : <div className="loader" />}
+                </Button>
+                <Button disabled={loading} type="submit" className="nextCollectionButton" onClick={async () => await onComplete({ is_draft: false })}>
+                  {!loading ? 'Publish'
                     : <div className="loader" />}
                 </Button>
               </>

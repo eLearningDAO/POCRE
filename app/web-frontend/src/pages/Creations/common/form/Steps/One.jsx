@@ -13,6 +13,8 @@ export default function StepOne({
   onComplete = () => {},
   onTagInputChange = () => {},
   tagSuggestions = [],
+  status = {},
+  loading = false,
 }) {
   const { linkError, validateLink, isValidatingLink } = useLinkValidation({ customErrorMessage: 'Invalid creation source link' });
 
@@ -67,12 +69,12 @@ export default function StepOne({
             <TagInput tagSuggestions={tagSuggestions.map((tag) => tag.tag_name)} onInput={onTagInputChange} variant="dark" placeholder="The tags representing your creation" name="tags" hookToForm />
           </Grid>
 
-          {linkError && (
+          {(linkError || status.error || status.success) && (
             <>
               <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center" />
               <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
-                <Box width="100%" className="bg-red color-white" padding="16px" borderRadius="12px" fontSize="16px">
-                  {linkError}
+                <Box width="100%" className={`color-white ${status.success ? 'bg-green' : 'bg-red'}`} padding="16px" borderRadius="12px" fontSize="16px">
+                  {linkError || (status.success ? 'Draft Saved' : status.error)}
                 </Box>
               </Grid>
             </>
@@ -82,7 +84,7 @@ export default function StepOne({
 
       <Grid item xs={12} className="collectionButtons">
         <Button type="submit" className="nextCollectionButton" style={{ marginLeft: 'auto' }}>
-          {isValidatingLink ? <Loader /> : 'Next'}
+          {isValidatingLink || loading ? <Loader /> : 'Next'}
         </Button>
       </Grid>
     </Form>

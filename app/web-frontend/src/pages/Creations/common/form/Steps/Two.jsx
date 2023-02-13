@@ -125,7 +125,7 @@ function NewMaterial({
               addTagOnEnter={false}
               onInput={onAuthorInputChange}
               placeholder="Type author name and select from suggestions below"
-              tagSuggestions={authorSuggestions.map((x) => x.user_name) || []}
+              tagSuggestions={authorSuggestions?.map((x) => x?.user_name) || []}
             />
           </Grid>
 
@@ -322,6 +322,8 @@ export default function StepTwo({
   initialMaterials = [],
   authorSuggestions = [],
   onAuthorInputChange = () => {},
+  status = {},
+  loading = false,
 }) {
   const user = authUser.getUser();
   const [formKey, setFormKey] = useState(new Date().toISOString());
@@ -469,10 +471,23 @@ export default function StepTwo({
         ))}
       </Grid>
 
+      {(status.error || status.success) && (
+        <>
+          <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center" />
+          <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
+            <Box width="100%" className={`color-white ${status.success ? 'bg-green' : 'bg-red'}`} padding="16px" borderRadius="12px" fontSize="16px">
+              {(status.success ? 'Draft Saved' : status.error)}
+            </Box>
+          </Grid>
+        </>
+      )}
+
       <Grid item xs={12} className="collectionButtons">
         <Button className="backCollectionButton" onClick={onBack}>Back</Button>
         <Button className="backCollectionButton" style={{ marginLeft: 'auto', marginRight: '12px' }} onClick={handleSkipClick}>Skip</Button>
-        <Button type="submit" className="nextCollectionButton" onClick={handleNextClick}>Next</Button>
+        <Button type="submit" className="nextCollectionButton" onClick={handleNextClick}>
+          {loading ? <Loader /> : 'Next'}
+        </Button>
       </Grid>
     </>
   );
