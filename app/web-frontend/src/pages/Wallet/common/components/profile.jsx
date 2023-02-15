@@ -163,10 +163,10 @@ function WalletProfile({
                       }}
                       className="nextCollectionButton border-white"
                     >
-                      Pending Verification
+                      Email Pending Verification
                     </Button>
                   ) : (
-                    <p className="pendingVerificationText">Pending Verification</p>
+                    <p className="pendingVerificationText">Email Pending Verification</p>
                   )
                 )}
                 {!emailVerified && (

@@ -44,7 +44,7 @@ function VerifyEmail() {
           </Box>
         )}
       <h4 style={{ fontSize: '28px', fontWeight: 'bold' }}>
-        Verify Your Email
+        POCRE.net - Email verification process
       </h4>
       <p style={{ fontSize: '18px', textAlign: 'center' }}>
         Please enter the OTP code sent to your email to verify!
