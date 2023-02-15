@@ -309,7 +309,7 @@ function AuthorInviteModal({ onClose = () => {}, onAuthorDetailsSubmit }) {
 }
 
 const getAuthor = (author, user) => {
-  let authorName = `${author.user_name}${user.user_id === author?.user_id ? ' (You) ' : ' '}`;
+  let authorName = `${author.user_name}${user.user_id === author?.user_id ? ' (You)-' : '-'}`;
   if (author.reputation_stars) {
     authorName += '★'.repeat(author.reputation_stars);
   }
@@ -334,10 +334,18 @@ export default function StepTwo({
   const handleValues = async (values) => {
     const response = await validateLink(values?.link);
     if (!response) return;
-
-    setMaterials([...materials, values]);
+    const updatedValues = values;
+    const authorWithoutStars = [];
+    updatedValues.author.map(
+      (author) => {
+        const nameWithouStars = author.split('-')[0];
+        authorWithoutStars.push(nameWithouStars);
+        return true;
+      },
+    );
+    updatedValues.author = authorWithoutStars;
+    setMaterials([...materials, updatedValues]);
     setInvitedAuthor(null);
-
     setFormKey(new Date().toISOString());
   };
 
