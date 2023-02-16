@@ -1,11 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Decision, Litigation } from 'api/requests';
-import { CHARGES, TRANSACTION_PURPOSES } from 'config';
+// import { CHARGES, TRANSACTION_PURPOSES } from 'config';
 import moment from 'moment';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import statusTypes from 'utils/constants/statusTypes';
 import authUser from 'utils/helpers/authUser';
-import { transactADAToPOCRE } from 'utils/helpers/wallet';
+// import { transactADAToPOCRE } from 'utils/helpers/wallet';
 
 const user = authUser.getUser();
 
@@ -18,6 +19,7 @@ const voteStatusTypes = {
 const toDate = (dateString) => new Date(dateString);
 
 const useDetails = () => {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [litigationId, setLitigationId] = useState(null);
 
@@ -37,6 +39,12 @@ const useDetails = () => {
       ];
       const litigationResponse = await Litigation.getById(litigationId, toPopulate.map((x) => `populate=${x}`).join('&'));
 
+      // if non-issuer is visting draft litigation then redirect 404
+      if (litigationResponse?.is_draft && litigationResponse?.issuer?.user_id !== user?.user_id) {
+        navigate('/404');
+        return;
+      }
+
       const now = moment();
 
       // calculate if auth user is a judge
@@ -50,6 +58,8 @@ const useDetails = () => {
 
       // calculate litigation status
       litigationResponse.status = (() => {
+        if (litigationResponse?.is_draft) return 'In Draft';
+
         if (
           moment(toDate(litigationResponse?.reconcilation_start)).isBefore(now)
           && moment(toDate(litigationResponse?.reconcilation_end)).isAfter(now)
@@ -113,6 +123,7 @@ const useDetails = () => {
       litigationResponse.voteStatus = !vote ? voteStatusTypes.IMPARTIAL
         : (vote.decision_status ? voteStatusTypes.AGREED : voteStatusTypes.DISAGREED);
 
+      // eslint-disable-next-line consistent-return
       return {
         ...litigationResponse,
         decisions: litigationResponse?.decisions || [],
@@ -141,21 +152,23 @@ const useDetails = () => {
       // check if vote is to be updated
       if (voteStatus === litigation.voteStatus) return;
 
-      // make transaction
-      const txHash = await transactADAToPOCRE({
-        amountADA: CHARGES.LITIGATION.VOTE,
-        purposeDesc: TRANSACTION_PURPOSES.LITIGATION.VOTE,
-        walletName: authUser.getUser()?.selectedWallet,
-        metaData: {
-          claimed_entity: litigation.material ? 'MATERIAL' : 'CREATION',
-          creation_id: litigation.creation_id,
-          material_id: litigation.material_id,
-          vote: voteStatus,
-          author_id: user?.user_id,
-        },
-      });
+      console.log('coming here');
 
-      if (!txHash) throw new Error('Failed to make transaction');
+      // // make transaction
+      // const txHash = await transactADAToPOCRE({
+      //   amountADA: CHARGES.LITIGATION.VOTE,
+      //   purposeDesc: TRANSACTION_PURPOSES.LITIGATION.VOTE,
+      //   walletName: authUser.getUser()?.selectedWallet,
+      //   metaData: {
+      //     claimed_entity: litigation.material ? 'MATERIAL' : 'CREATION',
+      //     creation_id: litigation.creation_id,
+      //     material_id: litigation.material_id,
+      //     vote: voteStatus,
+      //     author_id: user?.user_id,
+      //   },
+      // });
+
+      // if (!txHash) throw new Error('Failed to make transaction');
 
       const updatedDecisions = await (async () => {
         const decisions = [...litigation.decisions];

@@ -117,16 +117,18 @@ export default function LitigationDetails() {
 
       <Grid display="flex" justifyContent="space-between" alignItems="flex-start" marginTop="18px" width="100%">
         <Chip label={`${litigation?.status}`} className="bg-black color-white" />
-        <Grid
-          display="flex"
-          flexDirection="column"
-          justifyContent="flex-end"
-          alignItems="flex-end"
-          gap="8px"
-        >
-          <Chip className="bg-orange color-white" label={`Starts on ${litigation?.start_date}`} />
-          <Chip className="bg-orange color-white" label={`Ends on ${litigation?.end_date}`} />
-        </Grid>
+        {!litigation.is_draft && (
+          <Grid
+            display="flex"
+            flexDirection="column"
+            justifyContent="flex-end"
+            alignItems="flex-end"
+            gap="8px"
+          >
+            <Chip className="bg-orange color-white" label={`Starts on ${litigation?.start_date}`} />
+            <Chip className="bg-orange color-white" label={`Ends on ${litigation?.end_date}`} />
+          </Grid>
+        )}
       </Grid>
 
       <Grid
@@ -214,7 +216,7 @@ export default function LitigationDetails() {
                       onClick={async () => await castLitigationVote(voteStatusTypes.AGREED)}
                       type="agree"
                       label={`Agree 
-                (${litigation?.decisions
+                      (${litigation?.decisions
                         ? litigation?.decisions?.filter((x) => x?.decision_status)?.length
                         : '0'})`}
                     />
@@ -224,7 +226,7 @@ export default function LitigationDetails() {
                       onClick={async () => await castLitigationVote(voteStatusTypes.DISAGREED)}
                       type="disagree"
                       label={`Opposition 
-                (${litigation?.decisions
+                      (${litigation?.decisions
                         ? litigation?.decisions?.filter((x) => !x?.decision_status)?.length
                         : '0'})`}
                     />
@@ -234,7 +236,7 @@ export default function LitigationDetails() {
                       onClick={async () => await castLitigationVote(voteStatusTypes.IMPARTIAL)}
                       type="impartial"
                       label={`Impartial 
-                (${litigation?.decisions && litigation?.recognitions
+                      (${litigation?.decisions && litigation?.recognitions
                         ? (litigation?.recognitions?.length - litigation?.decisions?.length)
                         : '0'})`}
                     />
