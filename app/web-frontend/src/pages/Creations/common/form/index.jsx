@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Grid, Typography, Button } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import Loader from 'components/uicore/Loader';
+import authUser from 'utils/helpers/authUser';
 import StepOne from './Steps/One';
 import StepTwo from './Steps/Two';
 import StepThree from './Steps/Three';
@@ -14,9 +15,27 @@ const stepInfo = [
   'Generate the proof of authorship',
 ];
 
+const getAuthorTagSuggesstion = (authorSuggestions, user) => {
+  const authorSuggestionsNew = [];
+  authorSuggestions.map(
+    (author) => {
+      if (author.reputation_stars) {
+        let authorName = `${author.user_name}${user.user_id === author?.user_id ? ' (You)-' : '-'}`;
+        authorName += '★'.repeat(author.reputation_stars);
+        authorSuggestionsNew.push(authorName);
+      } else {
+        const authorName = `${author.user_name}${user.user_id === author?.user_id ? ' (You)' : ''}`;
+        authorSuggestionsNew.push(authorName);
+      }
+      return true;
+    },
+  );
+  return authorSuggestionsNew;
+};
+
 function CreationForm({ id = null, onCreationFetch = () => {} }) {
   const navigate = useNavigate();
-
+  const user = authUser.getUser();
   const [step, setStep] = useState(1);
   const [creationDraft, setCreationDraft] = useState();
   const {
@@ -61,8 +80,27 @@ function CreationForm({ id = null, onCreationFetch = () => {} }) {
     }
 
     if (step === 3) {
+      const updatedCreationDraft = creationDraft;
+      const updatedMaterials = [];
+      updatedCreationDraft.materials.map(
+        (material) => {
+          const authorWithoutStars = [];
+          const temporaryMaterial = material;
+          material.author.map(
+            (author) => {
+              const nameWithouStars = author.split('-')[0];
+              authorWithoutStars.push(nameWithouStars);
+              return true;
+            },
+          );
+          temporaryMaterial.author = authorWithoutStars;
+          updatedMaterials.push(temporaryMaterial);
+          return true;
+        },
+      );
+      updatedCreationDraft.materials = updatedMaterials;
       // eslint-disable-next-line max-len
-      await (id ? updateCreation({ ...creationDraft, is_draft: false }) : makeNewCreation({ ...creationDraft, is_draft: !!values?.is_draft }));
+      await (id ? updateCreation({ ...updatedCreationDraft, is_draft: false }) : makeNewCreation({ ...creationDraft, is_draft: !!values?.is_draft }));
     }
 
     if (step !== 3) {
@@ -121,7 +159,8 @@ function CreationForm({ id = null, onCreationFetch = () => {} }) {
             onBack={handleBack}
             onComplete={handleValues}
             initialMaterials={creationDraft?.materials || []}
-            authorSuggestions={authorSuggestions}
+            // eslint-disable-next-line max-len
+            authorSuggestions={authorSuggestions && getAuthorTagSuggesstion(authorSuggestions, user)}
             onAuthorInputChange={handleAuthorInputChange}
           />
         )}
