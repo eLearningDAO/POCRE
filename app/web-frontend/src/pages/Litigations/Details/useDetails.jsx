@@ -1,12 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Decision, Litigation } from 'api/requests';
-// import { CHARGES, TRANSACTION_PURPOSES } from 'config';
+import { CHARGES, TRANSACTION_PURPOSES } from 'config';
 import moment from 'moment';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import statusTypes from 'utils/constants/statusTypes';
 import authUser from 'utils/helpers/authUser';
-// import { transactADAToPOCRE } from 'utils/helpers/wallet';
+import { transactADAToPOCRE } from 'utils/helpers/wallet';
 
 const user = authUser.getUser();
 
@@ -152,24 +152,6 @@ const useDetails = () => {
       // check if vote is to be updated
       if (voteStatus === litigation.voteStatus) return;
 
-      console.log('coming here');
-
-      // // make transaction
-      // const txHash = await transactADAToPOCRE({
-      //   amountADA: CHARGES.LITIGATION.VOTE,
-      //   purposeDesc: TRANSACTION_PURPOSES.LITIGATION.VOTE,
-      //   walletName: authUser.getUser()?.selectedWallet,
-      //   metaData: {
-      //     claimed_entity: litigation.material ? 'MATERIAL' : 'CREATION',
-      //     creation_id: litigation.creation_id,
-      //     material_id: litigation.material_id,
-      //     vote: voteStatus,
-      //     author_id: user?.user_id,
-      //   },
-      // });
-
-      // if (!txHash) throw new Error('Failed to make transaction');
-
       const updatedDecisions = await (async () => {
         const decisions = [...litigation.decisions];
 
@@ -208,6 +190,22 @@ const useDetails = () => {
       await Litigation.update(litigation.litigation_id, {
         decisions: updatedDecisions.map((x) => x.decision_id),
       });
+
+      // make transaction
+      const txHash = await transactADAToPOCRE({
+        amountADA: CHARGES.LITIGATION.VOTE,
+        purposeDesc: TRANSACTION_PURPOSES.LITIGATION.VOTE,
+        walletName: authUser.getUser()?.selectedWallet,
+        metaData: {
+          claimed_entity: litigation.material ? 'MATERIAL' : 'CREATION',
+          creation_id: litigation.creation_id,
+          material_id: litigation.material_id,
+          vote: voteStatus,
+          author_id: user?.user_id,
+        },
+      });
+
+      if (!txHash) throw new Error('Failed to make transaction');
 
       // update queries
       const key = `litigation-${litigationId}`;
