@@ -57,10 +57,6 @@ export default function StepOne({
     }
   };
 
-  // const onAuthorSelect = (event, value) => {
-  //   setAuthor(value?.id);
-  // };
-
   const handleSubmit = async (values) => {
     // check if material is present
     if (materialsDetails?.length > 0 && !values?.material) {

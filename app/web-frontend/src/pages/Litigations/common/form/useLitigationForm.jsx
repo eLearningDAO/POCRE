@@ -9,7 +9,7 @@ import { transactADAToPOCRE } from 'utils/helpers/wallet';
 // get auth user
 const user = authUser.getUser();
 
-const useCreate = () => {
+const useLitigationForm = () => {
   const queryClient = useQueryClient();
   const [newLitigation, setNewLitigation] = useState(null);
 
@@ -85,4 +85,4 @@ const useCreate = () => {
   };
 };
 
-export default useCreate;
+export default useLitigationForm;
