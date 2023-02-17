@@ -18,10 +18,11 @@ const getWalletAddress = async (walletName) => {
 
     // get used address in wallet
     const usedAddresses = await wallet.getUsedAddresses();
+    const realAddresses = usedAddresses.filter((address) => process.env.REACT_APP_HOST_TYPE !== 'production' && address.startsWith('addr_test'));
 
-    if (usedAddresses.length === 0) throw new Error('no wallet address');
+    if (realAddresses.length === 0) throw new Error('no wallet address');
 
-    return usedAddresses[0];
+    return realAddresses[0];
   } catch {
     return null;
   }
