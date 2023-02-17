@@ -6,7 +6,7 @@ import Form from 'components/uicore/Form';
 import Input from 'components/uicore/Input';
 import Loader from 'components/uicore/Loader';
 import Select from 'components/uicore/Select';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { stepOneValidation } from './validation';
 
 export default function StepOne({
@@ -19,6 +19,8 @@ export default function StepOne({
   getMaterialDetail = () => {},
   status = {},
   creatingLitigation = false,
+  parameterCreationId = null,
+  parameterMaterialName = null,
 }) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(null);
@@ -28,6 +30,49 @@ export default function StepOne({
   const [author] = useState(null);
   const [creationOrMaterialAuthor, setCreationOrMaterialAuthor] = useState('');
 
+  const getMaterialsUsingCreationId = async (creationId) => {
+    setCreationUUIDFromLink(creationId);
+    try {
+      setLoading(true);
+
+      // get creation details
+      const creationDetail = await Creation.getById(creationId);
+
+      // get details of creation author
+      const creationAuthor = await User.getById(creationDetail.author_id);
+      setCreationOrMaterialAuthor(creationAuthor);
+
+      // get material details of creation
+      if (creationDetail?.materials?.length > 0) {
+        const { materials } = creationDetail;
+        const response = await Promise.all(materials.map(async (x) => getMaterialDetail(x)));
+        setMaterialsDetails(response.filter((x) => x.is_claimable));
+      } else {
+        setMaterialsDetails(null);
+      }
+    } catch {
+      setLoading(false);
+      setError('Invalid Creation Link. Please make sure the link is correct');
+      return;
+    } finally {
+      setLoading(false);
+    }
+
+    setError(null);
+  };
+
+  useEffect(() => {
+    if (parameterCreationId) {
+      document.getElementsByName('creationLink')[0].value = parameterCreationId;
+      getMaterialsUsingCreationId(parameterCreationId);
+    }
+  }, [parameterCreationId]);
+
+  // useEffect(() => {
+  //   if (parameterCreationId) {
+  //     document.getElementsByName('material')[0].value = parameterMaterialName;
+  //   }
+  // }, [materialsDetails]);
   const onCreationSelect = async (event, value) => {
     setCreation(value?.id);
 
@@ -102,34 +147,7 @@ export default function StepOne({
       setMaterialsDetails(null);
       setCreationUUIDFromLink(null);
     } else {
-      setCreationUUIDFromLink(creationId);
-      try {
-        setLoading(true);
-
-        // get creation details
-        const creationDetail = await Creation.getById(creationId);
-
-        // get details of creation author
-        const creationAuthor = await User.getById(creationDetail.author_id);
-        setCreationOrMaterialAuthor(creationAuthor);
-
-        // get material details of creation
-        if (creationDetail?.materials?.length > 0) {
-          const { materials } = creationDetail;
-          const response = await Promise.all(materials.map(async (x) => getMaterialDetail(x)));
-          setMaterialsDetails(response.filter((x) => x.is_claimable));
-        } else {
-          setMaterialsDetails(null);
-        }
-      } catch {
-        setLoading(false);
-        setError('Invalid Creation Link. Please make sure the link is correct');
-        return;
-      } finally {
-        setLoading(false);
-      }
-
-      setError(null);
+      await getMaterialsUsingCreationId(creationId);
     }
   };
 

@@ -298,6 +298,7 @@ export default function CreationDetails() {
             {creation?.materials?.map((x, index) => (
               <MaterialCard
                 key={index}
+                creationId={id}
                 mediaUrl={x?.material_link}
                 mediaType={x?.material_type}
                 link={x?.material_link}

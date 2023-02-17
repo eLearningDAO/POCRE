@@ -1,5 +1,6 @@
 import { Grid, Typography } from '@mui/material';
 import './index.css';
+import { useParams } from 'react-router-dom';
 import StepOne from './Steps/One';
 import useCreate from './useCreate';
 
@@ -14,7 +15,7 @@ function CreateLitigation() {
     isCreatingLitigation,
     getMaterialDetail,
   } = useCreate();
-
+  const { creationId, materialName } = useParams();
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} padding={{ xs: '12px', md: '0' }}>
@@ -31,6 +32,8 @@ function CreateLitigation() {
         onCreationInputChange={handleCreationInputChange}
         getMaterialDetail={getMaterialDetail}
         status={newLitigationStatus}
+        parameterCreationId={creationId}
+        parameterMaterialName={materialName}
         creatingLitigation={isCreatingLitigation}
       />
     </Grid>

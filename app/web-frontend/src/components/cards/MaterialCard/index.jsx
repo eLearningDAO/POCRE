@@ -16,13 +16,14 @@ import RequestDeclineOutlinedIcon from 'assets/svgs/request-decline-outlined.svg
 import MediaPreview from 'components/media/preview';
 import MediaTile from 'components/media/tile';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './index.css';
 
 function MaterialCard({
   interactionBtns,
   requestAccepted = true,
   username = 'jack 50',
+  creationId = null,
   userimage = '',
   userProfileId = '',
   link = 'https://www.youtube.com/watch?v=2BjYPFBh4Zc',
@@ -40,6 +41,7 @@ function MaterialCard({
   recognitionStatus = null,
 }) {
   const [showMediaPreview, setShowMediaPreview] = useState(null);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -153,7 +155,16 @@ function MaterialCard({
               />
             )
           }
-
+          <Button
+            className="approveButton"
+            onClick={
+              () => {
+                navigate(`/litigations/create/${creationId}/${title}`);
+              }
+          }
+          >
+            Quick Claim
+          </Button>
           {showReconcilateOptions && (
             <Grid display="flex" gap="12px" flexWrap={{ md: 'wrap', lg: 'initial' }} justifyContent={{ md: 'center', lg: 'initial' }}>
               <Button className={requestAccepted ? 'approveButton' : 'pendingButton'}>
