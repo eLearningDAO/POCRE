@@ -16,7 +16,6 @@ const stepInfo = [
 
 function CreationForm({ id = null, onCreationFetch = () => {} }) {
   const navigate = useNavigate();
-
   const [step, setStep] = useState(1);
   const [creationDraft, setCreationDraft] = useState();
   const {
@@ -34,6 +33,7 @@ function CreationForm({ id = null, onCreationFetch = () => {} }) {
     transformedCreation,
     authorSuggestions,
     handleAuthorInputChange,
+    addStarToAuthorSuggesstion,
   } = useCreationForm({ onCreationFetch });
 
   useEffect(() => {
@@ -61,8 +61,27 @@ function CreationForm({ id = null, onCreationFetch = () => {} }) {
     }
 
     if (step === 3) {
+      const updatedCreationDraft = creationDraft;
+      const updatedMaterials = [];
+      updatedCreationDraft.materials.map(
+        (material) => {
+          const authorWithoutStars = [];
+          const temporaryMaterial = material;
+          material.author.map(
+            (author) => {
+              const nameWithouStars = author.split('-')[0];
+              authorWithoutStars.push(nameWithouStars);
+              return true;
+            },
+          );
+          temporaryMaterial.author = authorWithoutStars;
+          updatedMaterials.push(temporaryMaterial);
+          return true;
+        },
+      );
+      updatedCreationDraft.materials = updatedMaterials;
       // eslint-disable-next-line max-len
-      await (id ? updateCreation({ ...creationDraft, is_draft: false }) : makeNewCreation({ ...creationDraft, is_draft: !!values?.is_draft }));
+      await (id ? updateCreation({ ...updatedCreationDraft, is_draft: false }) : makeNewCreation({ ...creationDraft, is_draft: !!values?.is_draft }));
     }
 
     if (step !== 3) {
@@ -121,7 +140,8 @@ function CreationForm({ id = null, onCreationFetch = () => {} }) {
             onBack={handleBack}
             onComplete={handleValues}
             initialMaterials={creationDraft?.materials || []}
-            authorSuggestions={authorSuggestions}
+            // eslint-disable-next-line max-len
+            authorSuggestions={authorSuggestions && addStarToAuthorSuggesstion(authorSuggestions)}
             onAuthorInputChange={handleAuthorInputChange}
           />
         )}

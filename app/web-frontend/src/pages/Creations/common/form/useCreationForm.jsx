@@ -125,6 +125,25 @@ const publishIPFSCreationOnChain = async (creationId) => {
   });
 };
 
+const addStarToAuthorSuggesstion = (authorNameSuggestions) => {
+  const user = authUser.getUser();
+  const authorSuggestionsNew = [];
+  authorNameSuggestions.map(
+    (author) => {
+      if (author.reputation_stars) {
+        let authorName = `${author.user_name}${user.user_id === author?.user_id ? ' (You)-' : '-'}`;
+        authorName += '★'.repeat(author.reputation_stars);
+        authorSuggestionsNew.push(authorName);
+      } else {
+        const authorName = `${author.user_name}${user.user_id === author?.user_id ? ' (You)' : ''}`;
+        authorSuggestionsNew.push(authorName);
+      }
+      return true;
+    },
+  );
+  return authorSuggestionsNew;
+};
+
 const useCreationForm = ({
   onCreationFetch = () => {},
 }) => {
@@ -298,6 +317,7 @@ const useCreationForm = ({
     findAuthorsStatus,
     authorSuggestions,
     handleTagInputChange,
+    addStarToAuthorSuggesstion,
     getCreationDetails: (id) => setCreationId(id),
     transformedCreation: creation?.transformed,
     updateCreation,

@@ -103,7 +103,7 @@ export const verifyUserEmail = catchAsync(async (req, res): Promise<void> => {
     await sendMail({
       to: foundUser.email_address as string,
       subject: `POCRE.net - Email verification process`,
-      message: `A POCRE user is claiming this email address. If this is you, confirm it by clicking on this link ${config.web_client_base_url}/verify?id=${foundUser.user_id}. Your OTP Code is ${otp_code}`,
+      message: `A POCRE user is claiming this email address. If this is you, confirm it by clicking on this link ${config.web_client_base_url}/verify?id=${foundUser.user_id} Your OTP Code is ${otp_code}`,
     }).catch(() => null);
   }
   res.send();

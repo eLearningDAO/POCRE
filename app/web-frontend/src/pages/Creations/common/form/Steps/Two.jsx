@@ -10,7 +10,6 @@ import Loader from 'components/uicore/Loader';
 import Select from 'components/uicore/Select';
 import TagInput from 'components/uicore/TagInput';
 import { useState } from 'react';
-import authUser from 'utils/helpers/authUser';
 import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import useLinkValidation from './useLinkValidation';
 import { stepTwoAuthorInviteValidation, stepTwoMaterialValidation } from './validation';
@@ -125,7 +124,7 @@ function NewMaterial({
               addTagOnEnter={false}
               onInput={onAuthorInputChange}
               placeholder="Type author name and select from suggestions below"
-              tagSuggestions={authorSuggestions.map((x) => x.user_name) || []}
+              tagSuggestions={authorSuggestions || []}
             />
           </Grid>
 
@@ -308,14 +307,6 @@ function AuthorInviteModal({ onClose = () => {}, onAuthorDetailsSubmit }) {
   );
 }
 
-const getAuthor = (author, user) => {
-  let authorName = `${author.user_name}${user.user_id === author?.user_id ? ' (You) ' : ' '}`;
-  if (author.reputation_stars) {
-    authorName += '★'.repeat(author.reputation_stars);
-  }
-  return authorName;
-};
-
 export default function StepTwo({
   onComplete = () => {},
   onBack = () => {},
@@ -323,7 +314,6 @@ export default function StepTwo({
   authorSuggestions = [],
   onAuthorInputChange = () => {},
 }) {
-  const user = authUser.getUser();
   const [formKey, setFormKey] = useState(new Date().toISOString());
   const [materials, setMaterials] = useState(initialMaterials);
   const [showInviteAuthorDialog, setShowInviteAuthorDialog] = useState(false);
@@ -334,10 +324,8 @@ export default function StepTwo({
   const handleValues = async (values) => {
     const response = await validateLink(values?.link);
     if (!response) return;
-
     setMaterials([...materials, values]);
     setInvitedAuthor(null);
-
     setFormKey(new Date().toISOString());
   };
 
@@ -422,7 +410,7 @@ export default function StepTwo({
                 onInput={onAuthorInputChange}
                 selectedTags={invitedAuthor ? [invitedAuthor] : []}
                 placeholder="Type author name and select from suggestions below"
-                tagSuggestions={(authorSuggestions || []).map((author) => getAuthor(author, user))}
+                tagSuggestions={authorSuggestions || []}
               />
               <Button className="inviteButton" style={{ width: 'fit-content', paddingLeft: '24px', paddingRight: '24px' }} onClick={() => setShowInviteAuthorDialog(true)}>
                 <img width={17} style={{ marginRight: '10px' }} alt="invite-icon" src={InviteIcon} />
@@ -464,7 +452,7 @@ export default function StepTwo({
             onRemoveMaterial={() => removeMaterial(index)}
             onUpdate={(newData) => updateMaterial(index, newData)}
             onAuthorInputChange={onAuthorInputChange}
-            authorSuggestions={authorSuggestions}
+            authorSuggestions={authorSuggestions || []}
           />
         ))}
       </Grid>
