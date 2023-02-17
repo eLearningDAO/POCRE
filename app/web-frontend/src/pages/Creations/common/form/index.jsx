@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { Grid, Typography, Button } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import Loader from 'components/uicore/Loader';
-import authUser from 'utils/helpers/authUser';
 import StepOne from './Steps/One';
 import StepTwo from './Steps/Two';
 import StepThree from './Steps/Three';
@@ -15,27 +14,8 @@ const stepInfo = [
   'Generate the proof of authorship',
 ];
 
-const getAuthorTagSuggesstion = (authorSuggestions, user) => {
-  const authorSuggestionsNew = [];
-  authorSuggestions.map(
-    (author) => {
-      if (author.reputation_stars) {
-        let authorName = `${author.user_name}${user.user_id === author?.user_id ? ' (You)-' : '-'}`;
-        authorName += '★'.repeat(author.reputation_stars);
-        authorSuggestionsNew.push(authorName);
-      } else {
-        const authorName = `${author.user_name}${user.user_id === author?.user_id ? ' (You)' : ''}`;
-        authorSuggestionsNew.push(authorName);
-      }
-      return true;
-    },
-  );
-  return authorSuggestionsNew;
-};
-
 function CreationForm({ id = null, onCreationFetch = () => {} }) {
   const navigate = useNavigate();
-  const user = authUser.getUser();
   const [step, setStep] = useState(1);
   const [creationDraft, setCreationDraft] = useState();
   const {
@@ -53,6 +33,7 @@ function CreationForm({ id = null, onCreationFetch = () => {} }) {
     transformedCreation,
     authorSuggestions,
     handleAuthorInputChange,
+    addStarToAuthorSuggesstion,
   } = useCreationForm({ onCreationFetch });
 
   useEffect(() => {
@@ -160,7 +141,7 @@ function CreationForm({ id = null, onCreationFetch = () => {} }) {
             onComplete={handleValues}
             initialMaterials={creationDraft?.materials || []}
             // eslint-disable-next-line max-len
-            authorSuggestions={authorSuggestions && getAuthorTagSuggesstion(authorSuggestions, user)}
+            authorSuggestions={authorSuggestions && addStarToAuthorSuggesstion(authorSuggestions)}
             onAuthorInputChange={handleAuthorInputChange}
           />
         )}
