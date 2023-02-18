@@ -17,6 +17,8 @@ export default function StepOne({
   // authorSuggestions = [],
   creationSuggestions = [],
   // onAuthorInputChange = () => {},
+  parameterCreationId = null,
+  parameterMaterialId = null,
   onCreationInputChange = () => {},
   getMaterialDetail = () => {},
   status = {},
@@ -184,6 +186,7 @@ export default function StepOne({
       initialValues={{
         title: initialValues?.title,
         description: initialValues?.description,
+        material: parameterMaterialId,
       }}
       preventSubmitOnEnter
     >
