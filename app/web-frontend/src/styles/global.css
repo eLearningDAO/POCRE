@@ -31,6 +31,10 @@ code {
     monospace;
 }
 
+img, video {
+  object-fit: cover;
+}
+
 .capitalize {
   text-transform: capitalize;
 }
