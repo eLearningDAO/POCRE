@@ -51,7 +51,7 @@ export default function StepThree({
             link={creationDraft?.source}
             authorName={user?.user_name}
             date={creationDraft?.date}
-            ipfsHash={creationDraft?.ipfsHash || 'Available after creation is created'}
+            ipfsHash={creationDraft?.ipfsHash || 'Available after creation is published'}
             materials={creationDraft?.materials?.map((x) => ({
               title: x?.title,
               fileType: x?.fileType,
@@ -78,7 +78,7 @@ export default function StepThree({
             <Grid md={qrcodeBase64 ? 8 : 9} xs={12} marginTop={{ xs: '12px', md: qrcodeBase64 ? '18px' : '36px' }}>
               <Grid display="flex" alignItems="flex-start" gap="12px">
                 <Box width="100%" className="bg-black color-white" style={{ wordWrap: 'break-word' }} padding="16px" borderRadius="12px" fontSize="16px">
-                  {creationDraft?.ipfsHash || 'Available after creation is created'}
+                  {creationDraft?.ipfsHash || 'Available after creation is published'}
                 </Box>
               </Grid>
             </Grid>

@@ -5,6 +5,7 @@
 .creation-media>img,
 .creation-media>video {
     aspect-ratio: 16/ 9;
+    object-fit: contain;
 }
 
 .creation-media>img,
