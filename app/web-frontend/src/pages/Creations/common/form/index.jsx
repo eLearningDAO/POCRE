@@ -34,7 +34,6 @@ function CreationForm({ id = null, activeStep = null, onCreationFetch = () => {}
     authorSuggestions,
     handleAuthorInputChange,
     resetCreationUpdate,
-    addStarToAuthorSuggesstion,
   } = useCreationForm({ onCreationFetch });
 
   useEffect(() => {
@@ -75,26 +74,7 @@ function CreationForm({ id = null, activeStep = null, onCreationFetch = () => {}
     }
 
     if (step === 3 && id) {
-      const updatedCreationDraft = creationDraft;
-      const updatedMaterials = [];
-      updatedCreationDraft.materials.map(
-        (material) => {
-          const authorWithoutStars = [];
-          const temporaryMaterial = material;
-          material.author.map(
-            (author) => {
-              const nameWithouStars = author.split('-')[0];
-              authorWithoutStars.push(nameWithouStars);
-              return true;
-            },
-          );
-          temporaryMaterial.author = authorWithoutStars;
-          updatedMaterials.push(temporaryMaterial);
-          return true;
-        },
-      );
-      updatedCreationDraft.materials = updatedMaterials;
-      await updateCreation({ ...updatedCreationDraft, is_draft: values.is_draft });
+      await updateCreation({ ...creationDraft, is_draft: values.is_draft });
     }
 
     if (step !== 3) {
@@ -157,7 +137,7 @@ function CreationForm({ id = null, activeStep = null, onCreationFetch = () => {}
             onComplete={handleValues}
             initialMaterials={creationDraft?.materials || []}
             // eslint-disable-next-line max-len
-            authorSuggestions={authorSuggestions && addStarToAuthorSuggesstion(authorSuggestions)}
+            authorSuggestions={authorSuggestions}
             onAuthorInputChange={handleAuthorInputChange}
             status={updateCreationStatus}
             loading={isUpdatingCreation}

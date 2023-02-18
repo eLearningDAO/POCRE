@@ -45,7 +45,7 @@ const makeCommonResource = async (
   let materials = [];
   if (requestBody.materials && requestBody.materials.length > 0) {
     materials = await Promise.all(requestBody.materials.map(async (x) => {
-      const authorName = x?.author?.[0]?.trim();
+      const authorName = x?.author?.[0]?.trim()?.replaceAll('★', '').trim();
 
       // get author for material
       const author = await (async () => {
@@ -125,44 +125,37 @@ const publishIPFSCreationOnChain = async (creationId) => {
   });
 };
 
-const transformCreationForForm = (creation) => ({
-  id: creation?.creation_id,
-  date: moment(creation?.creation_date).format('YYYY-MM-DD'), // moment auto converts utc to local time
-  description: creation?.creation_description,
-  title: creation?.creation_title,
-  is_draft: creation?.is_draft,
-  author: creation?.author?.user_name,
-  source: creation?.creation_link,
-  ipfsHash: creation?.ipfs_hash,
-  tags: creation?.tags?.map((tag) => tag?.tag_name),
-  materials: (creation?.materials || []).map((material) => (
-    {
-      id: material?.material_id,
-      author: material?.author?.user_name,
-      link: material?.material_link,
-      fileType: material?.material_type,
-      title: material?.material_title,
-    }
-  )),
-});
+const transformAuthorNameForDisplay = (author, user) => {
+  let authorName = `${author.user_name}${user.user_id === author?.user_id ? ' (You)' : ''}`;
+  if (author.reputation_stars) {
+    authorName += ` ${'★'.repeat(author.reputation_stars)}`;
+  }
+  return authorName.trim();
+};
 
-const addStarToAuthorSuggesstion = (authorNameSuggestions) => {
+const transformCreationForForm = (creation) => {
   const user = authUser.getUser();
-  const authorSuggestionsNew = [];
-  authorNameSuggestions.map(
-    (author) => {
-      if (author.reputation_stars) {
-        let authorName = `${author.user_name}${user.user_id === author?.user_id ? ' (You)-' : '-'}`;
-        authorName += '★'.repeat(author.reputation_stars);
-        authorSuggestionsNew.push(authorName);
-      } else {
-        const authorName = `${author.user_name}${user.user_id === author?.user_id ? ' (You)' : ''}`;
-        authorSuggestionsNew.push(authorName);
+
+  return {
+    id: creation?.creation_id,
+    date: moment(creation?.creation_date).format('YYYY-MM-DD'), // moment auto converts utc to local time
+    description: creation?.creation_description,
+    title: creation?.creation_title,
+    is_draft: creation?.is_draft,
+    author: creation?.author?.user_name,
+    source: creation?.creation_link,
+    ipfsHash: creation?.ipfs_hash,
+    tags: creation?.tags?.map((tag) => tag?.tag_name),
+    materials: (creation?.materials || []).map((material) => (
+      {
+        id: material?.material_id,
+        author: transformAuthorNameForDisplay(material?.author, user),
+        link: material?.material_link,
+        fileType: material?.material_type,
+        title: material?.material_title,
       }
-      return true;
-    },
-  );
-  return authorSuggestionsNew;
+    )),
+  };
 };
 
 const useCreationForm = ({
@@ -312,7 +305,6 @@ const useCreationForm = ({
     findAuthorsStatus,
     authorSuggestions,
     handleTagInputChange,
-    addStarToAuthorSuggesstion,
     getCreationDetails: (id) => setCreationId(id),
     transformedCreation: creation?.transformed,
     updateCreation,
