@@ -24,6 +24,7 @@ function MaterialCard({
   requestAccepted = true,
   username = 'jack 50',
   creationId = null,
+  materialId = null,
   userimage = '',
   userProfileId = '',
   link = 'https://www.youtube.com/watch?v=2BjYPFBh4Zc',
@@ -159,7 +160,7 @@ function MaterialCard({
             className="approveButton"
             onClick={
               () => {
-                navigate(`/litigations/create/${creationId}/${title}`);
+                navigate(`/litigations/create/${creationId}/${materialId}`);
               }
           }
           >

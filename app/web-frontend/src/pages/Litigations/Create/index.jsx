@@ -15,7 +15,7 @@ function CreateLitigation() {
     isCreatingLitigation,
     getMaterialDetail,
   } = useCreate();
-  const { creationId, materialName } = useParams();
+  const { creationId, materialId } = useParams();
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} padding={{ xs: '12px', md: '0' }}>
@@ -33,7 +33,11 @@ function CreateLitigation() {
         getMaterialDetail={getMaterialDetail}
         status={newLitigationStatus}
         parameterCreationId={creationId}
-        parameterMaterialName={materialName}
+        initialValues={
+          {
+            material: materialId,
+          }
+        }
         creatingLitigation={isCreatingLitigation}
       />
     </Grid>

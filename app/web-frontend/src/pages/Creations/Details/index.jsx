@@ -299,6 +299,7 @@ export default function CreationDetails() {
               <MaterialCard
                 key={index}
                 creationId={id}
+                materialId={x?.material_id}
                 mediaUrl={x?.material_link}
                 mediaType={x?.material_type}
                 link={x?.material_link}

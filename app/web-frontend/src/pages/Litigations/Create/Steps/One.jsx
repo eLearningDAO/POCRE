@@ -20,7 +20,6 @@ export default function StepOne({
   status = {},
   creatingLitigation = false,
   parameterCreationId = null,
-  parameterMaterialName = null,
 }) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(null);
@@ -72,7 +71,7 @@ export default function StepOne({
   //   if (parameterCreationId) {
   //     document.getElementsByName('material')[0].value = parameterMaterialName;
   //   }
-  // }, [materialsDetails]);
+  // }, [document.getElementsByName('material').length]);
   const onCreationSelect = async (event, value) => {
     setCreation(value?.id);
 
