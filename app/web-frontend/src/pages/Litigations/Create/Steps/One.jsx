@@ -62,7 +62,7 @@ export default function StepOne({
 
   useEffect(() => {
     if (parameterCreationId) {
-      document.getElementsByName('creationLink')[0].value = parameterCreationId;
+      document.getElementsByName('creationLink')[0].value = `${window.location.origin}/creations/${parameterCreationId}`;
       getMaterialsUsingCreationId(parameterCreationId);
     }
   }, [parameterCreationId]);

@@ -67,13 +67,19 @@ function CreationForm({ id = null, onCreationFetch = () => {} }) {
         (material) => {
           const authorWithoutStars = [];
           const temporaryMaterial = material;
-          material.author.map(
-            (author) => {
-              const nameWithouStars = author.split('-')[0];
-              authorWithoutStars.push(nameWithouStars);
-              return true;
-            },
-          );
+          if (typeof material.author !== 'string') {
+            material.author.map(
+              (author) => {
+                const nameWithouStars = author.split('-')[0];
+                authorWithoutStars.push(nameWithouStars);
+                return true;
+              },
+            );
+          } else {
+            const nameWithouStars = material.author.split('-')[0];
+            authorWithoutStars.push(nameWithouStars);
+            return true;
+          }
           temporaryMaterial.author = authorWithoutStars;
           updatedMaterials.push(temporaryMaterial);
           return true;
