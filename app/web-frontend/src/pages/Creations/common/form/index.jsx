@@ -78,7 +78,6 @@ function CreationForm({ id = null, onCreationFetch = () => {} }) {
           } else {
             const nameWithouStars = material.author.split('-')[0];
             authorWithoutStars.push(nameWithouStars);
-            return true;
           }
           temporaryMaterial.author = authorWithoutStars;
           updatedMaterials.push(temporaryMaterial);

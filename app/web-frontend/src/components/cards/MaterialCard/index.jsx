@@ -16,8 +16,11 @@ import RequestDeclineOutlinedIcon from 'assets/svgs/request-decline-outlined.svg
 import MediaPreview from 'components/media/preview';
 import MediaTile from 'components/media/tile';
 import { useState } from 'react';
+import authUser from 'utils/helpers/authUser';
 import { Link, useNavigate } from 'react-router-dom';
 import './index.css';
+
+const user = authUser.getUser();
 
 function MaterialCard({
   interactionBtns,
@@ -158,7 +161,7 @@ function MaterialCard({
             )
           }
           {
-            isClaimable && (
+            isClaimable && userProfileId !== user && (
             <Button
               className="approveButton"
               onClick={
