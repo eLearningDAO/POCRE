@@ -14,12 +14,12 @@ const stepInfo = [
   'Generate the proof of authorship',
 ];
 
-function CreationForm({ id = null, onCreationFetch = () => {} }) {
+function CreationForm({ id = null, activeStep = null, onCreationFetch = () => {} }) {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [creationDraft, setCreationDraft] = useState();
   const {
-    makeNewCreation,
+    makeCreation,
     newCreationStatus,
     loading,
     updateCreation,
@@ -33,7 +33,7 @@ function CreationForm({ id = null, onCreationFetch = () => {} }) {
     transformedCreation,
     authorSuggestions,
     handleAuthorInputChange,
-    addStarToAuthorSuggesstion,
+    resetCreationUpdate,
   } = useCreationForm({ onCreationFetch });
 
   useEffect(() => {
@@ -44,48 +44,42 @@ function CreationForm({ id = null, onCreationFetch = () => {} }) {
     if (id) getCreationDetails(id);
   }, [id]);
 
+  useEffect(() => {
+    if (id && [1, 2, 3].includes(activeStep)) {
+      setStep(activeStep);
+    }
+  }, [id, activeStep]);
+
   const handleValues = async (values) => {
     if (step === 1) {
-      if (id) {
-        setCreationDraft({ ...creationDraft, ...values });
-      } else {
-        setCreationDraft({ ...values, materials: creationDraft?.materials || null });
+      // create creation
+      if (!id) {
+        await makeCreation({ ...values, is_draft: true }); // this redirects to update creation page
+        return;
       }
+
+      // update creation
+      const draft = { ...creationDraft, ...values };
+      setCreationDraft(draft);
+      await updateCreation({ ...draft, is_draft: true });
     }
 
     if (step === 2) {
-      setCreationDraft({
+      const draft = {
         ...creationDraft,
         materials: values,
-      });
+      };
+      setCreationDraft(draft);
+      await updateCreation({ ...draft, is_draft: true });
     }
 
-    if (step === 3) {
-      const updatedCreationDraft = creationDraft;
-      const updatedMaterials = [];
-      updatedCreationDraft.materials.map(
-        (material) => {
-          const authorWithoutStars = [];
-          const temporaryMaterial = material;
-          material.author.map(
-            (author) => {
-              const nameWithouStars = author.split('-')[0];
-              authorWithoutStars.push(nameWithouStars);
-              return true;
-            },
-          );
-          temporaryMaterial.author = authorWithoutStars;
-          updatedMaterials.push(temporaryMaterial);
-          return true;
-        },
-      );
-      updatedCreationDraft.materials = updatedMaterials;
-      // eslint-disable-next-line max-len
-      await (id ? updateCreation({ ...updatedCreationDraft, is_draft: false }) : makeNewCreation({ ...creationDraft, is_draft: !!values?.is_draft }));
+    if (step === 3 && id) {
+      await updateCreation({ ...creationDraft, is_draft: values.is_draft });
     }
 
     if (step !== 3) {
       setStep(step + 1);
+      if (id) resetCreationUpdate();
     }
   };
 
@@ -133,6 +127,8 @@ function CreationForm({ id = null, onCreationFetch = () => {} }) {
               ...(creationDraft?.tags && { tags: creationDraft.tags }),
               ...(creationDraft?.date && { date: creationDraft.date }),
             }}
+            status={id ? updateCreationStatus : newCreationStatus}
+            loading={id ? isUpdatingCreation : loading}
           />
         )}
         {step === 2 && (
@@ -141,8 +137,10 @@ function CreationForm({ id = null, onCreationFetch = () => {} }) {
             onComplete={handleValues}
             initialMaterials={creationDraft?.materials || []}
             // eslint-disable-next-line max-len
-            authorSuggestions={authorSuggestions && addStarToAuthorSuggesstion(authorSuggestions)}
+            authorSuggestions={authorSuggestions}
             onAuthorInputChange={handleAuthorInputChange}
+            status={updateCreationStatus}
+            loading={isUpdatingCreation}
           />
         )}
         {step === 3 && (

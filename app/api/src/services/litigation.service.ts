@@ -25,6 +25,7 @@ interface ILitigation {
   assumed_author_response: TAssumedAuthorResponseTypes;
   winner: string;
   ownership_transferred: boolean;
+  is_draft?: boolean;
 }
 interface ILitigationQuery {
   limit: number;
@@ -61,6 +62,7 @@ interface ILitigationDoc {
   assumed_author_response: TAssumedAuthorResponseTypes;
   winner: string;
   ownership_transferred: boolean;
+  is_draft: boolean;
 }
 
 /**
@@ -153,12 +155,14 @@ export const verifyLitigationDecisionDuplicates = async (
  * @returns {Promise<ILitigationDoc>}
  */
 export const createLitigation = async (litigationBody: ILitigation): Promise<ILitigationDoc> => {
-  // verify if the creation can be litigated
-  await verifyLitigationPossibilityForCreation(litigationBody.creation_id, litigationBody.material_id);
+  if (!litigationBody.is_draft) {
+    // verify if the creation can be litigated
+    await verifyLitigationPossibilityForCreation(litigationBody.creation_id, litigationBody.material_id);
 
-  // verify if decision/s already exist for a litigation, throw error if a decision is found
-  if (litigationBody.decisions && litigationBody.decisions.length > 0) {
-    await verifyLitigationDecisionDuplicates(litigationBody.decisions);
+    // verify if decision/s already exist for a litigation, throw error if a decision is found
+    if (litigationBody.decisions && litigationBody.decisions.length > 0) {
+      await verifyLitigationDecisionDuplicates(litigationBody.decisions);
+    }
   }
 
   try {
@@ -178,10 +182,11 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         voting_start,
         voting_end,
         assumed_author_response,
-        winner
+        winner,
+        is_draft
       ) 
       values 
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) 
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) 
       RETURNING *;`,
       [
         litigationBody.litigation_title,
@@ -198,6 +203,7 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         litigationBody.voting_end,
         litigationBody.assumed_author_response,
         litigationBody.winner,
+        litigationBody.is_draft,
       ]
     );
     const litigation = result.rows[0];

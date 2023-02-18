@@ -6,8 +6,10 @@ import Form from 'components/uicore/Form';
 import Input from 'components/uicore/Input';
 import Loader from 'components/uicore/Loader';
 import Select from 'components/uicore/Select';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { stepOneValidation } from './validation';
+
+let isDraft = false;
 
 export default function StepOne({
   onComplete = () => {},
@@ -19,6 +21,11 @@ export default function StepOne({
   getMaterialDetail = () => {},
   status = {},
   creatingLitigation = false,
+  handleLitigationDraftDelete = () => {},
+  isDeletingDraft,
+  deletionError,
+  resetDeletionErrors,
+  isExistingDraft,
 }) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(null);
@@ -57,11 +64,8 @@ export default function StepOne({
     }
   };
 
-  // const onAuthorSelect = (event, value) => {
-  //   setAuthor(value?.id);
-  // };
-
   const handleSubmit = async (values) => {
+    if (deletionError) resetDeletionErrors();
     // check if material is present
     if (materialsDetails?.length > 0 && !values?.material) {
       setError('Invalid material selected, please select one from the suggested list');
@@ -88,7 +92,7 @@ export default function StepOne({
 
     // submit
     await onComplete({
-      ...values, creation: creationUUIDFromLink || creation, author,
+      ...values, creation: creationUUIDFromLink || creation, author, is_draft: isDraft,
     });
   };
 
@@ -133,11 +137,38 @@ export default function StepOne({
     }
   };
 
+  useEffect(() => {
+    if (initialValues.creation) {
+      setCreationUUIDFromLink(initialValues?.creation?.creation_id);
+      onCreationInputChange({ target: { value: initialValues?.creation?.creation_title } });
+      const input = document.getElementById('creation-link-input');
+      input.value = `${window.location.origin}/creations/${initialValues?.creation?.creation_id}`;
+
+      if (initialValues?.creation?.materials?.length > 0) {
+        const { materials } = initialValues?.creation;
+        const claimableMaterials = materials.filter((x) => x.is_claimable);
+        if (claimableMaterials?.length === 0) {
+          setError('All materials of this creation are used in different litigations. This creation cannot be litigated');
+        } else {
+          setError(null);
+        }
+        setMaterialsDetails(claimableMaterials);
+      } else {
+        // get details of creation author
+        const creationAuthor = initialValues?.creation?.author;
+        setCreationOrMaterialAuthor(creationAuthor);
+      }
+    }
+  }, [initialValues?.creation]);
+
   return (
     <Form
       onSubmit={handleSubmit}
       validationSchema={stepOneValidation}
-      initialValues={initialValues}
+      initialValues={{
+        title: initialValues?.title,
+        description: initialValues?.description,
+      }}
       preventSubmitOnEnter
     >
       <Grid item xs={12}>
@@ -206,6 +237,7 @@ export default function StepOne({
           </Grid>
           <Grid xs={12} md={10} marginTop={{ xs: '8px' }}>
             <Input
+              id="creation-link-input"
               variant="dark"
               placeholder="Paste the link of the creation with the authorship infringement"
               name="creationLink"
@@ -256,14 +288,14 @@ export default function StepOne({
               </>
             )}
 
-          {error && (
+          {(error || deletionError) && (
             <>
               <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
                 .
               </Grid>
               <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
                 <Box width="100%" className="bg-red color-white" padding="16px" borderRadius="12px" fontSize="16px">
-                  {error}
+                  {(error || deletionError)}
                 </Box>
               </Grid>
             </>
@@ -279,9 +311,19 @@ export default function StepOne({
       </Grid>
 
       <Grid item xs={12} className="collectionButtons">
-        <Button type="submit" className="nextCollectionButton" style={{ marginLeft: 'auto' }}>
+        {isExistingDraft && (
+          <Button type="button" disabled={loading || creatingLitigation || isDeletingDraft} className="saveDraftButton bg-red" style={{ marginRight: 'auto', marginLeft: 0 }} onClick={handleLitigationDraftDelete}>
+            {(loading || creatingLitigation || isDeletingDraft) ? <Loader />
+              : 'Delete Draft'}
+          </Button>
+        )}
+        <Button type="submit" disabled={loading || creatingLitigation} className="saveDraftButton" style={{ marginLeft: 'auto', marginRight: '12px' }} onClick={() => { isDraft = true; }}>
           {loading || creatingLitigation ? <Loader />
-            : 'Next'}
+            : `${initialValues?.creation ? 'Update' : 'Save'} Draft`}
+        </Button>
+        <Button type="submit" disabled={loading || creatingLitigation} className="nextCollectionButton" onClick={() => { isDraft = false; }}>
+          {loading || creatingLitigation ? <Loader />
+            : 'Publish'}
         </Button>
       </Grid>
     </Form>

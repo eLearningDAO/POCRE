@@ -162,7 +162,7 @@ export const updateCreationById = catchAsync(async (req, res): Promise<void> => 
   // get the creation type from link
   const creationType = req.body.creation_link
     ? await getSupportedFileTypeFromLink(req.body.creation_link)
-    : foundCreation.creation_link;
+    : foundCreation.creation_type;
 
   // update creation
   const updatedCreation = await creationService.updateCreationById(
