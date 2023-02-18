@@ -28,16 +28,10 @@ export const getLitigationById = catchAsync(async (req, res): Promise<void> => {
   res.send(litigation);
 });
 
-export const createLitigation = catchAsync(async (req, res): Promise<void> => {
+export const createLitigation = catchAsync(async (req, res): Promise<void | any> => {
   // check if reference docs exist
   const creation = await getCreationById(req.body.creation_id as string, { is_draft: false }); // verify creation, will throw an error if creation not found
-  let material;
-  if (req.body.material_id) {
-    material = await getMaterialById(req.body.material_id as string); // verify material, will throw an error if material not found
-  }
-  if (req.body.decisions && req.body.decisions.length > 0) {
-    await Promise.all(req.body.decisions.map((id: string) => getDecisionById(id))); // verify decisions, will throw an error if any decision is not found
-  }
+  const material = req.body.material_id ? await getMaterialById(req.body.material_id as string) : null; // verify material, will throw an error if material not found
 
   // auth user is the issuer
   const issuerId = (req.user as IUserDoc).user_id;
@@ -66,6 +60,7 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
   const newLitigation = await litigationService.createLitigation({
     ...req.body,
     assumed_author: material ? material.author_id : creation?.author_id,
+    assumed_author_response: litigationStatusTypes.PENDING_RESPONSE,
     issuer_id: issuerId,
     winner: issuerId,
     // reconcilation days
@@ -76,13 +71,17 @@ export const createLitigation = catchAsync(async (req, res): Promise<void> => {
     voting_end: moment()
       .add(config.litigation.reconcilation_days + config.litigation.voting_days, 'days')
       .toISOString(),
+    is_draft: req.body.is_draft,
   });
 
-  // make creation not claimable
-  if (!material && creation) await updateCreationById(creation.creation_id, { is_claimable: false });
+  // when not draft then make associated items non claimable
+  if (!req.body.is_draft) {
+    // make creation not claimable
+    if (!material && creation) await updateCreationById(creation.creation_id, { is_claimable: false });
 
-  // make material not claimable
-  if (material) await updateMaterialById(material.material_id, { is_claimable: false });
+    // make material not claimable
+    if (material) await updateMaterialById(material.material_id, { is_claimable: false });
+  }
 
   res.send(newLitigation);
 });
@@ -101,6 +100,76 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
   const litigation: any = await litigationService.getLitigationById(req.params.litigation_id, {
     participant_id: participantId,
   });
+
+  // setup litigation if it remains in draft or just got out of draft (only issuer can update)
+  if (
+    participantId === litigation.issuer_id &&
+    ((litigation.is_draft && req.body.is_draft) || (litigation.is_draft && !req.body.is_draft))
+  ) {
+    // check if reference docs exist
+    const creation = await getCreationById(req.body.creation_id as string, { is_draft: false }); // verify creation, will throw an error if creation not found
+    const material = req.body.material_id ? await getMaterialById(req.body.material_id as string) : null; // verify material, will throw an error if material not found
+
+    // check if assumed author and issuer are same for creation
+    if (!material && creation?.author_id === litigation.issuer_id) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'creation is already owned');
+    }
+
+    // check if assumed author and issuer are same for material
+    if (material?.author_id === litigation.issuer_id) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'material is already owned');
+    }
+
+    // check if creation can be claimed
+    if (!creation?.is_claimable) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'creation is not claimable');
+    }
+
+    // check if material can be claimed
+    if (material && !material?.is_claimable) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'material is not claimable');
+    }
+
+    // update litigation
+    const updatedLitigation = await litigationService.updateLitigationById(
+      req.params.litigation_id,
+      {
+        litigation_title: req.body.litigation_title || litigation.litigation_title,
+        litigation_description: req.body.litigation_description || litigation.litigation_description,
+        assumed_author: material ? material.author_id : creation?.author_id,
+        ...(litigation.is_draft &&
+          !req.body.is_draft && {
+            // reconcilation days
+            reconcilation_start: moment().toISOString(),
+            reconcilation_end: moment().add(config.litigation.reconcilation_days, 'days').toISOString(),
+            // voting days (start after reconcilation days)
+            voting_start: moment().add(config.litigation.reconcilation_days, 'days').toISOString(),
+            voting_end: moment()
+              .add(config.litigation.reconcilation_days + config.litigation.voting_days, 'days')
+              .toISOString(),
+            is_draft: false,
+          }),
+      },
+      { participant_id: participantId }
+    );
+
+    // when not draft then make associated items non claimable
+    if (!req.body.is_draft) {
+      // make creation not claimable
+      if (!material && creation) await updateCreationById(creation.creation_id, { is_claimable: false });
+
+      // make material not claimable
+      if (material) await updateMaterialById(material.material_id, { is_claimable: false });
+    }
+
+    res.send(updatedLitigation);
+    return;
+  }
+
+  // block update if litigation was moved from live to draft
+  if (!litigation.is_draft && req.body.is_draft) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `published litigation cannot be drafted`);
+  }
 
   // get the votes if any
   const decisions =
@@ -372,13 +441,15 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     {
       ...req.body,
       winner,
+      creation_id: litigation.creation_id,
+      material_id: litigation.material_id,
       recognitions: recognitionIds,
       assumed_author_response: assumedAuthorResponse,
       ownership_transferred: isOwnershipAlreadyTransferred,
       ...dates,
       ...(shouldTransferOwnership && { ownership_transferred: true }),
     },
-    { participant_id: (req.user as IUserDoc).user_id }
+    { participant_id: participantId }
   );
   res.send(updatedLitigation);
 });

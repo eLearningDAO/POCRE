@@ -12,6 +12,7 @@ import RecognitionsHome from 'pages/Recognitions/Home';
 import LitigationsCreate from 'pages/Litigations/Create';
 import LitigationsDetails from 'pages/Litigations/Details';
 import LitigationsHome from 'pages/Litigations/Home';
+import UpdateLitigation from 'pages/Litigations/Update';
 // wallet pages
 import WalletHome from 'pages/Wallet/Home';
 import WalletPublic from 'pages/Wallet/Public';
@@ -155,6 +156,16 @@ function AppRoutes() {
             <Protected>
               <Layout displaySidebar>
                 <LitigationsDetails />
+              </Layout>
+            </Protected>
+          )}
+        />
+        <Route
+          path="/litigations/:id/update"
+          element={(
+            <Protected>
+              <Layout displaySidebar>
+                <UpdateLitigation />
               </Layout>
             </Protected>
           )}

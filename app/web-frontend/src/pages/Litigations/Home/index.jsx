@@ -16,7 +16,7 @@ function Litigation() {
   // get userInfo from the globale state with help of zustand store hook !
   // const user = useUserInfo((s) => s.user);
   const navigate = useNavigate();
-  const [activeLitigation, setActiveLitigation] = useState('inReconcilation');
+  const [activeLitigation, setActiveLitigation] = useState('inDraft');
   const {
     isFetchingLitigations,
     litigations,
@@ -37,6 +37,10 @@ function Litigation() {
 
   const redirectToCreateLitigation = () => {
     navigate('/litigations/create');
+  };
+
+  const redirectToUpdateLitigation = (id) => {
+    navigate(`/litigations/${id}/update`);
   };
 
   if (isFetchingLitigations) return <Loader />;
@@ -79,6 +83,14 @@ function Litigation() {
         </Grid>
 
         <div className="toggle-bar">
+          <Button
+            className={`btn ${activeLitigation === 'inDraft' && 'btn-active'}`}
+            onClick={() => setActiveLitigation('inDraft')}
+          >
+            In draft (
+            {litigations?.inDraft?.length}
+            )
+          </Button>
           <Button
             className={`btn ${activeLitigation === 'inReconcilation' && 'btn-active'}`}
             onClick={() => setActiveLitigation('inReconcilation')}
@@ -132,6 +144,10 @@ function Litigation() {
                   // eslint-disable-next-line unicorn/prefer-module
                   image: x?.assumed_author?.image_url || require('assets/images/profile-placeholder.png'),
                 }}
+                {...(activeLitigation === 'inDraft' && {
+                  mode: 'drafted',
+                  onUpdate: () => redirectToUpdateLitigation(x?.litigation_id),
+                })}
                 {...(activeLitigation === 'inVoting' && {
                   mode: 'info',
                 })}

@@ -12,6 +12,7 @@ const inputVariants = {
 
 function Input(
   {
+    id,
     type,
     name,
     placeholder,
@@ -45,6 +46,7 @@ function Input(
             onInput={onInput}
             renderInput={(parameters) => (
               <TextField
+                id={id}
                 {...parameters}
                 variant="standard"
                 fullWidth={fullWidth}
@@ -58,6 +60,7 @@ function Input(
         )
         : (
           <TextField
+            id={id}
             type={type}
             variant="standard"
             InputProps={{
