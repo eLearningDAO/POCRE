@@ -302,6 +302,7 @@ export default function CreationDetails() {
                 materialId={x?.material_id}
                 mediaUrl={x?.material_link}
                 mediaType={x?.material_type}
+                isClaimable={x?.is_claimable}
                 link={x?.material_link}
                 title={x?.material_title}
                 description={x?.material_description}

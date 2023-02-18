@@ -25,6 +25,7 @@ function MaterialCard({
   username = 'jack 50',
   creationId = null,
   materialId = null,
+  isClaimable = false,
   userimage = '',
   userProfileId = '',
   link = 'https://www.youtube.com/watch?v=2BjYPFBh4Zc',
@@ -156,16 +157,20 @@ function MaterialCard({
               />
             )
           }
-          <Button
-            className="approveButton"
-            onClick={
-              () => {
-                navigate(`/litigations/create/${creationId}/${materialId}`);
-              }
+          {
+            isClaimable && (
+            <Button
+              className="approveButton"
+              onClick={
+                () => {
+                  navigate(`/litigations/create/${creationId}/${materialId}`);
+                }
+            }
+            >
+              Quick Claim
+            </Button>
+            )
           }
-          >
-            Quick Claim
-          </Button>
           {showReconcilateOptions && (
             <Grid display="flex" gap="12px" flexWrap={{ md: 'wrap', lg: 'initial' }} justifyContent={{ md: 'center', lg: 'initial' }}>
               <Button className={requestAccepted ? 'approveButton' : 'pendingButton'}>
