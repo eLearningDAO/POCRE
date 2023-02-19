@@ -77,8 +77,9 @@ function Home() {
           <h4 className="home-title">Latest Co-Creations</h4>
           <div>
             {isTrendingListFetched ? <Loader /> : trendingList
-              && trendingList.map((trending) => (
+              && trendingList.map((trending, index) => (
                 <TrendingCard
+                  key={index}
                   mediaUrl={trending?.creation_link}
                   trending={trending}
                   handleCreationCardClick={handleCreationCardClick}
@@ -90,8 +91,9 @@ function Home() {
           <h4 className="home-title">Top Authors</h4>
           <div>
             {isTopAuthorListFetched ? <Loader /> : topAuthorList
-              && topAuthorList.map((author) => (
+              && topAuthorList.map((author, index) => (
                 <TopAuthorCard
+                  key={index}
                   author={author}
                   handleAuthorCardClick={handleAuthorCardClick}
                 />
@@ -102,8 +104,9 @@ function Home() {
           <h4 className="home-title">Latest recognized materials</h4>
           <div>
             {isMaterialListFetched ? <Loader /> : materialList
-              && materialList.map((material) => (
+              && materialList.map((material, index) => (
                 <LatestNewsCard
+                  key={index}
                   material={material}
                   mediaUrl={material?.material_link}
                 />
