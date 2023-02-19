@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Litigation } from 'api/requests';
-import { CHARGES, TRANSACTION_PURPOSES } from 'config';
 import moment from 'moment';
 import { useState } from 'react';
 import statusTypes from 'utils/constants/statusTypes';
 import authUser from 'utils/helpers/authUser';
+import { CHARGES, TRANSACTION_PURPOSES } from 'config';
 import { transactADAToPOCRE } from 'utils/helpers/wallet';
 
 const user = authUser.getUser();
@@ -56,12 +56,14 @@ const useHome = () => {
 
       // calculate open/closed and in progress litigations
       litigationResponse = {
+        inDraft: litigationResponse?.results?.filter((x) => x.is_draft),
         // displayed to assumed authors and claimers
         inReconcilation: litigationResponse?.results?.filter(
           (x) => (
             moment(toDate(x?.reconcilation_start)).isBefore(now)
             && moment(toDate(x?.reconcilation_end)).isAfter(now)
             && x?.assumed_author_response === statusTypes.PENDING_RESPONSE
+            && !x.is_draft
           ),
         ),
         // displayed to assumed authors and claimers
@@ -71,6 +73,7 @@ const useHome = () => {
             && moment(toDate(x?.voting_end)).isAfter(now)
             && x?.assumed_author_response === statusTypes.START_LITIGATION
             && !x?.toJudge
+            && !x.is_draft
           ),
         ),
         // displayed to jury members only
@@ -80,17 +83,21 @@ const useHome = () => {
             && moment(toDate(x?.voting_end)).isAfter(now)
             && x?.assumed_author_response === statusTypes.START_LITIGATION
             && x?.toJudge
+            && !x.is_draft
           ),
         ),
         // displayed to all users
         closed: litigationResponse?.results?.filter(
           (x) => (
-            moment(toDate(x?.voting_end)).isBefore(now)
-            || x?.assumed_author_response === statusTypes.WITHDRAW_CLAIM
-            || (
-              // no response from author in reconilation phase (author lost claim)
-              moment(toDate(x?.reconcilation_end)).isBefore(now)
-              && x?.assumed_author_response === statusTypes.PENDING_RESPONSE
+            !x.is_draft
+            && (
+              moment(toDate(x?.voting_end)).isBefore(now)
+              || x?.assumed_author_response === statusTypes.WITHDRAW_CLAIM
+              || (
+                // no response from author in reconilation phase (author lost claim)
+                moment(toDate(x?.reconcilation_end)).isBefore(now)
+                && x?.assumed_author_response === statusTypes.PENDING_RESPONSE
+              )
             )
           ),
         ),
@@ -98,10 +105,11 @@ const useHome = () => {
 
       // convert litigation utc dates
       litigationResponse = {
-        inReconcilation: litigationResponse?.inReconcilation.map((x) => formatDates(x)),
-        inVoting: litigationResponse?.inVoting.map((x) => formatDates(x)),
-        toVote: litigationResponse?.toVote.map((x) => formatDates(x)),
-        closed: litigationResponse?.closed.map((x) => formatDates(x)),
+        inDraft: litigationResponse?.inDraft?.map((x) => formatDates(x)),
+        inReconcilation: litigationResponse?.inReconcilation?.map((x) => formatDates(x)),
+        inVoting: litigationResponse?.inVoting?.map((x) => formatDates(x)),
+        toVote: litigationResponse?.toVote?.map((x) => formatDates(x)),
+        closed: litigationResponse?.closed?.map((x) => formatDates(x)),
       };
 
       return { ...litigationResponse };

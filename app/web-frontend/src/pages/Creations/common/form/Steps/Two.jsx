@@ -15,6 +15,14 @@ import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import useLinkValidation from './useLinkValidation';
 import { stepTwoAuthorInviteValidation, stepTwoMaterialValidation } from './validation';
 
+const transformAuthorNameForDisplay = (author, user) => {
+  let authorName = `${author.user_name}${user.user_id === author?.user_id ? ' (You)' : ''}`;
+  if (author.reputation_stars) {
+    authorName += ` ${'★'.repeat(author.reputation_stars)}`;
+  }
+  return authorName.trim();
+};
+
 function NewMaterial({
   material,
   authorSuggestions = [],
@@ -22,6 +30,7 @@ function NewMaterial({
   onRemoveMaterial = () => {},
   onAuthorInputChange = () => {},
 }) {
+  const user = authUser.getUser();
   const [editMode, setEditMode] = useState(false);
 
   const { linkError, validateLink, isValidatingLink } = useLinkValidation({ customErrorMessage: 'Invalid material link' });
@@ -58,7 +67,7 @@ function NewMaterial({
         initialValues={{
           title: material.title,
           link: material.link,
-          author: material.author,
+          author: [material.author],
         }}
       >
         <Grid
@@ -125,7 +134,9 @@ function NewMaterial({
               addTagOnEnter={false}
               onInput={onAuthorInputChange}
               placeholder="Type author name and select from suggestions below"
-              tagSuggestions={authorSuggestions.map((x) => x.user_name) || []}
+              tagSuggestions={(authorSuggestions || []).map(
+                (author) => transformAuthorNameForDisplay(author, user),
+              )}
             />
           </Grid>
 
@@ -308,20 +319,14 @@ function AuthorInviteModal({ onClose = () => {}, onAuthorDetailsSubmit }) {
   );
 }
 
-const getAuthor = (author, user) => {
-  let authorName = `${author.user_name}${user.user_id === author?.user_id ? ' (You)-' : '-'}`;
-  if (author.reputation_stars) {
-    authorName += '★'.repeat(author.reputation_stars);
-  }
-  return authorName;
-};
-
 export default function StepTwo({
   onComplete = () => {},
   onBack = () => {},
   initialMaterials = [],
   authorSuggestions = [],
   onAuthorInputChange = () => {},
+  status = {},
+  loading = false,
 }) {
   const user = authUser.getUser();
   const [formKey, setFormKey] = useState(new Date().toISOString());
@@ -430,7 +435,9 @@ export default function StepTwo({
                 onInput={onAuthorInputChange}
                 selectedTags={invitedAuthor ? [invitedAuthor] : []}
                 placeholder="Type author name and select from suggestions below"
-                tagSuggestions={(authorSuggestions || []).map((author) => getAuthor(author, user))}
+                tagSuggestions={(authorSuggestions || []).map(
+                  (author) => transformAuthorNameForDisplay(author, user),
+                )}
               />
               <Button className="inviteButton" style={{ width: 'fit-content', paddingLeft: '24px', paddingRight: '24px' }} onClick={() => setShowInviteAuthorDialog(true)}>
                 <img width={17} style={{ marginRight: '10px' }} alt="invite-icon" src={InviteIcon} />
@@ -472,15 +479,28 @@ export default function StepTwo({
             onRemoveMaterial={() => removeMaterial(index)}
             onUpdate={(newData) => updateMaterial(index, newData)}
             onAuthorInputChange={onAuthorInputChange}
-            authorSuggestions={authorSuggestions}
+            authorSuggestions={authorSuggestions || []}
           />
         ))}
       </Grid>
 
+      {(status.error || status.success) && (
+        <>
+          <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center" />
+          <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
+            <Box width="100%" className={`color-white ${status.success ? 'bg-green' : 'bg-red'}`} padding="16px" borderRadius="12px" fontSize="16px">
+              {(status.success ? 'Draft Saved' : status.error)}
+            </Box>
+          </Grid>
+        </>
+      )}
+
       <Grid item xs={12} className="collectionButtons">
         <Button className="backCollectionButton" onClick={onBack}>Back</Button>
         <Button className="backCollectionButton" style={{ marginLeft: 'auto', marginRight: '12px' }} onClick={handleSkipClick}>Skip</Button>
-        <Button type="submit" className="nextCollectionButton" onClick={handleNextClick}>Next</Button>
+        <Button type="submit" className="nextCollectionButton" onClick={handleNextClick}>
+          {loading ? <Loader /> : 'Next'}
+        </Button>
       </Grid>
     </>
   );

@@ -157,6 +157,7 @@ const init = async (): Promise<QueryResult<any>> => {
       assumed_author_response assumed_author_response_enums NOT NULL,
       ownership_transferred bool default false,
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+      is_draft bool default false,
       CONSTRAINT material_id
           FOREIGN KEY(material_id) 
           REFERENCES material(material_id)
