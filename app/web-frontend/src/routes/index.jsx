@@ -141,7 +141,7 @@ function AppRoutes() {
           )}
         />
         <Route
-          path="/litigations/create/:creationId/:materialId"
+          path="/litigations/create?creationId{}&materialId={}"
           element={(
             <Protected>
               <Layout displaySidebar>

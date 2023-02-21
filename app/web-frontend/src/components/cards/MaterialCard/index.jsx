@@ -16,18 +16,13 @@ import RequestDeclineOutlinedIcon from 'assets/svgs/request-decline-outlined.svg
 import MediaPreview from 'components/media/preview';
 import MediaTile from 'components/media/tile';
 import { useState } from 'react';
-import authUser from 'utils/helpers/authUser';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './index.css';
-
-const user = authUser.getUser();
 
 function MaterialCard({
   interactionBtns,
   requestAccepted = true,
   username = 'jack 50',
-  creationId = null,
-  materialId = null,
   isClaimable = false,
   userimage = '',
   userProfileId = '',
@@ -38,6 +33,7 @@ function MaterialCard({
   showReconcilateOptions = true,
   onDeleteClick = () => {},
   onEditClick = () => {},
+  onQuickClaim = () => {},
   canHide = true,
   canEdit = true,
   canDelete = true,
@@ -46,8 +42,6 @@ function MaterialCard({
   recognitionStatus = null,
 }) {
   const [showMediaPreview, setShowMediaPreview] = useState(null);
-  const navigate = useNavigate();
-
   return (
     <>
       {showMediaPreview && (
@@ -161,14 +155,10 @@ function MaterialCard({
             )
           }
           {
-            isClaimable && userProfileId !== user && (
+            isClaimable && (
             <Button
               className="approveButton"
-              onClick={
-                () => {
-                  navigate(`/litigations/create/${creationId}/${materialId}`);
-                }
-            }
+              onClick={onQuickClaim}
             >
               Quick Claim
             </Button>

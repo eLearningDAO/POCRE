@@ -1,10 +1,12 @@
-import { useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import LitigationForm from '../common/form';
 
 function CreateLitigation() {
-  const { creationId, materialId } = useParams();
+  const [searchParameters] = useSearchParams();
+  const creationId = searchParameters.get('creationId');
+  const materialId = searchParameters.get('materialId');
   return (
-    <LitigationForm creationId={creationId} materialId={materialId} />
+    <LitigationForm autofillClaim={{ creationId, materialId }} />
   );
 }
 

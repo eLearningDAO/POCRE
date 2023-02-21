@@ -8,7 +8,7 @@ import useLitigationForm from './useLitigationForm';
 
 function LitigationForm(
   {
-    id = null, onLitigationFetch = () => {}, creationId = null, materialId = null,
+    id = null, onLitigationFetch = () => {}, autofillClaim = {},
   },
 ) {
   const navigate = useNavigate();
@@ -66,8 +66,8 @@ function LitigationForm(
           description: litigation?.litigation_description,
           creation: litigation?.creation,
         }}
-        parameterCreationId={creationId}
-        parameterMaterialId={materialId}
+        parameterCreationId={autofillClaim.creationId}
+        parameterMaterialId={autofillClaim.materialId}
         authorSuggestions={authorSuggestions}
         onAuthorInputChange={handleAuthorInputChange}
         creationSuggestions={creationSuggestions}
