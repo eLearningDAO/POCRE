@@ -69,7 +69,7 @@ function CreationPreview({
               <span>{link || '-'}</span>
 
               <span className="heading">IPFS</span>
-              <span>{ipfsHash || '-'}</span>
+              <span>{ipfsHash || 'Available after creation is published'}</span>
 
               <span className="heading">Date</span>
               <span>{date || '-'}</span>
