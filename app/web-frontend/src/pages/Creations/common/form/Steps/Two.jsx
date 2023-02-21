@@ -339,18 +339,10 @@ export default function StepTwo({
   const handleValues = async (values) => {
     const response = await validateLink(values?.link);
     if (!response) return;
-    const updatedValues = values;
-    const authorWithoutStars = [];
-    updatedValues.author.map(
-      (author) => {
-        const nameWithouStars = author.split('-')[0];
-        authorWithoutStars.push(nameWithouStars);
-        return true;
-      },
-    );
-    updatedValues.author = authorWithoutStars;
-    setMaterials([...materials, updatedValues]);
+
+    setMaterials([...materials, values]);
     setInvitedAuthor(null);
+
     setFormKey(new Date().toISOString());
   };
 
