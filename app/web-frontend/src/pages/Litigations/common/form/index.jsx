@@ -66,8 +66,8 @@ function LitigationForm(
           description: litigation?.litigation_description,
           creation: litigation?.creation,
         }}
-        parameterCreationId={autofillClaim.creationId}
-        parameterMaterialId={autofillClaim.materialId}
+        creationIdToClaim={autofillClaim.creationId}
+        materialIdToClaim={autofillClaim.materialId}
         authorSuggestions={authorSuggestions}
         onAuthorInputChange={handleAuthorInputChange}
         creationSuggestions={creationSuggestions}

@@ -17,8 +17,8 @@ export default function StepOne({
   // authorSuggestions = [],
   creationSuggestions = [],
   // onAuthorInputChange = () => {},
-  parameterCreationId = null,
-  parameterMaterialId = null,
+  creationIdToClaim = null,
+  materialIdToClaim = null,
   onCreationInputChange = () => {},
   getMaterialDetail = () => {},
   status = {},
@@ -69,11 +69,11 @@ export default function StepOne({
   };
 
   useEffect(() => {
-    if (parameterCreationId) {
-      document.getElementsByName('creationLink')[0].value = `${window.location.origin}/creations/${parameterCreationId}`;
-      getMaterialsUsingCreationId(parameterCreationId);
+    if (creationIdToClaim) {
+      document.getElementsByName('creationLink')[0].value = `${window.location.origin}/creations/${creationIdToClaim}`;
+      getMaterialsUsingCreationId(creationIdToClaim);
     }
-  }, [parameterCreationId]);
+  }, [creationIdToClaim]);
 
   const onCreationSelect = async (event, value) => {
     setCreation(value?.id);
@@ -181,7 +181,7 @@ export default function StepOne({
       initialValues={{
         title: initialValues?.title,
         description: initialValues?.description,
-        material: parameterMaterialId,
+        material: materialIdToClaim,
       }}
       preventSubmitOnEnter
     >
