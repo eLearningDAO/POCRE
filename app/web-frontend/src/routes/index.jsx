@@ -141,16 +141,6 @@ function AppRoutes() {
           )}
         />
         <Route
-          path="/litigations/create?creationId{}&materialId={}"
-          element={(
-            <Protected>
-              <Layout displaySidebar>
-                <LitigationsCreate />
-              </Layout>
-            </Protected>
-          )}
-        />
-        <Route
           path="/litigations/:id"
           element={(
             <Protected>
