@@ -70,7 +70,7 @@ export default function StepOne({
 
   useEffect(() => {
     if (creationIdToClaim) {
-      document.getElementsByName('creationLink')[0].value = `${window.location.origin}/creations/${creationIdToClaim}`;
+      document.getElementById('creation-link-input').value = `${window.location.origin}/creations/${creationIdToClaim}`;
       getMaterialsUsingCreationId(creationIdToClaim);
     }
   }, [creationIdToClaim]);
