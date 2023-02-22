@@ -75,11 +75,6 @@ export default function StepOne({
     }
   }, [parameterCreationId]);
 
-  // useEffect(() => {
-  //   if (parameterCreationId) {
-  //     document.getElementsByName('material')[0].value = parameterMaterialName;
-  //   }
-  // }, [document.getElementsByName('material').length]);
   const onCreationSelect = async (event, value) => {
     setCreation(value?.id);
 
