@@ -17,8 +17,6 @@ const getWalletAddress = async (walletName) => {
     const wallet = await BrowserWallet.enable(walletName);
 
     const netId = await wallet.getNetworkId();
-    // eslint-disable-next-line no-console
-    console.log(netId, POCRE_NETWORKS.MAINNET);
 
     // get used address in wallet
     const usedAddresses = await wallet.getUsedAddresses();
