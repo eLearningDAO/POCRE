@@ -14,6 +14,7 @@ const useLogin = ({ inviteToken = null }) => {
   const getWalletsList = async () => setAvailableWallets(await getAvailableWallets());
 
   const getSelectedWalletAddress = async (wallet) => {
+    const walletError = process.env.REACT_APP_HOST_TYPE === 'production' ? 'Wallets connected to test networks are not allowed!' : 'Wallets connected to the main network are not allowed!';
     try {
       setSelectedWalletAddressHashed(null);
       setLoadingWalletAddress(true);
@@ -23,12 +24,12 @@ const useLogin = ({ inviteToken = null }) => {
       const walletAddress = await getWalletAddress(wallet);
 
       // if wallet address is not found
-      if (!walletAddress) { setWalletAddressError('Cannot login with this wallet!'); return; }
+      if (!walletAddress) { setWalletAddressError(walletError); return; }
 
       setSelectedWalletAddressOriginal(walletAddress);
       setSelectedWalletAddressHashed(`${walletAddress.slice(0, 10)}..........${walletAddress.slice(-10)}`);
     } catch {
-      setWalletAddressError('Cannot login with this wallet!'); return;
+      setWalletAddressError(walletError); return;
     } finally {
       setLoadingWalletAddress(false);
     }
