@@ -1,11 +1,14 @@
 import {
   useNavigate,
   useParams,
+  useSearchParams,
 } from 'react-router-dom';
 import LitigationForm from '../common/form';
 
 function UpdateLitigation() {
   const { id } = useParams();
+  const [searchParameters] = useSearchParams();
+  const materialId = searchParameters.get('materialId');
   const navigate = useNavigate();
 
   const handleLitigationFetch = (litigation) => {
@@ -16,7 +19,8 @@ function UpdateLitigation() {
   };
 
   return (
-    <LitigationForm id={id} onLitigationFetch={handleLitigationFetch} />
+    // eslint-disable-next-line max-len
+    <LitigationForm id={id} autofillClaim={{ materialId }} onLitigationFetch={handleLitigationFetch} />
   );
 }
 
