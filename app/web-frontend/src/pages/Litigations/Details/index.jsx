@@ -149,6 +149,7 @@ export default function LitigationDetails() {
           <UserCard
             userProfileId={litigation?.assumed_author?.user_id}
             username={litigation?.assumed_author?.user_name}
+            role={litigation?.assumed_author?.user_bio}
             // eslint-disable-next-line unicorn/prefer-module
             imageUrl={litigation?.assumed_author?.image_url || require('assets/images/profile-placeholder.png')}
             totalCreationsAuthored={null}
@@ -163,6 +164,7 @@ export default function LitigationDetails() {
           <UserCard
             userProfileId={litigation?.issuer?.user_id}
             username={litigation?.issuer?.user_name}
+            role={litigation?.issuer?.user_bio}
             // eslint-disable-next-line unicorn/prefer-module
             imageUrl={litigation?.issuer?.image_url || require('assets/images/profile-placeholder.png')}
             totalCreationsAuthored={null}
