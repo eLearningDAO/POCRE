@@ -20,7 +20,7 @@ const transformAuthorNameForDisplay = (author, user) => {
   if (author.reputation_stars) {
     authorName += ` ${'★'.repeat(author.reputation_stars)}`;
   }
-  return authorName.trim();
+  return { id: author?.user_id, label: authorName?.trim() };
 };
 
 function NewMaterial({
@@ -39,7 +39,8 @@ function NewMaterial({
     const response = await validateLink(values?.link);
     if (!response) return;
 
-    if (onUpdate) onUpdate(values);
+    const { link, title, author } = values;
+    if (onUpdate) onUpdate({ link, title, author: author[0] });
     setEditMode(false);
   };
 
@@ -51,7 +52,7 @@ function NewMaterial({
         link={material.link}
         mediaUrl={material.link}
         mediaType={material?.type || getUrlFileType(material?.link)}
-        username={material.author}
+        username={material?.author?.label}
         interactionBtns
         onDeleteClick={onRemoveMaterial}
         canAccept={false}
@@ -213,7 +214,7 @@ function AuthorInviteModal({ onClose = () => {}, onAuthorDetailsSubmit }) {
 
   const onSubmit = (values) => {
     const invitedAuthor = `invite-via-${values?.inviteMethod}${values?.username ? `:${values?.username}` : ''}:${values?.inviteValue}`;
-    onAuthorDetailsSubmit(invitedAuthor);
+    onAuthorDetailsSubmit({ id: '__INVITED_AUTHOR__', label: invitedAuthor });
   };
 
   return (
@@ -340,7 +341,8 @@ export default function StepTwo({
     const response = await validateLink(values?.link);
     if (!response) return;
 
-    setMaterials([...materials, values]);
+    const { link, title, author } = values;
+    setMaterials([...materials, { link, title, author: author[0] }]);
     setInvitedAuthor(null);
 
     setFormKey(new Date().toISOString());
