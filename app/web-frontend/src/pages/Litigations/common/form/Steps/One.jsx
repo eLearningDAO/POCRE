@@ -17,6 +17,8 @@ export default function StepOne({
   // authorSuggestions = [],
   creationSuggestions = [],
   // onAuthorInputChange = () => {},
+  creationIdToClaim = null,
+  materialIdToClaim = null,
   onCreationInputChange = () => {},
   getMaterialDetail = () => {},
   status = {},
@@ -34,6 +36,44 @@ export default function StepOne({
   const [materialsDetails, setMaterialsDetails] = useState(null);
   const [author] = useState(null);
   const [creationOrMaterialAuthor, setCreationOrMaterialAuthor] = useState('');
+
+  const getMaterialsUsingCreationId = async (creationId) => {
+    setCreationUUIDFromLink(creationId);
+    try {
+      setLoading(true);
+
+      // get creation details
+      const creationDetail = await Creation.getById(creationId);
+
+      // get details of creation author
+      const creationAuthor = await User.getById(creationDetail.author_id);
+      setCreationOrMaterialAuthor(creationAuthor);
+
+      // get material details of creation
+      if (creationDetail?.materials?.length > 0) {
+        const { materials } = creationDetail;
+        const response = await Promise.all(materials.map(async (x) => getMaterialDetail(x)));
+        setMaterialsDetails(response.filter((x) => x.is_claimable));
+      } else {
+        setMaterialsDetails(null);
+      }
+    } catch {
+      setLoading(false);
+      setError('Invalid Creation Link. Please make sure the link is correct');
+      return;
+    } finally {
+      setLoading(false);
+    }
+
+    setError(null);
+  };
+
+  useEffect(() => {
+    if (creationIdToClaim) {
+      document.getElementById('creation-link-input').value = `${window.location.origin}/creations/${creationIdToClaim}`;
+      getMaterialsUsingCreationId(creationIdToClaim);
+    }
+  }, [creationIdToClaim]);
 
   const onCreationSelect = async (event, value) => {
     setCreation(value?.id);
@@ -106,34 +146,7 @@ export default function StepOne({
       setMaterialsDetails(null);
       setCreationUUIDFromLink(null);
     } else {
-      setCreationUUIDFromLink(creationId);
-      try {
-        setLoading(true);
-
-        // get creation details
-        const creationDetail = await Creation.getById(creationId);
-
-        // get details of creation author
-        const creationAuthor = await User.getById(creationDetail.author_id);
-        setCreationOrMaterialAuthor(creationAuthor);
-
-        // get material details of creation
-        if (creationDetail?.materials?.length > 0) {
-          const { materials } = creationDetail;
-          const response = await Promise.all(materials.map(async (x) => getMaterialDetail(x)));
-          setMaterialsDetails(response.filter((x) => x.is_claimable));
-        } else {
-          setMaterialsDetails(null);
-        }
-      } catch {
-        setLoading(false);
-        setError('Invalid Creation Link. Please make sure the link is correct');
-        return;
-      } finally {
-        setLoading(false);
-      }
-
-      setError(null);
+      await getMaterialsUsingCreationId(creationId);
     }
   };
 
@@ -168,6 +181,7 @@ export default function StepOne({
       initialValues={{
         title: initialValues?.title,
         description: initialValues?.description,
+        material: materialIdToClaim,
       }}
       preventSubmitOnEnter
     >

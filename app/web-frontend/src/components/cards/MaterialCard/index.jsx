@@ -23,6 +23,7 @@ function MaterialCard({
   interactionBtns,
   requestAccepted = true,
   username = 'jack 50',
+  isClaimable = false,
   userimage = '',
   userProfileId = '',
   link = 'https://www.youtube.com/watch?v=2BjYPFBh4Zc',
@@ -32,6 +33,7 @@ function MaterialCard({
   showReconcilateOptions = true,
   onDeleteClick = () => {},
   onEditClick = () => {},
+  onQuickClaim = () => {},
   canHide = true,
   canEdit = true,
   canDelete = true,
@@ -40,7 +42,6 @@ function MaterialCard({
   recognitionStatus = null,
 }) {
   const [showMediaPreview, setShowMediaPreview] = useState(null);
-
   return (
     <>
       {showMediaPreview && (
@@ -153,7 +154,16 @@ function MaterialCard({
               />
             )
           }
-
+          {
+            isClaimable && (
+            <Button
+              className="approveButton"
+              onClick={onQuickClaim}
+            >
+              Quick Claim
+            </Button>
+            )
+          }
           {showReconcilateOptions && (
             <Grid display="flex" gap="12px" flexWrap={{ md: 'wrap', lg: 'initial' }} justifyContent={{ md: 'center', lg: 'initial' }}>
               <Button className={requestAccepted ? 'approveButton' : 'pendingButton'}>

@@ -39,8 +39,8 @@ function Litigation() {
     navigate('/litigations/create');
   };
 
-  const redirectToUpdateLitigation = (id) => {
-    navigate(`/litigations/${id}/update`);
+  const redirectToUpdateLitigation = (id, materialId) => {
+    navigate(`/litigations/${id}/update?materialId=${materialId}`);
   };
 
   if (isFetchingLitigations) return <Loader />;
@@ -146,7 +146,7 @@ function Litigation() {
                 }}
                 {...(activeLitigation === 'inDraft' && {
                   mode: 'drafted',
-                  onUpdate: () => redirectToUpdateLitigation(x?.litigation_id),
+                  onUpdate: () => redirectToUpdateLitigation(x?.litigation_id, x?.material_id),
                 })}
                 {...(activeLitigation === 'inVoting' && {
                   mode: 'info',

@@ -300,12 +300,16 @@ export default function CreationDetails() {
                 key={index}
                 mediaUrl={x?.material_link}
                 mediaType={x?.material_type}
+                isClaimable={x?.is_claimable}
                 link={x?.material_link}
                 title={x?.material_title}
                 description={x?.material_description}
                 username={x?.author?.user_name}
                 userimage={x?.author?.image_url}
                 userProfileId={x?.author?.user_id}
+                onQuickClaim={() => {
+                  navigate(`/litigations/create?creationId=${id}&materialId=${x?.material_id}`);
+                }}
                 interactionBtns={false}
                 showReconcilateOptions={false}
                 recognitionStatus={x?.recognition?.status || null}

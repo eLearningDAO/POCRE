@@ -6,7 +6,11 @@ import Loader from 'components/uicore/Loader';
 import StepOne from './Steps/One';
 import useLitigationForm from './useLitigationForm';
 
-function LitigationForm({ id = null, onLitigationFetch = () => {} }) {
+function LitigationForm(
+  {
+    id = null, onLitigationFetch = () => {}, autofillClaim = {},
+  },
+) {
   const navigate = useNavigate();
 
   const {
@@ -62,6 +66,8 @@ function LitigationForm({ id = null, onLitigationFetch = () => {} }) {
           description: litigation?.litigation_description,
           creation: litigation?.creation,
         }}
+        creationIdToClaim={autofillClaim.creationId}
+        materialIdToClaim={autofillClaim.materialId}
         authorSuggestions={authorSuggestions}
         onAuthorInputChange={handleAuthorInputChange}
         creationSuggestions={creationSuggestions}
