@@ -1,13 +1,13 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { Box } from '@mui/system';
 import { Chip } from '@mui/material';
-import { useFormContext } from 'react-hook-form';
-import './index.css';
+import { Box } from '@mui/system';
 import PropTypes from 'prop-types';
 import {
   useCallback, useEffect, useRef, useState,
 } from 'react';
+import { useFormContext } from 'react-hook-form';
+import './index.css';
 
 const tagInputVariants = {
   LIGHT: 'light',
@@ -31,6 +31,8 @@ function useOutsideAlerter(reference, setOpen) {
 
 let isFirstValidationSkipped = false;
 
+// only use tags as object if the user is
+// not allowed to add custom tags
 function TagInput(
   {
     name,
@@ -57,13 +59,31 @@ function TagInput(
 
   useOutsideAlerter(wrapperReference, setShowSuggestions);
 
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const isTagObject = (tag) => (typeof tag === 'object' ? (tag?.id && tag?.label ? true : null) : false);
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const getTagString = (tag) => (isTagObject(tag) ? tag.label : tag);
+
+  const hasTagSuggestion = (tag) => (isTagObject(tag)
+    ? tags.findIndex((y) => y?.label?.includes(tag?.label)) > -1
+    : tags.includes(tag));
+
   const updateTagSuggestions = useCallback((newTags = [], existingTags = []) => {
     const newTagSuggestions = [];
 
     newTags.map(
-      (x) => !existingTags.includes(x)
-      && x.includes(inputValue)
-      && newTagSuggestions.push(x),
+      (x) => {
+        if (typeof x === 'string' && !existingTags.includes(x) && x.includes(inputValue)) {
+          newTagSuggestions.push(x);
+        }
+
+        if (isTagObject(x) && x?.label?.includes(inputValue)) {
+          newTagSuggestions.push(x);
+        }
+
+        return null;
+      },
     );
 
     setTagSuggestionsToDisplay(newTagSuggestions);
@@ -73,9 +93,7 @@ function TagInput(
     if (hookToForm) {
       formContext.register(name);
       const defaultValue = formContext.getValues(name);
-      if (defaultValue) {
-        setTags(defaultValue);
-      }
+      if (defaultValue) setTags(defaultValue);
     }
   }, []);
 
@@ -154,7 +172,7 @@ function TagInput(
       const value = inputReference.current.value.trim();
       if (value.length === 0) return;
 
-      addTagSuggestion(value);
+      addTagSuggestion(value); // this wont work if original tags are object
 
       inputReference.current.value = '';
     }
@@ -167,7 +185,8 @@ function TagInput(
   };
 
   const removeTag = (tag) => {
-    const newTags = tags.filter((x) => x !== tag);
+    const isTagAnObject = isTagObject(tag);
+    const newTags = tags.filter((x) => (isTagAnObject ? x.label !== tag.label : x !== tag));
     setTags(newTags);
     if (
       newTags.length === 0 && inputReference.current.value.length === 0
@@ -194,7 +213,7 @@ function TagInput(
         {tags.length === 0 && placeholder && placeholderVisiable && <span className="tag-placeholder">{placeholder}</span>}
 
         {tags.map((tag) => (
-          <Chip key={tag} className="tag" label={tag} onDelete={() => removeTag(tag)} />
+          <Chip key={tag} className="tag" label={getTagString(tag)} onDelete={() => removeTag(tag)} />
         ))}
 
         <input type="text" onChange={onInputChange} onKeyUp={onInputKeyUp} onFocus={onInputFocus} onBlur={onInputBlur} className="tag-input" ref={inputReference} />
@@ -202,15 +221,15 @@ function TagInput(
 
       {/* suggestions box */}
       {showSuggestions && tagsSuggestionsToDisplay.length > 0 && (
-      <div className="tag-suggestions-container input input-dark">
-        {tagsSuggestionsToDisplay.map((tag) => (
-          tags.includes(tag) ? null : (
-            <button type="button" className="tag-suggestion" onClick={() => addTagSuggestion(tag)}>
-              {tag}
-            </button>
-          )
-        ))}
-      </div>
+        <div className="tag-suggestions-container input input-dark">
+          {tagsSuggestionsToDisplay.map((tag) => (
+            hasTagSuggestion(tag) ? null : (
+              <button type="button" className="tag-suggestion" onClick={() => addTagSuggestion(tag)}>
+                {getTagString(tag)}
+              </button>
+            )
+          ))}
+        </div>
       )}
 
       {/* error hint */}

@@ -18,15 +18,18 @@ const stepOneValidation = Joi.object({
 const stepTwoMaterialValidation = Joi.object({
   title: Joi.string().required().messages({ 'string.empty': 'Title is required', 'string.required': 'Title is required' }),
   link: Joi.string().uri().required().messages({ 'string.empty': 'Link is required', 'string.required': 'Link is required', 'string.uri': 'Link must be a valid url' }),
-  author: Joi.array().items(Joi.string()).min(1).max(1)
-    .required()
-    .messages({
-      'string.empty': 'Author is required. Please search and select author from suggestions',
-      'string.required': 'Author is required. Please search and select author from suggestions',
-      'any.required': 'Author is required. Please search and select author from suggestions',
-      'array.min': 'Author is required. Please search and select author from suggestions',
-      'array.max': 'More than 1 authors are not allowed',
-    }),
+  author: Joi.array().items({
+    id: Joi.string().required(),
+    label: Joi.string().required(),
+  }).required().messages({
+    'string.empty': 'Author is required. Please search and select author from suggestions',
+    'string.required': 'Author is required. Please search and select author from suggestions',
+    'any.required': 'Author is required. Please search and select author from suggestions',
+    'array.min': 'Author is required. Please search and select author from suggestions',
+    'array.max': 'More than 1 authors are not allowed',
+  })
+    .min(1)
+    .max(1),
 });
 
 const stepTwoAuthorInviteValidation = Joi.object({

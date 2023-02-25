@@ -14,7 +14,6 @@ import { transactADAToPOCRE } from 'utils/helpers/wallet';
 const makeCommonResource = async (
   requestBody = {},
   tagSuggestions = [],
-  authorSuggestions = [],
 ) => {
   // make new tags
   const tags = await (async () => {
@@ -45,60 +44,34 @@ const makeCommonResource = async (
   let materials = [];
   if (requestBody.materials && requestBody.materials.length > 0) {
     materials = await Promise.all(requestBody.materials.map(async (x) => {
-      const authorName = x?.author?.[0]?.trim()?.replaceAll('★', '').trim();
+      const authorId = await (async () => {
+        if (x?.author?.id !== '__INVITED_AUTHOR__') return x?.author?.id;
 
-      // get author for material
-      const author = await (async () => {
-        let temporaryAuthor = null;
-
-        // invite user by email address
-        if (authorName.includes('invite-via-')) {
-          const invite = authorName.split('invite-via-')[1].split(':')?.filter((y) => !!y);
+        if (x?.author?.label.includes('invite-via-')) {
+          const invite = x?.author?.label?.split('invite-via-')[1].split(':')?.filter((y) => !!y);
 
           const method = invite?.[0]?.trim();
           const username = invite.length === 3 ? invite?.[1]?.trim() : null;
           const value = invite?.[invite.length - 1]?.trim();
 
           // invite author by email
-          temporaryAuthor = await User.invite({
+          const invitedUser = await User.invite({
             invite_method: method?.trim(),
             invite_value: value?.trim(),
             ...(username && { user_name: username?.trim() }),
           });
 
-          return temporaryAuthor;
+          return invitedUser?.user_id;
         }
 
-        // check if its the creation author trying to own material
-        const user = authUser.getUser();
-        if (authorName === `${user?.user_name} (You)`) {
-          return user;
-        }
-
-        // return if author found from suggestions
-        temporaryAuthor = authorSuggestions.find(
-          (suggestion) => suggestion.user_name.trim() === authorName,
-        );
-        if (temporaryAuthor) return temporaryAuthor;
-
-        // find if the author exists in db
-        temporaryAuthor = await User.getAll(`query=${authorName}&search_fields[]=user_name`);
-        temporaryAuthor = temporaryAuthor?.results?.[0] || null;
-        if (temporaryAuthor) return temporaryAuthor;
-
-        // make new author
-        temporaryAuthor = await User.create({
-          user_name: authorName,
-        });
-
-        return temporaryAuthor;
+        return null;
       })();
 
       // make new material
       const material = await Material.create({
         material_title: x.title,
         material_link: x.link,
-        author_id: author.user_id,
+        author_id: authorId,
       });
 
       return { ...material };
@@ -130,7 +103,7 @@ const transformAuthorNameForDisplay = (author, user) => {
   if (author.reputation_stars) {
     authorName += ` ${'★'.repeat(author.reputation_stars)}`;
   }
-  return authorName.trim();
+  return { id: author?.user_id, label: authorName?.trim() };
 };
 
 const transformCreationForForm = (creation) => {
@@ -270,7 +243,6 @@ const useCreationForm = ({
       const { tags, materials } = await makeCommonResource(
         updateBody,
         tagSuggestions,
-        authorSuggestions,
       );
 
       updatedCreation.tags = tags.map((x) => x.tag_id);
