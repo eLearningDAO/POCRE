@@ -235,7 +235,12 @@ export const publishCreation = catchAsync(async (req, res): Promise<void> => {
 
   const updateBody = await (async () => {
     if (req.body.publish_on === publishPlatforms.BLOCKCHAIN) {
-      return { is_onchain: true };
+      // block owning if caw has not passed
+      if (foundCreation && moment().isBefore(moment(new Date(foundCreation?.creation_authorship_window)))) {
+        throw new ApiError(httpStatus.NOT_ACCEPTABLE, `finalization only allowed after creation authorship window`);
+      }
+
+      return { is_onchain: true, is_fully_owned: true };
     }
 
     if (req.body.publish_on === publishPlatforms.IPFS) {
@@ -259,34 +264,6 @@ export const publishCreation = catchAsync(async (req, res): Promise<void> => {
     {
       owner_id: (req.user as IUserDoc).user_id,
     }
-  );
-
-  res.send(updatedCreation);
-});
-
-export const fullyOwnCreation = catchAsync(async (req, res): Promise<void> => {
-  const reqUserId = (req.user as IUserDoc).user_id;
-
-  // get original creation
-  const foundCreation = await creationService.getCreationById(req.params.creation_id, {
-    owner_id: reqUserId,
-  });
-
-  // block owning if creation is draft
-  if (foundCreation?.is_draft) {
-    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `draft creation cannot be fully owned`);
-  }
-
-  // block owning if caw has not passed
-  if (foundCreation && moment().isBefore(moment(new Date(foundCreation?.creation_authorship_window)))) {
-    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `full ownership only allowed after creation authorship window`);
-  }
-
-  // update creation
-  const updatedCreation = await creationService.updateCreationById(
-    req.params.creation_id,
-    { is_fully_owned: true },
-    { owner_id: reqUserId }
   );
 
   res.send(updatedCreation);

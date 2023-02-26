@@ -22,10 +22,6 @@ router
   .post(auth(), validate(creationValidation.publishCreation), creationController.publishCreation);
 
 router
-  .route('/:creation_id/fully-own')
-  .post(auth(), validate(creationValidation.fullyOwnCreation), creationController.fullyOwnCreation);
-
-router
   .route('/:creation_id/proof')
   .get(validate(creationValidation.getCreationProof), creationController.getCreationProofById);
 

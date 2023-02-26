@@ -145,7 +145,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
         is_draft,
         is_claimable,
         is_fully_owned,
-        creation_authorship_window,
+        creation_authorship_window
       ) 
       values 
       ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) 
