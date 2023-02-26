@@ -89,7 +89,7 @@ export const createCreation = catchAsync(async (req, res): Promise<void> => {
     ...req.body,
     creation_type: creationType,
     author_id: reqUser.user_id,
-    creation_author_window: moment()
+    creation_authorship_window: moment()
       .add(
         reputationStarTimeWindows[reqUserReputation].value,
         reputationStarTimeWindows[reqUserReputation].type as 'months' | 'month' | 'days' | 'day'
@@ -185,7 +185,7 @@ export const updateCreationById = catchAsync(async (req, res): Promise<void> => 
     {
       ...req.body,
       creation_type: creationType,
-      creation_author_window: moment()
+      creation_authorship_window: moment()
         .add(
           reputationStarTimeWindows[reqUserReputation].value,
           reputationStarTimeWindows[reqUserReputation].type as 'months' | 'month' | 'days' | 'day'
@@ -278,7 +278,7 @@ export const fullyOwnCreation = catchAsync(async (req, res): Promise<void> => {
   }
 
   // block owning if caw has not passed
-  if (foundCreation && moment().isBefore(moment(new Date(foundCreation?.creation_author_window)))) {
+  if (foundCreation && moment().isBefore(moment(new Date(foundCreation?.creation_authorship_window)))) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `full ownership only allowed after creation authorship window`);
   }
 

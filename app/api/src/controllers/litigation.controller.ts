@@ -47,7 +47,8 @@ export const createLitigation = catchAsync(async (req, res): Promise<void | any>
   }
 
   // check if creation can be claimed
-  if (!creation?.is_claimable) {
+  const isCAWPassed = creation && moment().isAfter(moment(new Date(creation?.creation_authorship_window)));
+  if (!creation?.is_claimable || isCAWPassed) {
     throw new ApiError(httpStatus.NOT_FOUND, 'creation is not claimable');
   }
 
@@ -77,7 +78,15 @@ export const createLitigation = catchAsync(async (req, res): Promise<void | any>
   // when not draft then make associated items non claimable
   if (!req.body.is_draft) {
     // make creation not claimable
-    if (!material && creation) await updateCreationById(creation.creation_id, { is_claimable: false });
+    if (!material && creation) {
+      await updateCreationById(creation.creation_id, {
+        is_claimable: false,
+        // add max litigation days to caw window (we want to keep litigation time out of caw time)
+        creation_authorship_window: moment(new Date(creation.creation_authorship_window))
+          .add(config.litigation.reconcilation_days + config.litigation.voting_days, 'days')
+          .toISOString(),
+      });
+    }
 
     // make material not claimable
     if (material) await updateMaterialById(material.material_id, { is_claimable: false });
@@ -121,7 +130,8 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     }
 
     // check if creation can be claimed
-    if (!creation?.is_claimable) {
+    const isCAWPassed = creation && moment().isAfter(moment(new Date(creation?.creation_authorship_window)));
+    if (!creation?.is_claimable || isCAWPassed) {
       throw new ApiError(httpStatus.NOT_FOUND, 'creation is not claimable');
     }
 
@@ -156,7 +166,15 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     // when not draft then make associated items non claimable
     if (!req.body.is_draft) {
       // make creation not claimable
-      if (!material && creation) await updateCreationById(creation.creation_id, { is_claimable: false });
+      if (!material && creation) {
+        await updateCreationById(creation.creation_id, {
+          is_claimable: false,
+          // add max litigation days to caw window (we want to keep litigation time out of caw time)
+          creation_authorship_window: moment(new Date(creation.creation_authorship_window))
+            .add(config.litigation.reconcilation_days + config.litigation.voting_days, 'days')
+            .toISOString(),
+        });
+      }
 
       // make material not claimable
       if (material) await updateMaterialById(material.material_id, { is_claimable: false });

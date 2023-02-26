@@ -133,7 +133,7 @@ const init = async (): Promise<QueryResult<any>> => {
       ipfs_hash character varying,
       is_claimable bool default true,
       is_onchain bool default false,
-      creation_author_window TIMESTAMP NOT NULL DEFAULT NOW(),
+      creation_authorship_window TIMESTAMP NOT NULL DEFAULT NOW(),
       is_fully_owned bool default false,
       CONSTRAINT author_id
           FOREIGN KEY(author_id) 

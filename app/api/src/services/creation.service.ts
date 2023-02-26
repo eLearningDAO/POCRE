@@ -23,7 +23,7 @@ interface ICreation {
   ipfs_hash: string;
   is_onchain: boolean;
   is_fully_owned: boolean;
-  creation_author_window: string;
+  creation_authorship_window: string;
 }
 interface ICreationQuery {
   limit: number;
@@ -62,7 +62,7 @@ interface ICreationDoc {
   ipfs_hash: string;
   is_onchain: boolean;
   is_fully_owned: boolean;
-  creation_author_window: string;
+  creation_authorship_window: string;
 }
 
 /**
@@ -145,7 +145,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
         is_draft,
         is_claimable,
         is_fully_owned,
-        creation_author_window,
+        creation_authorship_window,
       ) 
       values 
       ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) 
@@ -162,7 +162,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
         creationBody.is_draft,
         creationBody.is_claimable,
         creationBody.is_fully_owned,
-        creationBody.creation_author_window,
+        creationBody.creation_authorship_window,
       ]
     );
     const creation = result.rows[0];
