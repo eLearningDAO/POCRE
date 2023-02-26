@@ -374,7 +374,7 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
       tempDates.reconcilation_end = moment().toISOString();
     }
 
-    // if assumed author reconcilated for litigation
+    // if assumed author voted to start litigation
     if (req.body.assumed_author_response && req.body.assumed_author_response === litigationStatusTypes.START_LITIGATION) {
       tempDates.voting_start = moment().toISOString();
       tempDates.voting_end = moment().add(config.litigation.voting_days, 'days').toISOString();
@@ -452,6 +452,53 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
       await updateCreationById(litigation?.creation_id, { author_id: winner });
     }
   }
+
+  // update caw time window based on assumed author response
+  await (async () => {
+    if (litigation.material_id) return; // only update creation caw if litigation has no material
+
+    const creation: any = await getCreationById(litigation.creation_id);
+
+    let newCAW = moment(new Date(creation?.creation_authorship_window));
+
+    // new reconcilation days (the total days from litigation reconcilation start until today)
+    const totalReconcilationDays = moment().diff(moment(new Date(litigation.reconcilation_start)), 'days');
+
+    // if assumed author withdrew claim - remove old reconcilation + voting days and add new total days for reconcilation
+    if (
+      req.body.assumed_author_response &&
+      req.body.assumed_author_response === litigationStatusTypes.WITHDRAW_CLAIM &&
+      litigation.assumed_author_response !== litigationStatusTypes.WITHDRAW_CLAIM
+    ) {
+      newCAW = newCAW
+        .subtract(config.litigation.voting_days + config.litigation.reconcilation_days, 'days')
+        .add(totalReconcilationDays, 'days');
+    }
+
+    // if assumed author voted to start litigation - remove old reconcilation days and add new total days for reconcilation
+    if (
+      req.body.assumed_author_response &&
+      req.body.assumed_author_response === litigationStatusTypes.START_LITIGATION &&
+      litigation.assumed_author_response !== litigationStatusTypes.START_LITIGATION
+    ) {
+      newCAW = newCAW.subtract(config.litigation.reconcilation_days, 'days').add(totalReconcilationDays, 'days');
+    }
+
+    // if assumed author did not respond in reconilate phase, and issuer is claiming, remove the voting days from caw
+    if (
+      !isReconcilatePhase &&
+      litigation.assumed_author_response === litigationStatusTypes.PENDING_RESPONSE &&
+      litigation.issuer_id === participantId &&
+      req.body.ownership_transferred === true &&
+      !litigation.ownership_transferred
+    ) {
+      newCAW = newCAW.subtract(config.litigation.voting_days, 'days');
+    }
+
+    await updateCreationById(creation?.creation_id, {
+      creation_authorship_window: newCAW.toISOString(),
+    });
+  })();
 
   // update litigation
   const updatedLitigation = await litigationService.updateLitigationById(
