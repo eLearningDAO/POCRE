@@ -165,7 +165,13 @@ function Creations() {
                   // eslint-disable-next-line no-return-await
                   onDeleteClick={async () => await deleteCreation(x?.creation_id)}
                   finalizationDate={x?.creation_authorship_window}
-                  canFinalize={!x?.is_draft && userId === login?.user_id}
+                  canFinalize={
+                    !x?.is_draft
+                    && userId === login?.user_id
+                    && !x?.is_fully_owned
+                    && x?.isCAWPassed
+                    && !x?.is_onchain
+                  }
                   onFinalize={async () => await publishCreation({
                     id: x?.creation_id,
                     ipfsHash: x?.ipfs_hash,

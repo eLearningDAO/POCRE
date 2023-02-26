@@ -123,15 +123,15 @@ export default function CreationDetails() {
         </Snackbar>
       )}
       {(publishCreationStatus.success || publishCreationStatus.error) && (
-      <Snackbar open onClose={resetPublishErrors}>
-        <Alert
-          onClose={resetPublishErrors}
-          severity={publishCreationStatus.success ? 'success' : 'error'}
-          sx={{ width: '100%' }}
-        >
-          {publishCreationStatus.success || publishCreationStatus.error}
-        </Alert>
-      </Snackbar>
+        <Snackbar open onClose={resetPublishErrors}>
+          <Alert
+            onClose={resetPublishErrors}
+            severity={publishCreationStatus.success ? 'success' : 'error'}
+            sx={{ width: '100%' }}
+          >
+            {publishCreationStatus.success || publishCreationStatus.error}
+          </Alert>
+        </Snackbar>
       )}
       {showShareOptions && (
         <SocialMediaModal
@@ -195,6 +195,8 @@ export default function CreationDetails() {
         {user?.user_id === creation?.author?.user_id
           && !creation?.is_draft
           && !creation?.is_onchain
+          && !creation?.is_fully_owned
+          && moment().isAfter(moment(creation?.creation_authorship_window))
           && (
             <Button
               className="approveButton"
