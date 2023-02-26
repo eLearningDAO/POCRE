@@ -128,11 +128,13 @@ const init = async (): Promise<QueryResult<any>> => {
       tags UUID[],
       materials UUID[],
       creation_date TIMESTAMP NOT NULL DEFAULT NOW(),
-      is_draft bool default false,
-      is_claimable bool default true,
-      ipfs_hash character varying,
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+      is_draft bool default false,
+      ipfs_hash character varying,
+      is_claimable bool default true,
       is_onchain bool default false,
+      creation_author_window TIMESTAMP NOT NULL DEFAULT NOW(),
+      is_fully_owned bool default false,
       CONSTRAINT author_id
           FOREIGN KEY(author_id) 
           REFERENCES users(user_id)
