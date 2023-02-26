@@ -80,6 +80,7 @@ export default function CreationDetails() {
           authorName={recognitionDetails?.creation?.author?.user_name}
           authorProfileId={recognitionDetails?.creation?.author?.user_id}
           date={recognitionDetails?.creation?.creation_date}
+          finalizationDate={recognitionDetails?.creation?.creation_authorship_window}
           materials={recognitionDetails?.creation?.materials?.map((x) => ({
             title: x?.material_title,
             fileType: x?.material_type,

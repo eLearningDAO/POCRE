@@ -18,6 +18,7 @@ function CreationPreview({
   date = '',
   authorName = '',
   authorProfileId = '',
+  finalizationDate = '',
   materials = [{
     title: '',
     fileType: '',
@@ -71,8 +72,11 @@ function CreationPreview({
               <span className="heading">IPFS</span>
               <span>{ipfsHash || 'Available after creation is published'}</span>
 
-              <span className="heading">Date</span>
+              <span className="heading">Creation Date</span>
               <span>{date || '-'}</span>
+
+              <span className="heading">Finalization Date</span>
+              <span>{finalizationDate || '-'}</span>
 
               <span className="heading">Author</span>
               {authorProfileId ? <Link to={`/wallet/${authorProfileId}`}>{authorName}</Link> : <span>{authorName || '-'}</span>}

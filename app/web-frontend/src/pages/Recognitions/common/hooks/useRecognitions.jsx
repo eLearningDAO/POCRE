@@ -99,6 +99,7 @@ const useRecognitions = () => {
         creation: creation ? {
           ...creation?.results?.[0],
           creation_date: moment(creation?.results?.[0]?.creation_date).format('DD/MM/YYYY'), // moment auto converts utc to local time
+          creation_authorship_window: moment(creation?.results?.[0]?.creation_authorship_window).format('Do MMMM YYYY'),
         } : null,
       };
 

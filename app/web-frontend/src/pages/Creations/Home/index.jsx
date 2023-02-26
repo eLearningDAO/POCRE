@@ -164,12 +164,13 @@ function Creations() {
                   onEditClick={() => navigate(`/creations/${x?.creation_id}/update`)}
                   // eslint-disable-next-line no-return-await
                   onDeleteClick={async () => await deleteCreation(x?.creation_id)}
-                  canPublish={!x?.is_draft && userId === login?.user_id}
-                  onPublish={async () => await publishCreation({
+                  finalizationDate={x?.creation_authorship_window}
+                  canFinalize={!x?.is_draft && userId === login?.user_id}
+                  onFinalize={async () => await publishCreation({
                     id: x?.creation_id,
                     ipfsHash: x?.ipfs_hash,
                   })}
-                  isPublished={x?.is_onchain}
+                  isFinalized={x?.is_onchain}
                 />
             ),
           )}
