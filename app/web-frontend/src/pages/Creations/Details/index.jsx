@@ -203,7 +203,7 @@ export default function CreationDetails() {
                 ipfsHash: creation?.ipfs_hash,
               })}
             >
-              Publish
+              Finalize
             </Button>
           )}
 
