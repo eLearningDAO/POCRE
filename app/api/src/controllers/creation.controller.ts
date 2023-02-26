@@ -263,3 +263,31 @@ export const publishCreation = catchAsync(async (req, res): Promise<void> => {
 
   res.send(updatedCreation);
 });
+
+export const fullyOwnCreation = catchAsync(async (req, res): Promise<void> => {
+  const reqUserId = (req.user as IUserDoc).user_id;
+
+  // get original creation
+  const foundCreation = await creationService.getCreationById(req.params.creation_id, {
+    owner_id: reqUserId,
+  });
+
+  // block owning if creation is draft
+  if (foundCreation?.is_draft) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `draft creation cannot be fully owned`);
+  }
+
+  // block owning if caw has not passed
+  if (foundCreation && moment().isBefore(moment(new Date(foundCreation?.creation_author_window)))) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `full ownership only allowed after creation authorship window`);
+  }
+
+  // update creation
+  const updatedCreation = await creationService.updateCreationById(
+    req.params.creation_id,
+    { is_fully_owned: true },
+    { owner_id: reqUserId }
+  );
+
+  res.send(updatedCreation);
+});
