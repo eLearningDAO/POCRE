@@ -101,9 +101,3 @@ export const publishCreation = {
     publish_on: Joi.string().valid(publishPlatforms.BLOCKCHAIN, publishPlatforms.IPFS).required(),
   }),
 };
-
-export const fullyOwnCreation = {
-  params: Joi.object().keys({
-    creation_id: Joi.string().uuid().required(),
-  }),
-};
