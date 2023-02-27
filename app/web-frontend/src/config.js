@@ -1,6 +1,18 @@
 const API_BASE_URL = 'https://pocre-api.herokuapp.com/v1/';
 
-const POCRE_WALLET_ADDRESS = 'addr_test1qr0nvz3xurstmkj3h3a32knxsgpzvz4g8z3lvhhya9ffzh74uhu2hd3kjx8v9p906g4sejyj3w7q76zqwsgt4w9drfnsp8jhz7'; // preview testnet address || IMPORTANT: dont make real transactions
+const POCRE_WALLET_ADDRESS = {
+  MAINNET: 'addr_test1qr0nvz3xurstmkj3h3a32knxsgpzvz4g8z3lvhhya9ffzh74uhu2hd3kjx8v9p906g4sejyj3w7q76zqwsgt4w9drfnsp8jhz7',
+  PREPROD: 'addr_test1qr0nvz3xurstmkj3h3a32knxsgpzvz4g8z3lvhhya9ffzh74uhu2hd3kjx8v9p906g4sejyj3w7q76zqwsgt4w9drfnsp8jhz7',
+  PREVIEW: 'addr_test1qr0nvz3xurstmkj3h3a32knxsgpzvz4g8z3lvhhya9ffzh74uhu2hd3kjx8v9p906g4sejyj3w7q76zqwsgt4w9drfnsp8jhz7',
+  TESTNET: 'addr_test1qr0nvz3xurstmkj3h3a32knxsgpzvz4g8z3lvhhya9ffzh74uhu2hd3kjx8v9p906g4sejyj3w7q76zqwsgt4w9drfnsp8jhz7',
+};
+
+const POCRE_NETWORKS = {
+  MAINNET: 1,
+  PREPROD: 0,
+  PREVIEW: 0,
+  TESTNET: 0,
+};
 
 // charges in ADA
 const CHARGES = {
@@ -34,6 +46,7 @@ const IPFS_BASE_URL = 'https://gateway.pinata.cloud/ipfs/';
 export {
   API_BASE_URL,
   POCRE_WALLET_ADDRESS,
+  POCRE_NETWORKS,
   CHARGES,
   IPFS_BASE_URL,
   TRANSACTION_PURPOSES,

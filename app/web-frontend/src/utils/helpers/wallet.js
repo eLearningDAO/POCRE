@@ -1,5 +1,5 @@
 import { BrowserWallet, Transaction } from '@meshsdk/core';
-import { POCRE_WALLET_ADDRESS } from 'config';
+import { POCRE_WALLET_ADDRESS, POCRE_NETWORKS } from 'config';
 
 const getAvailableWallets = async () => {
   try {
@@ -16,12 +16,15 @@ const getWalletAddress = async (walletName) => {
     // connect to the wallet
     const wallet = await BrowserWallet.enable(walletName);
 
+    const netId = await wallet.getNetworkId();
+
     // get used address in wallet
     const usedAddresses = await wallet.getUsedAddresses();
+    const realAddresses = usedAddresses.filter(() => process.env.REACT_APP_HOST_TYPE !== 'production' && netId !== POCRE_NETWORKS.MAINNET);
 
-    if (usedAddresses.length === 0) throw new Error('no wallet address');
+    if (realAddresses.length === 0) throw new Error('no wallet address');
 
-    return usedAddresses[0];
+    return realAddresses[0];
   } catch {
     return null;
   }
