@@ -123,15 +123,15 @@ export default function CreationDetails() {
         </Snackbar>
       )}
       {(publishCreationStatus.success || publishCreationStatus.error) && (
-      <Snackbar open onClose={resetPublishErrors}>
-        <Alert
-          onClose={resetPublishErrors}
-          severity={publishCreationStatus.success ? 'success' : 'error'}
-          sx={{ width: '100%' }}
-        >
-          {publishCreationStatus.success || publishCreationStatus.error}
-        </Alert>
-      </Snackbar>
+        <Snackbar open onClose={resetPublishErrors}>
+          <Alert
+            onClose={resetPublishErrors}
+            severity={publishCreationStatus.success ? 'success' : 'error'}
+            sx={{ width: '100%' }}
+          >
+            {publishCreationStatus.success || publishCreationStatus.error}
+          </Alert>
+        </Snackbar>
       )}
       {showShareOptions && (
         <SocialMediaModal
@@ -149,6 +149,7 @@ export default function CreationDetails() {
           date={moment(creation?.creation_date).format('Do MMMM YYYY')}
           authorName={creation?.author?.user_name}
           authorProfileId={creation?.author?.user_id}
+          finalizationDate={moment(creation?.creation_authorship_window).format('Do MMMM YYYY')}
           materials={(creation?.materials || [])?.map((x) => ({
             title: x?.material_title,
             fileType: x?.material_type,
@@ -194,6 +195,8 @@ export default function CreationDetails() {
         {user?.user_id === creation?.author?.user_id
           && !creation?.is_draft
           && !creation?.is_onchain
+          && !creation?.is_fully_owned
+          && moment().isAfter(moment(creation?.creation_authorship_window))
           && (
             <Button
               className="approveButton"
@@ -202,7 +205,7 @@ export default function CreationDetails() {
                 ipfsHash: creation?.ipfs_hash,
               })}
             >
-              Publish
+              Finalize
             </Button>
           )}
 
@@ -270,6 +273,7 @@ export default function CreationDetails() {
                 </Link>
               </h4>
               <Chip className="mr-auto bg-orange-dark color-white" label={`Created on ${moment(creation?.creation_date).format('DD/MM/YYYY')}`} />
+              <Chip className="mr-auto bg-black color-white" label={`Finalization on: ${moment(creation?.creation_authorship_window).format('Do MMMM YYYY')}`} />
               <Chip className="mr-auto bg-black color-white" label={`Unique ID: ${creation?.creation_id}`} />
               {!creation?.is_draft && creation?.is_onchain && <Chip className="mr-auto bg-black color-white" label="Published" />}
             </Box>

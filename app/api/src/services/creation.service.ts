@@ -22,6 +22,8 @@ interface ICreation {
   is_claimable: boolean;
   ipfs_hash: string;
   is_onchain: boolean;
+  is_fully_owned: boolean;
+  creation_authorship_window: string;
 }
 interface ICreationQuery {
   limit: number;
@@ -59,6 +61,8 @@ interface ICreationDoc {
   is_claimable: boolean;
   ipfs_hash: string;
   is_onchain: boolean;
+  is_fully_owned: boolean;
+  creation_authorship_window: string;
 }
 
 /**
@@ -139,10 +143,12 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
         materials,
         creation_date,
         is_draft,
-        is_claimable
+        is_claimable,
+        is_fully_owned,
+        creation_authorship_window
       ) 
       values 
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) 
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) 
       RETURNING *;`,
       [
         creationBody.creation_title,
@@ -155,6 +161,8 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
         creationBody.creation_date,
         creationBody.is_draft,
         creationBody.is_claimable,
+        creationBody.is_fully_owned,
+        creationBody.creation_authorship_window,
       ]
     );
     const creation = result.rows[0];

@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { Creation } from 'api/requests';
-import authUser from 'utils/helpers/authUser';
 import useSuggestions from 'hooks/useSuggestions';
 import moment from 'moment';
+import authUser from 'utils/helpers/authUser';
 
 // get auth user
 const user = authUser.getUser();
@@ -35,7 +35,12 @@ const useCreations = (userId) => {
         ...unsortedCreations,
         results: [...unsortedCreations.results].sort(
           (a, b) => new Date(b.created_at) - new Date(a.created_at),
-        ).map((x) => ({ ...x, creation_date: moment(x?.creation_date).format('Do MMMM YYYY') })),
+        ).map((x) => ({
+          ...x,
+          creation_date: moment(x?.creation_date).format('Do MMMM YYYY'),
+          creation_authorship_window: moment(x?.creation_authorship_window).format('Do MMMM YYYY'),
+          isCAWPassed: moment().isAfter(moment(x?.creation?.creation_authorship_window)),
+        })),
       };
     },
     staleTime: 60_000, // cache for 60 seconds

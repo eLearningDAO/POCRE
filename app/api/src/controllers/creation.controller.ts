@@ -1,6 +1,8 @@
 import httpStatus from 'http-status';
+import moment from 'moment';
 import config from '../config/config';
 import publishPlatforms from '../constants/publishPlatforms';
+import reputationStarTimeWindows from '../constants/reputationStarTimeWindows';
 import statusTypes from '../constants/statusTypes';
 import * as creationService from '../services/creation.service';
 import * as litigationService from '../services/litigation.service';
@@ -72,6 +74,9 @@ export const getCreationProofById = catchAsync(async (req, res): Promise<void | 
 });
 
 export const createCreation = catchAsync(async (req, res): Promise<void> => {
+  const reqUser = req.user as IUserDoc;
+  const reqUserReputation = `${reqUser.reputation_stars || 0}` as unknown as keyof typeof reputationStarTimeWindows;
+
   // check if reference docs exist
   await Promise.all(req.body.tags.map((id: string) => getTagById(id))); // verify tags, will throw an error if any tag is not found
   if (req.body.materials) await Promise.all(req.body.materials.map((id: string) => getMaterialById(id))); // verify materials, will throw an error if any material is not found
@@ -83,7 +88,14 @@ export const createCreation = catchAsync(async (req, res): Promise<void> => {
   const newCreation = await creationService.createCreation({
     ...req.body,
     creation_type: creationType,
-    author_id: (req.user as IUserDoc).user_id,
+    author_id: reqUser.user_id,
+    creation_authorship_window: moment()
+      .add(
+        reputationStarTimeWindows[reqUserReputation].value,
+        reputationStarTimeWindows[reqUserReputation].type as 'months' | 'month' | 'days' | 'day'
+      )
+      .toISOString(),
+    is_fully_owned: false,
   });
 
   // send recognitions to material authors if the creation is published
@@ -145,6 +157,9 @@ export const deleteCreationById = catchAsync(async (req, res): Promise<void> => 
 });
 
 export const updateCreationById = catchAsync(async (req, res): Promise<void> => {
+  const reqUser = req.user as IUserDoc;
+  const reqUserReputation = `${reqUser.reputation_stars || 0}` as unknown as keyof typeof reputationStarTimeWindows;
+
   // check if reference docs exist
   if (req.body.tags) await Promise.all(req.body.tags.map((id: string) => getTagById(id))); // verify tags, will throw an error if any tag is not found
   if (req.body.materials && req.body.materials.length > 0) {
@@ -170,9 +185,15 @@ export const updateCreationById = catchAsync(async (req, res): Promise<void> => 
     {
       ...req.body,
       creation_type: creationType,
+      creation_authorship_window: moment()
+        .add(
+          reputationStarTimeWindows[reqUserReputation].value,
+          reputationStarTimeWindows[reqUserReputation].type as 'months' | 'month' | 'days' | 'day'
+        )
+        .toISOString(),
     },
     {
-      owner_id: (req.user as IUserDoc).user_id,
+      owner_id: reqUser.user_id,
     }
   );
 
@@ -214,7 +235,12 @@ export const publishCreation = catchAsync(async (req, res): Promise<void> => {
 
   const updateBody = await (async () => {
     if (req.body.publish_on === publishPlatforms.BLOCKCHAIN) {
-      return { is_onchain: true };
+      // block owning if caw has not passed
+      if (foundCreation && moment().isBefore(moment(new Date(foundCreation?.creation_authorship_window)))) {
+        throw new ApiError(httpStatus.NOT_ACCEPTABLE, `finalization only allowed after creation authorship window`);
+      }
+
+      return { is_onchain: true, is_fully_owned: true };
     }
 
     if (req.body.publish_on === publishPlatforms.IPFS) {

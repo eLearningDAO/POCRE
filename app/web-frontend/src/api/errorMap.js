@@ -2,6 +2,7 @@ export default Object.freeze({
   'not found': 'Oops! something went wrong',
   // for creation
   'creation has ongoing litigation process': 'Cannot delete! Creation has an ongoing litigation process',
+  'finalization only allowed after creation authorship window': 'Finalization only allowed after creation authorship window',
   // for litigation
   'creation already assigned to a litigation': 'A litigation for this creation already exists',
   'material already assigned to a litigation': 'A litigation for this material already exists',

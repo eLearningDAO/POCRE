@@ -18,6 +18,9 @@ const usePublish = () => {
     reset: resetPublishErrors,
   } = useMutation({
     mutationFn: async ({ id, ipfsHash }) => {
+      // update in db
+      await Creation.publish(id, { publish_on: publishPlatforms.BLOCKCHAIN });
+
       // make transaction
       const txHash = await transactADAToPOCRE({
         amountADA: CHARGES.CREATION.FINALIZING_ON_CHAIN,
@@ -29,8 +32,7 @@ const usePublish = () => {
         },
       });
 
-      // update in db
-      if (txHash) await Creation.publish(id, { publish_on: publishPlatforms.BLOCKCHAIN });
+      if (!txHash) throw new Error('Failed to make transaction');
 
       // update queries
       queryClient.cancelQueries({ queryKey: ['creations'] });
