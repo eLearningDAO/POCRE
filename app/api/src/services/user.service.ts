@@ -93,7 +93,7 @@ export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
         userBody.phone,
         userBody.email_address,
         userBody.verified_id,
-        userBody.reputation_stars,
+        userBody.reputation_stars || 0,
         userBody.image_url,
         userBody.is_invited,
       ]
