@@ -36,6 +36,7 @@ export default function StepOne({
   const [materialsDetails, setMaterialsDetails] = useState(null);
   const [author] = useState(null);
   const [creationOrMaterialAuthor, setCreationOrMaterialAuthor] = useState('');
+  const [option, setOption] = useState('OPTION1');
 
   const getMaterialsUsingCreationId = async (creationId) => {
     setCreationUUIDFromLink(creationId);
@@ -174,6 +175,13 @@ export default function StepOne({
     }
   }, [initialValues?.creation]);
 
+  const setMaterialOption = (optionName) => {
+    setOption(optionName);
+    onCreationInputChange({ target: { value: '' } });
+    handleCreationLinkChange({ target: { value: '' } });
+    setError(null);
+  };
+
   return (
     <Form
       onSubmit={handleSubmit}
@@ -220,7 +228,7 @@ export default function StepOne({
           </Grid>
 
           <Grid xs={12} md={3} lg={2} marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center">
-            <Typography className="heading" />
+            <Button className="optionButton" variant="contained" disabled={option === 'OPTION1'} onClick={() => setMaterialOption('OPTION1')}>By Name</Button>
           </Grid>
           <Grid xs={12} md={9} lg={10} marginTop={{ xs: '8px' }}>
             <Input
@@ -228,6 +236,7 @@ export default function StepOne({
               placeholder="Select the creation with authorship infringement"
               name="creation"
               hookToForm
+              disabled={option !== 'OPTION1'}
               onChange={onCreationSelect}
               onInput={onCreationInputChange}
               autoComplete
@@ -247,7 +256,7 @@ export default function StepOne({
           </Grid>
 
           <Grid md={2} xs={12} marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center">
-            <Typography className="heading" />
+            <Button className="optionButton" variant="contained" disabled={option === 'OPTION2'} onClick={() => setMaterialOption('OPTION2')}>By Link</Button>
           </Grid>
           <Grid xs={12} md={10} marginTop={{ xs: '8px' }}>
             <Input
@@ -255,6 +264,7 @@ export default function StepOne({
               variant="dark"
               placeholder="Paste the link of the creation with the authorship infringement"
               name="creationLink"
+              disabled={option !== 'OPTION2'}
               onChange={handleCreationLinkChange}
             />
           </Grid>
