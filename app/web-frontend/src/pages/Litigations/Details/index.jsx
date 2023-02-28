@@ -1,18 +1,19 @@
+/* eslint-disable max-len */
 /* eslint-disable sonarjs/no-all-duplicated-branches */
 import {
   Box,
   Button, Chip, Grid,
   Typography,
 } from '@mui/material';
-import LeftIcon from 'assets/images/left.png';
-import RightIcon from 'assets/images/right.png';
+// import LeftIcon from 'assets/images/left.png';
+// import RightIcon from 'assets/images/right.png';
 import { ReactComponent as DislikeIcon } from 'assets/svgs/dislike.svg';
 import { ReactComponent as LikeIcon } from 'assets/svgs/like.svg';
 import { ReactComponent as ThumbPinIcon } from 'assets/svgs/thumb-pin.svg';
 import MaterialCard from 'components/cards/MaterialCard';
 import UserCard from 'components/cards/UserCard';
 import Loader from 'components/uicore/Loader';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import statusTypes from 'utils/constants/statusTypes';
 import './index.css';
@@ -77,15 +78,15 @@ export default function LitigationDetails() {
     if (id) fetchLitigationDetails(id);
   }, [id]);
 
-  const [slideNumber, setSlideNumber] = useState(1);
+  // const [slideNumber, setSlideNumber] = useState(1);
 
-  const next = () => {
-    setSlideNumber((x) => (x === litigation?.recognitions?.length ? 1 : x + 1));
-  };
-  const previous = () => {
-    // eslint-disable-next-line no-unsafe-optional-chaining
-    setSlideNumber((x) => (x === 1 ? litigation?.recognitions?.length - 1 : x - 1));
-  };
+  // const next = () => {
+  //   setSlideNumber((x) => (x === litigation?.recognitions?.length ? 1 : x + 1));
+  // };
+  // const previous = () => {
+  //   // eslint-disable-next-line no-unsafe-optional-chaining
+  //   setSlideNumber((x) => (x === 1 ? litigation?.recognitions?.length - 1 : x - 1));
+  // };
 
   if (isFetchingLitigation) return <Loader />;
 
@@ -270,7 +271,7 @@ export default function LitigationDetails() {
             }
           </Grid>
 
-          <Grid item xs={12} style={{ marginTop: '40px' }}>
+          {/* <Grid item xs={12} style={{ marginTop: '40px' }}>
             <Typography className="litigationCloseTitle" variant="h6">
               Recognized jury members (
               {litigation?.recognitions?.length}
@@ -322,7 +323,7 @@ export default function LitigationDetails() {
                 </Button>
               </div>
             </div>
-          </Grid>
+          </Grid> */}
         </>
       )}
 
