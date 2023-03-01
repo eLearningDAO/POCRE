@@ -9,6 +9,8 @@ const handleLogout = () => {
   authUser.removeUser();
 };
 
+let isAppUpdated = false;
+
 function Signup() {
   const navigate = useNavigate();
   const { updateAppKey } = useAppKeys();
@@ -24,19 +26,21 @@ function Signup() {
 
   useEffect(() => {
     handleLogout();
+    if (!isAppUpdated) { updateAppKey(); isAppUpdated = true; }
   }, []);
 
   return (
-    <div style={{
-      minHeight: '60vh',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexDirection: 'column',
-      gap: '16px',
-      maxWidth: '600px',
-      margin: 'auto',
-    }}
+    <div
+      style={{
+        minHeight: '60vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        gap: '16px',
+        maxWidth: '600px',
+        margin: 'auto',
+      }}
     >
       <h4 style={{ fontSize: '28px', fontWeight: 'bold' }}>
         Signup with your cardano wallet.
