@@ -53,7 +53,7 @@ export const createLitigation = catchAsync(async (req, res): Promise<void | any>
   }
 
   // check if material can be claimed
-  if (material && !material?.is_claimable) {
+  if ((material && !material?.is_claimable) || isCAWPassed || (creation.is_draft && material)) {
     throw new ApiError(httpStatus.NOT_FOUND, 'material is not claimable');
   }
 
