@@ -20,8 +20,10 @@ export const getIdIfYoutubeLink = (url: string) => {
 
 
 export const isValidYoutubeID = async (youtubeID:string) => {
-  console.log("DOes it even comer here afater getting video id")
-  return await fetch("img.youtube.com/vi/" + youtubeID + "/0.jpg")
+  return await fetch("https://img.youtube.com/vi/" + youtubeID + "/0.jpg",{
+    method: 'GET',
+    redirect: 'follow'
+  })
 }
 export const getSupportedFileTypeFromLink = async (url: string): Promise<TLinkValue | null> => {
   try {
@@ -29,20 +31,11 @@ export const getSupportedFileTypeFromLink = async (url: string): Promise<TLinkVa
     const stream = got.stream(url);
 
     const youtubeId = getIdIfYoutubeLink(url)
-
-    if(youtubeId)
+    let isYoutubeVideo = await isValidYoutubeID(youtubeId)
+    if (isYoutubeVideo.status===200)
     {
-      console.log("DOes it even comer here afater getting video id")
-      let isYoutubeVideo = await isValidYoutubeID(youtubeId)
-      console.log("DOes it even comer here afater getting video id",isYoutubeVideo)
-      if(typeof isYoutubeVideo === "boolean" && isYoutubeVideo === true)
-      {
-        return supportedMediaTypes.VIDEO
-      }
+      return supportedMediaTypes.VIDEO
     }
-
-    console.log("THis is teh youtube id", youtubeId)
-
     // get file type from stream
     const fileType = await FileType.fromStream(stream);
 
