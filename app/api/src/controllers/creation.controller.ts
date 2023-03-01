@@ -9,12 +9,14 @@ import * as litigationService from '../services/litigation.service';
 import { getMaterialById, updateMaterialById } from '../services/material.service';
 import { createRecognition } from '../services/recognition.service';
 import { getTagById } from '../services/tag.service';
-import { IUserDoc } from '../services/user.service';
+import { getUserByCriteria, IUserDoc } from '../services/user.service';
 import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/catchAsync';
+import { sendMail } from '../utils/email';
 import { generateProofOfCreation } from '../utils/generateProofOfCreation';
 import { getSupportedFileTypeFromLink } from '../utils/getSupportedFileTypeFromLink';
 import { pinJSON, unpinData } from '../utils/ipfs';
+import { encode } from '../utils/jwt';
 
 export const queryCreations = catchAsync(async (req, res): Promise<void> => {
   // when req user is requesting their own creations (search_fields has author_id, and query matches auth user id)
@@ -103,8 +105,24 @@ export const createCreation = catchAsync(async (req, res): Promise<void> => {
     // get all materials
     // eslint-disable-next-line @typescript-eslint/return-await
     const materials = await Promise.all(req.body.materials.map(async (id: string) => await getMaterialById(id)));
+
     await Promise.all(
       materials.map(async (m: any) => {
+        const foundAuthor = await getUserByCriteria('user_id', m.author_id, true);
+
+        // send invitation emails to new authors
+        if (foundAuthor && foundAuthor.is_invited && foundAuthor.email_address) {
+          await sendMail({
+            to: foundAuthor?.email_address as string,
+            subject: `Invitation to recognize authorship of "${m.material_title}"`,
+            message: `You were recognized as author of "${m.material_title}" by ${
+              (req.user as IUserDoc)?.user_name
+            }. Please signup on ${config.web_client_base_url}/signup?token=${encode(
+              foundAuthor.user_id
+            )} to be recognized as the author.`,
+          }).catch(() => null);
+        }
+
         // send recognition
         const recognition = await createRecognition({
           recognition_for: m.author_id,
@@ -205,6 +223,21 @@ export const updateCreationById = catchAsync(async (req, res): Promise<void> => 
 
     await Promise.all(
       materials.map(async (m: any) => {
+        const foundAuthor = await getUserByCriteria('user_id', m.author_id, true);
+
+        // send invitation emails to new authors
+        if (foundAuthor && foundAuthor.is_invited && foundAuthor.email_address) {
+          await sendMail({
+            to: foundAuthor?.email_address as string,
+            subject: `Invitation to recognize authorship of "${m.material_title}"`,
+            message: `You were recognized as author of "${m.material_title}" by ${
+              (req.user as IUserDoc)?.user_name
+            }. Please signup on ${config.web_client_base_url}/signup?token=${encode(
+              foundAuthor.user_id
+            )} to be recognized as the author.`,
+          }).catch(() => null);
+        }
+
         // send recognition
         const recognition = await createRecognition({
           recognition_for: m.author_id,
