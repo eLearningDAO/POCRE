@@ -189,7 +189,7 @@ const useCreationForm = ({
   // create creation
   const {
     mutate: makeCreation,
-    isError: isCreationError,
+    error: makeCreationError,
     isSuccess: isCreationSuccess,
     isLoading: isCreatingCreation,
   } = useMutation({
@@ -267,7 +267,7 @@ const useCreationForm = ({
     loading: isCreatingCreation,
     newCreationStatus: {
       success: isCreationSuccess,
-      error: isCreationError ? 'Failed to make a new creation' : null,
+      error: makeCreationError ? makeCreationError?.message : null,
     },
     makeCreation,
     isFetchingCreation,
