@@ -20,21 +20,8 @@ export const getIdIfYoutubeLink = (url: string) => {
 
 
 export const isValidYoutubeID = async (youtubeID:string) => {
-  let options = {
-    method: 'HEAD',
-    host: 'img.youtube.com',
-    path: '/vi/' + youtubeID + '/0.jpg'
-  };
-  let isValidVideo = false
-  var req = await http.request(options, function(res:any) {
-    console.log("THis is the fucking res of the youtube vido ", res)
-    if (res.statusCode == 200){
-      isValidVideo = true
-    } else {
-      isValidVideo = false
-    }
-  });
-  return isValidVideo
+  console.log("DOes it even comer here afater getting video id")
+  return await fetch("img.youtube.com/vi/" + youtubeID + "/0.jpg")
 }
 export const getSupportedFileTypeFromLink = async (url: string): Promise<TLinkValue | null> => {
   try {
