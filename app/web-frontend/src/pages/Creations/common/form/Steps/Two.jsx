@@ -33,12 +33,7 @@ function NewMaterial({
   const user = authUser.getUser();
   const [editMode, setEditMode] = useState(false);
 
-  const { linkError, validateLink, isValidatingLink } = useLinkValidation({ customErrorMessage: 'Invalid material link' });
-
   const handleUpdate = async (values) => {
-    const response = await validateLink(values?.link);
-    if (!response) return;
-
     const { link, title, author } = values;
     if (onUpdate) onUpdate({ link, title, author: author[0] });
     setEditMode(false);
@@ -141,32 +136,6 @@ function NewMaterial({
             />
           </Grid>
 
-          {linkError
-            && (
-              <>
-                <Grid
-                  xs={12}
-                  md={2}
-                  marginTop={{ xs: '12px', md: '18px' }}
-                  display="flex"
-                  flexDirection="row"
-                  alignItems="center"
-                />
-                <Grid
-                  xs={12}
-                  md={10}
-                  marginTop={{ xs: '0px', md: '18px' }}
-                  display="flex"
-                  gap="8px"
-                  alignItems="center"
-                >
-                  <Box width="100%" className="bg-red color-white" padding="16px" borderRadius="12px" fontSize="16px">
-                    {linkError}
-                  </Box>
-                </Grid>
-              </>
-            )}
-
           <Grid
             xs={12}
             md={2}
@@ -200,7 +169,7 @@ function NewMaterial({
               }}
               type="submit"
             >
-              {isValidatingLink ? <Loader /> : 'Update File'}
+              Update File
             </Button>
           </Grid>
         </Grid>

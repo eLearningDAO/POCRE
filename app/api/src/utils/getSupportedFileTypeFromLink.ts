@@ -20,7 +20,8 @@ export const getIdIfYoutubeLink = (url: string) => {
 
 
 export const isValidYoutubeID = async (youtubeID:string) => {
-  return await fetch("https://img.youtube.com/vi/" + youtubeID + "/0.jpg",{
+  let thumbnailLink = `https://img.youtube.com/vi/${youtubeID}/0.jpg`
+  return await fetch(thumbnailLink,{
     method: 'GET',
     redirect: 'follow'
   })
