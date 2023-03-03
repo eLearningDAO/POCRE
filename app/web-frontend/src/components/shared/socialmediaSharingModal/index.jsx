@@ -28,7 +28,7 @@ function SocialMediaModal({ shareUrl = '', subjectTitle = 'Creation', onClose })
             Sharing the
             <span className="subject-title">{subjectTitle}</span>
           </Typography>
-          <Button padding="0" minWidth="0" onClick={onClose}>
+          <Button padding="0" style={{ minWidth: 0 }} onClick={onClose}>
             <img src={CloseIcon} height="24" width="24" alt="" />
           </Button>
         </div>
