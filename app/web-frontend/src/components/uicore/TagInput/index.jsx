@@ -212,8 +212,8 @@ function TagInput(
       >
         {tags.length === 0 && placeholder && placeholderVisiable && <span className="tag-placeholder">{placeholder}</span>}
 
-        {tags.map((tag) => (
-          <Chip key={tag} className="tag" label={getTagString(tag)} onDelete={() => removeTag(tag)} />
+        {tags.map((tag, index) => (
+          <Chip key={index} className="tag" label={getTagString(tag)} onDelete={() => removeTag(tag)} />
         ))}
 
         <input type="text" onChange={onInputChange} onKeyUp={onInputKeyUp} onFocus={onInputFocus} onBlur={onInputBlur} className="tag-input" ref={inputReference} />
@@ -222,9 +222,9 @@ function TagInput(
       {/* suggestions box */}
       {showSuggestions && tagsSuggestionsToDisplay.length > 0 && (
         <div className="tag-suggestions-container input input-dark">
-          {tagsSuggestionsToDisplay.map((tag) => (
+          {tagsSuggestionsToDisplay.map((tag, index) => (
             hasTagSuggestion(tag) ? null : (
-              <button type="button" className="tag-suggestion" onClick={() => addTagSuggestion(tag)}>
+              <button key={index} type="button" className="tag-suggestion" onClick={() => addTagSuggestion(tag)}>
                 {getTagString(tag)}
               </button>
             )
