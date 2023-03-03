@@ -7,6 +7,7 @@ import Input from 'components/uicore/Input';
 import Loader from 'components/uicore/Loader';
 import Select from 'components/uicore/Select';
 import { useEffect, useState } from 'react';
+import Radio from '@material-ui/core/Radio';
 import { stepOneValidation } from './validation';
 
 let isDraft = false;
@@ -175,8 +176,8 @@ export default function StepOne({
     }
   }, [initialValues?.creation]);
 
-  const setMaterialOption = (optionName) => {
-    setOption(optionName);
+  const setMaterialOption = (event) => {
+    setOption(event.target.value);
     onCreationInputChange({ target: { value: '' } });
     handleCreationLinkChange({ target: { value: '' } });
     setError(null);
@@ -228,7 +229,13 @@ export default function StepOne({
           </Grid>
 
           <Grid xs={12} md={3} lg={2} marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center">
-            <Button className="optionButton" variant="contained" disabled={option === 'OPTION1'} onClick={() => setMaterialOption('OPTION1')}>By Name</Button>
+            <Radio
+              checked={option === 'OPTION1'}
+              onChange={setMaterialOption}
+              value="OPTION1"
+              color="default"
+              name="radio-button-option1"
+            />
           </Grid>
           <Grid xs={12} md={9} lg={10} marginTop={{ xs: '8px' }}>
             <Input
@@ -256,7 +263,13 @@ export default function StepOne({
           </Grid>
 
           <Grid md={2} xs={12} marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center">
-            <Button className="optionButton" variant="contained" disabled={option === 'OPTION2'} onClick={() => setMaterialOption('OPTION2')}>By Link</Button>
+            <Radio
+              checked={option === 'OPTION2'}
+              onChange={setMaterialOption}
+              value="OPTION2"
+              color="default"
+              name="radio-button-option2"
+            />
           </Grid>
           <Grid xs={12} md={10} marginTop={{ xs: '8px' }}>
             <Input
