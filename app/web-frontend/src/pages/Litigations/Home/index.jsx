@@ -127,9 +127,9 @@ function Litigation() {
 
         {litigations?.[activeLitigation]?.length > 0 ? (
           <div className="grid-container">
-            {litigations?.[activeLitigation]?.map((x) => (
+            {litigations?.[activeLitigation]?.map((x, index) => (
               <LitigationCard
-                key={x}
+                key={index}
                 id={x?.litigation_id}
                 title={x?.litigation_title}
                 claimer={{
