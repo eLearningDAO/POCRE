@@ -133,7 +133,7 @@ export default function LitigationDetails() {
 
       <Grid
         display="flex"
-        alignItem="flex-top"
+        alignItems="flex-top"
         gap="24px"
         padding="36px"
         className="secondary-section-container"
@@ -282,7 +282,7 @@ export default function LitigationDetails() {
             display="flex"
             flexDirection="column"
             justifyContent="center"
-            alignItem="center"
+            alignItems="center"
             gap="24px"
             padding="36px"
             marginTop="16px"
