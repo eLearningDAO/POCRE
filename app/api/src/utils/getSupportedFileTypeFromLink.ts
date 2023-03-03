@@ -3,7 +3,6 @@ import FileType from 'file-type';
 import httpStatus from 'http-status';
 import ApiError from './ApiError';
 import supportedMediaTypes from '../constants/supportedMediaTypes';
-var http = require('http');
 
 const types = Object.values(supportedMediaTypes);
 type TLinkValue = typeof types[number];

@@ -3,7 +3,9 @@ import {
 } from '@mui/material';
 import Form from 'components/uicore/Form';
 import Input from 'components/uicore/Input';
+import Loader from 'components/uicore/Loader';
 import TagInput from 'components/uicore/TagInput';
+import useLinkValidation from './useLinkValidation';
 import { stepOneValidation } from './validation';
 
 export default function StepOne({
@@ -12,8 +14,12 @@ export default function StepOne({
   onTagInputChange = () => {},
   tagSuggestions = [],
   status = {},
+  loading = false,
 }) {
+  const { linkError, validateLink, isValidatingLink } = useLinkValidation({ customErrorMessage: 'Invalid creation source link' });
   const onSubmit = async (values) => {
+    const response = await validateLink(values.source);
+    if (!response) return;
     onComplete(values);
   };
 
@@ -60,12 +66,12 @@ export default function StepOne({
           <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
             <TagInput tagSuggestions={tagSuggestions.map((tag) => tag.tag_name)} onInput={onTagInputChange} variant="dark" placeholder="The tags representing your creation" name="tags" hookToForm />
           </Grid>
-          {(status.error || status.success) && (
+          {(linkError || status.error || status.success) && (
             <>
               <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center" />
               <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
                 <Box width="100%" className={`color-white ${status.success ? 'bg-green' : 'bg-red'}`} padding="16px" borderRadius="12px" fontSize="16px">
-                  {status.success ? 'Draft Saved' : status.error}
+                  {linkError || (status.success ? 'Draft Saved' : status.error)}
                 </Box>
               </Grid>
             </>
@@ -75,7 +81,7 @@ export default function StepOne({
 
       <Grid item xs={12} className="collectionButtons">
         <Button type="submit" className="nextCollectionButton" style={{ marginLeft: 'auto' }}>
-          Next
+          {isValidatingLink || loading ? <Loader /> : 'Next'}
         </Button>
       </Grid>
     </Form>
