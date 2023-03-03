@@ -271,7 +271,7 @@ export default function LitigationDetails() {
             }
           </Grid>
 
-          {/* <Grid item xs={12} style={{ marginTop: '40px' }}>
+          <Grid item xs={12} style={{ marginTop: '40px' }}>
             <Typography className="litigationCloseTitle" variant="h6">
               Recognized jury members (
               {litigation?.recognitions?.length}
@@ -289,7 +289,12 @@ export default function LitigationDetails() {
             marginTop="16px"
             className="secondary-section-container"
           >
-            <div className="carousel-container">
+            <Typography className="litigationSummary" variant="h6">
+              {litigation?.recognitions?.length ? litigation?.recognitions.length : 0}
+              {' '}
+              jury members have been selected for your litigation
+            </Typography>
+            {/* <div className="carousel-container">
               <div className="carousel-container-cards">
                 {litigation?.recognitions?.map(
                   (recognition, index) => (index === slideNumber - 1 || index === slideNumber
@@ -322,8 +327,8 @@ export default function LitigationDetails() {
                   <img src={RightIcon} alt="" />
                 </Button>
               </div>
-            </div>
-          </Grid> */}
+            </div> */}
+          </Grid>
         </>
       )}
 
