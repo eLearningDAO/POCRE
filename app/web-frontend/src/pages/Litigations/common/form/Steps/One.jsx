@@ -8,7 +8,19 @@ import Loader from 'components/uicore/Loader';
 import Select from 'components/uicore/Select';
 import { useEffect, useState } from 'react';
 import Radio from '@material-ui/core/Radio';
+import { blue } from '@material-ui/core/colors';
+import { withStyles } from '@material-ui/core/styles';
 import { stepOneValidation } from './validation';
+
+const BlueRadio = withStyles({
+  root: {
+    color: blue[400],
+    '&$checked': {
+      color: blue[600],
+    },
+  },
+  checked: {},
+})((properties) => <Radio color="default" {...properties} />);
 
 let isDraft = false;
 
@@ -228,12 +240,11 @@ export default function StepOne({
             <Typography className="heading">Title of the creation you are claiming</Typography>
           </Grid>
 
-          <Grid xs={12} md={3} lg={2} marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center">
-            <Radio
+          <Grid md={2} xs={12} marginTop={{ xs: '8px' }} paddingRight={{ xs: '24px' }} display="flex" flexDirection="row" justifyContent="right">
+            <BlueRadio
               checked={option === 'OPTION1'}
               onChange={setMaterialOption}
               value="OPTION1"
-              color="default"
               name="radio-button-option1"
             />
           </Grid>
@@ -262,12 +273,11 @@ export default function StepOne({
             <Typography className="heading">or points to its link</Typography>
           </Grid>
 
-          <Grid md={2} xs={12} marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center">
-            <Radio
+          <Grid md={2} xs={12} marginTop={{ xs: '8px' }} paddingRight={{ xs: '24px' }} display="flex" flexDirection="row" justifyContent="right">
+            <BlueRadio
               checked={option === 'OPTION2'}
               onChange={setMaterialOption}
               value="OPTION2"
-              color="default"
               name="radio-button-option2"
             />
           </Grid>
