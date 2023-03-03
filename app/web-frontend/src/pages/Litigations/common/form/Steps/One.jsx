@@ -7,7 +7,20 @@ import Input from 'components/uicore/Input';
 import Loader from 'components/uicore/Loader';
 import Select from 'components/uicore/Select';
 import { useEffect, useState } from 'react';
+import Radio from '@material-ui/core/Radio';
+import { blue } from '@material-ui/core/colors';
+import { withStyles } from '@material-ui/core/styles';
 import { stepOneValidation } from './validation';
+
+const BlueRadio = withStyles({
+  root: {
+    color: blue[400],
+    '&$checked': {
+      color: blue[600],
+    },
+  },
+  checked: {},
+})((properties) => <Radio color="default" {...properties} />);
 
 let isDraft = false;
 
@@ -36,6 +49,7 @@ export default function StepOne({
   const [materialsDetails, setMaterialsDetails] = useState(null);
   const [author] = useState(null);
   const [creationOrMaterialAuthor, setCreationOrMaterialAuthor] = useState('');
+  const [option, setOption] = useState('OPTION1');
 
   const getMaterialsUsingCreationId = async (creationId) => {
     setCreationUUIDFromLink(creationId);
@@ -174,6 +188,13 @@ export default function StepOne({
     }
   }, [initialValues?.creation]);
 
+  const setMaterialOption = (event) => {
+    setOption(event.target.value);
+    onCreationInputChange({ target: { value: '' } });
+    handleCreationLinkChange({ target: { value: '' } });
+    setError(null);
+  };
+
   return (
     <Form
       onSubmit={handleSubmit}
@@ -219,8 +240,13 @@ export default function StepOne({
             <Typography className="heading">Title of the creation you are claiming</Typography>
           </Grid>
 
-          <Grid xs={12} md={3} lg={2} item marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center">
-            <Typography className="heading" />
+          <Grid xs={12} md={3} lg={2} item marginTop={{ xs: '8px' }} paddingRight={{ xs: '24px' }} display="flex" flexDirection="row" justifyContent="right">
+            <BlueRadio
+              checked={option === 'OPTION1'}
+              onChange={setMaterialOption}
+              value="OPTION1"
+              name="radio-button-option1"
+            />
           </Grid>
           <Grid xs={12} md={9} lg={10} item marginTop={{ xs: '8px' }}>
             <Input
@@ -228,6 +254,7 @@ export default function StepOne({
               placeholder="Select the creation with authorship infringement"
               name="creation"
               hookToForm
+              disabled={option !== 'OPTION1'}
               onChange={onCreationSelect}
               onInput={onCreationInputChange}
               autoComplete
@@ -246,8 +273,13 @@ export default function StepOne({
             <Typography className="heading">or points to its link</Typography>
           </Grid>
 
-          <Grid md={2} xs={12} item marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center">
-            <Typography className="heading" />
+          <Grid xs={12} md={2} item marginTop={{ xs: '8px' }} paddingRight={{ xs: '24px' }} display="flex" flexDirection="row" justifyContent="right">
+            <BlueRadio
+              checked={option === 'OPTION2'}
+              onChange={setMaterialOption}
+              value="OPTION2"
+              name="radio-button-option2"
+            />
           </Grid>
           <Grid xs={12} md={10} item marginTop={{ xs: '8px' }}>
             <Input
@@ -255,6 +287,7 @@ export default function StepOne({
               variant="dark"
               placeholder="Paste the link of the creation with the authorship infringement"
               name="creationLink"
+              disabled={option !== 'OPTION2'}
               onChange={handleCreationLinkChange}
             />
           </Grid>
