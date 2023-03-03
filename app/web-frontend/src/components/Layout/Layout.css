@@ -995,6 +995,13 @@ a {
   font-weight: 700 !important;
 }
 
+.litigationSummary {
+  font-size: 22px !important;
+  color: #272727;
+  font-weight: 700 !important;
+  text-align: center;
+}
+
 /* Credit Card */
 .topContributorSection {
   box-sizing: border-box;
