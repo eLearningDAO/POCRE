@@ -1,11 +1,8 @@
-import config from '../config/config';
 import * as materialService from '../services/material.service';
 import { getRecognitionById } from '../services/recognition.service';
 import { getUserByCriteria, IUserDoc } from '../services/user.service';
 import catchAsync from '../utils/catchAsync';
-import { sendMail } from '../utils/email';
 import { getSupportedFileTypeFromLink } from '../utils/getSupportedFileTypeFromLink';
-import { encode } from '../utils/jwt';
 
 export const queryMaterials = catchAsync(async (req, res): Promise<void> => {
   const creation = await materialService.queryMaterials(req.query as any);
@@ -21,10 +18,9 @@ export const getMaterialById = catchAsync(async (req, res): Promise<void> => {
 
 export const createMaterial = catchAsync(async (req, res): Promise<void> => {
   // check if reference docs exist
-  let foundUser = null;
   if (req.body.recognition_id) await getRecognitionById(req.body.recognition_id as string); // verify recognition, will throw an error if recognition not found
   if (req.body.author_id && req.body.author_id !== (req.user as IUserDoc).user_id) {
-    foundUser = await getUserByCriteria('user_id', req.body.author_id as string, true); // verify author id (if present), will throw an error if not found
+    await getUserByCriteria('user_id', req.body.author_id as string, true); // verify author id (if present), will throw an error if not found
   }
 
   // get the material type from link
@@ -36,19 +32,6 @@ export const createMaterial = catchAsync(async (req, res): Promise<void> => {
     material_type: materialType,
     author_id: req.body.author_id || (req.user as IUserDoc).user_id,
   });
-
-  // send email to the invited user if found
-  if (foundUser && foundUser.is_invited && foundUser.email_address) {
-    await sendMail({
-      to: foundUser.email_address as string,
-      subject: `Invitation to recognize authorship of "${newMaterial.material_title}"`,
-      message: `You were recognized as author of "${newMaterial.material_title}" by ${
-        (req.user as IUserDoc)?.user_name
-      }. Please signup on ${config.web_client_base_url}/signup?token=${encode(
-        foundUser.user_id
-      )} to be recognized as the author.`,
-    }).catch(() => null);
-  }
 
   res.send(newMaterial);
 });
