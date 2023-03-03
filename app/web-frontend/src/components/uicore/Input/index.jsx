@@ -91,7 +91,7 @@ Input.propTypes = {
   onChange: PropTypes.func,
   onInput: PropTypes.func,
   name: PropTypes.string,
-  type: PropTypes.oneOf('text', 'date'),
+  type: PropTypes.oneOf(['text', 'date']),
   placeholder: PropTypes.string,
   hookToForm: PropTypes.bool,
   disabled: PropTypes.bool,

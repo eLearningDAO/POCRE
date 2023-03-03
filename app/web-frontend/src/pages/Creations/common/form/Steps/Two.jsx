@@ -77,10 +77,10 @@ function NewMaterial({
           bgcolor="rgba(255, 255, 255, 0.28)"
           border="2px dashed #F78F8A"
         >
-          <Grid md={2} xs={12} display="flex" flexDirection="row" alignItems="center">
+          <Grid item md={2} xs={12} display="flex" flexDirection="row" alignItems="center">
             <Typography className="heading">Title</Typography>
           </Grid>
-          <Grid xs={12} md={10}>
+          <Grid item xs={12} md={10}>
             <Input placeholder="Material title" name="title" hookToForm />
           </Grid>
 
@@ -231,10 +231,10 @@ function AuthorInviteModal({ onClose = () => {}, onAuthorDetailsSubmit }) {
         }}
       >
         <Grid container>
-          <Grid xs={12} md={2} display="flex" flexDirection="row" alignItems="center" marginTop={{ xs: '12px', md: '18px' }}>
+          <Grid item xs={12} md={2} display="flex" flexDirection="row" alignItems="center" marginTop={{ xs: '12px', md: '18px' }}>
             <Typography className="heading">Invite Method</Typography>
           </Grid>
-          <Grid xs={12} md={10} marginTop={{ xs: '12px', md: '18px' }}>
+          <Grid item xs={12} md={10} marginTop={{ xs: '12px', md: '18px' }}>
             <Select
               variant="dark"
               placeholder="Select Invite Method"
@@ -403,24 +403,24 @@ export default function StepTwo({
           }}
         >
           <Grid container className="create-collection" bgcolor="rgba(255, 255, 255, 0.28)" border="2px dashed #F78F8A">
-            <Grid md={2} xs={12} display="flex" flexDirection="row" alignItems="center">
+            <Grid item md={2} xs={12} display="flex" flexDirection="row" alignItems="center">
               <Typography className="heading">Title</Typography>
             </Grid>
-            <Grid xs={12} md={10}>
+            <Grid item xs={12} md={10}>
               <Input placeholder="Material title" name="title" hookToForm />
             </Grid>
 
-            <Grid xs={12} md={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
+            <Grid item xs={12} md={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
               <Typography className="heading">Link</Typography>
             </Grid>
-            <Grid xs={12} md={10} marginTop={{ xs: '0px', md: '18px' }} display="flex" gap="8px" alignItems="center">
+            <Grid item xs={12} md={10} marginTop={{ xs: '0px', md: '18px' }} display="flex" gap="8px" alignItems="center">
               <Input placeholder="The link where this material is published (Google drive, Youtube, etc)" name="link" hookToForm />
             </Grid>
 
-            <Grid xs={12} md={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
+            <Grid item xs={12} md={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
               <Typography className="heading">Author</Typography>
             </Grid>
-            <Grid xs={12} md={10} marginTop={{ xs: '0px', md: '18px' }} display="flex" gap="8px" alignItems="center">
+            <Grid item xs={12} md={10} marginTop={{ xs: '0px', md: '18px' }} display="flex" gap="8px" alignItems="center">
               <TagInput
                 hookToForm
                 maxTags={1}
@@ -442,8 +442,8 @@ export default function StepTwo({
 
             {linkError && (
               <>
-                <Grid xs={12} md={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center" />
-                <Grid xs={12} md={10} marginTop={{ xs: '0px', md: '18px' }} display="flex" alignItems="center">
+                <Grid item xs={12} md={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center" />
+                <Grid item xs={12} md={10} marginTop={{ xs: '0px', md: '18px' }} display="flex" alignItems="center">
                   <Box width="100%" className="bg-red color-white" padding="16px" borderRadius="12px" fontSize="16px">
                     {linkError}
                   </Box>
@@ -451,8 +451,8 @@ export default function StepTwo({
               </>
             )}
 
-            <Grid xs={12} md={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center" />
-            <Grid xs={12} md={10} marginLeft="-20px" marginTop={{ xs: '0px', md: '18px' }} display="flex" alignItems="center">
+            <Grid item xs={12} md={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center" />
+            <Grid item xs={12} md={10} marginLeft="-20px" marginTop={{ xs: '0px', md: '18px' }} display="flex" alignItems="center">
               <Button
                 id="material-form-submit"
                 className="inviteButton"

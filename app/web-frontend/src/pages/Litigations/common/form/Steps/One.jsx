@@ -208,10 +208,10 @@ export default function StepOne({
     >
       <Grid item xs={12}>
         <Grid container className="create-collection">
-          <Grid xs={12} md={3} lg={2} display="flex" flexDirection="row" alignItems="center">
+          <Grid xs={12} md={3} lg={2} item display="flex" flexDirection="row" alignItems="center">
             <Typography className="heading">Title</Typography>
           </Grid>
-          <Grid xs={12} md={9} lg={10}>
+          <Grid xs={12} md={9} lg={10} item>
             <Input
               variant="dark"
               placeholder="The title of your creation"
@@ -220,10 +220,10 @@ export default function StepOne({
             />
           </Grid>
 
-          <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="flex-start">
+          <Grid xs={12} md={3} lg={2} item marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="flex-start">
             <Typography className="heading" marginTop="8px">Description</Typography>
           </Grid>
-          <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
+          <Grid xs={12} md={9} lg={10} item marginTop={{ xs: '12px', md: '18px' }}>
             <Input
               multiline
               variant="dark"
@@ -233,14 +233,14 @@ export default function StepOne({
             />
           </Grid>
 
-          <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', sm: '18px' }} display="flex" flexDirection="row" alignItems="center">
+          <Grid xs={12} md={3} lg={2} item marginTop={{ xs: '12px', sm: '18px' }} display="flex" flexDirection="row" alignItems="center">
             <Typography className="heading" />
           </Grid>
-          <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', sm: '18px' }} display="flex" flexDirection="row" alignItems="center" justifyContent="center">
+          <Grid xs={12} md={9} lg={10} item marginTop={{ xs: '12px', sm: '18px' }} display="flex" flexDirection="row" alignItems="center" justifyContent="center">
             <Typography className="heading">Title of the creation you are claiming</Typography>
           </Grid>
 
-          <Grid md={2} xs={12} marginTop={{ xs: '8px' }} paddingRight={{ xs: '24px' }} display="flex" flexDirection="row" justifyContent="right">
+          <Grid xs={12} md={3} lg={2} item marginTop={{ xs: '8px' }} paddingRight={{ xs: '24px' }} display="flex" flexDirection="row" justifyContent="right">
             <BlueRadio
               checked={option === 'OPTION1'}
               onChange={setMaterialOption}
@@ -248,7 +248,7 @@ export default function StepOne({
               name="radio-button-option1"
             />
           </Grid>
-          <Grid xs={12} md={9} lg={10} marginTop={{ xs: '8px' }}>
+          <Grid xs={12} md={9} lg={10} item marginTop={{ xs: '8px' }}>
             <Input
               variant="dark"
               placeholder="Select the creation with authorship infringement"
@@ -266,14 +266,14 @@ export default function StepOne({
             />
           </Grid>
 
-          <Grid xs={12} md={3} lg={2} marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center">
+          <Grid xs={12} md={3} lg={2} item marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center">
             <Typography className="heading" />
           </Grid>
-          <Grid xs={12} md={9} lg={10} marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center" justifyContent="center">
+          <Grid xs={12} md={9} lg={10} item marginTop={{ xs: '8px' }} display="flex" flexDirection="row" alignItems="center" justifyContent="center">
             <Typography className="heading">or points to its link</Typography>
           </Grid>
 
-          <Grid md={2} xs={12} marginTop={{ xs: '8px' }} paddingRight={{ xs: '24px' }} display="flex" flexDirection="row" justifyContent="right">
+          <Grid xs={12} md={2} item marginTop={{ xs: '8px' }} paddingRight={{ xs: '24px' }} display="flex" flexDirection="row" justifyContent="right">
             <BlueRadio
               checked={option === 'OPTION2'}
               onChange={setMaterialOption}
@@ -281,7 +281,7 @@ export default function StepOne({
               name="radio-button-option2"
             />
           </Grid>
-          <Grid xs={12} md={10} marginTop={{ xs: '8px' }}>
+          <Grid xs={12} md={10} item marginTop={{ xs: '8px' }}>
             <Input
               id="creation-link-input"
               variant="dark"
@@ -294,10 +294,10 @@ export default function StepOne({
 
           {creationOrMaterialAuthor && (
             <>
-              <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
+              <Grid xs={12} md={3} lg={2} item marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
                 <Typography className="heading">Authored By</Typography>
               </Grid>
-              <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }} textAlign="center">
+              <Grid xs={12} md={9} lg={10} item marginTop={{ xs: '12px', md: '18px' }} textAlign="center">
                 <h4 className="h4">
                   {creationOrMaterialAuthor?.user_name}
                 </h4>
@@ -312,6 +312,7 @@ export default function StepOne({
                   xs={12}
                   md={3}
                   lg={2}
+                  item
                   marginTop={{ xs: '12px', md: '18px' }}
                   display="flex"
                   flexDirection="row"
@@ -319,7 +320,7 @@ export default function StepOne({
                 >
                   <Typography className="heading">Material</Typography>
                 </Grid>
-                <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
+                <Grid xs={12} md={9} lg={10} item marginTop={{ xs: '12px', md: '18px' }}>
                   <Select
                     variant="dark"
                     placeholder="Select the material with authorship infringement"
@@ -337,10 +338,10 @@ export default function StepOne({
 
           {(error || deletionError) && (
             <>
-              <Grid xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
+              <Grid xs={12} md={3} lg={2} item marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center">
                 .
               </Grid>
-              <Grid xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
+              <Grid xs={12} md={9} lg={10} item marginTop={{ xs: '12px', md: '18px' }}>
                 <Box width="100%" className="bg-red color-white" padding="16px" borderRadius="12px" fontSize="16px">
                   {(error || deletionError)}
                 </Box>
