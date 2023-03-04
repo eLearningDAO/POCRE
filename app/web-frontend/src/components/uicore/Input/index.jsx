@@ -17,6 +17,7 @@ function Input(
     name,
     placeholder,
     hookToForm,
+    disabled,
     fullWidth,
     onChange,
     onInput,
@@ -41,6 +42,7 @@ function Input(
           <Autocomplete
             freeSolo
             fullWidth
+            disabled={disabled}
             options={options}
             onChange={onChange}
             onInput={onInput}
@@ -67,6 +69,7 @@ function Input(
               disableUnderline: true,
             }}
             {...(multiline && { multiline, minRows })}
+            disabled={disabled}
             fullWidth={fullWidth}
             name={name}
             placeholder={placeholder}
@@ -88,9 +91,10 @@ Input.propTypes = {
   onChange: PropTypes.func,
   onInput: PropTypes.func,
   name: PropTypes.string,
-  type: PropTypes.oneOf('text', 'date'),
+  type: PropTypes.oneOf(['text', 'date']),
   placeholder: PropTypes.string,
   hookToForm: PropTypes.bool,
+  disabled: PropTypes.bool,
   fullWidth: PropTypes.bool,
   variant: PropTypes.oneOf(Object.values(inputVariants)),
   autoComplete: PropTypes.bool,
@@ -106,6 +110,7 @@ Input.defaultProps = {
   type: 'text',
   placeholder: '',
   hookToForm: false,
+  disabled: false,
   fullWidth: true,
   variant: inputVariants.LIGHT,
   autoComplete: false,

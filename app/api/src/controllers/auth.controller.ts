@@ -87,12 +87,18 @@ export const signup = catchAsync(async (req, res): Promise<any> => {
 
     // delete the invited account
     await userService.deleteUserById(foundInvitedUser.user_id);
+
+    // verify the user email
+    await userService.updateUserById(foundExistingUser.user_id, {
+      email_verified: true,
+    });
   } else {
     // make the user as non-invited and login
     user = await userService.updateUserById(userId, {
       user_name: foundInvitedUser.user_name || 'anonymous',
       is_invited: false,
       wallet_address: hashedWalletAddress,
+      email_verified: true,
     });
   }
 

@@ -53,7 +53,7 @@ function CreationPreview({
       <div className="creation-preview">
         <div className="creation-preview-header">
           <Typography className="heading h4">Proof Of co-CREation - Status pending</Typography>
-          <Button padding="0" minWidth="0" onClick={onClose}>
+          <Button padding="0" style={{ minWidth: 0 }} onClick={onClose}>
             <img src={CloseIcon} height="24" width="24" alt="" />
           </Button>
         </div>
