@@ -32,6 +32,7 @@
     "react-share": "^4.4.1",
     "react-slick": "^0.29.0",
     "react-transition-group": "^4.4.5",
+    "react-youtube": "^10.1.0",
     "slick-carousel": "^1.8.1",
     "stream": "^0.0.2",
     "zustand": "^4.1.1"

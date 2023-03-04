@@ -34,7 +34,7 @@ export const getSupportedFileTypeFromLink = async (url: string): Promise<TLinkVa
     let isYoutubeVideo = await isValidYoutubeID(youtubeId)
     if (isYoutubeVideo.status===200)
     {
-      return supportedMediaTypes.VIDEO
+      return supportedMediaTypes.YOUTUBE
     }
     // get file type from stream
     const fileType = await FileType.fromStream(stream);

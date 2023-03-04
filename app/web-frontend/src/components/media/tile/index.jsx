@@ -2,8 +2,20 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/media-has-caption */
 import './index.css';
+import YouTube from 'react-youtube';
+
+export const getIdIfYoutubeLink = (url) => {
+  // eslint-disable-next-line unicorn/better-regex
+  const urlArray = url.split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
+  // eslint-disable-next-line unicorn/better-regex
+  return (urlArray[2] !== undefined) ? urlArray[2].split(/[^0-9a-z_]/i)[0] : urlArray[0];
+};
 
 function MediaTile({ mediaType, mediaUrl, onMediaClick }) {
+  const options = {
+    height: '250',
+    width: '280',
+  };
   return (
     <div
       className="collection-card-media-container"
@@ -11,6 +23,9 @@ function MediaTile({ mediaType, mediaUrl, onMediaClick }) {
     >
       {mediaType === 'image' && (
       <img className="collection-card-media" alt="collection-card-hero" src={mediaUrl} />
+      )}
+      {mediaType === 'youtube_video' && (
+      <YouTube videoId={getIdIfYoutubeLink(mediaUrl)} opts={options} />
       )}
       {mediaType === 'video' && (
       <>
