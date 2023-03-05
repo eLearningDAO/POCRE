@@ -9,8 +9,8 @@ import './index.css';
 
 function MediaBlock({ mediaType, mediaUrl }) {
   const options = {
-    height: '250',
-    width: '280',
+    height: '500',
+    width: window.window.innerWidth * 0.7,
   };
   return (
     <div
