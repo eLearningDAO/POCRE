@@ -80,6 +80,8 @@ function Home() {
               && trendingList.map((trending, index) => (
                 <TrendingCard
                   key={index}
+                  creationType={trending?.creation_type}
+                  creation_type
                   mediaUrl={trending?.creation_link}
                   trending={trending}
                   handleCreationCardClick={handleCreationCardClick}

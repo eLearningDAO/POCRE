@@ -3,17 +3,11 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import './index.css';
 import YouTube from 'react-youtube';
-
-export const getIdIfYoutubeLink = (url) => {
-  // eslint-disable-next-line unicorn/better-regex
-  const urlArray = url.split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
-  // eslint-disable-next-line unicorn/better-regex
-  return (urlArray[2] !== undefined) ? urlArray[2].split(/[^0-9a-z_]/i)[0] : urlArray[0];
-};
+import { getIdIfYoutubeLink } from 'utils/helpers/getIdFromYoutubeLink';
 
 function MediaTile({ mediaType, mediaUrl, onMediaClick }) {
   const options = {
-    height: '250',
+    height: '200',
     width: '280',
   };
   return (
