@@ -238,8 +238,12 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
           fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
         })} FROM creation c where c.creation_type='${
           options.creation_type
-        }' and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id) OFFSET $1 LIMIT $2;`,
-        count: `SELECT COUNT(*) as total_results FROM creation c where c.creation_type='${options.creation_type}' and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)
+        }' and c.is_draft=${
+          options.is_draft
+        } and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id) OFFSET $1 LIMIT $2;`,
+        count: `SELECT COUNT(*) as total_results FROM creation c where c.creation_type='${options.creation_type}' and c.is_draft='${
+          options.is_draft
+        }' and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)
                         OFFSET $1 LIMIT $2`,
       },
       creationByTypetopAuthors: {
@@ -248,7 +252,9 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
           fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
         })} FROM creation c where c.creation_type='${
           options.creation_type
-        }' and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
+        }' and c.is_draft=${
+          options.is_draft
+        } and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
         (SELECT user_id, 
                         (
                           SELECT 
@@ -285,7 +291,9 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                           DESC)
                 ${order} 
                 OFFSET $1 LIMIT $2`,
-        count: `SELECT COUNT(*) as total_results FROM creation c where c.creation_type='${options.creation_type}' and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
+        count: `SELECT COUNT(*) as total_results FROM creation c where c.creation_type='${options.creation_type}' and c.is_draft=${
+          options.is_draft
+        } and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
                 (SELECT user_id, 
                                 (
                                   SELECT 
@@ -501,7 +509,6 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                 )`,
       },
     };
-
     const result = await db.instance.query(
       typeof options.creation_type === 'string' && options.top_authors === true
         ? queryModes.creationByTypetopAuthors.query

@@ -56,7 +56,7 @@ const useHome = () => {
     queryFn: async () => {
       const toPopulate = ['author_id'];
       let imageCreationResponse = await Creation.getAll(
-        `page=${1}&limit=100&creation_type=image&top_authors=true&descend_fields[]=creation_date&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
+        `page=${1}&limit=100&creation_type=image&is_draft=false&top_authors=true&descend_fields[]=creation_date&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       );
       imageCreationResponse = await Creation.getAll(
         `page=${imageCreationResponse.total_pages > 1 ? imageCreationResponse.total_pages : 1}&limit=100&creation_type=image&top_authors=true&descend_fields[]=creation_date&${toPopulate.map((x) => `populate=${x}`).join('&')}`,

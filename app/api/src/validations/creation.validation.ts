@@ -42,6 +42,7 @@ export const queryCreations = {
       then: Joi.forbidden(),
       otherwise: Joi.optional(),
     }),
+    is_draft: Joi.bool(),
     populate: Joi.alternatives()
       .try(Joi.string().valid(...creationDeepFields), Joi.array().items(Joi.string().valid(...creationDeepFields)))
       .optional(),
