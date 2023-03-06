@@ -3,9 +3,15 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import { Button } from '@mui/material';
 import DownloadIconSVG from 'assets/svgs/download.svg';
+import YouTube from 'react-youtube';
+import { getIdIfYoutubeLink } from 'utils/helpers/getIdFromYoutubeLink';
 import './index.css';
 
 function MediaPreview({ mediaType, mediaUrl, onClose }) {
+  const options = {
+    height: '250',
+    width: '280',
+  };
   return (
     <div
       className="media-preview-container"
@@ -18,6 +24,9 @@ function MediaPreview({ mediaType, mediaUrl, onClose }) {
       >
         {mediaType === 'image' && <img src={mediaUrl} alt="" />}
         {mediaType === 'video' && <video src={mediaUrl} controls />}
+        {mediaType === 'youtube_video' && (
+        <YouTube videoId={getIdIfYoutubeLink(mediaUrl)} opts={options} />
+        )}
         {mediaType === 'audio' && <audio src={mediaUrl} controls />}
         {mediaType === 'pdf' && <embed src={mediaUrl} />}
         {mediaType === 'document' && (

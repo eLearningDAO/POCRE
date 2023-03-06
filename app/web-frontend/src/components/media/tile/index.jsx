@@ -2,8 +2,14 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/media-has-caption */
 import './index.css';
+import YouTube from 'react-youtube';
+import { getIdIfYoutubeLink } from 'utils/helpers/getIdFromYoutubeLink';
 
 function MediaTile({ mediaType, mediaUrl, onMediaClick }) {
+  const options = {
+    height: '200',
+    width: '280',
+  };
   return (
     <div
       className="collection-card-media-container"
@@ -11,6 +17,9 @@ function MediaTile({ mediaType, mediaUrl, onMediaClick }) {
     >
       {mediaType === 'image' && (
       <img className="collection-card-media" alt="collection-card-hero" src={mediaUrl} />
+      )}
+      {mediaType === 'youtube_video' && (
+      <YouTube videoId={getIdIfYoutubeLink(mediaUrl)} opts={options} />
       )}
       {mediaType === 'video' && (
       <>

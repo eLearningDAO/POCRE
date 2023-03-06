@@ -17,11 +17,9 @@ export default function StepOne({
   loading = false,
 }) {
   const { linkError, validateLink, isValidatingLink } = useLinkValidation({ customErrorMessage: 'Invalid creation source link' });
-
   const onSubmit = async (values) => {
     const response = await validateLink(values.source);
     if (!response) return;
-
     onComplete(values);
   };
 
@@ -68,7 +66,6 @@ export default function StepOne({
           <Grid item xs={12} md={9} lg={10} marginTop={{ xs: '12px', md: '18px' }}>
             <TagInput tagSuggestions={tagSuggestions.map((tag) => tag.tag_name)} onInput={onTagInputChange} variant="dark" placeholder="The tags representing your creation" name="tags" hookToForm />
           </Grid>
-
           {(linkError || status.error || status.success) && (
             <>
               <Grid item xs={12} md={3} lg={2} marginTop={{ xs: '12px', md: '18px' }} display="flex" flexDirection="row" alignItems="center" />

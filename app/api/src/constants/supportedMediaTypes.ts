@@ -4,4 +4,5 @@ export default Object.freeze({
   VIDEO: 'video',
   AUDIO: 'audio',
   DOCUMENT: 'document',
+  YOUTUBE: 'youtube_video',
 });

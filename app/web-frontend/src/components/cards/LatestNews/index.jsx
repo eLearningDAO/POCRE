@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import { accessibleOnClick } from 'utils/helpers/accessibleOnClick';
+import YouTube from 'react-youtube';
+import { getIdIfYoutubeLink } from 'utils/helpers/getIdFromYoutubeLink';
 import MediaPreview from 'components/media/preview';
 import './index.css';
 
@@ -19,7 +21,10 @@ function LatestNewsCard({
   const handleRecognizedMaterialCardClick = () => {
     setShowMediaPreview(true);
   };
-
+  const options = {
+    height: '250',
+    width: '280',
+  };
   return (
     <>
       <div
@@ -29,6 +34,9 @@ function LatestNewsCard({
         <div className="latest-news-image-container">
           {mediaType === 'image' && (
             <img className="news-card-media" alt="collection-card-hero" src={mediaUrl} />
+          )}
+          {mediaType === 'youtube_video' && (
+          <YouTube videoId={getIdIfYoutubeLink(mediaUrl)} opts={options} />
           )}
           {mediaType === 'video' && (
             <video

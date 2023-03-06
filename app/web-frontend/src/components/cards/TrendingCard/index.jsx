@@ -2,21 +2,27 @@ import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getUrlFileType } from 'utils/helpers/getUrlFileType';
 import { accessibleOnClick } from 'utils/helpers/accessibleOnClick';
+import YouTube from 'react-youtube';
+import { getIdIfYoutubeLink } from 'utils/helpers/getIdFromYoutubeLink';
 import MediaPreview from 'components/media/preview';
 import './index.css';
 
 function TrendingCard({
   trending,
+  creationType,
   mediaUrl = 'https://images.pexels.com/photos/415071/pexels-photo-415071.jpeg?cs=srgb&dl=pexels-pixabay-415071.jpg&fm=jpg',
   handleCreationCardClick,
 }) {
   const [mediaType, setMediaType] = useState(null);
   const [showMediaPreview, setShowMediaPreview] = useState(false);
   useEffect(() => {
-    const x = getUrlFileType(mediaUrl);
+    const x = creationType || getUrlFileType(mediaUrl);
     setMediaType(x);
   }, []);
-
+  const options = {
+    height: '180',
+    width: '180',
+  };
   // const handleMediaPreview = () => {
   //   setShowMediaPreview(true);
   // };
@@ -30,6 +36,9 @@ function TrendingCard({
         <div className="trending-img">
           {mediaType === 'image' && (
             <img className="treding-card-media" alt="collection-card-hero" src={mediaUrl} />
+          )}
+          {mediaType === 'youtube_video' && (
+          <YouTube videoId={getIdIfYoutubeLink(mediaUrl)} opts={options} />
           )}
           {mediaType === 'video' && (
             <video

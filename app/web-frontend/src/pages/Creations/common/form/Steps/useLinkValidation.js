@@ -10,7 +10,6 @@ const useLinkValidation = ({
   const validateLink = async (link) => {
     setIsValidatingLink(true);
     const response = await Files.getMediaType(`link=${link}`).catch(() => null);
-
     setIsValidatingLink(false);
 
     if (!response) {
