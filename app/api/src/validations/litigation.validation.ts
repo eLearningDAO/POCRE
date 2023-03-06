@@ -52,7 +52,7 @@ export const updateLitigation = {
     .keys({
       litigation_title: Joi.string().optional(),
       litigation_description: Joi.string().optional().allow('').allow(null),
-      creation_id: Joi.string().uuid().required(),
+      creation_id: Joi.string().uuid().optional(), // [HOTFIX]: this is required if creation in draft
       material_id: Joi.string().uuid().optional(),
       decisions: Joi.array().items(Joi.string().uuid()).unique().optional(),
       assumed_author_response: Joi.string()

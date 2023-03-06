@@ -23,7 +23,7 @@ const init = async (): Promise<QueryResult<any>> => {
     /* ************************************ */
 
     DO $$ BEGIN
-      CREATE TYPE media_type_enums AS ENUM ('image', 'video', 'audio', 'pdf', 'document');
+      CREATE TYPE media_type_enums AS ENUM ('image', 'video', 'audio', 'pdf', 'document','youtube_video');
     EXCEPTION
         WHEN duplicate_object THEN null;
     END $$;

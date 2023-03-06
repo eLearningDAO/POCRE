@@ -3,15 +3,24 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import { Button } from '@mui/material';
 import DownloadIconSVG from 'assets/svgs/download.svg';
+import YouTube from 'react-youtube';
+import { getIdIfYoutubeLink } from 'utils/helpers/getIdFromYoutubeLink';
 import './index.css';
 
 function MediaBlock({ mediaType, mediaUrl }) {
+  const options = {
+    height: '500',
+    width: window.window.innerWidth * 0.7,
+  };
   return (
     <div
       className="creation-media"
     >
       {mediaType === 'image' && (
         <img alt="collection-card-hero" src={mediaUrl} />
+      )}
+      {mediaType === 'youtube_video' && (
+      <YouTube videoId={getIdIfYoutubeLink(mediaUrl)} opts={options} />
       )}
       {mediaType === 'video' && (
         <video
