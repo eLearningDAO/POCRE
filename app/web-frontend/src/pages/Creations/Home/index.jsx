@@ -160,6 +160,7 @@ function Creations() {
                     authorProfileId: m?.author?.user_id,
                   })) : []}
                   canEdit={x?.is_draft && userId === login?.user_id}
+                  canShare={!x?.is_draft}
                   canDelete={userId === login?.user_id}
                   onEditClick={() => navigate(`/creations/${x?.creation_id}/update`)}
                   // eslint-disable-next-line no-return-await

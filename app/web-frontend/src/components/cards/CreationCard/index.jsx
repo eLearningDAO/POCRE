@@ -62,6 +62,7 @@ function CreationCard({
   mediaType = '',
   ipfsHash = '',
   canEdit = true,
+  canShare = true,
   canDelete = true,
   onEditClick = () => {},
   onDeleteClick = () => {},
@@ -307,9 +308,11 @@ function CreationCard({
                 canEdit={canEdit}
                 onEditClick={onEditClick}
               />
-              <ShareButton
-                onClick={() => setShowSocialMediaSharePreview(true)}
-              />
+              { canShare && (
+                <ShareButton
+                  onClick={() => setShowSocialMediaSharePreview(true)}
+                />
+              )}
             </Grid>
           </Grid>
         )}
