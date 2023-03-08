@@ -35,6 +35,7 @@ function MaterialCard({
   onEditClick = () => {},
   onQuickClaim = () => {},
   canHide = true,
+  canClaim = true,
   canEdit = true,
   canDelete = true,
   canAccept = true,
@@ -155,7 +156,7 @@ function MaterialCard({
             )
           }
           {
-            isClaimable && (
+            isClaimable && canClaim && (
             <Button
               className="approveButton"
               onClick={onQuickClaim}

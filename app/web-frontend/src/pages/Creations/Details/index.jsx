@@ -224,10 +224,11 @@ export default function CreationDetails() {
         <Button className="collection-card-action-btn collection-card-action-btn-border-dark" onClick={onPreviewClick}>
           <img src={PreviewIcon} alt="" width={26} />
         </Button>
-
-        <Button className="collection-card-action-btn collection-card-action-btn-border-dark" onClick={onShareClick}>
-          <img src={ShareIcon} alt="" />
-        </Button>
+        { !creation?.is_draft && (
+          <Button className="collection-card-action-btn collection-card-action-btn-border-dark" onClick={onShareClick}>
+            <img src={ShareIcon} alt="" />
+          </Button>
+        )}
       </Grid>
 
       <Grid
@@ -311,6 +312,7 @@ export default function CreationDetails() {
                 username={x?.author?.user_name}
                 userimage={x?.author?.image_url}
                 userProfileId={x?.author?.user_id}
+                canClaim={!creation?.is_draft}
                 onQuickClaim={() => {
                   navigate(`/litigations/create?creationId=${id}&materialId=${x?.material_id}`);
                 }}
