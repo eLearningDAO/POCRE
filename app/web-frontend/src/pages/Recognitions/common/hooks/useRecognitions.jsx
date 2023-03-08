@@ -130,6 +130,19 @@ const useRecognitions = () => {
         : (temporaryRecognitions.results || []).find((x) => x.recognition_id === recognitionId);
       if (!foundRecognition) return;
 
+      // update recognition status
+      foundRecognition.status = updatedStatus;
+      foundRecognition.status_updated = new Date().toISOString();
+      await Recognition.update(recognitionId, {
+        status: foundRecognition.status,
+        status_updated: foundRecognition.status_updated,
+      });
+
+      // update queries
+      const key = recognitionId ? `recognitions-${recognitionId}` : 'recognitions';
+      queryClient.cancelQueries({ queryKey: [key] });
+      queryClient.setQueryData([key], () => ({ ...temporaryRecognitions }));
+
       // require transaction if status is accepted
       if (updatedStatus === statusTypes.ACCEPTED) {
         const txHash = await transactADAToPOCRE({
@@ -150,19 +163,6 @@ const useRecognitions = () => {
 
         if (!txHash) throw new Error('Failed to accept material recognition');
       }
-
-      // update recognition status
-      foundRecognition.status = updatedStatus;
-      foundRecognition.status_updated = new Date().toISOString();
-      await Recognition.update(recognitionId, {
-        status: foundRecognition.status,
-        status_updated: foundRecognition.status_updated,
-      });
-
-      // update queries
-      const key = recognitionId ? `recognitions-${recognitionId}` : 'recognitions';
-      queryClient.cancelQueries({ queryKey: [key] });
-      queryClient.setQueryData([key], () => ({ ...temporaryRecognitions }));
     },
   });
 
