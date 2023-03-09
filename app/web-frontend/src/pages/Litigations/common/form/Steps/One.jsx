@@ -190,9 +190,9 @@ export default function StepOne({
 
   const setMaterialOption = (event) => {
     setOption(event.target.value);
-    onCreationInputChange({ target: { value: '' } });
-    handleCreationLinkChange({ target: { value: '' } });
-    setError(null);
+    // onCreationInputChange({ target: { value: '' } });
+    // handleCreationLinkChange({ target: { value: '' } });
+    // setError(null);
   };
 
   return (
