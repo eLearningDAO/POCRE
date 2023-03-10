@@ -11,6 +11,7 @@ import Radio from '@material-ui/core/Radio';
 import { blue } from '@material-ui/core/colors';
 import { withStyles } from '@material-ui/core/styles';
 import { stepOneValidation } from './validation';
+import './One.css';
 
 const BlueRadio = withStyles({
   root: {
