@@ -11,6 +11,7 @@ import Radio from '@material-ui/core/Radio';
 import { blue } from '@material-ui/core/colors';
 import { withStyles } from '@material-ui/core/styles';
 import { stepOneValidation } from './validation';
+import './One.css';
 
 const BlueRadio = withStyles({
   root: {
@@ -190,9 +191,9 @@ export default function StepOne({
 
   const setMaterialOption = (event) => {
     setOption(event.target.value);
-    onCreationInputChange({ target: { value: '' } });
-    handleCreationLinkChange({ target: { value: '' } });
-    setError(null);
+    // onCreationInputChange({ target: { value: '' } });
+    // handleCreationLinkChange({ target: { value: '' } });
+    // setError(null);
   };
 
   return (

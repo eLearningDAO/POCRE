@@ -1,0 +1,13 @@
+#menu-material ul {
+    margin: 0 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#menu-material ul li {
+    width: 100%;
+    padding: 8px;
+    display: flex;
+    justify-content: space-between;
+}
