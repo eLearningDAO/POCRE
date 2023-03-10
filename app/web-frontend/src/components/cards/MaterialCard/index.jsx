@@ -16,7 +16,6 @@ import RequestDeclineOutlinedIcon from 'assets/svgs/request-decline-outlined.svg
 import MediaPreview from 'components/media/preview';
 import MediaTile from 'components/media/tile';
 import { useState } from 'react';
-import { getIdIfYoutubeLink } from 'utils/helpers/getIdFromYoutubeLink';
 import { Link } from 'react-router-dom';
 import './index.css';
 
