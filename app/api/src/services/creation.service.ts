@@ -21,7 +21,6 @@ interface ICreation {
   is_draft: boolean;
   is_claimable: boolean;
   ipfs_hash: string;
-  is_onchain: boolean;
   is_fully_owned: boolean;
   creation_authorship_window: string;
 }
@@ -60,7 +59,6 @@ interface ICreationDoc {
   is_draft: boolean;
   is_claimable: boolean;
   ipfs_hash: string;
-  is_onchain: boolean;
   is_fully_owned: boolean;
   creation_authorship_window: string;
 }

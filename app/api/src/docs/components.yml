@@ -175,8 +175,6 @@ components:
           type: bool
         is_claimable:
           type: bool
-        is_onchain:
-          type: bool
         ipfs_hash:
           type: string
         created_at:
@@ -195,7 +193,6 @@ components:
         created_at: 2022-09-05T19:00:00.000Z
         is_draft: false
         is_claimable: true
-        is_onchain: false
         ipfs_hash: dd7a824bb0a94868bdbfcfa6bdd36629
 
     CreationProof:

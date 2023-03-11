@@ -135,10 +135,9 @@ const init = async (): Promise<QueryResult<any>> => {
       materials UUID[],
       creation_date TIMESTAMP NOT NULL DEFAULT NOW(),
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-      is_draft bool default false,
+      is_draft bool default true,
       ipfs_hash character varying,
       is_claimable bool default true,
-      is_onchain bool default false,
       creation_authorship_window TIMESTAMP NOT NULL DEFAULT NOW(),
       is_fully_owned bool default false,
       CONSTRAINT author_id
