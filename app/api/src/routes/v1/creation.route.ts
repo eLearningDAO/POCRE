@@ -18,10 +18,6 @@ router
   .delete(auth(), validate(creationValidation.deleteCreation), creationController.deleteCreationById);
 
 router
-  .route('/:creation_id/publish')
-  .post(auth(), validate(creationValidation.publishCreation), creationController.publishCreation);
-
-router
   .route('/:creation_id/proof')
   .get(validate(creationValidation.getCreationProof), creationController.getCreationProofById);
 
@@ -452,59 +448,4 @@ export default router;
  *         $ref: '#/components/responses/CreationNotFound'
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
- */
-
-/**
- * @swagger
- * /creations/{creation_id}/publish:
- *   post:
- *     summary: Publish a creation
- *     description: Stores the publish status of a creation.
- *     tags: [Creation]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: creation_id
- *         required: true
- *         schema:
- *           type: string
- *         description: Creation id
- *       - in: body
- *         name: publish_on
- *         schema:
- *           type: string
- *           enum:
- *             - blochchain
- *             - ipfs
- *         description: The platform on which to publish the creation.
- *     responses:
- *       "201":
- *         description: Created
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Creation'
- *       "404":
- *         $ref: '#/components/responses/CreationNotFound'
- *       "406":
- *         $ref: '#/components/responses/CreationDraftNotAllowedToPublish'
- *       "500":
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                 - $ref: '#/components/responses/InternalServerError'
- *                 - $ref: '#/components/responses/CreationIPFSFailedUpload'
- *             examples:
- *               InternalServerError:
- *                 summary: internal server error
- *                 value:
- *                   code: 500
- *                   message: internal server error
- *               CreationIPFSFailedUpload:
- *                 summary: failed to upload creation to ipfs
- *                 value:
- *                   code: 500
- *                   message: failed to upload creation to ipfs
  */

@@ -1,7 +1,6 @@
 import Joi from 'joi';
-import { creationDeepFields } from '../db/map';
 import supportedMediaTypes from '../constants/supportedMediaTypes';
-import publishPlatforms from '../constants/publishPlatforms';
+import { creationDeepFields } from '../db/map';
 
 export const createCreation = {
   body: Joi.object().keys({
@@ -86,14 +85,5 @@ export const updateCreation = {
 export const deleteCreation = {
   params: Joi.object().keys({
     creation_id: Joi.string().uuid().required(),
-  }),
-};
-
-export const publishCreation = {
-  params: Joi.object().keys({
-    creation_id: Joi.string().uuid().required(),
-  }),
-  body: Joi.object().keys({
-    publish_on: Joi.string().valid(publishPlatforms.BLOCKCHAIN, publishPlatforms.IPFS).required(),
   }),
 };

@@ -617,15 +617,6 @@ components:
           example:
             code: 406
             message: creation has ongoing litigation process
-    CreationDraftNotAllowedToPublish:
-      description: Draft creation cannot be published
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 406
-            message: draft creation cannot be published
     CreationAlreadyAssignedToLitigation:
       description: Creation already assigned to a litigation
       content:
