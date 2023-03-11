@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Creation } from 'api/requests';
 import useSuggestions from 'hooks/useSuggestions';
 import moment from 'moment';
+import transactionPurposes from 'utils/constants/transactionPurposes';
 import authUser from 'utils/helpers/authUser';
 
 // get auth user
@@ -25,7 +26,7 @@ const useCreations = (userId) => {
   } = useQuery({
     queryKey: ['creations'],
     queryFn: async () => {
-      const toPopulate = ['author_id', 'materials', 'materials.author_id'];
+      const toPopulate = ['author_id', 'materials', 'materials.author_id', 'transactions'];
       const unsortedCreations = await Creation.getAll(
         `page=${1}&limit=100&descend_fields[]=creation_date&query=${userId || user.user_id}&search_fields[]=author_id&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       );
@@ -40,6 +41,10 @@ const useCreations = (userId) => {
           creation_date: moment(x?.creation_date).format('Do MMMM YYYY'),
           creation_authorship_window: moment(x?.creation_authorship_window).format('Do MMMM YYYY'),
           isCAWPassed: moment().isAfter(moment(x?.creation?.creation_authorship_window)),
+          isProcessingPublishingPayment: (x?.transactions || [])?.find(
+            (t) => !t.is_validated
+            && t.transaction_purpose === transactionPurposes.PUBLISH_CREATION,
+          ),
         })),
       };
     },

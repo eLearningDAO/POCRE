@@ -1,13 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  Creation, Material, Tag, User,
+  Creation, Material, Tag, Transaction, User,
 } from 'api/requests';
-import { CHARGES, IPFS_BASE_URL, TRANSACTION_PURPOSES } from 'config';
+import { CHARGES } from 'config';
 import useSuggestions from 'hooks/useSuggestions';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import publishPlatforms from 'utils/constants/publishPlatforms';
+import transactionPurposes from 'utils/constants/transactionPurposes';
 import authUser from 'utils/helpers/authUser';
 import { transactADAToPOCRE } from 'utils/helpers/wallet';
 
@@ -82,19 +82,27 @@ const makeCommonResource = async (
 };
 
 const publishIPFSCreationOnChain = async (creationId) => {
-  const creationOnIPFS = await Creation.publish(creationId, {
-    publish_on: publishPlatforms.IPFS,
-  });
-
-  // make transaction to store ipfs on chain
-  await transactADAToPOCRE({
+  // make crypto transaction
+  const txHash = await transactADAToPOCRE({
     amountADA: CHARGES.CREATION.PUBLISHING_ON_IPFS,
-    purposeDesc: TRANSACTION_PURPOSES.CREATION.PUBLISHING_ON_IPFS,
     walletName: authUser.getUser()?.selectedWallet,
     metaData: {
-      ipfsHash: creationOnIPFS.ipfs_hash,
-      ipfsURL: IPFS_BASE_URL,
+      pocre_id: creationId,
+      pocre_entity: 'creation',
+      purpose: transactionPurposes.PUBLISH_CREATION,
     },
+  });
+  if (!txHash) throw new Error('Failed to make transaction');
+
+  // make pocre transaction to store this info
+  const transaction = await Transaction.create({
+    transaction_hash: txHash,
+    transaction_purpose: transactionPurposes.PUBLISH_CREATION,
+  });
+
+  // register pocre transaction for creation
+  await Creation.registerTransaction(creationId, {
+    transaction_id: transaction.transaction_id,
   });
 };
 
@@ -207,7 +215,6 @@ const useCreationForm = ({
         creation_link: creationBody.source,
         tags: tags.map((tag) => tag.tag_id),
         creation_date: new Date(creationBody.date).toISOString(), // send date in utc
-        is_draft: true, // create in draft and finalize after fully updated
       });
 
       // remove queries cache
@@ -237,7 +244,6 @@ const useCreationForm = ({
         }),
         tags: creation.original.tags,
         creation_link: updateBody.source,
-        is_draft: updateBody.is_draft,
       };
 
       const { tags, materials } = await makeCommonResource(

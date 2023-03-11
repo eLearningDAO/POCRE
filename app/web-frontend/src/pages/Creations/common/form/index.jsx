@@ -54,14 +54,14 @@ function CreationForm({ id = null, activeStep = null, onCreationFetch = () => {}
     if (step === 1) {
       // create creation
       if (!id) {
-        await makeCreation({ ...values, is_draft: true }); // this redirects to update creation page
+        await makeCreation({ ...values }); // this redirects to update creation page
         return;
       }
 
       // update creation
       const draft = { ...creationDraft, ...values };
       setCreationDraft(draft);
-      await updateCreation({ ...draft, is_draft: true });
+      await updateCreation({ ...draft });
     }
 
     if (step === 2) {
@@ -70,7 +70,7 @@ function CreationForm({ id = null, activeStep = null, onCreationFetch = () => {}
         materials: values,
       };
       setCreationDraft(draft);
-      await updateCreation({ ...draft, is_draft: true });
+      await updateCreation({ ...draft });
     }
 
     if (step === 3 && id) {

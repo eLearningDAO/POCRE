@@ -39,13 +39,17 @@ const User = {
   ...REQUEST_TEMPLATE('users'), invite: REQUEST_TEMPLATE('users/invite').create, verifyEmail: REQUEST_TEMPLATE('users/verifyUserEmail').create, confirmEmail: REQUEST_TEMPLATE('users/verifyUserEmail').getById,
 };
 const Material = REQUEST_TEMPLATE('materials');
-const Creation = { ...REQUEST_TEMPLATE('creations'), publish: async (id, requestBody) => await REQUEST_TEMPLATE(`creations/${id}/publish`).create(requestBody) };
+const Creation = {
+  ...REQUEST_TEMPLATE('creations'),
+  registerTransaction: async (id, requestBody) => await REQUEST_TEMPLATE(`creations/${id}/transaction`).create(requestBody),
+};
 const Decision = REQUEST_TEMPLATE('decision');
 const Recognition = REQUEST_TEMPLATE('recognitions');
 const Litigation = REQUEST_TEMPLATE('litigations');
 const Tag = REQUEST_TEMPLATE('tags');
 const Auth = { login: REQUEST_TEMPLATE('auth/login').create, signup: REQUEST_TEMPLATE('auth/signup').create };
 const Files = { getMediaType: REQUEST_TEMPLATE('files/media-type').getAll };
+const Transaction = { create: REQUEST_TEMPLATE('transactions').create };
 
 export {
   User,
@@ -57,4 +61,5 @@ export {
   Tag,
   Auth,
   Files,
+  Transaction,
 };

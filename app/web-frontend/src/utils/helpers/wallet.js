@@ -32,9 +32,8 @@ const getWalletAddress = async (walletName) => {
 
 const transactADAToPOCRE = async ({
   amountADA = 0,
-  purposeDesc = '',
-  metaData = {},
   walletName = '',
+  metaData = {},
 }) => {
   try {
     // connect to the wallet
@@ -48,9 +47,7 @@ const transactADAToPOCRE = async ({
 
     // set metadata
     tx.setMetadata(0, {
-      amount: { lovelace: amountADA * 1_000_000, ada: amountADA },
-      pocreVersion: '0.1', // beta
-      purposeDesc,
+      pocre_version: '0.1', // beta
       ...metaData,
     });
 
