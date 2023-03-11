@@ -1,7 +1,6 @@
 import Joi from 'joi';
-import { creationDeepFields } from '../db/map';
 import supportedMediaTypes from '../constants/supportedMediaTypes';
-import publishPlatforms from '../constants/publishPlatforms';
+import { creationDeepFields } from '../db/map';
 
 export const createCreation = {
   body: Joi.object().keys({
@@ -11,8 +10,6 @@ export const createCreation = {
     tags: Joi.array().items(Joi.string().uuid()).unique().required().min(1),
     materials: Joi.array().items(Joi.string().uuid()).unique().optional().min(1),
     creation_date: Joi.string().isoDate().required(),
-    is_draft: Joi.bool().default(false),
-    is_claimable: Joi.bool().default(true),
   }),
 };
 
@@ -81,8 +78,6 @@ export const updateCreation = {
       tags: Joi.array().items(Joi.string().uuid()).unique().optional().min(1),
       materials: Joi.array().items(Joi.string().uuid()).unique().optional(),
       creation_date: Joi.string().isoDate().optional(),
-      is_draft: Joi.bool(),
-      is_claimable: Joi.bool(),
     })
     .min(1),
 };
@@ -93,11 +88,11 @@ export const deleteCreation = {
   }),
 };
 
-export const publishCreation = {
+export const registerCreationTransaction = {
   params: Joi.object().keys({
     creation_id: Joi.string().uuid().required(),
   }),
   body: Joi.object().keys({
-    publish_on: Joi.string().valid(publishPlatforms.BLOCKCHAIN, publishPlatforms.IPFS).required(),
+    transaction_id: Joi.string().uuid().required(),
   }),
 };

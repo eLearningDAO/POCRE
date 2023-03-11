@@ -20,7 +20,7 @@ components:
           type: string
           format: date-time
         is_invited:
-          type: boolean
+          type: bool
       example:
         user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
         user_name: john
@@ -175,8 +175,6 @@ components:
           type: bool
         is_claimable:
           type: bool
-        is_onchain:
-          type: bool
         ipfs_hash:
           type: string
         created_at:
@@ -195,7 +193,6 @@ components:
         created_at: 2022-09-05T19:00:00.000Z
         is_draft: false
         is_claimable: true
-        is_onchain: false
         ipfs_hash: dd7a824bb0a94868bdbfcfa6bdd36629
 
     CreationProof:
@@ -236,7 +233,7 @@ components:
         creation_description: an example creation
         creation_link: https://example.com
         author_id: dd7a824b-b0a9-4868-bdbf-cfa6bdd36629
-        author: 
+        author:
           user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
           user_name: john
           wallet_address: 28y9gd27g2g237g80hnibhi
@@ -246,21 +243,21 @@ components:
           verified_id: 28y9gd27g2g237g80hnibhi
           reputation_stars: 0
           date_joined: 2022-09-05T19:00:00.000Z
-        tags: 
+        tags:
           - tag_id: fb018e05-5792-48a4-bee3-4518453443d3
             tag_name: enhancement
             tag_description: improvement tag
             tag_created: 2022-09-06T19:00:00.000Z
-        materials: 
+        materials:
           - material_id: 5d6ad369-55d8-469d-bf26-4a90017861dd
             material_title: plastic
             material_description: dangerous
             material_link: https://example.com
             material_type: audio
             recognition_id: 12ed7a55-a1aa-4895-83e9-7aa615247390
-            recognition: 
+            recognition:
               recognition_id: 8d098580-1e4c-40c8-95f3-9c78de09a121
-              recognition_by: 
+              recognition_by:
                 user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
                 user_name: john
                 wallet_address: 28y9gd27g2g237g80hnibhi
@@ -270,7 +267,7 @@ components:
                 verified_id: 28y9gd27g2g237g80hnibhi
                 reputation_stars: 0
                 date_joined: 2022-09-05T19:00:00.000Z
-              recognition_for: 
+              recognition_for:
                 user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
                 user_name: john
                 wallet_address: 28y9gd27g2g237g80hnibhi
@@ -285,7 +282,7 @@ components:
               status: pending
               status_updated: 2022-09-07T19:00:00.000Z
             author_id: 9cf446ed-04f8-41fe-ba40-1c33e5670ca5
-            author: 
+            author:
               user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
               user_name: john
               wallet_address: 28y9gd27g2g237g80hnibhi
@@ -358,7 +355,7 @@ components:
         reconcilate: false
         created_at: 2022-09-05T19:00:00.000Z
         ownership_transferred: false
-    
+
     Token:
       type: object
       properties:
@@ -372,10 +369,10 @@ components:
       properties:
         user:
           $ref: '#/components/schemas/User'
-        token: 
+        token:
           type: string
-      example: 
-        user: 
+      example:
+        user:
           user_id: f2b4befe-f940-4a8e-86e1-8427a29df76e
           user_name: john
           user_bio: ready to explore
@@ -385,12 +382,41 @@ components:
           date_joined: 2022-09-05T19:00:00.000Z
         token: eyJhbGciOiJIUzI1NiJ9.MUExelAxZVA1UUdlZmkyRE1QVGZUTDVTTG12N0RpdmZOYQ.Qet6M0nRv2VD7gQgUfi9ivWo6L8IKojzGWuloFBkxvE
 
+    Transaction:
+      type: object
+      properties:
+        transaction_id:
+          type: string
+          format: uuid
+        transaction_hash:
+          type: string
+        transaction_purpose:
+          type: string
+        is_validated:
+          type: bool
+        blocking_issue:
+          type: string
+        maker_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+      example:
+        transaction_id: fb018e05-5792-48a4-bee3-4518453443d3
+        transaction_hash: aa62ba02b24185e0d9eb2074518c0be09d3b76644de5511eeaa09fc117c1f38f
+        transaction_purpose: publish_creation
+        is_validated: false
+        blocking_issue: null
+        maker_id: fb018e05-5792-48a4-bee3-4518453443d3
+        created_at: 2022-09-06T19:00:00.000Z
+
     FileMediaType:
       type: object
       properties:
         media_type:
           type: string
-      example: 
+      example:
         media_type: image
 
     Error:
@@ -518,7 +544,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: material already assigned to a litigation  
+            message: material already assigned to a litigation
     MaterialAlreadyOwned:
       description: Material is already owned
       content:
@@ -527,7 +553,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: material is already owned  
+            message: material is already owned
     MaterialDoesNotBelongToCreation:
       description: Material does not belong to creation
       content:
@@ -581,7 +607,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 406
-            message: creation has ongoing material recognition process 
+            message: creation has ongoing material recognition process
     CreationOngoingLitigation:
       description: Creation has ongoing litigation process
       content:
@@ -590,16 +616,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 406
-            message: creation has ongoing litigation process 
-    CreationDraftNotAllowedToPublish:
-      description: Draft creation cannot be published
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 406
-            message: draft creation cannot be published  
+            message: creation has ongoing litigation process
     CreationAlreadyAssignedToLitigation:
       description: Creation already assigned to a litigation
       content:
@@ -608,7 +625,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: creation already assigned to a litigation  
+            message: creation already assigned to a litigation
     CreationAlreadyOwned:
       description: Creation is already owned
       content:
@@ -617,7 +634,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             code: 409
-            message: creation is already owned  
+            message: creation is already owned
     CreationLitigationNotAllowed:
       description: Creation with materials are not allowed to be litigated
       content:
@@ -663,6 +680,24 @@ components:
           example:
             code: 404
             message: litigation not found
+    TransactionNotFound:
+      description: Transaction not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            message: transaction not found
+    TransactionAlreadyExists:
+      description: Transaction already exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 400
+            message: transaction already exists
     InvalidMediaLink:
       description: Forbidden
       content:

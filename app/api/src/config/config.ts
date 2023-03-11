@@ -40,6 +40,16 @@ const envVarsSchema = Joi.object()
     PINATA_JWT_SECRET: Joi.string().description('pinata jwt secret used to store data on ipfs').required(),
     PINATA_API_JSON_PIN_URL: Joi.string().description('pinata api url to pin json data').required(),
     PINATA_API_UNPIN_URL: Joi.string().description('pinata api url to unpin data').required(),
+    BLOCKFROST_PROJECT_ID: Joi.string().description('blockfrost project id to interact with their service').required(),
+    BLOCKFROST_API_BASE_URL: Joi.string().description('blockfrost base url to make http calls').required(),
+    BLOCKFROST_API_TRANSACTIONS_ENDPOINT: Joi.string().description('blockfrost endpoint to query transactions').required(),
+    BLOCKFROST_API_BLOCKS_ENDPOINT: Joi.string().description('blockfrost endpoint to query blocks').required(),
+    BLOCKFROST_WEBHOOK_AUTH_TOKEN: Joi.string()
+      .description('blockfrost webhook token to verify webhooks signature')
+      .required(),
+    MIN_BLOCK_CONFIRMATIONS_FOR_VALID_CRYPTO_TRANSACTION: Joi.string()
+      .description('the minimun block confirmation threshold after which we consider a transaction successful')
+      .required(),
   })
   .unknown();
 
@@ -92,5 +102,19 @@ export default {
       json_pin: envVars.PINATA_API_JSON_PIN_URL,
       unpin: envVars.PINATA_API_UNPIN_URL,
     },
+  },
+  crypto: {
+    valid_transaction: {
+      min_block_confirmations: envVars.MIN_BLOCK_CONFIRMATIONS_FOR_VALID_CRYPTO_TRANSACTION,
+    },
+  },
+  blockfrost: {
+    project_id: envVars.BLOCKFROST_PROJECT_ID,
+    base_api_url: envVars.BLOCKFROST_API_BASE_URL,
+    endpoints: {
+      transactions: envVars.BLOCKFROST_API_TRANSACTIONS_ENDPOINT,
+      blocks: envVars.BLOCKFROST_API_BLOCKS_ENDPOINT,
+    },
+    webhook_token: envVars.BLOCKFROST_WEBHOOK_AUTH_TOKEN,
   },
 };

@@ -16,7 +16,7 @@ const useDetails = () => {
     queryFn: async () => {
       const toPopulate = [
         'author_id', 'tags', 'materials', 'materials.recognition_id', 'materials.recognition_id.recognition_by',
-        'materials.recognition_id.recognition_for', 'materials.author_id',
+        'materials.recognition_id.recognition_for', 'materials.author_id', 'transactions',
       ];
       return await Creation.getById(creationId, toPopulate.map((x) => `populate=${x}`).join('&'));
     },

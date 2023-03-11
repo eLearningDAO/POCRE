@@ -40,6 +40,12 @@ const init = async (): Promise<QueryResult<any>> => {
         WHEN duplicate_object THEN null;
     END $$;
 
+    DO $$ BEGIN
+      CREATE TYPE transaction_purpose_enums AS ENUM ('publish_creation', 'finalize_creation', 'start_litigation', 'cast_litigation_vote', 'redeem_litigated_item', 'accept_recognition');
+    EXCEPTION
+        WHEN duplicate_object THEN null;
+    END $$;
+
     /* ************************************ */
     /* TABLES */
     /* ************************************ */
@@ -127,12 +133,12 @@ const init = async (): Promise<QueryResult<any>> => {
       author_id UUID NOT NULL,
       tags UUID[],
       materials UUID[],
+      transactions UUID[],
       creation_date TIMESTAMP NOT NULL DEFAULT NOW(),
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-      is_draft bool default false,
+      is_draft bool default true,
       ipfs_hash character varying,
       is_claimable bool default true,
-      is_onchain bool default false,
       creation_authorship_window TIMESTAMP NOT NULL DEFAULT NOW(),
       is_fully_owned bool default false,
       CONSTRAINT author_id
@@ -166,6 +172,20 @@ const init = async (): Promise<QueryResult<any>> => {
           ON DELETE CASCADE,
       CONSTRAINT issuer_id
           FOREIGN KEY(issuer_id) 
+          REFERENCES users(user_id)
+          ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS transaction (
+      transaction_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      transaction_hash character varying NOT NULL UNIQUE,
+      transaction_purpose transaction_purpose_enums NOT NULL,
+      is_validated bool DEFAULT false,
+      maker_id UUID NOT NULL,
+      blocking_issue character varying,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+      CONSTRAINT maker_id
+          FOREIGN KEY(maker_id) 
           REFERENCES users(user_id)
           ON DELETE CASCADE
     );
@@ -215,6 +235,12 @@ const init = async (): Promise<QueryResult<any>> => {
     LANGUAGE SQL
     AS $$
       UPDATE litigation SET decisions = array_remove(decisions, decision_id);
+    $$;
+
+    CREATE OR REPLACE PROCEDURE remove_transaction_references(transaction_id UUID)
+    LANGUAGE SQL
+    AS $$
+      UPDATE creation SET transactions = array_remove(transactions, transaction_id);
     $$;
     `
   );

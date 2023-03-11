@@ -18,8 +18,8 @@ router
   .delete(auth(), validate(creationValidation.deleteCreation), creationController.deleteCreationById);
 
 router
-  .route('/:creation_id/publish')
-  .post(auth(), validate(creationValidation.publishCreation), creationController.publishCreation);
+  .route('/:creation_id/transaction')
+  .post(auth(), validate(creationValidation.registerCreationTransaction), creationController.registerCreationTransaction);
 
 router
   .route('/:creation_id/proof')
@@ -456,10 +456,10 @@ export default router;
 
 /**
  * @swagger
- * /creations/{creation_id}/publish:
+ * /creations/{creation_id}/transaction:
  *   post:
- *     summary: Publish a creation
- *     description: Stores the publish status of a creation.
+ *     summary: Register a transaction for creation
+ *     description: Registers a transaction for creation
  *     tags: [Creation]
  *     security:
  *       - bearerAuth: []
@@ -470,14 +470,19 @@ export default router;
  *         schema:
  *           type: string
  *         description: Creation id
- *       - in: body
- *         name: publish_on
- *         schema:
- *           type: string
- *           enum:
- *             - blochchain
- *             - ipfs
- *         description: The platform on which to publish the creation.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - transaction_id
+ *             properties:
+ *               transaction_id:
+ *                 type: string
+ *             example:
+ *                transaction_id: 476790e7-a6dc-4aea-8421-06bacfa2daf6
  *     responses:
  *       "201":
  *         description: Created
@@ -486,25 +491,17 @@ export default router;
  *             schema:
  *                $ref: '#/components/schemas/Creation'
  *       "404":
- *         $ref: '#/components/responses/CreationNotFound'
- *       "406":
- *         $ref: '#/components/responses/CreationDraftNotAllowedToPublish'
+ *         $ref: '#/components/responses/TransactionNotFound'
  *       "500":
  *         content:
  *           application/json:
  *             schema:
  *               oneOf:
  *                 - $ref: '#/components/responses/InternalServerError'
- *                 - $ref: '#/components/responses/CreationIPFSFailedUpload'
  *             examples:
  *               InternalServerError:
  *                 summary: internal server error
  *                 value:
  *                   code: 500
  *                   message: internal server error
- *               CreationIPFSFailedUpload:
- *                 summary: failed to upload creation to ipfs
- *                 value:
- *                   code: 500
- *                   message: failed to upload creation to ipfs
  */

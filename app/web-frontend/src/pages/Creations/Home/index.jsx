@@ -159,25 +159,30 @@ function Creations() {
                     author_image: m?.author?.image_url,
                     authorProfileId: m?.author?.user_id,
                   })) : []}
-                  canEdit={x?.is_draft && userId === login?.user_id}
+                  canEdit={
+                    x?.is_draft
+                    && userId === login?.user_id
+                    && !x?.isProcessingPublishingPayment
+                  }
+                  paymentStatus={x?.isProcessingPublishingPayment ? 'Pending payment verifcation to publish' : (x?.isProcessingFinalizationPayment ? 'Pending payment verifcation to finalize' : null)}
                   canShare={!x?.is_draft}
                   canDelete={userId === login?.user_id}
                   onEditClick={() => navigate(`/creations/${x?.creation_id}/update`)}
                   // eslint-disable-next-line no-return-await
                   onDeleteClick={async () => await deleteCreation(x?.creation_id)}
-                  finalizationDate={x?.creation_authorship_window}
+                  finalizationDate={!x?.is_draft ? x?.cawDate : false}
                   canFinalize={
                     !x?.is_draft
                     && userId === login?.user_id
                     && !x?.is_fully_owned
                     && x?.isCAWPassed
-                    && !x?.is_onchain
+                    && !x?.isProcessingFinalizationPayment
                   }
                   onFinalize={async () => await publishCreation({
                     id: x?.creation_id,
                     ipfsHash: x?.ipfs_hash,
                   })}
-                  isFinalized={x?.is_onchain}
+                  isFinalized={x?.is_fully_owned}
                 />
             ),
           )}

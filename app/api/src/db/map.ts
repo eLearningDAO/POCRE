@@ -5,6 +5,7 @@ interface IPkMap {
   author_id: string;
   tags: string;
   materials: string;
+  transactions: string;
   assumed_author: string;
   winner: string;
   issuer_id: string;
@@ -17,6 +18,7 @@ interface IPkMap {
   decision_id: string;
   tag_id: string;
   litigation_id: string;
+  transaction_id: string;
 }
 
 interface ITableNameMap {
@@ -26,6 +28,7 @@ interface ITableNameMap {
   author_id: string;
   tags: string;
   materials: string;
+  transactions: string;
   assumed_author: string;
   winner: string;
   issuer_id: string;
@@ -38,13 +41,14 @@ interface ITableNameMap {
   decision_id: string;
   tag_id: string;
   litigation_id: string;
+  transaction_id: string;
 }
 
 /**
  * List of primary and foreign key names mapped to parent table primary key names
  */
 const pkMap: IPkMap = {
-  // decision table
+  // decision and transaction table
   maker_id: 'user_id',
   // recognition table
   recognition_by: 'user_id',
@@ -54,6 +58,7 @@ const pkMap: IPkMap = {
   // creation table
   tags: 'tag_id',
   materials: 'material_id',
+  transactions: 'transaction_id',
   // litigation table
   assumed_author: 'user_id',
   winner: 'user_id',
@@ -68,6 +73,7 @@ const pkMap: IPkMap = {
   decision_id: 'decision_id',
   tag_id: 'tag_id',
   litigation_id: 'litigation_id',
+  transaction_id: 'transaction_id',
 };
 
 /**
@@ -84,6 +90,7 @@ const tableNameMap: ITableNameMap = {
   // creation table
   tags: 'tag',
   materials: 'material',
+  transactions: 'transaction',
   // litigation table
   assumed_author: 'VIEW_users_public_fields',
   winner: 'VIEW_users_public_fields',
@@ -98,17 +105,23 @@ const tableNameMap: ITableNameMap = {
   decision_id: 'decision',
   litigation_id: 'litigation',
   tag_id: 'tag',
+  transaction_id: 'transaction',
 };
 
 /**
  * List of field names defined with array type in db tables
  */
-const arrayFields: string[] = ['recognitions', 'decisions', 'tags', 'materials'];
+const arrayFields: string[] = ['recognitions', 'decisions', 'tags', 'materials', 'transactions'];
 
 /**
  * List of deep fields that can be populated in decision
  */
 const decisionDeepFields: string[] = ['maker_id'];
+
+/**
+ * List of deep fields that can be populated in transaction
+ */
+const transactionDeepFields: string[] = ['maker_id'];
 
 /**
  * List of deep fields that can be populated in recognition
@@ -127,7 +140,14 @@ const materialDeepFields: string[] = [
 /**
  * List of deep fields that can be populated in creation
  */
-const creationDeepFields: string[] = ['author_id', 'tags', 'materials', ...materialDeepFields.map((x) => `materials.${x}`)];
+const creationDeepFields: string[] = [
+  'author_id',
+  'tags',
+  'materials',
+  ...materialDeepFields.map((x) => `materials.${x}`),
+  'transactions',
+  ...transactionDeepFields.map((x) => `transactions.${x}`),
+];
 
 /**
  * List of deep fields that can be populated in litigation
@@ -153,6 +173,7 @@ export {
   tableNameMap,
   arrayFields,
   decisionDeepFields,
+  transactionDeepFields,
   recognitionDeepFields,
   materialDeepFields,
   creationDeepFields,
