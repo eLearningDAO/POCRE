@@ -133,6 +133,7 @@ const init = async (): Promise<QueryResult<any>> => {
       author_id UUID NOT NULL,
       tags UUID[],
       materials UUID[],
+      transactions UUID[],
       creation_date TIMESTAMP NOT NULL DEFAULT NOW(),
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
       is_draft bool default true,
@@ -234,6 +235,12 @@ const init = async (): Promise<QueryResult<any>> => {
     LANGUAGE SQL
     AS $$
       UPDATE litigation SET decisions = array_remove(decisions, decision_id);
+    $$;
+
+    CREATE OR REPLACE PROCEDURE remove_transaction_references(transaction_id UUID)
+    LANGUAGE SQL
+    AS $$
+      UPDATE creation SET transactions = array_remove(transactions, transaction_id);
     $$;
     `
   );

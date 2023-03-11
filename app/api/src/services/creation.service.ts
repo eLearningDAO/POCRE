@@ -1,10 +1,10 @@
 import httpStatus from 'http-status';
 import statusTypes from '../constants/statusTypes';
+import supportedMediaTypes from '../constants/supportedMediaTypes';
 import { populator } from '../db/plugins/populator';
 import * as db from '../db/pool';
-import { getUserByCriteria, IUser, IUserDoc, updateUserById } from './user.service';
 import ApiError from '../utils/ApiError';
-import supportedMediaTypes from '../constants/supportedMediaTypes';
+import { getUserByCriteria, IUserDoc, updateUserById } from './user.service';
 
 const types = Object.values(supportedMediaTypes);
 type TCreationTypes = typeof types[number];
@@ -17,6 +17,7 @@ interface ICreation {
   author_id: string;
   tags: string[];
   materials?: string[];
+  transactions?: string[];
   creation_date: string;
   is_draft: boolean;
   is_claimable: boolean;
@@ -55,6 +56,7 @@ interface ICreationDoc {
   author_id: string;
   tags: string[];
   materials: string[];
+  transactions: string[];
   creation_date: string;
   is_draft: boolean;
   is_claimable: boolean;
@@ -97,6 +99,7 @@ export const getAuthorCreationsCount = async (author_id?: string) => {
   ]);
   return parseInt(resCreation.rows[0].total_results);
 };
+
 /**
  * Check if a creation has duplicate materials
  * @param {string[]} materials
@@ -120,6 +123,33 @@ export const verifyCreationMaterialDuplicates = async (materials: string[], excl
 };
 
 /**
+ * Check if a creation has duplicate transactions
+ * @param {string[]} transactions
+ * @param {string} exclude_creation
+ * @returns {Promise<void>}
+ */
+export const verifyCreationTransactionDuplicates = async (
+  transactions: string[],
+  exclude_creation?: string
+): Promise<void> => {
+  const foundMaterial = await (async () => {
+    try {
+      const result = await db.instance.query(
+        `SELECT * FROM creation WHERE transactions && $1 ${exclude_creation ? 'AND creation_id <> $2' : ''};`,
+        [`{${transactions.reduce((x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`)}}`, exclude_creation].filter(
+          Boolean
+        )
+      );
+      return result.rows[0];
+    } catch {
+      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
+    }
+  })();
+
+  if (foundMaterial) throw new ApiError(httpStatus.NOT_FOUND, 'transaction already assigned to a creation');
+};
+
+/**
  * Create a creation
  * @param {ICreation} creationBody
  * @returns {Promise<ICreationDoc>}
@@ -139,6 +169,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
         author_id,
         tags,
         materials,
+        transactions,
         creation_date,
         is_draft,
         is_claimable,
@@ -146,7 +177,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
         creation_authorship_window
       ) 
       values 
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) 
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) 
       RETURNING *;`,
       [
         creationBody.creation_title,
@@ -156,6 +187,7 @@ export const createCreation = async (creationBody: ICreation): Promise<ICreation
         creationBody.author_id,
         creationBody.tags,
         creationBody.materials || [],
+        creationBody.transactions || [],
         creationBody.creation_date,
         creationBody.is_draft,
         creationBody.is_claimable,
@@ -234,23 +266,17 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
         query: `SELECT * ${populator({
           tableAlias: 'c',
           fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
-        })} FROM creation c where c.creation_type='${
-          options.creation_type
-        }' and c.is_draft=${
+        })} FROM creation c where c.creation_type='${options.creation_type}' and c.is_draft=${
           options.is_draft
         } and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id) OFFSET $1 LIMIT $2;`,
-        count: `SELECT COUNT(*) as total_results FROM creation c where c.creation_type='${options.creation_type}' and c.is_draft='${
-          options.is_draft
-        }' and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)
+        count: `SELECT COUNT(*) as total_results FROM creation c where c.creation_type='${options.creation_type}' and c.is_draft='${options.is_draft}' and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)
                         OFFSET $1 LIMIT $2`,
       },
       creationByTypetopAuthors: {
         query: `SELECT * ${populator({
           tableAlias: 'c',
           fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
-        })} FROM creation c where c.creation_type='${
-          options.creation_type
-        }' and c.is_draft=${
+        })} FROM creation c where c.creation_type='${options.creation_type}' and c.is_draft=${
           options.is_draft
         } and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
         (SELECT user_id, 
@@ -289,9 +315,7 @@ export const queryCreations = async (options: ICreationQuery): Promise<ICreation
                           DESC)
                 ${order} 
                 OFFSET $1 LIMIT $2`,
-        count: `SELECT COUNT(*) as total_results FROM creation c where c.creation_type='${options.creation_type}' and c.is_draft=${
-          options.is_draft
-        } and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
+        count: `SELECT COUNT(*) as total_results FROM creation c where c.creation_type='${options.creation_type}' and c.is_draft=${options.is_draft} and not exists (SELECT creation_id from litigation WHERE creation_id = c.creation_id)  and exists 
                 (SELECT user_id, 
                                 (
                                   SELECT 
@@ -610,6 +634,11 @@ export const updateCreationById = async (
   // verify if material/s already exist for another creation, throw error if a material is found
   if (updateBody.materials && updateBody.materials.length > 0) {
     await verifyCreationMaterialDuplicates(updateBody.materials, id);
+  }
+
+  // verify if transaction/s already exist for another creation, throw error if a transaction is found
+  if (updateBody.transactions && updateBody.transactions.length > 0) {
+    await verifyCreationTransactionDuplicates(updateBody.transactions, id);
   }
 
   // build sql conditions and values

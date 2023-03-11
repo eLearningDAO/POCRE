@@ -18,6 +18,10 @@ router
   .delete(auth(), validate(creationValidation.deleteCreation), creationController.deleteCreationById);
 
 router
+  .route('/:creation_id/transaction')
+  .post(auth(), validate(creationValidation.registerCreationTransaction), creationController.registerCreationTransaction);
+
+router
   .route('/:creation_id/proof')
   .get(validate(creationValidation.getCreationProof), creationController.getCreationProofById);
 
@@ -448,4 +452,56 @@ export default router;
  *         $ref: '#/components/responses/CreationNotFound'
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
+ */
+
+/**
+ * @swagger
+ * /creations/{creation_id}/transaction:
+ *   post:
+ *     summary: Register a transaction for creation
+ *     description: Registers a transaction for creation
+ *     tags: [Creation]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: creation_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Creation id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - transaction_id
+ *             properties:
+ *               transaction_id:
+ *                 type: string
+ *             example:
+ *                transaction_id: 476790e7-a6dc-4aea-8421-06bacfa2daf6
+ *     responses:
+ *       "201":
+ *         description: Created
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Creation'
+ *       "404":
+ *         $ref: '#/components/responses/TransactionNotFound'
+ *       "500":
+ *         content:
+ *           application/json:
+ *             schema:
+ *               oneOf:
+ *                 - $ref: '#/components/responses/InternalServerError'
+ *             examples:
+ *               InternalServerError:
+ *                 summary: internal server error
+ *                 value:
+ *                   code: 500
+ *                   message: internal server error
  */

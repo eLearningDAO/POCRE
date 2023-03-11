@@ -5,6 +5,7 @@ interface IPkMap {
   author_id: string;
   tags: string;
   materials: string;
+  transactions: string;
   assumed_author: string;
   winner: string;
   issuer_id: string;
@@ -27,6 +28,7 @@ interface ITableNameMap {
   author_id: string;
   tags: string;
   materials: string;
+  transactions: string;
   assumed_author: string;
   winner: string;
   issuer_id: string;
@@ -56,6 +58,7 @@ const pkMap: IPkMap = {
   // creation table
   tags: 'tag_id',
   materials: 'material_id',
+  transactions: 'transaction_id',
   // litigation table
   assumed_author: 'user_id',
   winner: 'user_id',
@@ -87,6 +90,7 @@ const tableNameMap: ITableNameMap = {
   // creation table
   tags: 'tag',
   materials: 'material',
+  transactions: 'transaction',
   // litigation table
   assumed_author: 'VIEW_users_public_fields',
   winner: 'VIEW_users_public_fields',
@@ -107,7 +111,7 @@ const tableNameMap: ITableNameMap = {
 /**
  * List of field names defined with array type in db tables
  */
-const arrayFields: string[] = ['recognitions', 'decisions', 'tags', 'materials'];
+const arrayFields: string[] = ['recognitions', 'decisions', 'tags', 'materials', 'transactions'];
 
 /**
  * List of deep fields that can be populated in decision
@@ -136,7 +140,14 @@ const materialDeepFields: string[] = [
 /**
  * List of deep fields that can be populated in creation
  */
-const creationDeepFields: string[] = ['author_id', 'tags', 'materials', ...materialDeepFields.map((x) => `materials.${x}`)];
+const creationDeepFields: string[] = [
+  'author_id',
+  'tags',
+  'materials',
+  ...materialDeepFields.map((x) => `materials.${x}`),
+  'transactions',
+  ...transactionDeepFields.map((x) => `transactions.${x}`),
+];
 
 /**
  * List of deep fields that can be populated in litigation

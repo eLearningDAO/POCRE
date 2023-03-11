@@ -4,11 +4,13 @@ import config from '../config/config';
 import publishPlatforms from '../constants/publishPlatforms';
 import reputationStarTimeWindows from '../constants/reputationStarTimeWindows';
 import statusTypes from '../constants/statusTypes';
+import transactionPurposes from '../constants/transactionPurposes';
 import * as creationService from '../services/creation.service';
 import * as litigationService from '../services/litigation.service';
 import { getMaterialById, updateMaterialById } from '../services/material.service';
 import { createRecognition } from '../services/recognition.service';
 import { getTagById } from '../services/tag.service';
+import { getTransactionById } from '../services/transaction.service';
 import { getUserByCriteria, IUserDoc } from '../services/user.service';
 import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/catchAsync';
@@ -257,6 +259,67 @@ export const publishCreation = catchAsync(async (req, res): Promise<void> => {
   const updatedCreation = await creationService.updateCreationById(
     req.params.creation_id,
     { ...(updateBody || {}) },
+    {
+      owner_id: (req.user as IUserDoc).user_id,
+    }
+  );
+
+  res.send(updatedCreation);
+});
+
+export const registerCreationTransaction = catchAsync(async (req, res): Promise<void> => {
+  const reqUser = req.user as IUserDoc;
+
+  // verify transaction, will throw an error if transaction is not found
+  const foundTransaction = await getTransactionById(req.body.transaction_id, {
+    owner_id: reqUser.user_id,
+  });
+
+  // verify creation, will throw an error if creation is not found
+  const foundCreation = await creationService.getCreationById(req.params.creation_id, {
+    populate: ['transactions'],
+    owner_id: reqUser.user_id,
+  });
+
+  // check if transaction has correct purposes
+  if (
+    foundTransaction &&
+    !(
+      foundTransaction.transaction_purpose === transactionPurposes.FINALIZE_CREATION ||
+      foundTransaction.transaction_purpose === transactionPurposes.PUBLISH_CREATION
+    )
+  ) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `invalid transaction purpose for creation`);
+  }
+
+  // check if caw has passed if transaction purpose is to finalize creation
+  if (
+    foundTransaction &&
+    foundTransaction.transaction_purpose === transactionPurposes.FINALIZE_CREATION &&
+    foundCreation &&
+    moment().isBefore(moment(new Date(foundCreation.creation_authorship_window)))
+  ) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `finalization only allowed after creation authorship window`);
+  }
+
+  // check if original creation already has this transaction
+  if (
+    foundCreation &&
+    foundCreation.transactions &&
+    foundTransaction &&
+    foundCreation.transactions.find(
+      (x: any) =>
+        x.transaction_id === foundTransaction.transaction_id ||
+        x.transaction_purpose === foundTransaction.transaction_purpose
+    )
+  ) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `transaction already registered for creation`);
+  }
+
+  // update creation
+  const updatedCreation = await creationService.updateCreationById(
+    req.params.creation_id,
+    { transactions: [...(foundCreation?.transactions || []).map((x: any) => x.transaction_id), req.body.transaction_id] },
     {
       owner_id: (req.user as IUserDoc).user_id,
     }

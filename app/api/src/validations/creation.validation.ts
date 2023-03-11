@@ -87,3 +87,12 @@ export const deleteCreation = {
     creation_id: Joi.string().uuid().required(),
   }),
 };
+
+export const registerCreationTransaction = {
+  params: Joi.object().keys({
+    creation_id: Joi.string().uuid().required(),
+  }),
+  body: Joi.object().keys({
+    transaction_id: Joi.string().uuid().required(),
+  }),
+};

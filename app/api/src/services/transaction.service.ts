@@ -200,6 +200,7 @@ export const deleteTransactionById = async (
 
   try {
     await db.instance.query(`DELETE FROM transaction WHERE transaction_id = $1;`, [id]);
+    await db.instance.query(`CALL remove_transaction_references($1);`, [id]); // remove this tag from everywhere it is used
     return transaction;
   } catch {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
