@@ -17,6 +17,7 @@ interface IPkMap {
   decision_id: string;
   tag_id: string;
   litigation_id: string;
+  transaction_id: string;
 }
 
 interface ITableNameMap {
@@ -38,13 +39,14 @@ interface ITableNameMap {
   decision_id: string;
   tag_id: string;
   litigation_id: string;
+  transaction_id: string;
 }
 
 /**
  * List of primary and foreign key names mapped to parent table primary key names
  */
 const pkMap: IPkMap = {
-  // decision table
+  // decision and transaction table
   maker_id: 'user_id',
   // recognition table
   recognition_by: 'user_id',
@@ -68,6 +70,7 @@ const pkMap: IPkMap = {
   decision_id: 'decision_id',
   tag_id: 'tag_id',
   litigation_id: 'litigation_id',
+  transaction_id: 'transaction_id',
 };
 
 /**
@@ -98,6 +101,7 @@ const tableNameMap: ITableNameMap = {
   decision_id: 'decision',
   litigation_id: 'litigation',
   tag_id: 'tag',
+  transaction_id: 'transaction',
 };
 
 /**
@@ -109,6 +113,11 @@ const arrayFields: string[] = ['recognitions', 'decisions', 'tags', 'materials']
  * List of deep fields that can be populated in decision
  */
 const decisionDeepFields: string[] = ['maker_id'];
+
+/**
+ * List of deep fields that can be populated in transaction
+ */
+const transactionDeepFields: string[] = ['maker_id'];
 
 /**
  * List of deep fields that can be populated in recognition
@@ -153,6 +162,7 @@ export {
   tableNameMap,
   arrayFields,
   decisionDeepFields,
+  transactionDeepFields,
   recognitionDeepFields,
   materialDeepFields,
   creationDeepFields,

@@ -40,6 +40,12 @@ const init = async (): Promise<QueryResult<any>> => {
         WHEN duplicate_object THEN null;
     END $$;
 
+    DO $$ BEGIN
+      CREATE TYPE transaction_purpose_enums AS ENUM ('publish_creation', 'finalize_creation', 'start_litigation', 'cast_litigation_vote', 'redeem_litigated_item', 'accept_recognition');
+    EXCEPTION
+        WHEN duplicate_object THEN null;
+    END $$;
+
     /* ************************************ */
     /* TABLES */
     /* ************************************ */
@@ -166,6 +172,20 @@ const init = async (): Promise<QueryResult<any>> => {
           ON DELETE CASCADE,
       CONSTRAINT issuer_id
           FOREIGN KEY(issuer_id) 
+          REFERENCES users(user_id)
+          ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS transaction (
+      transaction_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      transaction_hash character varying NOT NULL UNIQUE,
+      transaction_purpose transaction_purpose_enums NOT NULL,
+      is_validated bool DEFAULT false,
+      maker_id UUID NOT NULL,
+      blocking_issue character varying,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+      CONSTRAINT maker_id
+          FOREIGN KEY(maker_id) 
           REFERENCES users(user_id)
           ON DELETE CASCADE
     );
