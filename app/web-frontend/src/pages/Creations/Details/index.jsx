@@ -114,6 +114,11 @@ export default function CreationDetails() {
       && t.transaction_purpose === transactionPurposes.PUBLISH_CREATION,
   );
 
+  const isProcessingFinalizationPayment = (creation?.transactions || [])?.find(
+    (t) => !t.is_validated
+    && t.transaction_purpose === transactionPurposes.FINALIZE_CREATION,
+  );
+
   return (
     <Grid item xs={12}>
       {(isDeletingCreation || isPublishingCreation) && <Loader withBackdrop size="large" />}
@@ -201,6 +206,7 @@ export default function CreationDetails() {
         {user?.user_id === creation?.author?.user_id
           && !creation?.is_draft
           && !creation?.is_fully_owned
+          && !isProcessingFinalizationPayment
           && moment().isAfter(moment(creation?.creation_authorship_window))
           && (
             <Button
@@ -283,11 +289,12 @@ export default function CreationDetails() {
                   {creation?.author?.user_name}
                 </Link>
               </h4>
+              {!creation?.is_draft && creation?.is_fully_owned && <Chip className="mr-auto bg-black color-white" label="Finalized" />}
               <Chip className="mr-auto bg-orange-dark color-white" label={`Created on ${moment(creation?.creation_date).format('DD/MM/YYYY')}`} />
               {!creation.is_draft && <Chip className="mr-auto bg-black color-white" label={`Finalization on: ${moment(creation?.creation_authorship_window).format('Do MMMM YYYY')}`} />}
               {isProcessingPublishingPayment && <Chip className="mr-auto bg-black color-white" label="Pending payment verifcation to publish" />}
               <Chip className="mr-auto bg-black color-white" label={`Unique ID: ${creation?.creation_id}`} />
-              {!creation?.is_draft && creation?.is_fully_owned && <Chip className="mr-auto bg-black color-white" label="Published" />}
+              {isProcessingFinalizationPayment && <Chip className="mr-auto bg-black color-white" label="Pending payment verifcation to finalized" />}
             </Box>
           </Box>
           {creation?.creation_description && (

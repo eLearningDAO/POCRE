@@ -39,11 +39,15 @@ const useCreations = (userId) => {
         ).map((x) => ({
           ...x,
           creation_date: moment(x?.creation_date).format('Do MMMM YYYY'),
-          creation_authorship_window: moment(x?.creation_authorship_window).format('Do MMMM YYYY'),
-          isCAWPassed: moment().isAfter(moment(x?.creation?.creation_authorship_window)),
+          isCAWPassed: moment().isAfter(moment(x?.creation_authorship_window)),
+          cawDate: moment(x?.creation_authorship_window).format('Do MMMM YYYY'),
           isProcessingPublishingPayment: (x?.transactions || [])?.find(
             (t) => !t.is_validated
             && t.transaction_purpose === transactionPurposes.PUBLISH_CREATION,
+          ),
+          isProcessingFinalizationPayment: (x?.transactions || [])?.find(
+            (t) => !t.is_validated
+            && t.transaction_purpose === transactionPurposes.FINALIZE_CREATION,
           ),
         })),
       };
