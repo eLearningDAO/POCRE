@@ -40,6 +40,10 @@ const envVarsSchema = Joi.object()
     PINATA_JWT_SECRET: Joi.string().description('pinata jwt secret used to store data on ipfs').required(),
     PINATA_API_JSON_PIN_URL: Joi.string().description('pinata api url to pin json data').required(),
     PINATA_API_UNPIN_URL: Joi.string().description('pinata api url to unpin data').required(),
+    BLOCKFROST_PROJECT_ID: Joi.string().description('blockfrost project id to interact with their service').required(),
+    BLOCKFROST_API_BASE_URL: Joi.string().description('blockfrost base url to make http calls').required(),
+    BLOCKFROST_API_TRANSACTIONS_ENDPOINT: Joi.string().description('blockfrost endpoint to query transactions').required(),
+    BLOCKFROST_API_BLOCKS_ENDPOINT: Joi.string().description('blockfrost endpoint to query blocks').required(),
   })
   .unknown();
 
@@ -91,6 +95,14 @@ export default {
     urls: {
       json_pin: envVars.PINATA_API_JSON_PIN_URL,
       unpin: envVars.PINATA_API_UNPIN_URL,
+    },
+  },
+  blockfrost: {
+    project_id: envVars.BLOCKFROST_PROJECT_ID,
+    base_api_url: envVars.BLOCKFROST_API_BASE_URL,
+    endpoints: {
+      transactions: envVars.BLOCKFROST_API_TRANSACTIONS_ENDPOINT,
+      blocks: envVars.BLOCKFROST_API_BLOCKS_ENDPOINT,
     },
   },
 };
