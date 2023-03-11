@@ -186,7 +186,6 @@ export const updateCreationById = catchAsync(async (req, res): Promise<void> => 
 });
 
 export const publishCreation = catchAsync(async (req, res): Promise<void> => {
-  // requires creation_id in params and publish_on in body and req.user
   const reqUser = req.user as IUserDoc;
 
   // get original creation

@@ -44,6 +44,12 @@ const envVarsSchema = Joi.object()
     BLOCKFROST_API_BASE_URL: Joi.string().description('blockfrost base url to make http calls').required(),
     BLOCKFROST_API_TRANSACTIONS_ENDPOINT: Joi.string().description('blockfrost endpoint to query transactions').required(),
     BLOCKFROST_API_BLOCKS_ENDPOINT: Joi.string().description('blockfrost endpoint to query blocks').required(),
+    BLOCKFROST_WEBHOOK_AUTH_TOKEN: Joi.string()
+      .description('blockfrost webhook token to verify webhooks signature')
+      .required(),
+    MIN_BLOCK_CONFIRMATIONS_FOR_VALID_CRYPTO_TRANSACTION: Joi.string()
+      .description('the minimun block confirmation threshold after which we consider a transaction successful')
+      .required(),
   })
   .unknown();
 
@@ -97,6 +103,11 @@ export default {
       unpin: envVars.PINATA_API_UNPIN_URL,
     },
   },
+  crypto: {
+    valid_transaction: {
+      min_block_confirmations: envVars.MIN_BLOCK_CONFIRMATIONS_FOR_VALID_CRYPTO_TRANSACTION,
+    },
+  },
   blockfrost: {
     project_id: envVars.BLOCKFROST_PROJECT_ID,
     base_api_url: envVars.BLOCKFROST_API_BASE_URL,
@@ -104,5 +115,6 @@ export default {
       transactions: envVars.BLOCKFROST_API_TRANSACTIONS_ENDPOINT,
       blocks: envVars.BLOCKFROST_API_BLOCKS_ENDPOINT,
     },
+    webhook_token: envVars.BLOCKFROST_WEBHOOK_AUTH_TOKEN,
   },
 };

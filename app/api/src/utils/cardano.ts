@@ -34,7 +34,17 @@ export interface ICardanoTransaction {
 }
 
 export interface IPocreCardanoTransaction extends ICardanoTransaction {
-  metadata: any; // [IMPORTANT]: we need to define a metadata structure that would work for all pocre entities
+  /**
+   * Important:
+   * ---------
+   * The metadata structure should would work for all pocre entities (creation, recognitions etc)
+   * If in future we extend this, remember to align frontend clients with new changes
+   */
+  metadata: {
+    pocre_id: string;
+    pocre_entity: 'creation' | 'recognition' | 'litigation_id';
+    pocre_version: number;
+  };
 }
 
 export interface ICardanoBlock {
@@ -104,10 +114,25 @@ export const getTransactionInfo = async (transactionHash: string): Promise<IPocr
     const mergedResponse = {
       ...responseTx,
       metadata: responseMetaData?.[0]?.json_metadata || null,
-    };
+    } as IPocreCardanoTransaction;
 
-    return mergedResponse as IPocreCardanoTransaction;
-  } catch {
-    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `failed to get transaction info`);
+    // make sure metadata has all necessary fields
+    if (
+      !mergedResponse.metadata ||
+      !mergedResponse.metadata.pocre_entity ||
+      !mergedResponse.metadata.pocre_id ||
+      !mergedResponse.metadata.pocre_version
+    ) {
+      throw new Error('broken transaction metadata');
+    }
+
+    return mergedResponse;
+  } catch (e: unknown) {
+    const error = e as Error;
+
+    throw new ApiError(
+      httpStatus.NOT_ACCEPTABLE,
+      error.message === 'broken transaction metadata' ? error.message : `failed to get transaction info`
+    );
   }
 };

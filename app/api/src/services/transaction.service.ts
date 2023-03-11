@@ -11,6 +11,7 @@ interface ITransaction {
   transaction_hash: string;
   transaction_purpose: TTransactionPurposes;
   maker_id: string;
+  is_validated?: boolean;
   blocking_issue?: string;
 }
 interface ITransactionDoc {
@@ -133,13 +134,13 @@ export const getTransactionById = async (
  * @returns {Promise<ITransactionDoc|null>}
  */
 export const getTransactionByHash = async (
-  id: string,
+  hash: string,
   options?: {
     populate?: string | string[];
     owner_id?: string;
   }
 ): Promise<ITransactionDoc | null> => {
-  return getTransactionByCriteria('transaction_hash', id, options);
+  return getTransactionByCriteria('transaction_hash', hash, options);
 };
 
 /**
@@ -160,7 +161,7 @@ export const updateTransactionById = async (
 
   // build sql conditions and values
   const conditions: string[] = [];
-  const values: (string | null)[] = [];
+  const values: (string | null | boolean)[] = [];
   Object.entries(updateBody).map(([k, v], index) => {
     conditions.push(`${k} = $${index + 2}`);
     values.push(v);
