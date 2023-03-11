@@ -43,7 +43,7 @@ const transactADAToPOCRE = async ({
     const tx = new Transaction({ initiator: wallet });
 
     // set amount
-    tx.sendLovelace(POCRE_WALLET_ADDRESS, `${amountADA * 1_000_000}`); // convert ada to lovelace
+    tx.sendLovelace(POCRE_WALLET_ADDRESS.PREVIEW, `${amountADA * 1_000_000}`); // convert ada to lovelace
 
     // set metadata
     tx.setMetadata(0, {
