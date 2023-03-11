@@ -11,8 +11,6 @@ export const createCreation = {
     tags: Joi.array().items(Joi.string().uuid()).unique().required().min(1),
     materials: Joi.array().items(Joi.string().uuid()).unique().optional().min(1),
     creation_date: Joi.string().isoDate().required(),
-    is_draft: Joi.bool().default(false),
-    is_claimable: Joi.bool().default(true),
   }),
 };
 
@@ -81,8 +79,6 @@ export const updateCreation = {
       tags: Joi.array().items(Joi.string().uuid()).unique().optional().min(1),
       materials: Joi.array().items(Joi.string().uuid()).unique().optional(),
       creation_date: Joi.string().isoDate().optional(),
-      is_draft: Joi.bool(),
-      is_claimable: Joi.bool(),
     })
     .min(1),
 };
