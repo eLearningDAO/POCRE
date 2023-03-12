@@ -309,9 +309,11 @@ export default function StepTwo({
   const handleValues = async (values) => {
     const response = await validateLink(values?.link);
     if (!response) return;
-
+    const mediaType = response.media_type;
     const { link, title, author } = values;
-    setMaterials([...materials, { link, title, author: author[0] }]);
+    setMaterials([...materials, {
+      link, title, author: author[0], type: mediaType,
+    }]);
     setInvitedAuthor(null);
 
     setFormKey(new Date().toISOString());
