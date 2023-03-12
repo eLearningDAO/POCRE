@@ -21,15 +21,6 @@
                     "githubUrl": "https://github.com/huzaifa-99"
                 },
                 {
-                    "name": "Mithun Ray",
-                    "job": "Designer",
-                    "bio": "A Senior UX/UI designer",
-                    "avatarUrl": "https://pbs.twimg.com/profile_images/1574446018514788354/eZsrWw5D_400x400.jpg",
-                    "linkedinUrl": "https://www.linkedin.com/in/mithunray/",
-                    "twitterUrl": "https://twitter.com/mithunrayy",
-                    "githubUrl": ""
-                },
-                {
                     "name": "Umair Mukhtar",
                     "job": "Full Stack Developer",
                     "bio": "Founder Aen Studios",
@@ -37,17 +28,29 @@
                     "linkedinUrl": "https://www.linkedin.com/in/umair-mukhtar-828510153/",
                     "twitterUrl": "https://twitter.com/aenumair",
                     "githubUrl": "https://github.com/UmairMukhtar"
+                },
+                {
+                    "name": "Eric Valentine",
+                    "job": "Software Engineer",
+                    "bio": "We have to do things meaningful",
+                    "avatarUrl": "https://cdn.discordapp.com/attachments/989117788213874698/1026751484144140379/Selfie.png",
+                    "linkedinUrl": "https://www.linkedin.com/in/ericvale0128",
+                    "twitterUrl": "",
+                    "githubUrl": "https://github.com/ericvale0128"
+                },
+                {
+                    "name": "Mithun Ray",
+                    "job": "Designer",
+                    "bio": "A Senior UX/UI designer",
+                    "avatarUrl": "https://pbs.twimg.com/profile_images/1574446018514788354/eZsrWw5D_400x400.jpg",
+                    "linkedinUrl": "https://www.linkedin.com/in/mithunray/",
+                    "twitterUrl": "https://twitter.com/mithunrayy",
+                    "githubUrl": ""
                 }
             ]
         },
         {
             "otherContributors": [
-                {
-                    "name": "Eric Valentine",
-                    "job": "Software Engineer",
-                    "avatarUrl": "https://cdn.discordapp.com/attachments/989117788213874698/1026751484144140379/Selfie.png",
-                    "profileUrl": "https://github.com/ericvale0128"
-                },
                 {
                     "name": "Jack Kostic",
                     "job": "Full Stack Developer",
