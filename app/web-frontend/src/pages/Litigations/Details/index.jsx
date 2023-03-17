@@ -7,13 +7,14 @@ import {
 } from '@mui/material';
 // import LeftIcon from 'assets/images/left.png';
 // import RightIcon from 'assets/images/right.png';
+import Modal from 'components/Modal';
 import { ReactComponent as DislikeIcon } from 'assets/svgs/dislike.svg';
 import { ReactComponent as LikeIcon } from 'assets/svgs/like.svg';
 import { ReactComponent as ThumbPinIcon } from 'assets/svgs/thumb-pin.svg';
 import MaterialCard from 'components/cards/MaterialCard';
 import UserCard from 'components/cards/UserCard';
 import Loader from 'components/uicore/Loader';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import statusTypes from 'utils/constants/statusTypes';
 import './index.css';
@@ -60,6 +61,20 @@ function VoteButton({
   );
 }
 
+function VotingConfirmationDialog({ onClose = () => {}, onVotingConfirm = () => {} }) {
+  return (
+    <Modal
+      title="Are you sure ? You can vote only one time!"
+      onClose={onClose}
+    >
+      <Grid container className="create-collection" bgcolor="rgba(255, 255, 255, 0.28)">
+        <Button className="nextCollectionButton" style={{ marginLeft: 'auto', marginRight: '12px' }} onClick={onVotingConfirm}>Yes</Button>
+        <Button className="nextCollectionButton" style={{ marginLeft: 'auto', marginRight: '12px' }} onClick={onClose}>No</Button>
+      </Grid>
+    </Modal>
+  );
+}
+
 export default function LitigationDetails() {
   const { id } = useParams();
 
@@ -71,6 +86,7 @@ export default function LitigationDetails() {
     isCastingVote,
     castLitigationVote,
     voteStatusTypes,
+    voteCastStatus,
     user,
   } = useDetails();
 
@@ -78,6 +94,8 @@ export default function LitigationDetails() {
     if (id) fetchLitigationDetails(id);
   }, [id]);
 
+  const [showVotingConfirmationDialog, setShowVotingConfirmationDialog] = useState(false);
+  const [selectedVotingStatus, setSelectedVotingStatus] = useState(false);
   // const [slideNumber, setSlideNumber] = useState(1);
 
   // const next = () => {
@@ -100,8 +118,23 @@ export default function LitigationDetails() {
 
   const alreadyVoted = litigation?.decisions?.find((x) => x?.maker_id === user?.user_id);
 
+  const onVotingClick = (votingStatus) => {
+    setSelectedVotingStatus(votingStatus);
+    setShowVotingConfirmationDialog(true);
+    // async () => await castLitigationVote(votingStatus)
+  };
+
   return (
     <Grid item xs={12}>
+      {showVotingConfirmationDialog && (
+        <VotingConfirmationDialog
+          onClose={() => setShowVotingConfirmationDialog(false)}
+          onVotingConfirm={async () => {
+            await castLitigationVote(selectedVotingStatus);
+            setShowVotingConfirmationDialog(false);
+          }}
+        />
+      )}
       {isCastingVote && <Loader size="large" withBackdrop />}
       <Grid item xs={12}>
         <Typography className="litigationCloseTitle" variant="h6">
@@ -216,7 +249,7 @@ export default function LitigationDetails() {
                     <VoteButton
                       isActive={litigation.voteStatus === voteStatusTypes.AGREED}
                       // eslint-disable-next-line no-return-await
-                      onClick={async () => await castLitigationVote(voteStatusTypes.AGREED)}
+                      onClick={() => onVotingClick(voteStatusTypes.AGREED)}
                       type="agree"
                       label={`Agree 
                       (${litigation?.decisions
@@ -226,7 +259,7 @@ export default function LitigationDetails() {
                     <VoteButton
                       isActive={litigation.voteStatus === voteStatusTypes.DISAGREED}
                       // eslint-disable-next-line no-return-await
-                      onClick={async () => await castLitigationVote(voteStatusTypes.DISAGREED)}
+                      onClick={() => onVotingClick(voteStatusTypes.DISAGREED)}
                       type="disagree"
                       label={`Opposition 
                       (${litigation?.decisions
@@ -236,7 +269,7 @@ export default function LitigationDetails() {
                     <VoteButton
                       isActive={litigation.voteStatus === voteStatusTypes.IMPARTIAL}
                       // eslint-disable-next-line no-return-await
-                      onClick={async () => await castLitigationVote(voteStatusTypes.IMPARTIAL)}
+                      onClick={() => onVotingClick(voteStatusTypes.IMPARTIAL)}
                       type="impartial"
                       label={`Impartial 
                       (${litigation?.decisions && litigation?.recognitions
@@ -270,7 +303,12 @@ export default function LitigationDetails() {
                 )
             }
           </Grid>
-
+          {(voteCastStatus.error || voteCastStatus.success)
+            && (
+              <Box width="100%" className={`${voteCastStatus.success ? 'bg-green' : 'bg-red'} color-white`} padding="16px" borderRadius="12px" fontSize="16px" style={{ margin: 'auto', marginTop: '18px' }}>
+                {voteCastStatus.success ? 'Vote was casted successfully' : voteCastStatus.error}
+              </Box>
+            )}
           <Grid item xs={12} style={{ marginTop: '40px' }}>
             <Typography className="litigationCloseTitle" variant="h6">
               Recognized jury members (
