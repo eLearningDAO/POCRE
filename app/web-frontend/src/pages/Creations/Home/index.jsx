@@ -4,7 +4,7 @@ import {
 import CreationCard from 'components/cards/CreationCard';
 import Input from 'components/uicore/Input';
 import Loader from 'components/uicore/Loader';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
 import useCreationDelete from '../common/hooks/useCreationDelete';
@@ -24,7 +24,15 @@ const getSuggestions = (suggestions) => {
 function Creations() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const login = authUser.getUser() && authUser.getJWTToken();
+  useEffect(() => {
+    if (login) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
   const { userId } = useParams();
   const {
     creations,
@@ -60,7 +68,6 @@ function Creations() {
   const handleSearch = (event) => {
     setSearch(event.target.value.trim());
   };
-
   return (
     <Grid container spacing={2}>
       {(isDeletingCreation || isPublishingCreation) && <Loader withBackdrop size="large" />}
@@ -96,10 +103,10 @@ function Creations() {
         padding={{ xs: '12px', md: '0' }}
       >
         <Typography className="heading h4" variant="h4">
-          {login ? `The original creations ${userId === login?.user_id || !creations ? 'I' : creations.results[0]?.author?.user_name} made` : 'Search Public Creations'}
+          {isLoggedIn ? `The original creations ${userId === login?.user_id || !creations ? 'I' : creations.results[0]?.author?.user_name} made` : 'Search Public Creations'}
         </Typography>
         <Grid gap={{ sm: '8px' }} display="flex" height="fit-content" flexDirection="row">
-          {login && (
+          {isLoggedIn && (
             <TextField
               variant="standard"
               InputProps={{
@@ -113,7 +120,7 @@ function Creations() {
               onChange={handleSearch}
             />
           )}
-          {login && (
+          {isLoggedIn && (
             <Button onClick={add} className="btn btn-primary">
               + Add New Creation
             </Button>
@@ -123,7 +130,7 @@ function Creations() {
 
       {isLoadingCreations ? (
         <div style={{ margin: 'auto' }} className="loader" />
-      ) : (creations?.results?.length > 0 ? (
+      ) : (creations?.results?.length > 0 && isLoggedIn ? (
         <Grid
           xs={12}
           item
@@ -198,7 +205,7 @@ function Creations() {
       ) : (
         <Grid xs={12} md={9} lg={10} marginTop={{ xs: '8px' }}>
           {
-            !login ? (
+            !isLoggedIn ? (
               <Input
                 variant="dark"
                 placeholder="Search Creations!"
