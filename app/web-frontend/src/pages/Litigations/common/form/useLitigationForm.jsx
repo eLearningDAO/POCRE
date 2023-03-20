@@ -89,7 +89,7 @@ const useLitigationForm = ({ onLitigationFetch }) => {
         litigation_title: litigationBody.title.trim(),
         litigation_description: litigationBody?.description?.trim(),
         creation_id: litigationBody.creation,
-        ...(litigationBody.material_id && { material_id: litigationBody.material }),
+        material_id: litigationBody.material,
         is_draft: litigationBody.is_draft,
       };
       const response = litigation?.litigation_id
