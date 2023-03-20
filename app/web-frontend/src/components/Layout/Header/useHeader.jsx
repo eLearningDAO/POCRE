@@ -33,6 +33,8 @@ const useHeader = () => {
 
   const handleLogin = () => {
     setLoggedInUser(authUser.getUser());
+    queryClient.cancelQueries();
+    queryClient.invalidateQueries();
     updateAppKey();
   };
 

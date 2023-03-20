@@ -1,14 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
+import Cookies from 'js-cookie';
 import { Creation } from 'api/requests';
 import useSuggestions from 'hooks/useSuggestions';
 import moment from 'moment';
 import transactionPurposes from 'utils/constants/transactionPurposes';
-import authUser from 'utils/helpers/authUser';
-
-// get auth user
-const user = authUser.getUser();
 
 const useCreations = (userId) => {
+  const cookieUser = Cookies.get('authUser');
+  const user = cookieUser ? JSON.parse(cookieUser)?.user_id : userId;
   const {
     suggestions: creationSuggestions,
     suggestionsStatus: fetchCreationsSuggestionStatus,
@@ -28,7 +27,7 @@ const useCreations = (userId) => {
     queryFn: async () => {
       const toPopulate = ['author_id', 'materials', 'materials.author_id', 'transactions'];
       const unsortedCreations = await Creation.getAll(
-        `page=${1}&limit=100&descend_fields[]=creation_date&query=${userId || user.user_id}&search_fields[]=author_id&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
+        `page=${1}&limit=100&descend_fields[]=creation_date&query=${user}&search_fields[]=author_id&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       );
 
       // sort by latest first
@@ -52,6 +51,7 @@ const useCreations = (userId) => {
         })),
       };
     },
+    enabled: !!user,
     staleTime: 60_000, // cache for 60 seconds
   });
 
