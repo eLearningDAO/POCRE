@@ -121,7 +121,6 @@ export default function LitigationDetails() {
   const onVotingClick = (votingStatus) => {
     setSelectedVotingStatus(votingStatus);
     setShowVotingConfirmationDialog(true);
-    // async () => await castLitigationVote(votingStatus)
   };
 
   return (
