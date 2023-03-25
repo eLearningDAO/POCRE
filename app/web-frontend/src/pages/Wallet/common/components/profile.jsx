@@ -12,6 +12,7 @@ import Loader from 'components/uicore/Loader';
 import useAppKeys from 'hooks/useAppKeys';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import useProfile from './useProfile';
 import UserAvatar from './userAvatar';
 import { updateProfileValidation } from './validation';
@@ -31,11 +32,14 @@ function WalletProfile({
   emailVerified = false,
 }) {
   const { updateAppKey } = useAppKeys();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [isEditMode, setEditMode] = useState(false);
   const [avatarImageFile, setAvatarImageFile] = useState();
   const handleViewCreation = () => {
     if (id) {
+      queryClient.cancelQueries();
+      queryClient.invalidateQueries();
       navigate(`/creations/user/${id}`);
     } else {
       navigate('/creations');

@@ -3,10 +3,12 @@ import { useLocation } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
 import '../responsive-menu-transition.css';
 import './Header.css';
+import { useQueryClient } from '@tanstack/react-query';
 import useAppKeys from 'hooks/useAppKeys';
 
 const useHeader = () => {
   const { updateAppKey } = useAppKeys();
+  const queryClient = useQueryClient();
 
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
@@ -24,11 +26,15 @@ const useHeader = () => {
     setLoggedInUser(null);
     authUser.removeJWTToken();
     authUser.removeUser();
+    queryClient.cancelQueries();
+    queryClient.invalidateQueries();
     updateAppKey();
   };
 
   const handleLogin = () => {
     setLoggedInUser(authUser.getUser());
+    queryClient.cancelQueries();
+    queryClient.invalidateQueries();
     updateAppKey();
   };
 

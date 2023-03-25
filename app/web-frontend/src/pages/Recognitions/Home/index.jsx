@@ -5,11 +5,10 @@ import authUser from 'utils/helpers/authUser';
 import useRecognition from '../common/hooks/useRecognitions';
 import './index.css';
 
-const user = authUser.getUser();
-
 function Recognition() {
   const [activeTab, setActiveTab] = useState('co-author-recognition');
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const user = authUser.getUser();
   const {
     isFetchingRecognitions,
     fetchRecognitions,
@@ -18,6 +17,11 @@ function Recognition() {
 
   useEffect(() => {
     fetchRecognitions();
+    if (user) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
   }, []);
 
   if (isFetchingRecognitions) return <div style={{ margin: 'auto' }} className="loader" />;
@@ -66,7 +70,7 @@ function Recognition() {
           className="hidden-scrollbar"
           padding={{ xs: '12px', md: '0' }}
         >
-          {recognitions?.results?.map(
+          {isLoggedIn && recognitions?.results?.map(
             (x) => x?.material && x?.recognition_for?.user_id === user?.user_id && (
             <RecognitionCard
               id={x.recognition_id}

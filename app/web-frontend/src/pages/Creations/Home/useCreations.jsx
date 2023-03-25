@@ -5,10 +5,13 @@ import moment from 'moment';
 import transactionPurposes from 'utils/constants/transactionPurposes';
 import authUser from 'utils/helpers/authUser';
 
-// get auth user
-const user = authUser.getUser();
-
 const useCreations = (userId) => {
+  const auth = authUser.getUser();
+  let user = auth?.user_id;
+  if (userId) {
+    user = userId;
+  }
+  const queryKey = `creations-${user}`;
   const {
     suggestions: creationSuggestions,
     suggestionsStatus: fetchCreationsSuggestionStatus,
@@ -24,11 +27,11 @@ const useCreations = (userId) => {
     isSuccess: isFetchSuccess,
     isLoading: isLoadingCreations,
   } = useQuery({
-    queryKey: ['creations'],
+    queryKey: [queryKey],
     queryFn: async () => {
       const toPopulate = ['author_id', 'materials', 'materials.author_id', 'transactions'];
       const unsortedCreations = await Creation.getAll(
-        `page=${1}&limit=100&descend_fields[]=creation_date&query=${userId || user.user_id}&search_fields[]=author_id&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
+        `page=${1}&limit=100&descend_fields[]=creation_date&query=${user}&search_fields[]=author_id&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       );
 
       // sort by latest first
@@ -52,6 +55,7 @@ const useCreations = (userId) => {
         })),
       };
     },
+    enabled: !!queryKey,
     staleTime: 60_000, // cache for 60 seconds
   });
 
