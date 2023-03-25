@@ -7,7 +7,11 @@ import transactionPurposes from 'utils/constants/transactionPurposes';
 
 const useCreations = (userId) => {
   const cookieUser = Cookies.get('authUser');
-  const user = cookieUser ? JSON.parse(cookieUser)?.user_id : userId;
+  let user = cookieUser ? JSON.parse(cookieUser)?.user_id : null;
+  if (userId) {
+    user = userId;
+  }
+  const queryKey = `creations-${user}`;
   const {
     suggestions: creationSuggestions,
     suggestionsStatus: fetchCreationsSuggestionStatus,
@@ -23,7 +27,7 @@ const useCreations = (userId) => {
     isSuccess: isFetchSuccess,
     isLoading: isLoadingCreations,
   } = useQuery({
-    queryKey: ['creations'],
+    queryKey: [queryKey],
     queryFn: async () => {
       const toPopulate = ['author_id', 'materials', 'materials.author_id', 'transactions'];
       const unsortedCreations = await Creation.getAll(
