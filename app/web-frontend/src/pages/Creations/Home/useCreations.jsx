@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
-import Cookies from 'js-cookie';
 import { Creation } from 'api/requests';
 import useSuggestions from 'hooks/useSuggestions';
 import moment from 'moment';
 import transactionPurposes from 'utils/constants/transactionPurposes';
+import authUser from 'utils/helpers/authUser';
 
 const useCreations = (userId) => {
-  const cookieUser = Cookies.get('authUser');
-  let user = cookieUser ? JSON.parse(cookieUser)?.user_id : null;
+  const auth = authUser.getUser();
+  let user = auth?.user_id;
   if (userId) {
     user = userId;
   }
