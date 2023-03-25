@@ -55,7 +55,7 @@ const useCreations = (userId) => {
         })),
       };
     },
-    enabled: !!user,
+    enabled: !!queryKey,
     staleTime: 60_000, // cache for 60 seconds
   });
 

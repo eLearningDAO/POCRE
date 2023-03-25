@@ -128,7 +128,7 @@ function Creations() {
         </Grid>
       </Grid>
 
-      {isLoadingCreations ? (
+      {isLoadingCreations && isLoggedIn ? (
         <div style={{ margin: 'auto' }} className="loader" />
       ) : (creations?.results?.length > 0 && isLoggedIn ? (
         <Grid
