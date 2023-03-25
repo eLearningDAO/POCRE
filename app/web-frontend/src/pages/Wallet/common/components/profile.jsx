@@ -38,10 +38,8 @@ function WalletProfile({
   const [avatarImageFile, setAvatarImageFile] = useState();
   const handleViewCreation = () => {
     if (id) {
-      setTimeout(() => {
-        queryClient.cancelQueries();
-        queryClient.invalidateQueries();
-      }, 800);
+      queryClient.cancelQueries();
+      queryClient.invalidateQueries();
       navigate(`/creations/user/${id}`);
     } else {
       navigate('/creations');
