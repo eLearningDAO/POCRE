@@ -44,7 +44,7 @@ const Creation = {
   registerTransaction: async (id, requestBody) => await REQUEST_TEMPLATE(`creations/${id}/transaction`).create(requestBody),
 };
 const Decision = REQUEST_TEMPLATE('decision');
-const Recognition = REQUEST_TEMPLATE('recognitions');
+const Recognition = { ...REQUEST_TEMPLATE('recognitions'), respond: async (id, requestBody) => await REQUEST_TEMPLATE(`recognitions/${id}/respond`).create(requestBody) };
 const Litigation = REQUEST_TEMPLATE('litigations');
 const Tag = REQUEST_TEMPLATE('tags');
 const Auth = { login: REQUEST_TEMPLATE('auth/login').create, signup: REQUEST_TEMPLATE('auth/signup').create };

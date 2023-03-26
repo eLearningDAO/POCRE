@@ -184,31 +184,41 @@ export default function CreationDetails() {
           {recognitionDetails?.status === 'pending'
             && user?.user_id === recognitionDetails?.recognition_for?.user_id
             ? (
-              <>
-                <Typography className="litigationCloseTitle" variant="h6">
-                  Pending Actions
-                </Typography>
-                <Button
-                  className="btn bg-green color-white"
-                  onClick={async () => await updateRecognitionStatus(
-                    {
-                      recognitionId: recognitionDetails.recognition_id,
-                      updatedStatus: 'accepted',
-                    },
-                  )}
-                >
-                  Accept Authorship
-                </Button>
-                <Button
-                  className="btn bg-red color-white"
-                  onClick={async () => await updateRecognitionStatus({
-                    recognitionId: recognitionDetails.recognition_id,
-                    updatedStatus: 'declined',
-                  })}
-                >
-                  I&apos;m not the author
-                </Button>
-              </>
+              recognitionDetails?.transaction?.transaction_id
+                ? (
+                  <Chip
+                    style={{ fontSize: '16px', margin: 0, marginLeft: 'auto' }}
+                    className={`mr-auto color-white ${recognitionBg}`}
+                    label="Pending payment confirmation"
+                  />
+                )
+                : (
+                  <>
+                    <Typography className="litigationCloseTitle" variant="h6">
+                      Pending Actions
+                    </Typography>
+                    <Button
+                      className="btn bg-green color-white"
+                      onClick={async () => await updateRecognitionStatus(
+                        {
+                          recognitionId: recognitionDetails.recognition_id,
+                          updatedStatus: 'accepted',
+                        },
+                      )}
+                    >
+                      Accept Authorship
+                    </Button>
+                    <Button
+                      className="btn bg-red color-white"
+                      onClick={async () => await updateRecognitionStatus({
+                        recognitionId: recognitionDetails.recognition_id,
+                        updatedStatus: 'declined',
+                      })}
+                    >
+                      I&apos;m not the author
+                    </Button>
+                  </>
+                )
             )
             : (
               <Chip
