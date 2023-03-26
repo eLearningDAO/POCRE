@@ -17,6 +17,10 @@ router
   .patch(auth(), validate(recognitionValidation.updateRecognition), recognitionController.updateRecognitionById)
   .delete(auth(), validate(recognitionValidation.deleteRecognition), recognitionController.deleteRecognitionById);
 
+router
+  .route('/:recognition_id/respond')
+  .post(auth(), validate(recognitionValidation.respondToRecognition), recognitionController.respondToRecognition);
+
 export default router;
 
 /**
