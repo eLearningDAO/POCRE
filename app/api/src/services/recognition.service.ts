@@ -1,4 +1,5 @@
 import httpStatus from 'http-status';
+import { DatabaseError } from 'pg';
 import statusTypes from '../constants/statusTypes';
 import { populator } from '../db/plugins/populator';
 import * as db from '../db/pool';
@@ -87,7 +88,12 @@ export const createRecognition = async (recognitionBody: IRecognition): Promise<
     );
     const recognition = result.rows[0];
     return recognition;
-  } catch {
+  } catch (e: unknown) {
+    const err = e as DatabaseError;
+    if (err.message && err.message.includes('duplicate key')) {
+      if (err.message.includes('transaction_id')) throw new ApiError(httpStatus.CONFLICT, `transaction already exists`);
+    }
+
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };

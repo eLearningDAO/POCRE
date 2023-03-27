@@ -336,6 +336,7 @@ export default router;
  *               oneOf:
  *                 - $ref: '#/components/responses/RecognitionNotFound'
  *                 - $ref: '#/components/responses/TransactionNotFound'
+ *                 - $ref: '#/components/responses/TransactionAlreadyExists'
  *                 - $ref: '#/components/responses/TransactionPurposeInvalidForRecognition'
  *                 - $ref: '#/components/responses/TransactionAlreadyExistsForRecognition'
  *             examples:
@@ -349,6 +350,11 @@ export default router;
  *                 value:
  *                   code: 404
  *                   message: transaction not found
+ *               TransactionAlreadyExists:
+ *                 summary: transaction already exists
+ *                 value:
+ *                   code: 404
+ *                   message: transaction already exists
  *               TransactionPurposeInvalidForRecognition:
  *                 summary: invalid transaction purpose for recognition
  *                 value:

@@ -101,7 +101,7 @@ const init = async (): Promise<QueryResult<any>> => {
       recognition_issued TIMESTAMP NOT NULL DEFAULT NOW(),
       status recognition_status_enums NOT NULL,
       status_updated TIMESTAMP NOT NULL DEFAULT NOW(),
-      transaction_id UUID,
+      transaction_id UUID UNIQUE,
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
       CONSTRAINT recognition_by
           FOREIGN KEY(recognition_by) 
