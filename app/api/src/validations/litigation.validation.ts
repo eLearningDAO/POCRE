@@ -58,10 +58,15 @@ export const updateLitigation = {
       assumed_author_response: Joi.string()
         .valid(...Object.values(litigationStatusTypes).filter((x) => x !== litigationStatusTypes.PENDING_RESPONSE))
         .optional(),
-      ownership_transferred: Joi.bool().optional(),
       is_draft: Joi.bool().default(false),
     })
     .min(1),
+};
+
+export const claimLitigatedItemOwnership = {
+  params: Joi.object().keys({
+    litigation_id: Joi.string().uuid().required(),
+  }),
 };
 
 export const deleteLitigation = {
