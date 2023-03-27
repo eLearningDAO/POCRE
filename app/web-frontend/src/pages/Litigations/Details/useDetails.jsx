@@ -187,7 +187,7 @@ const useDetails = () => {
       })();
 
       // update decision of litigation
-      await Litigation.update(litigation.litigation_id, {
+      await Litigation.vote(litigation.litigation_id, {
         decisions: updatedDecisions.map((x) => x.decision_id),
       });
 
