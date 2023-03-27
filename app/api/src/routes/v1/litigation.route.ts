@@ -17,6 +17,22 @@ router
   .patch(auth(), validate(litigationValidation.updateLitigation), litigationController.updateLitigationById)
   .delete(auth(), validate(litigationValidation.deleteLitigation), litigationController.deleteLitigationById);
 
+router
+  .route('/:litigation_id/respond')
+  .post(auth(), validate(litigationValidation.respondToLitigation), litigationController.respondToLitigationById);
+
+router
+  .route('/:litigation_id/vote')
+  .post(auth(), validate(litigationValidation.voteOnLitigation), litigationController.voteOnLitigationById);
+
+router
+  .route('/:litigation_id/claim-ownership')
+  .post(
+    auth(),
+    validate(litigationValidation.claimLitigatedItemOwnership),
+    litigationController.claimLitigatedItemOwnershipById
+  );
+
 export default router;
 
 /**

@@ -1,13 +1,16 @@
 import { verifyWebhookSignature } from '@blockfrost/blockfrost-js';
 import httpStatus from 'http-status';
+import moment from 'moment';
 import config from '../config/config';
 import publishPlatforms from '../constants/publishPlatforms';
+import statusTypes from '../constants/statusTypes';
 import transactionPurposes from '../constants/transactionPurposes';
 import { getTransactionByHash, updateTransactionById } from '../services/transaction.service';
 import ApiError from '../utils/ApiError';
 import { getBlockInfo, getTransactionInfo, ICardanoTransaction } from '../utils/cardano';
 import catchAsync from '../utils/catchAsync';
 import { publishCreation } from './creation.controller';
+import { respondToRecognition } from './recognition.controller';
 
 export const processTransaction = catchAsync(async (req, res, next): Promise<void> => {
   try {
@@ -70,6 +73,38 @@ export const processTransaction = catchAsync(async (req, res, next): Promise<voi
       await updateTransactionById(pocreTransaction.transaction_id, {
         is_validated: true,
       });
+
+      return;
+    }
+
+    // if transaction was for recognition acceptance, then update recognition status
+    if (
+      pocreTransaction &&
+      pocreTransaction.transaction_purpose === transactionPurposes.ACCEPT_RECOGNITION &&
+      cardanoTransation &&
+      cardanoTransation.metadata.pocre_entity === 'recognition'
+    ) {
+      // confirm the transaction
+      await updateTransactionById(pocreTransaction.transaction_id, {
+        is_validated: true,
+      });
+
+      // transform current request to glue with recognition controller
+      const transformedReq: any = {
+        ...req,
+        user: (pocreTransaction as any).maker,
+        params: {
+          recognition_id: cardanoTransation.metadata.pocre_id,
+        },
+        body: {
+          status: statusTypes.ACCEPTED,
+          status_updated: moment().toISOString(),
+          transaction_id: pocreTransaction.transaction_id,
+        },
+      };
+
+      // accept the recognition
+      await respondToRecognition(transformedReq, res, next); // if this returns non truthy response, then webhook fails
 
       return;
     }

@@ -86,8 +86,9 @@ function Recognition() {
               acceptedOn={x?.status !== 'accepted' ? null : x?.status_updated}
               declinedOn={x?.status !== 'declined' ? null : x?.status_updated}
               isPending={x?.status === 'pending'}
-              canAccept={x?.status === 'pending'}
-              canDecline={x?.status === 'pending'}
+              canAccept={x?.status === 'pending' && !x?.transaction}
+              canDecline={x?.status === 'pending' && !x?.transaction}
+              isPendingPaymentConfirmation={x?.transaction && !x?.transaction?.is_validated}
             />
             ),
           )}

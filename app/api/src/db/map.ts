@@ -126,7 +126,7 @@ const transactionDeepFields: string[] = ['maker_id'];
 /**
  * List of deep fields that can be populated in recognition
  */
-const recognitionDeepFields: string[] = ['recognition_by', 'recognition_for'];
+const recognitionDeepFields: string[] = ['recognition_by', 'recognition_for', 'transaction_id'];
 
 /**
  * List of deep fields that can be populated in material

@@ -1,14 +1,16 @@
 import httpStatus from 'http-status';
-import ApiError from '../utils/ApiError';
-import * as db from '../db/pool';
-import { populator } from '../db/plugins/populator';
+import { DatabaseError } from 'pg';
 import statusTypes from '../constants/statusTypes';
+import { populator } from '../db/plugins/populator';
+import * as db from '../db/pool';
+import ApiError from '../utils/ApiError';
 
 const types = Object.values(statusTypes);
 type TStatusType = typeof types[number];
 interface IRecognition {
   recognition_by: string;
   recognition_for: string;
+  transaction_id?: string;
   recognition_description?: string;
   status: TStatusType;
   status_updated: string;
@@ -33,6 +35,7 @@ interface IRecognitionDoc {
   recognition_id: string;
   recognition_by: string;
   recognition_for: string;
+  transaction_id: string | null;
   recognition_description: string;
   recognition_issued: string;
   status: TStatusType;
@@ -64,18 +67,20 @@ export const createRecognition = async (recognitionBody: IRecognition): Promise<
       (
         recognition_by,
         recognition_for,
+        transaction_id,
         recognition_description,
         status,
         status_updated
       ) 
       values 
-      ($1,$2,$3,$4,$5) 
+      ($1,$2,$3,$4,$5,$6) 
       RETURNING 
       *;
       `,
       [
         recognitionBody.recognition_by,
         recognitionBody.recognition_for,
+        recognitionBody.transaction_id,
         recognitionBody.recognition_description,
         recognitionBody.recognition_by === recognitionBody.recognition_for ? statusTypes.ACCEPTED : recognitionBody.status,
         recognitionBody.status_updated,
@@ -83,7 +88,12 @@ export const createRecognition = async (recognitionBody: IRecognition): Promise<
     );
     const recognition = result.rows[0];
     return recognition;
-  } catch {
+  } catch (e: unknown) {
+    const err = e as DatabaseError;
+    if (err.message && err.message.includes('duplicate key')) {
+      if (err.message.includes('transaction_id')) throw new ApiError(httpStatus.CONFLICT, `transaction already exists`);
+    }
+
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `internal server error`);
   }
 };

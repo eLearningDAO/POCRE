@@ -79,6 +79,20 @@ const init = async (): Promise<QueryResult<any>> => {
           ON DELETE CASCADE
     );
 
+    CREATE TABLE IF NOT EXISTS transaction (
+      transaction_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      transaction_hash character varying NOT NULL UNIQUE,
+      transaction_purpose transaction_purpose_enums NOT NULL,
+      is_validated bool DEFAULT false,
+      maker_id UUID NOT NULL,
+      blocking_issue character varying,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+      CONSTRAINT maker_id
+          FOREIGN KEY(maker_id) 
+          REFERENCES users(user_id)
+          ON DELETE CASCADE
+    );
+
     CREATE TABLE IF NOT EXISTS recognition (
       recognition_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       recognition_by UUID NOT NULL,
@@ -87,6 +101,7 @@ const init = async (): Promise<QueryResult<any>> => {
       recognition_issued TIMESTAMP NOT NULL DEFAULT NOW(),
       status recognition_status_enums NOT NULL,
       status_updated TIMESTAMP NOT NULL DEFAULT NOW(),
+      transaction_id UUID UNIQUE,
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
       CONSTRAINT recognition_by
           FOREIGN KEY(recognition_by) 
@@ -95,6 +110,10 @@ const init = async (): Promise<QueryResult<any>> => {
       CONSTRAINT recognition_for
           FOREIGN KEY(recognition_for) 
           REFERENCES users(user_id)
+          ON DELETE CASCADE,
+      CONSTRAINT transaction_id
+          FOREIGN KEY(transaction_id) 
+          REFERENCES transaction(transaction_id)
           ON DELETE CASCADE
     );
 
@@ -172,20 +191,6 @@ const init = async (): Promise<QueryResult<any>> => {
           ON DELETE CASCADE,
       CONSTRAINT issuer_id
           FOREIGN KEY(issuer_id) 
-          REFERENCES users(user_id)
-          ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS transaction (
-      transaction_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      transaction_hash character varying NOT NULL UNIQUE,
-      transaction_purpose transaction_purpose_enums NOT NULL,
-      is_validated bool DEFAULT false,
-      maker_id UUID NOT NULL,
-      blocking_issue character varying,
-      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-      CONSTRAINT maker_id
-          FOREIGN KEY(maker_id) 
           REFERENCES users(user_id)
           ON DELETE CASCADE
     );
