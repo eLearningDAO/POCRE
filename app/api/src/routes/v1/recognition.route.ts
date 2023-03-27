@@ -285,3 +285,80 @@ export default router;
  *       "500":
  *         $ref: '#/components/responses/InternalServerError'
  */
+
+/**
+ * @swagger
+ * /recognitions/{recognition_id}/respond:
+ *   post:
+ *     summary: Respond to a recognition by id
+ *     description: Respond to a recognition by its id
+ *     tags: [Recognition]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: recognition_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Recognition id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [pending,accepted,declined]
+ *               status_updated:
+ *                 type: string
+ *                 format: date-time
+ *               transaction_id:
+ *                 type: string
+ *                 description: required when status is accepted
+ *             example:
+ *                status: pending
+ *                status_updated: 2022-09-05T19:00:00.000Z
+ *                transaction_id: d5cef9e4-d497-45ea-bd68-609aba268887
+ *     responses:
+ *       "200":
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Recognition'
+ *       "404":
+ *         content:
+ *           application/json:
+ *             schema:
+ *               oneOf:
+ *                 - $ref: '#/components/responses/RecognitionNotFound'
+ *                 - $ref: '#/components/responses/TransactionNotFound'
+ *                 - $ref: '#/components/responses/TransactionPurposeInvalidForRecognition'
+ *                 - $ref: '#/components/responses/TransactionAlreadyExistsForRecognition'
+ *             examples:
+ *               RecognitionNotFound:
+ *                 summary: recognition not found
+ *                 value:
+ *                   code: 404
+ *                   message: recognition not found
+ *               TransactionNotFound:
+ *                 summary: transaction not found
+ *                 value:
+ *                   code: 404
+ *                   message: transaction not found
+ *               TransactionPurposeInvalidForRecognition:
+ *                 summary: invalid transaction purpose for recognition
+ *                 value:
+ *                   code: 404
+ *                   message: invalid transaction purpose for recognition
+ *               TransactionAlreadyExistsForRecognition:
+ *                 summary: transaction already exists for recognition
+ *                 value:
+ *                   code: 404
+ *                   message: transaction already exists for recognition
+ *       "500":
+ *         $ref: '#/components/responses/InternalServerError'
+ */
