@@ -22,6 +22,10 @@ router
   .post(auth(), validate(litigationValidation.respondToLitigation), litigationController.respondToLitigationById);
 
 router
+  .route('/:litigation_id/vote')
+  .post(auth(), validate(litigationValidation.voteOnLitigation), litigationController.voteOnLitigationById);
+
+router
   .route('/:litigation_id/claim-ownership')
   .post(
     auth(),

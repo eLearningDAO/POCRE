@@ -54,10 +54,6 @@ export const updateLitigation = {
       litigation_description: Joi.string().optional().allow('').allow(null),
       creation_id: Joi.string().uuid().optional(), // [HOTFIX]: this is required if creation in draft
       material_id: Joi.string().uuid().optional(),
-      decisions: Joi.array().items(Joi.string().uuid()).unique().optional(),
-      assumed_author_response: Joi.string()
-        .valid(...Object.values(litigationStatusTypes).filter((x) => x !== litigationStatusTypes.PENDING_RESPONSE))
-        .optional(),
       is_draft: Joi.bool().default(false),
     })
     .min(1),
@@ -71,7 +67,18 @@ export const respondToLitigation = {
     .keys({
       assumed_author_response: Joi.string()
         .valid(...Object.values(litigationStatusTypes).filter((x) => x !== litigationStatusTypes.PENDING_RESPONSE))
-        .optional(),
+        .required(),
+    })
+    .min(1),
+};
+
+export const voteOnLitigation = {
+  params: Joi.object().keys({
+    litigation_id: Joi.string().uuid().required(),
+  }),
+  body: Joi.object()
+    .keys({
+      decisions: Joi.array().items(Joi.string().uuid()).unique().required(),
     })
     .min(1),
 };

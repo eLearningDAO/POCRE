@@ -189,73 +189,14 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `published litigation cannot be drafted`);
   }
 
-  // get the votes if any
-  const decisions =
-    req.body.decisions && req.body.decisions.length > 0
-      ? await Promise.all(
-          req.body.decisions.map((id: string) => getDecisionById(id)) // verify decisions, will throw an error if any decision is not found
-        )
-      : null;
-
-  // calculate litigation phases/flags
-  const now = moment();
-  const toDate = (date: string) => new Date(date);
-  const isReconcilatePhase =
-    moment(toDate(litigation?.reconcilation_start)).isBefore(now) &&
-    moment(toDate(litigation?.reconcilation_end)).isAfter(now);
-  const isVotingPhase =
-    moment(toDate(litigation?.voting_start)).isBefore(now) && moment(toDate(litigation?.voting_end)).isAfter(now);
-  const isWithdrawn =
-    participantId === litigation?.assumed_author &&
-    req.body.assumed_author_response === litigationStatusTypes.WITHDRAW_CLAIM; // the assumed author withdrew their claim
-  const isOwnershipAlreadyTransferred = !!litigation?.ownership_transferred;
-  const assumedAuthorResponse =
-    participantId === litigation?.assumed_author && req.body.assumed_author_response
-      ? req.body.assumed_author_response
-      : litigation?.assumed_author_response;
-
-  // if not voting phase, block votes
-  if (!isVotingPhase && decisions && decisions.length > 0) {
-    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `vote only allowed in voting phase`);
-  }
-
-  // if assumed author did not respond in reconilate phase, block votes
-  if (
-    !isReconcilatePhase &&
-    litigation.assumed_author_response === litigationStatusTypes.PENDING_RESPONSE &&
-    decisions &&
-    decisions.length > 0
-  ) {
-    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `vote only allowed in voting phase`);
-  }
-
-  // find litigation winner
-  const winner = (() => {
-    if (isWithdrawn && isReconcilatePhase) return litigation?.issuer_id; // if withdrawn in reconcilate phase, the issuer is the winner
-
-    // find new winner based on votes (only in voting phase)
-    if (isVotingPhase && decisions && decisions.length > 0) {
-      const votes = {
-        agreed: decisions.filter((x) => x.decision_status === true).length,
-        opposed: decisions.filter((x) => x.decision_status === false).length,
-      };
-
-      return votes.agreed > votes.opposed ? litigation?.issuer_id : litigation?.assumed_author;
-    }
-
-    return litigation?.winner; // return the current winner
-  })();
-
   // update litigation
   const updatedLitigation = await litigationService.updateLitigationById(
     req.params.litigation_id,
     {
       ...req.body,
-      winner,
+      winner: litigation.issuer_id,
       creation_id: litigation.creation_id,
       material_id: litigation.material_id,
-      assumed_author_response: assumedAuthorResponse,
-      ownership_transferred: isOwnershipAlreadyTransferred,
     },
     { participant_id: participantId }
   );
@@ -270,14 +211,14 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
     participant_id: assumedAuthorId,
   });
 
-  // only allow the assumed author to respond
-  if (litigation.issuer_id !== assumedAuthorId) {
-    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `only assumed author can respond to litigated item`);
-  }
-
   // throw error if litigation is in draft
   if (litigation.is_draft) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigation not found`);
+  }
+
+  // only allow the assumed author to respond
+  if (litigation.issuer_id !== assumedAuthorId) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `only assumed author can respond to litigated item`);
   }
 
   // calculate litigation phases/flags
@@ -490,6 +431,79 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
   res.send(updatedLitigation);
 });
 
+export const voteOnLitigationById = catchAsync(async (req, res): Promise<void> => {
+  const voterId = (req.user as IUserDoc).user_id; // get req user id
+
+  // get the litigation
+  const litigation: any = await litigationService.getLitigationById(req.params.litigation_id, {
+    participant_id: voterId,
+    populate: ['recognitions'],
+  });
+
+  // throw error if litigation is in draft
+  if (litigation.is_draft) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigation not found`);
+  }
+
+  if (!litigation?.recognitions.find((x: any) => x.recognition_for === voterId)) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `only a jury member can vote on a litigation`);
+  }
+
+  // get the votes if any
+  const decisions =
+    req.body.decisions && req.body.decisions.length > 0
+      ? await Promise.all(
+          req.body.decisions.map((id: string) => getDecisionById(id)) // verify decisions, will throw an error if any decision is not found
+        )
+      : [];
+
+  // calculate litigation phases/flags
+  const now = moment();
+  const toDate = (date: string) => new Date(date);
+  const isReconcilatePhase =
+    moment(toDate(litigation?.reconcilation_start)).isBefore(now) &&
+    moment(toDate(litigation?.reconcilation_end)).isAfter(now);
+  const isVotingPhase =
+    moment(toDate(litigation?.voting_start)).isBefore(now) && moment(toDate(litigation?.voting_end)).isAfter(now);
+
+  // if not voting phase, block votes
+  if (!isVotingPhase && decisions && decisions.length > 0) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `vote only allowed in voting phase`);
+  }
+
+  // if assumed author did not respond in reconilate phase, block votes
+  if (
+    !isReconcilatePhase &&
+    litigation.assumed_author_response === litigationStatusTypes.PENDING_RESPONSE &&
+    decisions &&
+    decisions.length > 0
+  ) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `vote only allowed in voting phase`);
+  }
+
+  // find litigation winner
+  const winner = (() => {
+    // find new winner based on votes (only in voting phase)
+    const votes = {
+      agreed: decisions.filter((x) => x.decision_status === true).length,
+      opposed: decisions.filter((x) => x.decision_status === false).length,
+    };
+
+    return votes.agreed > votes.opposed ? litigation?.issuer_id : litigation?.assumed_author;
+  })();
+
+  // update litigation
+  const updatedLitigation = await litigationService.updateLitigationById(
+    req.params.litigation_id,
+    {
+      ...req.body,
+      winner,
+    },
+    { participant_id: voterId }
+  );
+  res.send(updatedLitigation);
+});
+
 export const claimLitigatedItemOwnershipById = catchAsync(async (req, res): Promise<void> => {
   const issuerId = (req.user as IUserDoc).user_id; // get req user id
 
@@ -498,14 +512,14 @@ export const claimLitigatedItemOwnershipById = catchAsync(async (req, res): Prom
     participant_id: issuerId,
   });
 
-  // only allow the claimer to claim
-  if (litigation.issuer_id !== issuerId) {
-    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigated item can only be claimed by the litigation issuer`);
-  }
-
   // throw error if litigation is in draft
   if (litigation.is_draft) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigation not found`);
+  }
+
+  // only allow the claimer to claim
+  if (litigation.issuer_id !== issuerId) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigated item can only be claimed by the litigation issuer`);
   }
 
   // return if already claimed
