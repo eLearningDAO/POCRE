@@ -63,6 +63,19 @@ export const updateLitigation = {
     .min(1),
 };
 
+export const respondToLitigation = {
+  params: Joi.object().keys({
+    litigation_id: Joi.string().uuid().required(),
+  }),
+  body: Joi.object()
+    .keys({
+      assumed_author_response: Joi.string()
+        .valid(...Object.values(litigationStatusTypes).filter((x) => x !== litigationStatusTypes.PENDING_RESPONSE))
+        .optional(),
+    })
+    .min(1),
+};
+
 export const claimLitigatedItemOwnership = {
   params: Joi.object().keys({
     litigation_id: Joi.string().uuid().required(),

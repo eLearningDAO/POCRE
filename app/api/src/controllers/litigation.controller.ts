@@ -102,86 +102,6 @@ export const deleteLitigationById = catchAsync(async (req, res): Promise<void> =
   res.send();
 });
 
-export const claimLitigatedItemOwnershipById = catchAsync(async (req, res): Promise<void> => {
-  const issuerId = (req.user as IUserDoc).user_id; // get req user id
-
-  // get the litigation
-  const litigation: any = await litigationService.getLitigationById(req.params.litigation_id, {
-    participant_id: issuerId,
-  });
-
-  // return if already claimed
-  if (litigation.ownership_transferred) {
-    res.send(litigation);
-    return;
-  }
-
-  // throw error if litigation is in draft
-  if (litigation.is_draft) {
-    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigation not found`);
-  }
-
-  // only allow the claimer to claim
-  if (litigation.issuer_id !== issuerId) {
-    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigated item can only be claimed by the litigation issuer`);
-  }
-
-  const now = moment();
-  const toDate = (date: string) => new Date(date);
-  const isReconcilatePhase =
-    moment(toDate(litigation?.reconcilation_start)).isBefore(now) &&
-    moment(toDate(litigation?.reconcilation_end)).isAfter(now);
-  const isVotingDone = moment(toDate(litigation?.voting_end)).isBefore(now);
-
-  // if litigation was in voting phase and voting is not finised, block issuer from claiming
-  if (!isVotingDone && litigation?.assumed_author_response !== litigationStatusTypes.PENDING_RESPONSE) {
-    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigated item can only be claimed after voting phase`);
-  }
-
-  // if litigation is in reconcilation phase, block issuer from claiming
-  if (isReconcilatePhase) {
-    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigated item can only be claimed after voting phase`);
-  }
-
-  // transfer ownership to correct author
-  if (litigation?.material_id) {
-    // if there is material, only transfer material
-    await updateMaterialById(litigation?.material_id, { author_id: litigation.issuer_id });
-  } else if (litigation?.creation_id) {
-    // else transfer creation
-    await updateCreationById(litigation?.creation_id, { author_id: litigation.issuer_id });
-  }
-
-  // update caw time window based on assumed author response
-  await (async () => {
-    if (litigation.material_id) return; // only update creation caw if litigation has no material
-
-    const creation: any = await getCreationById(litigation.creation_id);
-
-    let newCAW = moment(new Date(creation?.creation_authorship_window));
-
-    // if assumed author did not respond in reconilate phase, and issuer is claiming, remove the voting days from caw
-    if (!isReconcilatePhase && litigation.assumed_author_response === litigationStatusTypes.PENDING_RESPONSE) {
-      newCAW = newCAW.subtract(config.litigation.voting_days, 'days');
-    }
-
-    await updateCreationById(creation?.creation_id, {
-      creation_authorship_window: newCAW.toISOString(),
-    });
-  })();
-
-  // update litigation
-  const updatedLitigation = await litigationService.updateLitigationById(
-    req.params.litigation_id,
-    {
-      winner: litigation.issuer_id,
-      ownership_transferred: true,
-    },
-    { participant_id: issuerId }
-  );
-  res.send(updatedLitigation);
-});
-
 export const updateLitigationById = catchAsync(async (req, res): Promise<void> => {
   const participantId = (req.user as IUserDoc).user_id; // get req user id
 
@@ -288,9 +208,6 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
   const isWithdrawn =
     participantId === litigation?.assumed_author &&
     req.body.assumed_author_response === litigationStatusTypes.WITHDRAW_CLAIM; // the assumed author withdrew their claim
-  const isToLitigate =
-    participantId === litigation?.assumed_author &&
-    req.body.assumed_author_response === litigationStatusTypes.START_LITIGATION; // the assumed author decided to litigate
   const isOwnershipAlreadyTransferred = !!litigation?.ownership_transferred;
   const assumedAuthorResponse =
     participantId === litigation?.assumed_author && req.body.assumed_author_response
@@ -312,12 +229,72 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `vote only allowed in voting phase`);
   }
 
+  // find litigation winner
+  const winner = (() => {
+    if (isWithdrawn && isReconcilatePhase) return litigation?.issuer_id; // if withdrawn in reconcilate phase, the issuer is the winner
+
+    // find new winner based on votes (only in voting phase)
+    if (isVotingPhase && decisions && decisions.length > 0) {
+      const votes = {
+        agreed: decisions.filter((x) => x.decision_status === true).length,
+        opposed: decisions.filter((x) => x.decision_status === false).length,
+      };
+
+      return votes.agreed > votes.opposed ? litigation?.issuer_id : litigation?.assumed_author;
+    }
+
+    return litigation?.winner; // return the current winner
+  })();
+
+  // update litigation
+  const updatedLitigation = await litigationService.updateLitigationById(
+    req.params.litigation_id,
+    {
+      ...req.body,
+      winner,
+      creation_id: litigation.creation_id,
+      material_id: litigation.material_id,
+      assumed_author_response: assumedAuthorResponse,
+      ownership_transferred: isOwnershipAlreadyTransferred,
+    },
+    { participant_id: participantId }
+  );
+  res.send(updatedLitigation);
+});
+
+export const respondToLitigationById = catchAsync(async (req, res): Promise<void> => {
+  const assumedAuthorId = (req.user as IUserDoc).user_id; // get req user id
+
+  // get the litigation
+  const litigation: any = await litigationService.getLitigationById(req.params.litigation_id, {
+    participant_id: assumedAuthorId,
+  });
+
+  // only allow the assumed author to respond
+  if (litigation.issuer_id !== assumedAuthorId) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `only assumed author can respond to litigated item`);
+  }
+
+  // throw error if litigation is in draft
+  if (litigation.is_draft) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigation not found`);
+  }
+
+  // calculate litigation phases/flags
+  const now = moment();
+  const toDate = (date: string) => new Date(date);
+  const isReconcilatePhase =
+    moment(toDate(litigation?.reconcilation_start)).isBefore(now) &&
+    moment(toDate(litigation?.reconcilation_end)).isAfter(now);
+  const isWithdrawn = req.body.assumed_author_response === litigationStatusTypes.WITHDRAW_CLAIM; // the assumed author withdrew their claim
+  const isOwnershipAlreadyTransferred = !!litigation?.ownership_transferred;
+  const assumedAuthorResponse =
+    assumedAuthorId === litigation?.assumed_author && req.body.assumed_author_response
+      ? req.body.assumed_author_response
+      : litigation?.assumed_author_response;
+
   // if not reconcilate phase, block reconcilation
-  if (
-    !isReconcilatePhase &&
-    req.body.assumed_author_response &&
-    litigation?.assumed_author_response !== req.body.assumed_author_response
-  ) {
+  if (!isReconcilatePhase) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `reconcilation only allowed in reconcilate phase`);
   }
 
@@ -336,7 +313,7 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
   // select jury if required
   const recognitionIds = await (async () => {
     // if litigation is not required then dont make jury recognitions
-    if (!(isToLitigate && isReconcilatePhase)) return litigation.recognitions;
+    if (req.body.assumed_author_response === litigationStatusTypes.WITHDRAW_CLAIM) return litigation.recognitions;
 
     // create recognition for jury
     const tempRecognitions = await (async () => {
@@ -443,42 +420,19 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     return tempDates;
   })();
 
-  // find litigation winner
-  const winner = (() => {
-    if (isWithdrawn && isReconcilatePhase) return litigation?.issuer_id; // if withdrawn in reconcilate phase, the issuer is the winner
-
-    // if assumed author did not respond in reconilate phase, issuer is the winner
-    if (
-      !isReconcilatePhase &&
-      litigation.assumed_author_response === litigationStatusTypes.PENDING_RESPONSE &&
-      litigation.issuer_id === participantId &&
-      req.body.ownership_transferred === true
-    ) {
-      return litigation.issuer_id;
-    }
-
-    // find new winner based on votes (only in voting phase)
-    if (isVotingPhase && decisions && decisions.length > 0) {
-      const votes = {
-        agreed: decisions.filter((x) => x.decision_status === true).length,
-        opposed: decisions.filter((x) => x.decision_status === false).length,
-      };
-
-      return votes.agreed > votes.opposed ? litigation?.issuer_id : litigation?.assumed_author;
-    }
-
-    return litigation?.winner; // return the current winner
-  })();
-
   // check if ownership needs to be transferred
-  const shouldTransferOwnership = (() => {
-    let tempShouldTransferOwnership = false;
+  const shouldTransferOwnership = isWithdrawn && isReconcilatePhase && !isOwnershipAlreadyTransferred;
 
-    // transfer ownership if assumed author withdrew their claim in reconcilation phase
-    if (isWithdrawn && isReconcilatePhase && !isOwnershipAlreadyTransferred) tempShouldTransferOwnership = true;
-
-    return tempShouldTransferOwnership;
-  })();
+  // transfer ownership to correct author
+  if (shouldTransferOwnership) {
+    if (litigation?.material_id) {
+      // if there is material, only transfer material
+      await updateMaterialById(litigation?.material_id, { author_id: litigation.issuer_id });
+    } else if (litigation?.creation_id) {
+      // else transfer creation
+      await updateCreationById(litigation?.creation_id, { author_id: litigation.issuer_id });
+    }
+  }
 
   // update caw time window based on assumed author response
   await (async () => {
@@ -521,7 +475,8 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     req.params.litigation_id,
     {
       ...req.body,
-      winner,
+      winner:
+        req.body.assumed_author_response === litigationStatusTypes.WITHDRAW_CLAIM ? litigation.issuer_id : litigation.winner,
       creation_id: litigation.creation_id,
       material_id: litigation.material_id,
       recognitions: recognitionIds,
@@ -530,7 +485,87 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
       ...dates,
       ...(shouldTransferOwnership && { ownership_transferred: true }),
     },
-    { participant_id: participantId }
+    { participant_id: assumedAuthorId }
+  );
+  res.send(updatedLitigation);
+});
+
+export const claimLitigatedItemOwnershipById = catchAsync(async (req, res): Promise<void> => {
+  const issuerId = (req.user as IUserDoc).user_id; // get req user id
+
+  // get the litigation
+  const litigation: any = await litigationService.getLitigationById(req.params.litigation_id, {
+    participant_id: issuerId,
+  });
+
+  // only allow the claimer to claim
+  if (litigation.issuer_id !== issuerId) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigated item can only be claimed by the litigation issuer`);
+  }
+
+  // throw error if litigation is in draft
+  if (litigation.is_draft) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigation not found`);
+  }
+
+  // return if already claimed
+  if (litigation.ownership_transferred) {
+    res.send(litigation);
+    return;
+  }
+
+  const now = moment();
+  const toDate = (date: string) => new Date(date);
+  const isReconcilatePhase =
+    moment(toDate(litigation?.reconcilation_start)).isBefore(now) &&
+    moment(toDate(litigation?.reconcilation_end)).isAfter(now);
+  const isVotingDone = moment(toDate(litigation?.voting_end)).isBefore(now);
+
+  // if litigation was in voting phase and voting is not finised, block issuer from claiming
+  if (!isVotingDone && litigation?.assumed_author_response !== litigationStatusTypes.PENDING_RESPONSE) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigated item can only be claimed after voting phase`);
+  }
+
+  // if litigation is in reconcilation phase, block issuer from claiming
+  if (isReconcilatePhase) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigated item can only be claimed after voting phase`);
+  }
+
+  // transfer ownership to correct author
+  if (litigation?.material_id) {
+    // if there is material, only transfer material
+    await updateMaterialById(litigation?.material_id, { author_id: litigation.issuer_id });
+  } else if (litigation?.creation_id) {
+    // else transfer creation
+    await updateCreationById(litigation?.creation_id, { author_id: litigation.issuer_id });
+  }
+
+  // update caw time window based on assumed author response
+  await (async () => {
+    if (litigation.material_id) return; // only update creation caw if litigation has no material
+
+    const creation: any = await getCreationById(litigation.creation_id);
+
+    let newCAW = moment(new Date(creation?.creation_authorship_window));
+
+    // if assumed author did not respond in reconilate phase, and issuer is claiming, remove the voting days from caw
+    if (!isReconcilatePhase && litigation.assumed_author_response === litigationStatusTypes.PENDING_RESPONSE) {
+      newCAW = newCAW.subtract(config.litigation.voting_days, 'days');
+    }
+
+    await updateCreationById(creation?.creation_id, {
+      creation_authorship_window: newCAW.toISOString(),
+    });
+  })();
+
+  // update litigation
+  const updatedLitigation = await litigationService.updateLitigationById(
+    req.params.litigation_id,
+    {
+      winner: litigation.issuer_id,
+      ownership_transferred: true,
+    },
+    { participant_id: issuerId }
   );
   res.send(updatedLitigation);
 });

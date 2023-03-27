@@ -18,6 +18,10 @@ router
   .delete(auth(), validate(litigationValidation.deleteLitigation), litigationController.deleteLitigationById);
 
 router
+  .route('/:litigation_id/respond')
+  .post(auth(), validate(litigationValidation.respondToLitigation), litigationController.respondToLitigationById);
+
+router
   .route('/:litigation_id/claim-ownership')
   .post(
     auth(),
