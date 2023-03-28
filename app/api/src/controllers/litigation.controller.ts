@@ -9,7 +9,7 @@ import { getDecisionById } from '../services/decision.service';
 import * as litigationService from '../services/litigation.service';
 import { getMaterialById, updateMaterialById } from '../services/material.service';
 import { createRecognition } from '../services/recognition.service';
-import { getTransactionById } from '../services/transaction.service';
+import { getTransactionById, updateTransactionById } from '../services/transaction.service';
 import { getReputedUsers, IUserDoc } from '../services/user.service';
 import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/catchAsync';
@@ -493,6 +493,26 @@ export const voteOnLitigationById = catchAsync(async (req, res): Promise<void> =
     owner_id: voterId,
   });
 
+  // verify transaction, will throw an error if transaction is not found
+  const foundTransaction = await getTransactionById(req.body.transaction_id, {
+    owner_id: voterId,
+  });
+
+  // check if transaction has correct purpose
+  if (foundTransaction && foundTransaction.transaction_purpose !== transactionPurposes.CAST_LITIGATION_VOTE) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `invalid transaction purpose for litigation`);
+  }
+
+  // verify if another 'cast_litigation_vote' transaction exists for this litigation by voterId
+  const hasSimilarTransaction = (litigation.transactions || []).find(
+    (x: any) =>
+      foundTransaction &&
+      x.transaction_id !== foundTransaction.transaction_id &&
+      x.transaction_purpose === transactionPurposes.CAST_LITIGATION_VOTE &&
+      x.maker_id === voterId
+  );
+  if (hasSimilarTransaction) throw new ApiError(httpStatus.NOT_ACCEPTABLE, `transaction already registered for litigation`);
+
   // throw error if litigation is in draft
   if (litigation.is_draft) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigation not found`);
@@ -525,6 +545,31 @@ export const voteOnLitigationById = catchAsync(async (req, res): Promise<void> =
     (!isReconcilatePhase && litigation.assumed_author_response === litigationStatusTypes.PENDING_RESPONSE)
   ) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `vote only allowed in voting phase`);
+  }
+
+  // if transaction is not verified, store decision as blocking issue and update litigation
+  if (foundTransaction && !foundTransaction.is_validated) {
+    // add decision id to transaction as blocking issue
+    await updateTransactionById(foundTransaction.transaction_id, {
+      // [IMPORTANT]:
+      // this is an implied behaviour and should be handled in a better way and we will be
+      // using this field in the webhook logic for relevant code parts
+      blocking_issue: decision?.decision_id,
+    });
+
+    // update litigation and wait for transaction success
+    const updatedLitigation = await litigationService.updateLitigationById(
+      req.params.litigation_id,
+      {
+        transactions: [
+          ...(litigation.transactions || []).map((x: any) => x.transaction_id),
+          foundTransaction.transaction_id,
+        ],
+      },
+      { participant_id: voterId }
+    );
+    res.send(updatedLitigation);
+    return;
   }
 
   // agregate decisions
@@ -615,6 +660,7 @@ export const claimLitigatedItemOwnershipById = catchAsync(async (req, res): Prom
 
   // if transaction is not verified, update litigation and wait for transaction verification
   if (foundTransaction && !foundTransaction.is_validated) {
+    // update litigation and wait for transaction success
     const updatedLitigation = await litigationService.updateLitigationById(
       req.params.litigation_id,
       {

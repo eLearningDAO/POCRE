@@ -11,7 +11,7 @@ import ApiError from '../utils/ApiError';
 import { getBlockInfo, getTransactionInfo, ICardanoTransaction } from '../utils/cardano';
 import catchAsync from '../utils/catchAsync';
 import { publishCreation } from './creation.controller';
-import { claimLitigatedItemOwnershipById, respondToLitigationById } from './litigation.controller';
+import { claimLitigatedItemOwnershipById, respondToLitigationById, voteOnLitigationById } from './litigation.controller';
 import { respondToRecognition } from './recognition.controller';
 
 export const processTransaction = catchAsync(async (req, res, next): Promise<void> => {
@@ -135,6 +135,37 @@ export const processTransaction = catchAsync(async (req, res, next): Promise<voi
 
         // mark response for litigation
         await respondToLitigationById(transformedReq, res, next); // if this returns non truthy response, then webhook fails
+
+        return;
+      }
+
+      // if transaction was for voting on litigtation, then update litigation
+      if (pocreTransaction.transaction_purpose === transactionPurposes.CAST_LITIGATION_VOTE) {
+        // confirm the transaction
+        await updateTransactionById(pocreTransaction.transaction_id, {
+          is_validated: true,
+        });
+
+        // [IMPORTANT]:
+        // this is an implied behaviour and should be handled in a better way
+        // we stored this decision id earlier in the litigation controller for relevant code logic
+        const decisionId = pocreTransaction.blocking_issue;
+
+        // transform current request to glue with litigation controller
+        const transformedReq: any = {
+          ...req,
+          user: (pocreTransaction as any).maker,
+          params: {
+            litigation_id: cardanoTransation.metadata.pocre_id,
+          },
+          body: {
+            decision_id: decisionId,
+            transaction_id: pocreTransaction.transaction_id,
+          },
+        };
+
+        // mark response for litigation
+        await voteOnLitigationById(transformedReq, res, next); // if this returns non truthy response, then webhook fails
 
         return;
       }
