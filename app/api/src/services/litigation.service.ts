@@ -18,6 +18,7 @@ interface ILitigation {
   issuer_id: string;
   recognitions: string[];
   decisions: string[];
+  transactions: string[];
   reconcilation_start: string;
   reconcilation_end: string;
   voting_start: string;
@@ -55,6 +56,7 @@ interface ILitigationDoc {
   issuer_id: string;
   recognitions: string[];
   decisions: string[];
+  transactions: string[];
   reconcilation_start: string;
   reconcilation_end: string;
   voting_start: string;
@@ -150,6 +152,33 @@ export const verifyLitigationDecisionDuplicates = async (
 };
 
 /**
+ * Check if a litigation has duplicate transactions
+ * @param {string[]} transactions
+ * @param {string|undefined} exclude_litigation
+ * @returns {Promise<void>}
+ */
+export const verifyLitigationTransactionDuplicates = async (
+  transactions: string[],
+  exclude_litigation?: string
+): Promise<void> => {
+  const foundTransaction = await (async () => {
+    try {
+      const result = await db.instance.query(
+        `SELECT * FROM litigation WHERE transactions && $1 ${exclude_litigation ? 'AND litigation_id <> $2' : ''};`,
+        [`{${transactions.reduce((x, y, index) => `${index === 1 ? `"${x}"` : x},"${y}"`)}}`, exclude_litigation].filter(
+          Boolean
+        )
+      );
+      return result.rows[0];
+    } catch {
+      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'internal server error');
+    }
+  })();
+
+  if (foundTransaction) throw new ApiError(httpStatus.CONFLICT, 'transaction already assigned to a litigation');
+};
+
+/**
  * Create a litigation
  * @param {ILitigation} litigationBody
  * @returns {Promise<ILitigationDoc>}
@@ -165,6 +194,11 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
     }
   }
 
+  // verify if transaction/s already exist for a litigation, throw error if a transaction is found
+  if (litigationBody.transactions && litigationBody.transactions.length > 0) {
+    await verifyLitigationTransactionDuplicates(litigationBody.transactions);
+  }
+
   try {
     const result = await db.instance.query(
       `INSERT INTO litigation
@@ -177,6 +211,7 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         issuer_id,
         recognitions,
         decisions,
+        transactions,
         reconcilation_start,
         reconcilation_end,
         voting_start,
@@ -186,7 +221,7 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         is_draft
       ) 
       values 
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) 
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16) 
       RETURNING *;`,
       [
         litigationBody.litigation_title,
@@ -197,6 +232,7 @@ export const createLitigation = async (litigationBody: ILitigation): Promise<ILi
         litigationBody.issuer_id,
         litigationBody.recognitions,
         litigationBody.decisions,
+        litigationBody.transactions,
         litigationBody.reconcilation_start,
         litigationBody.reconcilation_end,
         litigationBody.voting_start,
@@ -490,6 +526,11 @@ export const updateLitigationById = async (
   // verify if decision/s already exist for another litigation, throw error if a decision is found
   if (updateBody.decisions && updateBody.decisions.length > 0) {
     await verifyLitigationDecisionDuplicates(updateBody.decisions, id);
+  }
+
+  // verify if transaction/s already exist for a litigation, throw error if a transaction is found
+  if (updateBody.transactions && updateBody.transactions.length > 0) {
+    await verifyLitigationTransactionDuplicates(updateBody.transactions);
   }
 
   // build sql conditions and values
