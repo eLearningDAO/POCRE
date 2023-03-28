@@ -27,6 +27,7 @@ function RecognitionCard({
   canAccept = false,
   declinedOn = null,
   canDecline = false,
+  isPendingPaymentConfirmation = false,
 }) {
   const [showMediaPreview, setShowMediaPreview] = useState(null);
 
@@ -102,6 +103,13 @@ function RecognitionCard({
               style={{ fontSize: '16px' }}
               label={`Creation authorship 
               ${(isPending && 'pending') || (isAccepted && 'accepted') || (isDeclined && 'declined')}`}
+              className={`color-white ${isPending && 'bg-black'} ${isAccepted && 'bg-green'} ${isDeclined && 'bg-red'}`}
+            />
+          )}
+          {(isPendingPaymentConfirmation) && (
+            <Chip
+              style={{ fontSize: '16px' }}
+              label="Pending payment confirmation"
               className={`color-white ${isPending && 'bg-black'} ${isAccepted && 'bg-green'} ${isDeclined && 'bg-red'}`}
             />
           )}

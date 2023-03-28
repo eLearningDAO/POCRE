@@ -44,8 +44,13 @@ const Creation = {
   registerTransaction: async (id, requestBody) => await REQUEST_TEMPLATE(`creations/${id}/transaction`).create(requestBody),
 };
 const Decision = REQUEST_TEMPLATE('decision');
-const Recognition = REQUEST_TEMPLATE('recognitions');
-const Litigation = REQUEST_TEMPLATE('litigations');
+const Recognition = { ...REQUEST_TEMPLATE('recognitions'), respond: async (id, requestBody) => await REQUEST_TEMPLATE(`recognitions/${id}/respond`).create(requestBody) };
+const Litigation = {
+  ...REQUEST_TEMPLATE('litigations'),
+  respond: async (id, requestBody) => await REQUEST_TEMPLATE(`litigations/${id}/respond`).create(requestBody),
+  vote: async (id, requestBody) => await REQUEST_TEMPLATE(`litigations/${id}/vote`).create(requestBody),
+  claimOwnership: async (id, requestBody) => await REQUEST_TEMPLATE(`litigations/${id}/claim-ownership`).create(requestBody),
+};
 const Tag = REQUEST_TEMPLATE('tags');
 const Auth = { login: REQUEST_TEMPLATE('auth/login').create, signup: REQUEST_TEMPLATE('auth/signup').create };
 const Files = { getMediaType: REQUEST_TEMPLATE('files/media-type').getAll };

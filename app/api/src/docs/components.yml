@@ -698,6 +698,24 @@ components:
           example:
             code: 400
             message: transaction already exists
+    TransactionPurposeInvalidForRecognition:
+      description: Invalid transaction purpose for recognition
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 400
+            message: invalid transaction purpose for recognition
+    TransactionAlreadyExistsForRecognition:
+      description: Transaction already exists for recognition
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 400
+            message: transaction already exists for recognition
     InvalidMediaLink:
       description: Forbidden
       content:

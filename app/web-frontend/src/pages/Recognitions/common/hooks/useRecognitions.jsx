@@ -1,13 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  Creation, Material, Recognition,
+  Creation, Material, Recognition, Transaction,
 } from 'api/requests';
+import { CHARGES } from 'config';
 import moment from 'moment';
 import { useState } from 'react';
-import authUser from 'utils/helpers/authUser';
-import { IPFS_BASE_URL, CHARGES, TRANSACTION_PURPOSES } from 'config';
-import { transactADAToPOCRE } from 'utils/helpers/wallet';
 import statusTypes from 'utils/constants/statusTypes';
+import transactionPurposes from 'utils/constants/transactionPurposes';
+import authUser from 'utils/helpers/authUser';
+import { transactADAToPOCRE } from 'utils/helpers/wallet';
 
 // get auth user
 const user = authUser.getUser();
@@ -28,7 +29,7 @@ const useRecognitions = () => {
     queryKey: ['recognitions'],
     queryFn: async () => {
       // get recognitions (throw error if not found)
-      const recognitionToPopulate = ['recognition_by', 'recognition_for'];
+      const recognitionToPopulate = ['recognition_by', 'recognition_for', 'transaction_id'];
       const response = await Recognition.getAll(`limit=1000&query=${user.user_id}&search_fields[]=recognition_by&search_fields[]=recognition_for&${recognitionToPopulate.map((x) => `populate=${x}`).join('&')}`);
 
       // transform results
@@ -78,7 +79,7 @@ const useRecognitions = () => {
     queryKey: [`recognition-${recognitionIdToFetch}`],
     queryFn: async () => {
       // get recognition details
-      const recognitionToPopulate = ['recognition_by', 'recognition_for'];
+      const recognitionToPopulate = ['recognition_by', 'recognition_for', 'transaction_id'];
       const recognitionResponse = await Recognition.getById(recognitionIdToFetch, recognitionToPopulate.map((x) => `populate=${x}`).join('&'));
 
       // get details of material for this recognition
@@ -130,39 +131,44 @@ const useRecognitions = () => {
         : (temporaryRecognitions.results || []).find((x) => x.recognition_id === recognitionId);
       if (!foundRecognition) return;
 
+      // require transaction if status is accepted
+      const transactionId = await (async () => {
+        if (updatedStatus === statusTypes.ACCEPTED) {
+          const txHash = await transactADAToPOCRE({
+            amountADA: CHARGES.RECOGNITION_ACCEPT,
+            walletName: authUser.getUser()?.selectedWallet,
+            metaData: {
+              pocre_id: recognitionId,
+              pocre_entity: 'recognition',
+              purpose: transactionPurposes.ACCEPT_RECOGNITION,
+            },
+          });
+
+          if (!txHash) throw new Error('Failed to accept material recognition');
+
+          // make pocre transaction to store this info
+          const transaction = await Transaction.create({
+            transaction_hash: txHash,
+            transaction_purpose: transactionPurposes.ACCEPT_RECOGNITION,
+          });
+          return transaction.transaction_id;
+        }
+        return '';
+      })();
+
       // update recognition status
       foundRecognition.status = updatedStatus;
       foundRecognition.status_updated = new Date().toISOString();
-      await Recognition.update(recognitionId, {
+      await Recognition.respond(recognitionId, {
         status: foundRecognition.status,
         status_updated: foundRecognition.status_updated,
+        ...(transactionId && { transaction_id: transactionId }),
       });
 
       // update queries
       const key = recognitionId ? `recognitions-${recognitionId}` : 'recognitions';
       queryClient.cancelQueries({ queryKey: [key] });
       queryClient.setQueryData([key], () => ({ ...temporaryRecognitions }));
-
-      // require transaction if status is accepted
-      if (updatedStatus === statusTypes.ACCEPTED) {
-        const txHash = await transactADAToPOCRE({
-          amountADA: CHARGES.RECOGNITION_ACCEPT,
-          purposeDesc: TRANSACTION_PURPOSES.RECOGNITION_ACCEPT,
-          walletName: authUser.getUser()?.selectedWallet,
-          metaData: {
-            creation: {
-              ipfsHash: foundRecognition?.creation?.ipfs_hash,
-              ipfsURL: IPFS_BASE_URL,
-            },
-            recognition: {
-              host: window.location.origin,
-              path: window.location.pathname,
-            },
-          },
-        });
-
-        if (!txHash) throw new Error('Failed to accept material recognition');
-      }
     },
   });
 

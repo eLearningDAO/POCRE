@@ -132,8 +132,8 @@ const useHome = () => {
         assumedAuthorResponse,
       },
     ) => {
-      // make api call to update the litigation
-      await Litigation.update(id, {
+      // make api call to respond to the litigation
+      await Litigation.respond(id, {
         assumed_author_response: assumedAuthorResponse,
       });
 
@@ -206,8 +206,8 @@ const useHome = () => {
 
       if (!txHash) throw new Error('Failed to make transaction');
 
-      // make api call to edit the litigation
-      await Litigation.update(id, { ownership_transferred: true });
+      // make api call to claim the litigated item ownership
+      await Litigation.claimOwnership(id, { ownership_transferred: true });
 
       // update queries
       queryClient.cancelQueries({ queryKey: ['litigations'] });
