@@ -7,10 +7,12 @@ import { getCreationById, updateCreationById } from '../services/creation.servic
 import { getDecisionById } from '../services/decision.service';
 import * as litigationService from '../services/litigation.service';
 import { getMaterialById, updateMaterialById } from '../services/material.service';
+import { sendMail } from '../utils/email';
 import { createRecognition } from '../services/recognition.service';
-import { getReputedUsers, IUserDoc } from '../services/user.service';
+import { getReputedUsers, getUserByCriteria, IUserDoc } from '../services/user.service';
 import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/catchAsync';
+import { encode } from '../utils/jwt';
 
 export const queryLitigations = catchAsync(async (req, res): Promise<void> => {
   const litigation = await litigationService.queryLitigations({
@@ -52,10 +54,10 @@ export const createLitigation = catchAsync(async (req, res): Promise<void | any>
     throw new ApiError(httpStatus.NOT_FOUND, 'creation is not claimable');
   }
 
-  // check if material can be claimed
-  if ((material && !material?.is_claimable) || isCAWPassed || (creation.is_draft && material)) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'material is not claimable');
-  }
+  // // check if material can be claimed
+  // if ((material && !material?.is_claimable) || isCAWPassed || (creation.is_draft && material)) {
+  //   throw new ApiError(httpStatus.NOT_FOUND, 'material is not claimable');
+  // }
 
   // create a new litigation
   const newLitigation = await litigationService.createLitigation({
@@ -77,6 +79,24 @@ export const createLitigation = catchAsync(async (req, res): Promise<void | any>
 
   // when not draft then make associated items non claimable
   if (!req.body.is_draft) {
+    let author_id = '';
+    if(material)
+    {
+      author_id = material?.author_id
+    }
+    console.log('This should be sending the email zero',`You were recognized as author of "${material?.material_title}" by ${
+      (req.user as IUserDoc)?.user_name
+    }. Please find ligitation here ${config.web_client_base_url}/litigations to be recognized as the author.`)
+    const foundAuthor = await getUserByCriteria('user_id',author_id, true);
+    if(foundAuthor) {
+      await sendMail({
+        to: foundAuthor?.email_address as string,
+        subject: `A ligitation has been filed against your material "${material?.material_title}"`,
+        message: `You were recognized as author of "${material?.material_title}" by ${
+          (req.user as IUserDoc)?.user_name
+        }. Please find ligitation here ${config.web_client_base_url}/litigations to be recognized as the author.`,
+      }).catch(() => null);
+    }
     // make creation not claimable
     if (!material && creation) {
       await updateCreationById(creation.creation_id, {
@@ -135,11 +155,26 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
       throw new ApiError(httpStatus.NOT_FOUND, 'creation is not claimable');
     }
 
-    // check if material can be claimed
-    if (material && !material?.is_claimable) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'material is not claimable');
+    // // check if material can be claimed
+    // if (material && !material?.is_claimable) {
+    //   throw new ApiError(httpStatus.NOT_FOUND, 'material is not claimable');
+    // }
+    let author_id = '';
+    if(material)
+    {
+      author_id = material?.author_id
     }
-
+    const foundAuthor = await getUserByCriteria('user_id',author_id, true);
+    console.log('This should be sending the email 1',foundAuthor?.email_address)
+    if(foundAuthor) {
+      await sendMail({
+        to: foundAuthor?.email_address as string,
+        subject: `A ligitation has been filed against your material "${material?.material_title}"`,
+        message: `You were recognized as author of "${material?.material_title}" by ${
+          (req.user as IUserDoc)?.user_name
+        }. Please find ligitation here ${config.web_client_base_url}/litigations/${req.params.litigation_id} to be recognized as the author.`,
+      }).catch(() => null);
+    }
     // update litigation
     const updatedLitigation = await litigationService.updateLitigationById(
       req.params.litigation_id,
