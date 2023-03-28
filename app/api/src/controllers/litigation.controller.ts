@@ -226,6 +226,15 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `invalid transaction purpose for litigation`);
   }
 
+  // verify if another 'start_litigation' transaction exists for this litigation
+  const hasSimilarTransaction = (litigation.transactions || []).find(
+    (x: any) =>
+      foundExistingTransaction &&
+      x.transaction_id !== foundExistingTransaction.transaction_id &&
+      x.transaction_purpose === transactionPurposes.START_LITIGATION
+  );
+  if (hasSimilarTransaction) throw new ApiError(httpStatus.NOT_ACCEPTABLE, `transaction already registered for litigation`);
+
   // throw error if litigation is in draft
   if (litigation.is_draft) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigation not found`);
@@ -277,14 +286,6 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
     !foundExistingTransaction.is_validated &&
     req.body.assumed_author_response === litigationStatusTypes.START_LITIGATION
   ) {
-    // verify if another 'start_litigation' transaction exists for this litigation
-    const hasTransaction = (litigation.transactions || []).find(
-      (x: any) =>
-        x.transaction_id !== foundExistingTransaction.transaction_id &&
-        x.transaction_purpose === transactionPurposes.START_LITIGATION
-    );
-    if (hasTransaction) throw new ApiError(httpStatus.NOT_ACCEPTABLE, `transaction already registered for litigation`);
-
     // update litigation and wait for transaction success
     const updatedLitigation = await litigationService.updateLitigationById(
       req.params.litigation_id,
@@ -562,16 +563,23 @@ export const claimLitigatedItemOwnershipById = catchAsync(async (req, res): Prom
   });
 
   // verify transaction, will throw an error if transaction is not found
-  const foundTransaction = req.body.transaction_id
-    ? await getTransactionById(req.body.transaction_id, {
-        owner_id: issuerId,
-      })
-    : null;
+  const foundTransaction = await getTransactionById(req.body.transaction_id, {
+    owner_id: issuerId,
+  });
 
   // check if transaction has correct purpose
   if (foundTransaction && foundTransaction.transaction_purpose !== transactionPurposes.REDEEM_LITIGATED_ITEM) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `invalid transaction purpose for litigation`);
   }
+
+  // verify if another 'redeem_litigation' transaction exists for this litigation
+  const hasSimilarTransaction = (litigation.transactions || []).find(
+    (x: any) =>
+      foundTransaction &&
+      x.transaction_id !== foundTransaction.transaction_id &&
+      x.transaction_purpose === transactionPurposes.REDEEM_LITIGATED_ITEM
+  );
+  if (hasSimilarTransaction) throw new ApiError(httpStatus.NOT_ACCEPTABLE, `transaction already registered for litigation`);
 
   // throw error if litigation is in draft
   if (litigation.is_draft) {
@@ -607,15 +615,6 @@ export const claimLitigatedItemOwnershipById = catchAsync(async (req, res): Prom
 
   // if transaction is not verified, update litigation and wait for transaction verification
   if (foundTransaction && !foundTransaction.is_validated) {
-    // verify if another 'redeem_litigation' transaction exists for this litigation
-    const hasTransaction = (litigation.transactions || []).find(
-      (x: any) =>
-        x.transaction_id !== foundTransaction.transaction_id &&
-        x.transaction_purpose === transactionPurposes.REDEEM_LITIGATED_ITEM
-    );
-    if (hasTransaction) throw new ApiError(httpStatus.NOT_ACCEPTABLE, `transaction already registered for litigation`);
-
-    // update litigation
     const updatedLitigation = await litigationService.updateLitigationById(
       req.params.litigation_id,
       {
