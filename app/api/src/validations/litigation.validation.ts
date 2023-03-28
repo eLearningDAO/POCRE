@@ -85,7 +85,7 @@ export const voteOnLitigation = {
   }),
   body: Joi.object()
     .keys({
-      decisions: Joi.array().items(Joi.string().uuid()).unique().required(),
+      decision_id: Joi.string().uuid().required(),
     })
     .min(1),
 };

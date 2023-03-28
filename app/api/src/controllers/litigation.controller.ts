@@ -481,10 +481,15 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
 export const voteOnLitigationById = catchAsync(async (req, res): Promise<void> => {
   const voterId = (req.user as IUserDoc).user_id; // get req user id
 
-  // get the litigation
+  // verify litigation, will throw an error if litigation not found
   const litigation: any = await litigationService.getLitigationById(req.params.litigation_id, {
     participant_id: voterId,
-    populate: ['recognitions'],
+    populate: ['recognitions', 'decisions'],
+  });
+
+  // verify decision, will throw an error if decision not found
+  const decision = await getDecisionById(req.body.decision_id, {
+    owner_id: voterId,
   });
 
   // throw error if litigation is in draft
@@ -492,17 +497,16 @@ export const voteOnLitigationById = catchAsync(async (req, res): Promise<void> =
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigation not found`);
   }
 
-  if (!litigation?.recognitions.find((x: any) => x.recognition_for === voterId)) {
+  // only allow a jury member to vote
+  if (!(litigation?.recognitions || []).find((x: any) => x.recognition_for === voterId)) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `only a jury member can vote on a litigation`);
   }
 
-  // get the votes if any
-  const decisions =
-    req.body.decisions && req.body.decisions.length > 0
-      ? await Promise.all(
-          req.body.decisions.map((id: string) => getDecisionById(id)) // verify decisions, will throw an error if any decision is not found
-        )
-      : [];
+  // check if this decision already exists or this voter already has a decision
+  const foundExistingDecision = (litigation.decisions || []).find(
+    (x: any) => x.decision_id === decision?.decision_id || x.maker_id === voterId
+  );
+  if (foundExistingDecision) throw new ApiError(httpStatus.NOT_ACCEPTABLE, `already voted on this litigation`);
 
   // calculate litigation phases/flags
   const now = moment();
@@ -513,27 +517,24 @@ export const voteOnLitigationById = catchAsync(async (req, res): Promise<void> =
   const isVotingPhase =
     moment(toDate(litigation?.voting_start)).isBefore(now) && moment(toDate(litigation?.voting_end)).isAfter(now);
 
-  // if not voting phase, block votes
-  if (!isVotingPhase && decisions && decisions.length > 0) {
-    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `vote only allowed in voting phase`);
-  }
-
-  // if assumed author did not respond in reconilate phase, block votes
   if (
-    !isReconcilatePhase &&
-    litigation.assumed_author_response === litigationStatusTypes.PENDING_RESPONSE &&
-    decisions &&
-    decisions.length > 0
+    // if not voting phase, block votes
+    !isVotingPhase ||
+    // if assumed author did not respond in reconilate phase, block votes
+    (!isReconcilatePhase && litigation.assumed_author_response === litigationStatusTypes.PENDING_RESPONSE)
   ) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `vote only allowed in voting phase`);
   }
+
+  // agregate decisions
+  const decisions = [...(litigation.decisions || []), decision];
 
   // find litigation winner
   const winner = (() => {
     // find new winner based on votes (only in voting phase)
     const votes = {
-      agreed: decisions.filter((x) => x.decision_status === true).length,
-      opposed: decisions.filter((x) => x.decision_status === false).length,
+      agreed: decisions.filter((x: any) => x.decision_status === true).length,
+      opposed: decisions.filter((x: any) => x.decision_status === false).length,
     };
 
     return votes.agreed > votes.opposed ? litigation?.issuer_id : litigation?.assumed_author;
@@ -543,7 +544,7 @@ export const voteOnLitigationById = catchAsync(async (req, res): Promise<void> =
   const updatedLitigation = await litigationService.updateLitigationById(
     req.params.litigation_id,
     {
-      ...req.body,
+      decisions,
       winner,
     },
     { participant_id: voterId }
