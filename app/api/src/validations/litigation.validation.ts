@@ -93,6 +93,7 @@ export const voteOnLitigation = {
 export const claimLitigatedItemOwnership = {
   params: Joi.object().keys({
     litigation_id: Joi.string().uuid().required(),
+    transaction_id: Joi.string().uuid().required(),
   }),
 };
 

@@ -42,7 +42,7 @@ export interface IPocreCardanoTransaction extends ICardanoTransaction {
    */
   metadata: {
     pocre_id: string;
-    pocre_entity: 'creation' | 'recognition' | 'litigation_id';
+    pocre_entity: 'creation' | 'recognition' | 'litigation';
     pocre_version: number;
   };
 }

@@ -557,7 +557,20 @@ export const claimLitigatedItemOwnershipById = catchAsync(async (req, res): Prom
   // get the litigation
   const litigation: any = await litigationService.getLitigationById(req.params.litigation_id, {
     participant_id: issuerId,
+    populate: ['transactions'],
   });
+
+  // verify transaction, will throw an error if transaction is not found
+  const foundTransaction = req.body.transaction_id
+    ? await getTransactionById(req.body.transaction_id, {
+        owner_id: issuerId,
+      })
+    : null;
+
+  // check if transaction has correct purpose
+  if (foundTransaction && foundTransaction.transaction_purpose !== transactionPurposes.REDEEM_LITIGATED_ITEM) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `invalid transaction purpose for litigation`);
+  }
 
   // throw error if litigation is in draft
   if (litigation.is_draft) {
@@ -569,10 +582,9 @@ export const claimLitigatedItemOwnershipById = catchAsync(async (req, res): Prom
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigated item can only be claimed by the litigation issuer`);
   }
 
-  // return if already claimed
+  // check if not already redeemed the litigated item
   if (litigation.ownership_transferred) {
-    res.send(litigation);
-    return;
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `already redeemed the litigated item`);
   }
 
   const now = moment();
@@ -590,6 +602,31 @@ export const claimLitigatedItemOwnershipById = catchAsync(async (req, res): Prom
   // if litigation is in reconcilation phase, block issuer from claiming
   if (isReconcilatePhase) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigated item can only be claimed after voting phase`);
+  }
+
+  // if transaction is not verified, update litigation and wait for transaction verification
+  if (foundTransaction && !foundTransaction.is_validated) {
+    // verify if another 'redeem_litigation' transaction exists for this litigation
+    const hasTransaction = (litigation.transactions || []).find(
+      (x: any) =>
+        x.transaction_id !== foundTransaction.transaction_id &&
+        x.transaction_purpose === transactionPurposes.REDEEM_LITIGATED_ITEM
+    );
+    if (hasTransaction) throw new ApiError(httpStatus.NOT_ACCEPTABLE, `transaction already registered for litigation`);
+
+    // update litigation
+    const updatedLitigation = await litigationService.updateLitigationById(
+      req.params.litigation_id,
+      {
+        transactions: [
+          ...(litigation.transactions || []).map((x: any) => x.transaction_id),
+          foundTransaction.transaction_id,
+        ],
+      },
+      { participant_id: issuerId }
+    );
+    res.send(updatedLitigation);
+    return;
   }
 
   // transfer ownership to correct author

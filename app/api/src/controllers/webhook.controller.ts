@@ -11,7 +11,7 @@ import ApiError from '../utils/ApiError';
 import { getBlockInfo, getTransactionInfo, ICardanoTransaction } from '../utils/cardano';
 import catchAsync from '../utils/catchAsync';
 import { publishCreation } from './creation.controller';
-import { respondToLitigationById } from './litigation.controller';
+import { claimLitigatedItemOwnershipById, respondToLitigationById } from './litigation.controller';
 import { respondToRecognition } from './recognition.controller';
 
 export const processTransaction = catchAsync(async (req, res, next): Promise<void> => {
@@ -111,35 +111,58 @@ export const processTransaction = catchAsync(async (req, res, next): Promise<voi
       return;
     }
 
-    // if transaction was for starting litigation, then update litigation
-    if (
-      pocreTransaction &&
-      pocreTransaction.transaction_purpose === transactionPurposes.START_LITIGATION &&
-      cardanoTransation &&
-      cardanoTransation.metadata.pocre_entity === 'litigation'
-    ) {
-      // confirm the transaction
-      await updateTransactionById(pocreTransaction.transaction_id, {
-        is_validated: true,
-      });
+    // if transaction was for litigation
+    if (pocreTransaction && cardanoTransation && cardanoTransation.metadata.pocre_entity === 'litigation') {
+      // if transaction was for starting litigation, then update litigation
+      if (pocreTransaction.transaction_purpose === transactionPurposes.START_LITIGATION) {
+        // confirm the transaction
+        await updateTransactionById(pocreTransaction.transaction_id, {
+          is_validated: true,
+        });
 
-      // transform current request to glue with litigation controller
-      const transformedReq: any = {
-        ...req,
-        user: (pocreTransaction as any).maker,
-        params: {
-          litigation_id: cardanoTransation.metadata.pocre_id,
-        },
-        body: {
-          assumed_author_response: litigationStatusTypes.START_LITIGATION,
-          transaction_id: pocreTransaction.transaction_id,
-        },
-      };
+        // transform current request to glue with litigation controller
+        const transformedReq: any = {
+          ...req,
+          user: (pocreTransaction as any).maker,
+          params: {
+            litigation_id: cardanoTransation.metadata.pocre_id,
+          },
+          body: {
+            assumed_author_response: litigationStatusTypes.START_LITIGATION,
+            transaction_id: pocreTransaction.transaction_id,
+          },
+        };
 
-      // mark response for litigation
-      await respondToLitigationById(transformedReq, res, next); // if this returns non truthy response, then webhook fails
+        // mark response for litigation
+        await respondToLitigationById(transformedReq, res, next); // if this returns non truthy response, then webhook fails
 
-      return;
+        return;
+      }
+
+      // if transaction was for redeeming litigated item, then update litigation
+      if (pocreTransaction.transaction_purpose === transactionPurposes.REDEEM_LITIGATED_ITEM) {
+        // confirm the transaction
+        await updateTransactionById(pocreTransaction.transaction_id, {
+          is_validated: true,
+        });
+
+        // transform current request to glue with litigation controller
+        const transformedReq: any = {
+          ...req,
+          user: (pocreTransaction as any).maker,
+          params: {
+            litigation_id: cardanoTransation.metadata.pocre_id,
+          },
+          body: {
+            transaction_id: pocreTransaction.transaction_id,
+          },
+        };
+
+        // mark response for litigation
+        await claimLitigatedItemOwnershipById(transformedReq, res, next); // if this returns non truthy response, then webhook fails
+
+        return;
+      }
     }
 
     res.status(httpStatus.NOT_IMPLEMENTED).send(`no operation performed by pocre`); // let the webhook know that pocre did not used this info
