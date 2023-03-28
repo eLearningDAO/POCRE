@@ -68,6 +68,13 @@ export const respondToLitigation = {
       assumed_author_response: Joi.string()
         .valid(...Object.values(litigationStatusTypes).filter((x) => x !== litigationStatusTypes.PENDING_RESPONSE))
         .required(),
+      transaction_id: Joi.string()
+        .uuid()
+        .when('assumed_author_response', {
+          is: Joi.string().valid(litigationStatusTypes.START_LITIGATION).exist(),
+          then: Joi.required(),
+          otherwise: Joi.forbidden(),
+        }),
     })
     .min(1),
 };

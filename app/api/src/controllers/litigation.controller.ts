@@ -3,11 +3,13 @@ import moment from 'moment';
 import config from '../config/config';
 import litigationStatusTypes from '../constants/litigationStatusTypes';
 import statusTypes from '../constants/statusTypes';
+import transactionPurposes from '../constants/transactionPurposes';
 import { getCreationById, updateCreationById } from '../services/creation.service';
 import { getDecisionById } from '../services/decision.service';
 import * as litigationService from '../services/litigation.service';
 import { getMaterialById, updateMaterialById } from '../services/material.service';
 import { createRecognition } from '../services/recognition.service';
+import { getTransactionById } from '../services/transaction.service';
 import { getReputedUsers, IUserDoc } from '../services/user.service';
 import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/catchAsync';
@@ -209,7 +211,20 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
   // get the litigation
   const litigation: any = await litigationService.getLitigationById(req.params.litigation_id, {
     participant_id: assumedAuthorId,
+    populate: ['transactions'],
   });
+
+  // verify transaction, will throw an error if transaction not found
+  const foundExistingTransaction = req.body.transaction_id
+    ? await getTransactionById(req.body.transaction_id, {
+        owner_id: assumedAuthorId,
+      })
+    : null;
+
+  // check if transaction has correct purpose
+  if (foundExistingTransaction && foundExistingTransaction.transaction_purpose !== transactionPurposes.START_LITIGATION) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `invalid transaction purpose for litigation`);
+  }
 
   // throw error if litigation is in draft
   if (litigation.is_draft) {
@@ -219,6 +234,11 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
   // only allow the assumed author to respond
   if (litigation.issuer_id !== assumedAuthorId) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `only assumed author can respond to litigated item`);
+  }
+
+  // check if not already responded to this litigation
+  if (litigation.assumed_author_response !== litigationStatusTypes.PENDING_RESPONSE) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `already responded to this litigation`);
   }
 
   // calculate litigation phases/flags
@@ -249,6 +269,36 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
         req.body.assumed_author_response === litigationStatusTypes.START_LITIGATION))
   ) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `cannot change already set reconcilation status`);
+  }
+
+  // verify if the transaction verification is pending for started litigation
+  if (
+    foundExistingTransaction &&
+    !foundExistingTransaction.is_validated &&
+    req.body.assumed_author_response === litigationStatusTypes.START_LITIGATION
+  ) {
+    // verify if another 'start_litigation' transaction exists for this litigation
+    const hasTransaction = (litigation.transactions || []).find(
+      (x: any) =>
+        x.transaction_id !== foundExistingTransaction.transaction_id &&
+        x.transaction_purpose === transactionPurposes.START_LITIGATION
+    );
+    if (hasTransaction) throw new ApiError(httpStatus.NOT_ACCEPTABLE, `transaction already registered for litigation`);
+
+    // update litigation and wait for transaction success
+    const updatedLitigation = await litigationService.updateLitigationById(
+      req.params.litigation_id,
+      {
+        ...req.body,
+        transactions: [
+          ...(litigation.transactions || []).map((x: any) => x.transaction_id),
+          foundExistingTransaction.transaction_id,
+        ],
+      },
+      { participant_id: assumedAuthorId }
+    );
+    res.send(updatedLitigation);
+    return;
   }
 
   // select jury if required
@@ -418,11 +468,8 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
       ...req.body,
       winner:
         req.body.assumed_author_response === litigationStatusTypes.WITHDRAW_CLAIM ? litigation.issuer_id : litigation.winner,
-      creation_id: litigation.creation_id,
-      material_id: litigation.material_id,
       recognitions: recognitionIds,
       assumed_author_response: assumedAuthorResponse,
-      ownership_transferred: isOwnershipAlreadyTransferred,
       ...dates,
       ...(shouldTransferOwnership && { ownership_transferred: true }),
     },
