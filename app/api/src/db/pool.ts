@@ -177,6 +177,7 @@ const init = async (): Promise<QueryResult<any>> => {
       winner UUID NOT NULL,
       recognitions UUID[],
       decisions UUID[],
+      transactions UUID[],
       reconcilation_start TIMESTAMP NOT NULL,
       reconcilation_end TIMESTAMP NOT NULL,
       voting_start TIMESTAMP NOT NULL,
@@ -246,6 +247,7 @@ const init = async (): Promise<QueryResult<any>> => {
     LANGUAGE SQL
     AS $$
       UPDATE creation SET transactions = array_remove(transactions, transaction_id);
+      UPDATE litigation SET transactions = array_remove(transactions, transaction_id);
     $$;
     `
   );

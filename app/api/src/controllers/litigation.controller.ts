@@ -3,6 +3,7 @@ import moment from 'moment';
 import config from '../config/config';
 import litigationStatusTypes from '../constants/litigationStatusTypes';
 import statusTypes from '../constants/statusTypes';
+import transactionPurposes from '../constants/transactionPurposes';
 import { getCreationById, updateCreationById } from '../services/creation.service';
 import { getDecisionById } from '../services/decision.service';
 import * as litigationService from '../services/litigation.service';
@@ -10,6 +11,7 @@ import { getMaterialById, updateMaterialById } from '../services/material.servic
 import { sendMail } from '../utils/email';
 import { createRecognition } from '../services/recognition.service';
 import { getReputedUsers, getUserByCriteria, IUserDoc } from '../services/user.service';
+import { getTransactionById, updateTransactionById } from '../services/transaction.service';
 import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/catchAsync';
 import { encode } from '../utils/jwt';
@@ -240,7 +242,29 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
   // get the litigation
   const litigation: any = await litigationService.getLitigationById(req.params.litigation_id, {
     participant_id: assumedAuthorId,
+    populate: ['transactions'],
   });
+
+  // verify transaction, will throw an error if transaction not found
+  const foundExistingTransaction = req.body.transaction_id
+    ? await getTransactionById(req.body.transaction_id, {
+        owner_id: assumedAuthorId,
+      })
+    : null;
+
+  // check if transaction has correct purpose
+  if (foundExistingTransaction && foundExistingTransaction.transaction_purpose !== transactionPurposes.START_LITIGATION) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `invalid transaction purpose for litigation`);
+  }
+
+  // verify if another 'start_litigation' transaction exists for this litigation
+  const hasSimilarTransaction = (litigation.transactions || []).find(
+    (x: any) =>
+      foundExistingTransaction &&
+      x.transaction_id !== foundExistingTransaction.transaction_id &&
+      x.transaction_purpose === transactionPurposes.START_LITIGATION
+  );
+  if (hasSimilarTransaction) throw new ApiError(httpStatus.NOT_ACCEPTABLE, `transaction already registered for litigation`);
 
   // throw error if litigation is in draft
   if (litigation.is_draft) {
@@ -250,6 +274,11 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
   // only allow the assumed author to respond
   if (litigation.issuer_id !== assumedAuthorId) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `only assumed author can respond to litigated item`);
+  }
+
+  // check if not already responded to this litigation
+  if (litigation.assumed_author_response !== litigationStatusTypes.PENDING_RESPONSE) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `already responded to this litigation`);
   }
 
   // calculate litigation phases/flags
@@ -280,6 +309,28 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
         req.body.assumed_author_response === litigationStatusTypes.START_LITIGATION))
   ) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `cannot change already set reconcilation status`);
+  }
+
+  // verify if the transaction verification is pending for started litigation
+  if (
+    foundExistingTransaction &&
+    !foundExistingTransaction.is_validated &&
+    req.body.assumed_author_response === litigationStatusTypes.START_LITIGATION
+  ) {
+    // update litigation and wait for transaction success
+    const updatedLitigation = await litigationService.updateLitigationById(
+      req.params.litigation_id,
+      {
+        ...req.body,
+        transactions: [
+          ...(litigation.transactions || []).map((x: any) => x.transaction_id),
+          foundExistingTransaction.transaction_id,
+        ],
+      },
+      { participant_id: assumedAuthorId }
+    );
+    res.send(updatedLitigation);
+    return;
   }
 
   // select jury if required
@@ -457,11 +508,8 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
       ...req.body,
       winner:
         req.body.assumed_author_response === litigationStatusTypes.WITHDRAW_CLAIM ? litigation.issuer_id : litigation.winner,
-      creation_id: litigation.creation_id,
-      material_id: litigation.material_id,
       recognitions: recognitionIds,
       assumed_author_response: assumedAuthorResponse,
-      ownership_transferred: isOwnershipAlreadyTransferred,
       ...dates,
       ...(shouldTransferOwnership && { ownership_transferred: true }),
     },
@@ -473,28 +521,52 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
 export const voteOnLitigationById = catchAsync(async (req, res): Promise<void> => {
   const voterId = (req.user as IUserDoc).user_id; // get req user id
 
-  // get the litigation
+  // verify litigation, will throw an error if litigation not found
   const litigation: any = await litigationService.getLitigationById(req.params.litigation_id, {
     participant_id: voterId,
-    populate: ['recognitions'],
+    populate: ['recognitions', 'decisions'],
   });
+
+  // verify decision, will throw an error if decision not found
+  const decision = await getDecisionById(req.body.decision_id, {
+    owner_id: voterId,
+  });
+
+  // verify transaction, will throw an error if transaction is not found
+  const foundTransaction = await getTransactionById(req.body.transaction_id, {
+    owner_id: voterId,
+  });
+
+  // check if transaction has correct purpose
+  if (foundTransaction && foundTransaction.transaction_purpose !== transactionPurposes.CAST_LITIGATION_VOTE) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `invalid transaction purpose for litigation`);
+  }
+
+  // verify if another 'cast_litigation_vote' transaction exists for this litigation by voterId
+  const hasSimilarTransaction = (litigation.transactions || []).find(
+    (x: any) =>
+      foundTransaction &&
+      x.transaction_id !== foundTransaction.transaction_id &&
+      x.transaction_purpose === transactionPurposes.CAST_LITIGATION_VOTE &&
+      x.maker_id === voterId
+  );
+  if (hasSimilarTransaction) throw new ApiError(httpStatus.NOT_ACCEPTABLE, `transaction already registered for litigation`);
 
   // throw error if litigation is in draft
   if (litigation.is_draft) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigation not found`);
   }
 
-  if (!litigation?.recognitions.find((x: any) => x.recognition_for === voterId)) {
+  // only allow a jury member to vote
+  if (!(litigation?.recognitions || []).find((x: any) => x.recognition_for === voterId)) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `only a jury member can vote on a litigation`);
   }
 
-  // get the votes if any
-  const decisions =
-    req.body.decisions && req.body.decisions.length > 0
-      ? await Promise.all(
-          req.body.decisions.map((id: string) => getDecisionById(id)) // verify decisions, will throw an error if any decision is not found
-        )
-      : [];
+  // check if this decision already exists or this voter already has a decision
+  const foundExistingDecision = (litigation.decisions || []).find(
+    (x: any) => x.decision_id === decision?.decision_id || x.maker_id === voterId
+  );
+  if (foundExistingDecision) throw new ApiError(httpStatus.NOT_ACCEPTABLE, `already voted on this litigation`);
 
   // calculate litigation phases/flags
   const now = moment();
@@ -505,27 +577,49 @@ export const voteOnLitigationById = catchAsync(async (req, res): Promise<void> =
   const isVotingPhase =
     moment(toDate(litigation?.voting_start)).isBefore(now) && moment(toDate(litigation?.voting_end)).isAfter(now);
 
-  // if not voting phase, block votes
-  if (!isVotingPhase && decisions && decisions.length > 0) {
-    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `vote only allowed in voting phase`);
-  }
-
-  // if assumed author did not respond in reconilate phase, block votes
   if (
-    !isReconcilatePhase &&
-    litigation.assumed_author_response === litigationStatusTypes.PENDING_RESPONSE &&
-    decisions &&
-    decisions.length > 0
+    // if not voting phase, block votes
+    !isVotingPhase ||
+    // if assumed author did not respond in reconilate phase, block votes
+    (!isReconcilatePhase && litigation.assumed_author_response === litigationStatusTypes.PENDING_RESPONSE)
   ) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `vote only allowed in voting phase`);
   }
+
+  // if transaction is not verified, store decision as blocking issue and update litigation
+  if (foundTransaction && !foundTransaction.is_validated) {
+    // add decision id to transaction as blocking issue
+    await updateTransactionById(foundTransaction.transaction_id, {
+      // [IMPORTANT]:
+      // this is an implied behaviour and should be handled in a better way and we will be
+      // using this field in the webhook logic for relevant code parts
+      blocking_issue: decision?.decision_id,
+    });
+
+    // update litigation and wait for transaction success
+    const updatedLitigation = await litigationService.updateLitigationById(
+      req.params.litigation_id,
+      {
+        transactions: [
+          ...(litigation.transactions || []).map((x: any) => x.transaction_id),
+          foundTransaction.transaction_id,
+        ],
+      },
+      { participant_id: voterId }
+    );
+    res.send(updatedLitigation);
+    return;
+  }
+
+  // agregate decisions
+  const decisions = [...(litigation.decisions || []), decision];
 
   // find litigation winner
   const winner = (() => {
     // find new winner based on votes (only in voting phase)
     const votes = {
-      agreed: decisions.filter((x) => x.decision_status === true).length,
-      opposed: decisions.filter((x) => x.decision_status === false).length,
+      agreed: decisions.filter((x: any) => x.decision_status === true).length,
+      opposed: decisions.filter((x: any) => x.decision_status === false).length,
     };
 
     return votes.agreed > votes.opposed ? litigation?.issuer_id : litigation?.assumed_author;
@@ -535,7 +629,7 @@ export const voteOnLitigationById = catchAsync(async (req, res): Promise<void> =
   const updatedLitigation = await litigationService.updateLitigationById(
     req.params.litigation_id,
     {
-      ...req.body,
+      decisions,
       winner,
     },
     { participant_id: voterId }
@@ -549,7 +643,27 @@ export const claimLitigatedItemOwnershipById = catchAsync(async (req, res): Prom
   // get the litigation
   const litigation: any = await litigationService.getLitigationById(req.params.litigation_id, {
     participant_id: issuerId,
+    populate: ['transactions'],
   });
+
+  // verify transaction, will throw an error if transaction is not found
+  const foundTransaction = await getTransactionById(req.body.transaction_id, {
+    owner_id: issuerId,
+  });
+
+  // check if transaction has correct purpose
+  if (foundTransaction && foundTransaction.transaction_purpose !== transactionPurposes.REDEEM_LITIGATED_ITEM) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `invalid transaction purpose for litigation`);
+  }
+
+  // verify if another 'redeem_litigation' transaction exists for this litigation
+  const hasSimilarTransaction = (litigation.transactions || []).find(
+    (x: any) =>
+      foundTransaction &&
+      x.transaction_id !== foundTransaction.transaction_id &&
+      x.transaction_purpose === transactionPurposes.REDEEM_LITIGATED_ITEM
+  );
+  if (hasSimilarTransaction) throw new ApiError(httpStatus.NOT_ACCEPTABLE, `transaction already registered for litigation`);
 
   // throw error if litigation is in draft
   if (litigation.is_draft) {
@@ -561,10 +675,9 @@ export const claimLitigatedItemOwnershipById = catchAsync(async (req, res): Prom
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigated item can only be claimed by the litigation issuer`);
   }
 
-  // return if already claimed
+  // check if not already redeemed the litigated item
   if (litigation.ownership_transferred) {
-    res.send(litigation);
-    return;
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `already redeemed the litigated item`);
   }
 
   const now = moment();
@@ -582,6 +695,23 @@ export const claimLitigatedItemOwnershipById = catchAsync(async (req, res): Prom
   // if litigation is in reconcilation phase, block issuer from claiming
   if (isReconcilatePhase) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `litigated item can only be claimed after voting phase`);
+  }
+
+  // if transaction is not verified, update litigation and wait for transaction verification
+  if (foundTransaction && !foundTransaction.is_validated) {
+    // update litigation and wait for transaction success
+    const updatedLitigation = await litigationService.updateLitigationById(
+      req.params.litigation_id,
+      {
+        transactions: [
+          ...(litigation.transactions || []).map((x: any) => x.transaction_id),
+          foundTransaction.transaction_id,
+        ],
+      },
+      { participant_id: issuerId }
+    );
+    res.send(updatedLitigation);
+    return;
   }
 
   // transfer ownership to correct author

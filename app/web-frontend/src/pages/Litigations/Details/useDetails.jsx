@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Decision, Litigation } from 'api/requests';
-import { CHARGES, TRANSACTION_PURPOSES } from 'config';
+import { Decision, Litigation, Transaction } from 'api/requests';
+import { CHARGES } from 'config';
 import moment from 'moment';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import statusTypes from 'utils/constants/statusTypes';
+import transactionPurposes from 'utils/constants/transactionPurposes';
 import authUser from 'utils/helpers/authUser';
 import { transactADAToPOCRE } from 'utils/helpers/wallet';
 
@@ -152,60 +153,34 @@ const useDetails = () => {
       // check if vote is to be updated
       if (voteStatus === litigation.voteStatus) return;
 
-      const updatedDecisions = await (async () => {
-        const decisions = [...litigation.decisions];
-
-        // check if vote is already casted
-        const myDecision = decisions.find((x) => x.maker_id === user.user_id);
-
-        // check if vote is to be removed
-        if (voteStatus === voteStatusTypes.IMPARTIAL) {
-          if (myDecision?.decision_id) {
-            // remove the vote
-            await Decision.delete(myDecision?.decision_id).catch(() => null);
-          }
-
-          return litigation.decisions.filter((x) => x.maker_id !== user.user_id);
-        }
-
-        // update the vote
-        if (myDecision) {
-          myDecision.decision_status = voteStatus === voteStatusTypes.AGREED;
-          await Decision.update(myDecision.decision_id, {
-            decision_status: myDecision.decision_status,
-          });
-
-          return [...decisions];
-        }
-
-        // cast a new vote
-        const response = await Decision.create({
-          decision_status: voteStatus === voteStatusTypes.AGREED,
-        });
-
-        return [...decisions, response];
-      })();
-
-      // update decision of litigation
-      await Litigation.vote(litigation.litigation_id, {
-        decisions: updatedDecisions.map((x) => x.decision_id),
-      });
-
       // make transaction
       const txHash = await transactADAToPOCRE({
         amountADA: CHARGES.LITIGATION.VOTE,
-        purposeDesc: TRANSACTION_PURPOSES.LITIGATION.VOTE,
         walletName: authUser.getUser()?.selectedWallet,
         metaData: {
-          claimed_entity: litigation.material ? 'MATERIAL' : 'CREATION',
-          creation_id: litigation.creation_id,
-          material_id: litigation.material_id,
-          vote: voteStatus,
-          author_id: user?.user_id,
+          pocre_id: litigationId,
+          pocre_entity: 'litigation',
+          purpose: transactionPurposes.CAST_LITIGATION_VOTE,
         },
       });
-
       if (!txHash) throw new Error('Failed to make transaction');
+
+      // make pocre transaction to store this info
+      const transaction = await Transaction.create({
+        transaction_hash: txHash,
+        transaction_purpose: transactionPurposes.REDEEM_LITIGATED_ITEM,
+      });
+
+      // cast a vote
+      const decision = await Decision.create({
+        decision_status: voteStatus === voteStatusTypes.AGREED,
+      });
+
+      // update decision of litigation
+      await Litigation.vote(litigation.litigation_id, {
+        decision_id: decision.decision_id,
+        transaction_id: transaction.transaction_id,
+      });
 
       // update queries
       const key = `litigation-${litigationId}`;
@@ -213,7 +188,7 @@ const useDetails = () => {
       queryClient.setQueryData([key], () => ({
         ...litigation,
         voteStatus,
-        decisions: updatedDecisions,
+        decisions: [...litigation.decisions, decision],
       }));
     },
   });
