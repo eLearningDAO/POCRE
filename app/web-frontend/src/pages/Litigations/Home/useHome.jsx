@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Litigation } from 'api/requests';
+import { Litigation, Transaction } from 'api/requests';
+import { CHARGES } from 'config';
 import moment from 'moment';
 import { useState } from 'react';
 import statusTypes from 'utils/constants/statusTypes';
+import transactionPurposes from 'utils/constants/transactionPurposes';
 import authUser from 'utils/helpers/authUser';
-import { CHARGES, TRANSACTION_PURPOSES } from 'config';
 import { transactADAToPOCRE } from 'utils/helpers/wallet';
 
 const user = authUser.getUser();
@@ -194,20 +195,23 @@ const useHome = () => {
       // make transaction
       const txHash = await transactADAToPOCRE({
         amountADA: CHARGES.LITIGATION.REDEEM,
-        purposeDesc: TRANSACTION_PURPOSES.LITIGATION.REDEEM,
         walletName: authUser.getUser()?.selectedWallet,
         metaData: {
-          redeemed_by: user?.user_id,
-          litigation_id: foundLitigation.litigation_id,
-          creation_id: foundLitigation.creation_id,
-          material_id: foundLitigation.material_id,
+          pocre_id: id,
+          pocre_entity: 'litigation',
+          purpose: transactionPurposes.REDEEM_LITIGATED_ITEM,
         },
       });
-
       if (!txHash) throw new Error('Failed to make transaction');
 
+      // make pocre transaction to store this info
+      const transaction = await Transaction.create({
+        transaction_hash: txHash,
+        transaction_purpose: transactionPurposes.REDEEM_LITIGATED_ITEM,
+      });
+
       // make api call to claim the litigated item ownership
-      await Litigation.claimOwnership(id, { ownership_transferred: true });
+      await Litigation.claimOwnership(id, { transaction_id: transaction.transaction_id });
 
       // update queries
       queryClient.cancelQueries({ queryKey: ['litigations'] });
