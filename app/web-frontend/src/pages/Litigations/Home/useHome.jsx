@@ -133,9 +133,36 @@ const useHome = () => {
         assumedAuthorResponse,
       },
     ) => {
+      // get transaction if we need one
+      const transactionId = await (async () => {
+        if (assumedAuthorResponse !== statusTypes.START_LITIGATION) return null;
+
+        // make transaction
+        const txHash = await transactADAToPOCRE({
+          amountADA: CHARGES.LITIGATION.START,
+          walletName: authUser.getUser()?.selectedWallet,
+          metaData: {
+            pocre_id: id,
+            pocre_entity: 'litigation',
+            purpose: transactionPurposes.START_LITIGATION,
+          },
+        });
+
+        if (!txHash) throw new Error('Failed to make transaction');
+
+        // make pocre transaction to store this info
+        const transaction = await Transaction.create({
+          transaction_hash: txHash,
+          transaction_purpose: transactionPurposes.START_LITIGATION,
+        });
+
+        return transaction.transaction_id;
+      })();
+
       // make api call to respond to the litigation
       await Litigation.respond(id, {
         assumed_author_response: assumedAuthorResponse,
+        ...(transactionId && { transaction_id: transactionId }),
       });
 
       // get populated data
