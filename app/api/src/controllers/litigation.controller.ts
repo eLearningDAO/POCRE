@@ -54,10 +54,10 @@ export const createLitigation = catchAsync(async (req, res): Promise<void | any>
     throw new ApiError(httpStatus.NOT_FOUND, 'creation is not claimable');
   }
 
-  // // check if material can be claimed
-  // if ((material && !material?.is_claimable) || isCAWPassed || (creation.is_draft && material)) {
-  //   throw new ApiError(httpStatus.NOT_FOUND, 'material is not claimable');
-  // }
+  // check if material can be claimed
+  if ((material && !material?.is_claimable) || isCAWPassed || (creation.is_draft && material)) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'material is not claimable');
+  }
 
   // create a new litigation
   const newLitigation = await litigationService.createLitigation({
@@ -84,9 +84,6 @@ export const createLitigation = catchAsync(async (req, res): Promise<void | any>
     {
       author_id = material?.author_id
     }
-    console.log('This should be sending the email zero',`You were recognized as author of "${material?.material_title}" by ${
-      (req.user as IUserDoc)?.user_name
-    }. Please find ligitation here ${config.web_client_base_url}/litigations to be recognized as the author.`)
     const foundAuthor = await getUserByCriteria('user_id',author_id, true);
     if(foundAuthor) {
       await sendMail({
@@ -155,17 +152,16 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
       throw new ApiError(httpStatus.NOT_FOUND, 'creation is not claimable');
     }
 
-    // // check if material can be claimed
-    // if (material && !material?.is_claimable) {
-    //   throw new ApiError(httpStatus.NOT_FOUND, 'material is not claimable');
-    // }
+    // check if material can be claimed
+    if (material && !material?.is_claimable) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'material is not claimable');
+    }
     let author_id = '';
     if(material)
     {
       author_id = material?.author_id
     }
     const foundAuthor = await getUserByCriteria('user_id',author_id, true);
-    console.log('This should be sending the email 1',foundAuthor?.email_address)
     if(foundAuthor) {
       await sendMail({
         to: foundAuthor?.email_address as string,
@@ -354,6 +350,14 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
       // create recognitions for valid litigators
       return Promise.all(
         validLitigatorIds.map(async (id) => {
+          const foundAuthor = await getUserByCriteria('user_id',id, true);
+          if(foundAuthor) {
+            await sendMail({
+              to: foundAuthor?.email_address as string,
+              subject: `Invitation for litigation!`,
+              message: `You have been recognized as a jury member for a litigations. Please find ligitation here ${config.web_client_base_url}/litigations/${req.params.litigation_id} to cast your vote.`,
+            }).catch(() => null);
+          }
           // create new recognition
           return createRecognition({
             recognition_by: litigation.issuer_id,
