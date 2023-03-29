@@ -55,10 +55,11 @@ const pkMap: IPkMap = {
   recognition_for: 'user_id',
   // material and creation table
   author_id: 'user_id',
+  // creation and litigation table
+  transactions: 'transaction_id',
   // creation table
   tags: 'tag_id',
   materials: 'material_id',
-  transactions: 'transaction_id',
   // litigation table
   assumed_author: 'user_id',
   winner: 'user_id',
@@ -87,10 +88,11 @@ const tableNameMap: ITableNameMap = {
   recognition_for: 'VIEW_users_public_fields',
   // material and creation table
   author_id: 'VIEW_users_public_fields',
+  // creation and litigation table
+  transactions: 'transaction',
   // creation table
   tags: 'tag',
   materials: 'material',
-  transactions: 'transaction',
   // litigation table
   assumed_author: 'VIEW_users_public_fields',
   winner: 'VIEW_users_public_fields',
@@ -164,6 +166,8 @@ const litigationDeepFields: string[] = [
   ...recognitionDeepFields.map((x) => `recognitions.${x}`),
   'decisions',
   ...decisionDeepFields.map((x) => `decisions.${x}`),
+  'transactions',
+  ...transactionDeepFields.map((x) => `transactions.${x}`),
 ];
 
 export type { IPkMap, ITableNameMap };

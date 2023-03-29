@@ -68,6 +68,13 @@ export const respondToLitigation = {
       assumed_author_response: Joi.string()
         .valid(...Object.values(litigationStatusTypes).filter((x) => x !== litigationStatusTypes.PENDING_RESPONSE))
         .required(),
+      transaction_id: Joi.string()
+        .uuid()
+        .when('assumed_author_response', {
+          is: Joi.string().valid(litigationStatusTypes.START_LITIGATION).exist(),
+          then: Joi.required(),
+          otherwise: Joi.forbidden(),
+        }),
     })
     .min(1),
 };
@@ -78,7 +85,8 @@ export const voteOnLitigation = {
   }),
   body: Joi.object()
     .keys({
-      decisions: Joi.array().items(Joi.string().uuid()).unique().required(),
+      decision_id: Joi.string().uuid().required(),
+      transaction_id: Joi.string().uuid().required(),
     })
     .min(1),
 };
@@ -87,6 +95,11 @@ export const claimLitigatedItemOwnership = {
   params: Joi.object().keys({
     litigation_id: Joi.string().uuid().required(),
   }),
+  body: Joi.object()
+    .keys({
+      transaction_id: Joi.string().uuid().required(),
+    })
+    .min(1),
 };
 
 export const deleteLitigation = {
