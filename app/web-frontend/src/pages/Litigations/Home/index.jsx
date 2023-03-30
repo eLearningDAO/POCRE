@@ -6,11 +6,18 @@ import Loader from 'components/uicore/Loader';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import statusTypes from 'utils/constants/statusTypes';
+import transactionPurposes from 'utils/constants/transactionPurposes';
 import authUser from 'utils/helpers/authUser';
 import './index.css';
 import useHome from './useHome';
 
 const user = authUser.getUser();
+
+const litigationToTransactionPurpose = {
+  inReconcilation: transactionPurposes.START_LITIGATION,
+  toVote: transactionPurposes.CAST_LITIGATION_VOTE,
+  closed: transactionPurposes.REDEEM_LITIGATED_ITEM,
+};
 
 function Litigation() {
   // get userInfo from the globale state with help of zustand store hook !
@@ -209,6 +216,14 @@ function Litigation() {
                 {...(['inVoting', 'toVote', 'closed'].includes(activeLitigation) && {
                   totalJuryMembers: x?.recognitions?.length,
                 })}
+                isPendingPaymentConfirmation={
+                  (x?.transactions || []).find(
+                    (y) => (
+                      y?.transaction_purpose === litigationToTransactionPurpose[activeLitigation]
+                      && !y?.is_validated
+                    ),
+                  )
+                }
               />
             ))}
           </div>
