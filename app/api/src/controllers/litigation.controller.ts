@@ -241,7 +241,7 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
   }
 
   // only allow the assumed author to respond
-  if (litigation.issuer_id !== assumedAuthorId) {
+  if (litigation.assumed_author !== assumedAuthorId) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, `only assumed author can respond to litigated item`);
   }
 
@@ -290,7 +290,6 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
     const updatedLitigation = await litigationService.updateLitigationById(
       req.params.litigation_id,
       {
-        ...req.body,
         transactions: [
           ...(litigation.transactions || []).map((x: any) => x.transaction_id),
           foundExistingTransaction.transaction_id,
@@ -466,7 +465,6 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
   const updatedLitigation = await litigationService.updateLitigationById(
     req.params.litigation_id,
     {
-      ...req.body,
       winner:
         req.body.assumed_author_response === litigationStatusTypes.WITHDRAW_CLAIM ? litigation.issuer_id : litigation.winner,
       recognitions: recognitionIds,
@@ -485,7 +483,7 @@ export const voteOnLitigationById = catchAsync(async (req, res): Promise<void> =
   // verify litigation, will throw an error if litigation not found
   const litigation: any = await litigationService.getLitigationById(req.params.litigation_id, {
     participant_id: voterId,
-    populate: ['recognitions', 'decisions'],
+    populate: ['recognitions', 'decisions', 'transactions'],
   });
 
   // verify decision, will throw an error if decision not found
