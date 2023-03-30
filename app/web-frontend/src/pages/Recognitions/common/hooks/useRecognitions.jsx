@@ -132,7 +132,7 @@ const useRecognitions = () => {
       if (!foundRecognition) return;
 
       // require transaction if status is accepted
-      const transactionId = await (async () => {
+      const transaction = await (async () => {
         if (updatedStatus === statusTypes.ACCEPTED) {
           const txHash = await transactADAToPOCRE({
             amountADA: CHARGES.RECOGNITION_ACCEPT,
@@ -147,23 +147,24 @@ const useRecognitions = () => {
           if (!txHash) throw new Error('Failed to accept material recognition');
 
           // make pocre transaction to store this info
-          const transaction = await Transaction.create({
+          return await await Transaction.create({
             transaction_hash: txHash,
             transaction_purpose: transactionPurposes.ACCEPT_RECOGNITION,
           });
-          return transaction.transaction_id;
         }
         return '';
       })();
 
       // update recognition status
-      foundRecognition.status = updatedStatus;
-      foundRecognition.status_updated = new Date().toISOString();
       await Recognition.respond(recognitionId, {
-        status: foundRecognition.status,
-        status_updated: foundRecognition.status_updated,
-        ...(transactionId && { transaction_id: transactionId }),
+        status: updatedStatus,
+        status_updated: new Date().toISOString(),
+        ...(transaction && { transaction_id: transaction.transaction_id }),
       });
+
+      // update cache
+      foundRecognition.status = 'pending';
+      foundRecognition.transaction = transaction || {};
 
       // update queries
       const key = recognitionId ? `recognitions-${recognitionId}` : 'recognitions';

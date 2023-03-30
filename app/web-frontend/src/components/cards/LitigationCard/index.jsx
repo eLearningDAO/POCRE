@@ -21,6 +21,7 @@ function LitigationCard({
   },
   startDate,
   endDate,
+  isPendingPaymentConfirmation = false,
   mode = 'info', // can be [info,litigate,closed,toJudge,drafted]
   // mode = info
   totalJuryMembers,
@@ -198,6 +199,15 @@ function LitigationCard({
             )
         }
       </div>
+
+      {/* payment pending status */}
+      {(isPendingPaymentConfirmation) && (
+        <Chip
+          style={{ fontSize: '16px' }}
+          label="Pending payment confirmation"
+          className="color-white bg-black w-full"
+        />
+      )}
     </div>
   );
 }
