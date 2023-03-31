@@ -55,6 +55,13 @@ export const updateLitigation = {
       creation_id: Joi.string().uuid().optional(), // [HOTFIX]: this is required if creation in draft
       material_id: Joi.string().uuid().optional(),
       is_draft: Joi.bool().default(false),
+      transaction_id: Joi.string()
+        .uuid()
+        .when('is_draft', {
+          is: Joi.bool().valid(false).exist(),
+          then: Joi.required(),
+          otherwise: Joi.forbidden(),
+        }),
     })
     .min(1),
 };

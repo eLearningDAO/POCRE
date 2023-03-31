@@ -41,7 +41,15 @@ const init = async (): Promise<QueryResult<any>> => {
     END $$;
 
     DO $$ BEGIN
-      CREATE TYPE transaction_purpose_enums AS ENUM ('publish_creation', 'finalize_creation', 'start_litigation', 'cast_litigation_vote', 'redeem_litigated_item', 'accept_recognition');
+      CREATE TYPE transaction_purpose_enums AS ENUM (
+        'publish_creation',
+        'finalize_creation',
+        'accept_recognition',
+        'register_litigation_claim',
+        'start_litigation',
+        'cast_litigation_vote',
+        'redeem_litigated_item'
+      );
     EXCEPTION
         WHEN duplicate_object THEN null;
     END $$;
