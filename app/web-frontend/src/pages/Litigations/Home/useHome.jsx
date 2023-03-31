@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Litigation } from 'api/requests';
+import { Litigation, Transaction } from 'api/requests';
+import { CHARGES } from 'config';
 import moment from 'moment';
 import { useState } from 'react';
 import statusTypes from 'utils/constants/statusTypes';
+import transactionPurposes from 'utils/constants/transactionPurposes';
 import authUser from 'utils/helpers/authUser';
-import { CHARGES, TRANSACTION_PURPOSES } from 'config';
 import { transactADAToPOCRE } from 'utils/helpers/wallet';
 
 const user = authUser.getUser();
@@ -33,7 +34,7 @@ const useHome = () => {
     queryKey: ['litigations'],
     queryFn: async () => {
       const toPopulate = [
-        'assumed_author', 'winner', 'issuer_id', 'creation_id', 'creation_id.author_id', 'decisions', 'material_id.author_id',
+        'assumed_author', 'winner', 'issuer_id', 'creation_id', 'creation_id.author_id', 'decisions', 'material_id.author_id', 'transactions',
       ];
 
       // get all litigations
@@ -132,15 +133,39 @@ const useHome = () => {
         assumedAuthorResponse,
       },
     ) => {
+      // get transaction if we need one
+      const transaction = await (async () => {
+        if (assumedAuthorResponse !== statusTypes.START_LITIGATION) return null;
+
+        // make transaction
+        const txHash = await transactADAToPOCRE({
+          amountADA: CHARGES.LITIGATION.START,
+          walletName: authUser.getUser()?.selectedWallet,
+          metaData: {
+            pocre_id: id,
+            pocre_entity: 'litigation',
+            purpose: transactionPurposes.START_LITIGATION,
+          },
+        });
+        if (!txHash) throw new Error('Failed to make transaction');
+
+        // make pocre transaction to store this info
+        return await await Transaction.create({
+          transaction_hash: txHash,
+          transaction_purpose: transactionPurposes.START_LITIGATION,
+        });
+      })();
+
       // make api call to respond to the litigation
       await Litigation.respond(id, {
         assumed_author_response: assumedAuthorResponse,
+        ...(transaction && { transaction_id: transaction.transaction_id }),
       });
 
       // get populated data
       const toPopulate = [
         'assumed_author', 'winner', 'issuer_id', 'creation_id', 'creation_id.author_id', 'decisions',
-        'recognitions.recognition_for', 'material_id.author_id', 'material_id.author_id',
+        'recognitions.recognition_for', 'material_id.author_id', 'material_id.author_id', 'transactions',
       ];
       let updatedLitigationResponse = await Litigation.getById(id, toPopulate.map((x) => `populate=${x}`).join('&'));
       updatedLitigationResponse = formatDates(updatedLitigationResponse);
@@ -148,18 +173,9 @@ const useHome = () => {
       // update litigation
       const updatedLitigations = { ...litigations };
 
-      // filter this litigation from inReconcilation key
-      updatedLitigations.inReconcilation = [
-        ...updatedLitigations.inReconcilation,
-      ].filter((x) => x?.litigation_id !== id);
-
-      if (assumedAuthorResponse === statusTypes.START_LITIGATION) {
-        // add updated litigation inVoting key
-        updatedLitigations.inVoting = [
-          updatedLitigationResponse,
-          ...updatedLitigations.inVoting,
-        ];
-      }
+      // update this litigation in cache
+      const foundLitigation = litigations.inReconcilation.find((x) => x?.litigation_id === id);
+      foundLitigation.transactions = updatedLitigationResponse.transactions;
 
       if (assumedAuthorResponse === statusTypes.WITHDRAW_CLAIM) {
         // add updated litigation closed key
@@ -194,20 +210,23 @@ const useHome = () => {
       // make transaction
       const txHash = await transactADAToPOCRE({
         amountADA: CHARGES.LITIGATION.REDEEM,
-        purposeDesc: TRANSACTION_PURPOSES.LITIGATION.REDEEM,
         walletName: authUser.getUser()?.selectedWallet,
         metaData: {
-          redeemed_by: user?.user_id,
-          litigation_id: foundLitigation.litigation_id,
-          creation_id: foundLitigation.creation_id,
-          material_id: foundLitigation.material_id,
+          pocre_id: id,
+          pocre_entity: 'litigation',
+          purpose: transactionPurposes.REDEEM_LITIGATED_ITEM,
         },
       });
-
       if (!txHash) throw new Error('Failed to make transaction');
 
+      // make pocre transaction to store this info
+      const transaction = await Transaction.create({
+        transaction_hash: txHash,
+        transaction_purpose: transactionPurposes.REDEEM_LITIGATED_ITEM,
+      });
+
       // make api call to claim the litigated item ownership
-      await Litigation.claimOwnership(id, { ownership_transferred: true });
+      await Litigation.claimOwnership(id, { transaction_id: transaction.transaction_id });
 
       // update queries
       queryClient.cancelQueries({ queryKey: ['litigations'] });

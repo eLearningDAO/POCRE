@@ -188,7 +188,7 @@ export default function CreationDetails() {
                 ? (
                   <Chip
                     style={{ fontSize: '16px', margin: 0, marginLeft: 'auto' }}
-                    className={`mr-auto color-white ${recognitionBg}`}
+                    className="mr-auto color-white bg-black"
                     label="Pending payment confirmation"
                   />
                 )

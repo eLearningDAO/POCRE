@@ -1,11 +1,9 @@
-import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Litigation, Material } from 'api/requests';
 import useSuggestions from 'hooks/useSuggestions';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
-import { CHARGES, TRANSACTION_PURPOSES } from 'config';
-import { transactADAToPOCRE } from 'utils/helpers/wallet';
 
 // get auth user
 const user = authUser.getUser();
@@ -89,29 +87,13 @@ const useLitigationForm = ({ onLitigationFetch }) => {
         litigation_title: litigationBody.title.trim(),
         litigation_description: litigationBody?.description?.trim(),
         creation_id: litigationBody.creation,
-        material_id: litigationBody.material,
+        ...(litigationBody.material && { material_id: litigationBody.material }),
         is_draft: litigationBody.is_draft,
       };
       const response = litigation?.litigation_id
         ? await Litigation.update(litigation?.litigation_id, payload)
         : await Litigation.create(payload);
       setNewLitigation(response);
-
-      // make transaction
-      if (!litigationBody.is_draft) {
-        const txHash = await transactADAToPOCRE({
-          amountADA: CHARGES.LITIGATION.START,
-          purposeDesc: TRANSACTION_PURPOSES.LITIGATION.START,
-          walletName: authUser.getUser()?.selectedWallet,
-          metaData: {
-            claimed_entity: litigationBody.material ? 'MATERIAL' : 'CREATION',
-            creation_id: litigationBody.creation,
-            material_id: litigationBody.material,
-          },
-        });
-
-        if (!txHash) throw new Error('Failed to make transaction');
-      }
 
       // update queries
       queryClient.invalidateQueries({ queryKey: ['litigations'] });

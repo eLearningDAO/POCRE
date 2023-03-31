@@ -157,6 +157,10 @@ export const verifyCreationTransactionDuplicates = async (
 export const createCreation = async (creationBody: ICreation): Promise<ICreationDoc> => {
   // verify if material/s already exist for a creation, throw error if a material is found
   if (creationBody.materials) await verifyCreationMaterialDuplicates(creationBody.materials);
+
+  // verify if transaction/s already exist for a creation, throw error if a transaction is found
+  if (creationBody.transactions) await verifyCreationTransactionDuplicates(creationBody.transactions);
+
   const user: Partial<IUserDoc | null> = await getUserByCriteria('user_id', creationBody.author_id, true);
   try {
     const result = await db.instance.query(
