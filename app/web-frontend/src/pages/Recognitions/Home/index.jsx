@@ -22,7 +22,7 @@ function Recognition() {
     } else {
       setIsLoggedIn(false);
     }
-  }, []);
+  }, [user?.user_id]);
 
   if (isFetchingRecognitions) return <div style={{ margin: 'auto' }} className="loader" />;
   if (recognitions?.results?.length === 0) {

@@ -11,8 +11,6 @@ import authUser from 'utils/helpers/authUser';
 import './index.css';
 import useHome from './useHome';
 
-const user = authUser.getUser();
-
 const litigationToTransactionPurpose = {
   inReconcilation: transactionPurposes.START_LITIGATION,
   toVote: transactionPurposes.CAST_LITIGATION_VOTE,
@@ -22,6 +20,7 @@ const litigationToTransactionPurpose = {
 function Litigation() {
   // get userInfo from the globale state with help of zustand store hook !
   // const user = useUserInfo((s) => s.user);
+  const user = authUser.getUser();
   const navigate = useNavigate();
   const [activeLitigation, setActiveLitigation] = useState('inDraft');
   const {
@@ -40,7 +39,7 @@ function Litigation() {
 
   useEffect(() => {
     fetchLitigations();
-  }, []);
+  }, [user?.user_id]);
 
   const redirectToCreateLitigation = () => {
     navigate('/litigations/create');

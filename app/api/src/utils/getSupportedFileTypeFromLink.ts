@@ -27,6 +27,7 @@ export const isValidYoutubeID = async (youtubeID:string) => {
 }
 export const getSupportedFileTypeFromLink = async (url: string): Promise<TLinkValue | null> => {
   try {
+    return supportedMediaTypes.IMAGE
     // get stream from url
     const stream = got.stream(url);
 

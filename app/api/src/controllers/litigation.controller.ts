@@ -398,9 +398,11 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
       })();
 
       // create recognitions for valid litigators
+      console.log("These are valid ligitator ids", validLitigatorIds)
       return Promise.all(
         validLitigatorIds.map(async (id) => {
           const foundAuthor = await getUserByCriteria('user_id',id, true);
+          console.log("This is the great thing", foundAuthor?.email_address)
           if(foundAuthor) {
             await sendMail({
               to: foundAuthor?.email_address as string,
