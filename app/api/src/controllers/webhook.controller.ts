@@ -6,6 +6,7 @@ import litigationStatusTypes from '../constants/litigationStatusTypes';
 import publishPlatforms from '../constants/publishPlatforms';
 import statusTypes from '../constants/statusTypes';
 import transactionPurposes from '../constants/transactionPurposes';
+import { updateLitigationById } from '../services/litigation.service';
 import { getTransactionByHash, updateTransactionById } from '../services/transaction.service';
 import ApiError from '../utils/ApiError';
 import { getBlockInfo, getTransactionInfo, ICardanoTransaction } from '../utils/cardano';
@@ -113,6 +114,21 @@ export const processTransaction = catchAsync(async (req, res, next): Promise<voi
 
     // if transaction was for litigation
     if (pocreTransaction && cardanoTransation && cardanoTransation.metadata.pocre_entity === 'litigation') {
+      // if transaction was for registering litigation claim, then move litigation out of draft
+      if (pocreTransaction.transaction_purpose === transactionPurposes.REGISTER_LITIGATION_CLAIM) {
+        // confirm the transaction
+        await updateTransactionById(pocreTransaction.transaction_id, {
+          is_validated: true,
+        });
+
+        // move litigation out of draft
+        await updateLitigationById(cardanoTransation.metadata.pocre_id, {
+          is_draft: false,
+        });
+
+        return;
+      }
+
       // if transaction was for starting litigation, then update litigation
       if (pocreTransaction.transaction_purpose === transactionPurposes.START_LITIGATION) {
         // confirm the transaction
