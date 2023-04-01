@@ -333,11 +333,9 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
   }
 
   // select jury if required
-  console.log("This will now select jury membmers")
   const recognitionIds = await (async () => {
     // if litigation is not required then dont make jury recognitions
     if (req.body.assumed_author_response === litigationStatusTypes.WITHDRAW_CLAIM) return litigation.recognitions;
-    console.log("This will now select jury membmers 1")
     // create recognition for jury
     const tempRecognitions = await (async () => {
       // find forbidden litigators
@@ -352,7 +350,6 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
         const material = await getMaterialById(litigation.material_id);
         if (material) forbiddenLitigators.push(material.author_id);
       }
-      console.log("This will now select jury membmers 2")
       // find valid litigators
       const validLitigatorIds = await (async () => {
         const { litigators } = config.litigation;
@@ -397,13 +394,10 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
 
         return litigatorIds;
       })();
-      console.log("This will now select jury membmers 3")
       // create recognitions for valid litigators
-      console.log("These are valid ligitator ids", validLitigatorIds)
       return Promise.all(
         validLitigatorIds.map(async (id) => {
           const foundAuthor = await getUserByCriteria('user_id',id, true);
-          console.log("This is the great thing", foundAuthor?.email_address)
           if(foundAuthor) {
             await sendMail({
               to: foundAuthor?.email_address as string,
@@ -424,7 +418,6 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
 
     return tempRecognitions.map((recognition) => recognition.recognition_id);
   })();
-  console.log("This has now selected the jury members",recognitionIds)
 
   // find reconcilation end date
   const dates = (() => {
