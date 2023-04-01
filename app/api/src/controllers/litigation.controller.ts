@@ -81,12 +81,7 @@ export const createLitigation = catchAsync(async (req, res): Promise<void | any>
 
   // when not draft then make associated items non claimable
   if (!req.body.is_draft) {
-    let author_id = '';
-    if(material)
-    {
-      author_id = material?.author_id
-    }
-    const foundAuthor = await getUserByCriteria('user_id',author_id, true);
+    const foundAuthor = material ? await getUserByCriteria('user_id',material?.author_id, true) : null;
     if(foundAuthor) {
       await sendMail({
         to: foundAuthor?.email_address as string,
@@ -158,12 +153,7 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     if (material && !material?.is_claimable) {
       throw new ApiError(httpStatus.NOT_FOUND, 'material is not claimable');
     }
-    let author_id = '';
-    if(material)
-    {
-      author_id = material?.author_id
-    }
-    const foundAuthor = await getUserByCriteria('user_id',author_id, true);
+    const foundAuthor = material ? await getUserByCriteria('user_id',material?.author_id, true) : null;
     if(foundAuthor) {
       await sendMail({
         to: foundAuthor?.email_address as string,
