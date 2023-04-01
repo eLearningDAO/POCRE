@@ -10,23 +10,22 @@ import transactionPurposes from 'utils/constants/transactionPurposes';
 import authUser from 'utils/helpers/authUser';
 import { transactADAToPOCRE } from 'utils/helpers/wallet';
 
-// get auth user
-const user = authUser.getUser();
-
 const useRecognitions = () => {
   const queryClient = useQueryClient();
 
   const [shouldFetchRecognitions, setShouldFetchRecognitions] = useState(false);
   const [recognitionIdToFetch, setRecognitionIdToFetch] = useState(null);
-
+  // get auth user
+  const user = authUser.getUser();
   // fetch all recognitions
+  const queryKey = `recognitions-${user?.user_id}`;
   const {
     data: recognitions,
     isError: isFetchRecognitionsError,
     isSuccess: isFetchRecognitionsSuccess,
     isLoading: isFetchingRecognitions,
   } = useQuery({
-    queryKey: ['recognitions'],
+    queryKey: [queryKey],
     queryFn: async () => {
       // get recognitions (throw error if not found)
       const recognitionToPopulate = ['recognition_by', 'recognition_for', 'transaction_id'];

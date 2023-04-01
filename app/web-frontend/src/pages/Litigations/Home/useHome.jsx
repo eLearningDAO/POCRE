@@ -8,8 +8,6 @@ import transactionPurposes from 'utils/constants/transactionPurposes';
 import authUser from 'utils/helpers/authUser';
 import { transactADAToPOCRE } from 'utils/helpers/wallet';
 
-const user = authUser.getUser();
-
 const toDate = (dateString) => new Date(dateString);
 
 const formatDates = (litigation) => ({
@@ -23,15 +21,16 @@ const formatDates = (litigation) => ({
 const useHome = () => {
   const queryClient = useQueryClient();
   const [shouldFetchLitigations, setShouldFetchLitigations] = useState(false);
-
+  const user = authUser.getUser();
   // fetch all litigations
+  const queryKey = `litigations-${user?.user_id}`;
   const {
     data: litigations,
     isError: isFetchLitigationsSuccess,
     isSuccess: isFetchLitigationsError,
     isLoading: isFetchingLitigations,
   } = useQuery({
-    queryKey: ['litigations'],
+    queryKey: [queryKey],
     queryFn: async () => {
       const toPopulate = [
         'assumed_author', 'winner', 'issuer_id', 'creation_id', 'creation_id.author_id', 'decisions', 'material_id.author_id', 'transactions',
