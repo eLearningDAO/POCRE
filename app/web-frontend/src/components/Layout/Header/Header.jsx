@@ -25,6 +25,7 @@ function HomeHeader({ displayNav = false }) {
     showLoginForm,
     setShowLoginForm,
     loggedInUser,
+    notificationCount,
   } = useHeader();
   return (
     <Grid container className="header" alignItems="center">
@@ -127,16 +128,14 @@ function HomeHeader({ displayNav = false }) {
           </div>
         )}
         {loggedInUser && (
-          <Box width="100%">
-            <IconButton>
-              <Badge badgeContent={4} color="primary">
-                <img
-                  alt="bell home"
-                  src={BellIcon}
-                />
-              </Badge>
-            </IconButton>
-          </Box>
+          <IconButton>
+            <Badge badgeContent={notificationCount} color="primary">
+              <img
+                alt="bell home"
+                src={BellIcon}
+              />
+            </Badge>
+          </IconButton>
         )}
         <Button
           variant="contained"

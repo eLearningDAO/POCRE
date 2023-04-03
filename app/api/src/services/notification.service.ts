@@ -142,11 +142,12 @@ export const queryNotifications = async (options: INotificationQuery): Promise<I
         query: `SELECT * ${populator({
           tableAlias: 'n',
           fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
-        })} FROM notification n ${search} ${order} WHERE n.status='${options.status}' OFFSET $1 LIMIT $2;`,
-        count: `SELECT COUNT(*) as total_results FROM notification n ${search} WHERE n.status='${options.status}' OFFSET $1 LIMIT $2;`,
+        })} FROM notification n ${search} and n.status='${options.status}' ${order} OFFSET $1 LIMIT $2;`,
+        count: `SELECT COUNT(*) as total_results FROM notification n ${search} and n.status='${options.status}';`,
       },
     };
-    console.log("THis is the query", queryModes.default.query)
+    console.log("THis is the query", queryModes.notificationsByStatus.query)
+    console.log("THis is the query", queryModes.notificationsByStatus.count)
     const result = await db.instance.query(
       typeof options.status === 'string' ?
       queryModes.notificationsByStatus.query

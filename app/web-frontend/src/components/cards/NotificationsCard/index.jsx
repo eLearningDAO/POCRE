@@ -1,7 +1,6 @@
 import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getUrlFileType } from 'utils/helpers/getUrlFileType';
-import { accessibleOnClick } from 'utils/helpers/accessibleOnClick';
 import YouTube from 'react-youtube';
 import { getIdIfYoutubeLink } from 'utils/helpers/getIdFromYoutubeLink';
 import MediaPreview from 'components/media/preview';
@@ -12,6 +11,7 @@ function NotificationsCard({
   creationType,
   mediaUrl = '',
   handleCreationCardClick,
+  markRead = () => {},
 }) {
   const [mediaType, setMediaType] = useState(null);
   const [showMediaPreview, setShowMediaPreview] = useState(false);
@@ -31,14 +31,13 @@ function NotificationsCard({
     <>
       <div
         className="notification-card"
-        {...accessibleOnClick(handleCreationCardClick, notification.notification_link)}
       >
         <div className="notification-img">
           {mediaType === 'image' && (
             <img className="treding-card-media" alt="collection-card-hero" src={mediaUrl} />
           )}
           {mediaType === 'youtube_video' && (
-          <YouTube videoId={getIdIfYoutubeLink(mediaUrl)} opts={options} />
+            <YouTube videoId={getIdIfYoutubeLink(mediaUrl)} opts={options} />
           )}
           {mediaType === 'video' && (
             <video
@@ -65,14 +64,24 @@ function NotificationsCard({
               {notification.notification_description}
             </span>
           </div>
+          {notification.status === 'unread'
+            && (
+            <Button
+              className="notification-btn"
+              onClick={() => {
+                markRead();
+              }}
+            >
+              Mark Read
+            </Button>
+            )}
           <Button
             className="notification-btn"
-            onClick={(event) => {
-              event.stopPropagation();
-              setShowMediaPreview(true);
+            onClick={() => {
+              handleCreationCardClick(notification.notification_link);
             }}
           >
-            Mark Read
+            Visit Page
           </Button>
         </div>
       </div>

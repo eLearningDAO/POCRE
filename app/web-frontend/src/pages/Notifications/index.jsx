@@ -3,15 +3,15 @@ import NotificationsCard from 'components/cards/NotificationsCard';
 import Loader from 'components/uicore/Loader';
 import { useNavigate } from 'react-router-dom';
 import './index.css';
-import useHome from './useNotifications';
+import userNotifications from './useNotifications';
 
 function Home() {
   const navigate = useNavigate();
-
   const {
+    updateNotification,
     notificationList,
     isNotificationListFetched,
-  } = useHome();
+  } = userNotifications();
   const handleCreationCardClick = (creationId) => {
     navigate(creationId);
   };
@@ -30,6 +30,7 @@ function Home() {
                   mediaUrl={notification?.creation_link}
                   notification={notification}
                   handleCreationCardClick={handleCreationCardClick}
+                  markRead={() => { updateNotification(notification?.notification_id); }}
                 />
               ))}
           </div>
