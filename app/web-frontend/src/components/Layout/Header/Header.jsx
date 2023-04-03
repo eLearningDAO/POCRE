@@ -3,7 +3,7 @@ import { Logout } from '@mui/icons-material';
 import ClearIcon from '@mui/icons-material/Clear';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
-  Box, Button, Grid, Badge, IconButton,
+  Box, Button, Grid, Badge,
 } from '@mui/material';
 import logo from 'assets/images/logo-beta.png';
 import BellIcon from 'assets/images/bell.png';
@@ -128,14 +128,14 @@ function HomeHeader({ displayNav = false }) {
           </div>
         )}
         {loggedInUser && (
-          <IconButton>
+          <Link to="/notifications">
             <Badge badgeContent={notificationCount} color="primary">
               <img
                 alt="bell home"
                 src={BellIcon}
               />
             </Badge>
-          </IconButton>
+          </Link>
         )}
         <Button
           variant="contained"

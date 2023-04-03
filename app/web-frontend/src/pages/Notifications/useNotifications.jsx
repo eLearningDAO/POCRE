@@ -36,6 +36,7 @@ const useNotifications = () => {
       await Notifications.update(notificationId, { ...updatedNotification });
       // remove queries cache
       queryClient.invalidateQueries({ queryKey: [`notifications-${user}`] });
+      queryClient.invalidateQueries({ queryKey: [`notifications-count-${user}`] });
     },
   });
 
