@@ -39,6 +39,7 @@ const User = {
   ...REQUEST_TEMPLATE('users'), invite: REQUEST_TEMPLATE('users/invite').create, verifyEmail: REQUEST_TEMPLATE('users/verifyUserEmail').create, confirmEmail: REQUEST_TEMPLATE('users/verifyUserEmail').getById,
 };
 const Material = REQUEST_TEMPLATE('materials');
+const Notifications = REQUEST_TEMPLATE('notifications');
 const Creation = {
   ...REQUEST_TEMPLATE('creations'),
   registerTransaction: async (id, requestBody) => await REQUEST_TEMPLATE(`creations/${id}/transaction`).create(requestBody),
@@ -59,6 +60,7 @@ const Transaction = { create: REQUEST_TEMPLATE('transactions').create };
 export {
   User,
   Material,
+  Notifications,
   Creation,
   Decision,
   Recognition,

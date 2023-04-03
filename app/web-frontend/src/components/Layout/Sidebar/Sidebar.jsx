@@ -47,6 +47,15 @@ function SideBar() {
             <span>Recognitions</span>
           </Link>
         </li>
+        <li className={location.pathname.includes('/notifications') ? 'activeSidebarMenu' : ''}>
+          <Link to="/notifications">
+            <img
+              alt="menu recognitions"
+              src={location.pathname.includes('/notifications') ? MenuIcon3Active : MenuIcon3}
+            />
+            <span>Notifications</span>
+          </Link>
+        </li>
         {login && (
           <li className={location.pathname.includes('/litigations') ? 'activeSidebarMenu' : ''}>
             <Link to="/litigations">

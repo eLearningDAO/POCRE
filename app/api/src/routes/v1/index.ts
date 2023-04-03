@@ -3,6 +3,7 @@ import userRoute from './user.route';
 import decisionRoute from './decision.route';
 import recognitionRoute from './recognition.route';
 import materialRoute from './material.route';
+import notificationRoute from './notification.route';
 import tagRoute from './tag.route';
 import creationRoute from './creation.route';
 import litigationRoute from './litigation.route';
@@ -32,6 +33,10 @@ const defaultRoutes = [
   {
     path: '/materials',
     route: materialRoute,
+  },
+  {
+    path: '/notifications',
+    route: notificationRoute,
   },
   {
     path: '/tags',
