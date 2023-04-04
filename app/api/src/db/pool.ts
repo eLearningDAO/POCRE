@@ -110,7 +110,7 @@ const init = async (): Promise<QueryResult<any>> => {
       notification_issued TIMESTAMP NOT NULL DEFAULT NOW(),
       status notification_status_enums NOT NULL,
       status_updated TIMESTAMP NOT NULL DEFAULT NOW(),
-      created_at TIMESTAMP NOT NULL DEFAULT NOW()
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
       CONSTRAINT maker_id
           FOREIGN KEY(notification_for) 
           REFERENCES users(user_id)
