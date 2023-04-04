@@ -27,14 +27,11 @@ export const deleteNotificationById = catchAsync(async (req, res): Promise<void>
 });
 
 export const updateNotificationById = catchAsync(async (req, res): Promise<void> => {
-  // check if reference docs exist
-  if (req.body.notification_id) await notificationService.getNotificationById(req.body.notification_id as string); // verify recognition, will throw an error if recognition not found
-
-  const material = await notificationService.updateNotificationById(
+  const notification = await notificationService.updateNotificationById(
     req.params.notification_id,
     {
       ...req.body,
     }
   );
-  res.send(material);
+  res.send(notification);
 });
