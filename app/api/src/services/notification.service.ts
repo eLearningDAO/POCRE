@@ -127,7 +127,6 @@ export const queryNotifications = async (options: INotificationQuery): Promise<I
               (options.ascend_fields || []).length > 0 && (options.descend_fields || []).length > 0 ? ', ' : ''
             } ${descendOrder}`
           : '';
-          console.log('THis is the order',order)
 
     // list of queries
     const queryModes = {
@@ -146,8 +145,6 @@ export const queryNotifications = async (options: INotificationQuery): Promise<I
         count: `SELECT COUNT(*) as total_results FROM notification n ${search} and n.status='${options.status}';`,
       },
     };
-    console.log("THis is the query", queryModes.notificationsByStatus.query)
-    console.log("THis is the query", queryModes.notificationsByStatus.count)
     const result = await db.instance.query(
       typeof options.status === 'string' ?
       queryModes.notificationsByStatus.query
