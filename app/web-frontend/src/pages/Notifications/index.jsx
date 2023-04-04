@@ -12,8 +12,8 @@ function Home() {
     notificationList,
     isNotificationListFetched,
   } = userNotifications();
-  const handleCreationCardClick = (creationId) => {
-    navigate(creationId);
+  const handleCreationCardClick = (link) => {
+    navigate(link);
   };
 
   return (
