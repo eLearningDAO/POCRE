@@ -4,7 +4,6 @@ import ApiError from '../utils/ApiError';
 import * as db from '../db/pool';
 import notificationStatusTypes from '../constants/notificationStatusTypes';
 import supportedMediaTypes from '../constants/supportedMediaTypes';
-import { populator } from '../db/plugins/populator';
 
 const types = Object.values(notificationStatusTypes);
 type TNotificationStatus = typeof types[number];
@@ -131,17 +130,11 @@ export const queryNotifications = async (options: INotificationQuery): Promise<I
     // list of queries
     const queryModes = {
       default: {
-        query: `SELECT * ${populator({
-          tableAlias: 'n',
-          fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
-        })} FROM notification n ${search} ${order} OFFSET $1 LIMIT $2;`,
+        query: `SELECT * FROM notification n ${search} ${order} OFFSET $1 LIMIT $2;`,
         count: `SELECT COUNT(*) as total_results FROM notification ${search};`,
       },
       notificationsByStatus: {
-        query: `SELECT * ${populator({
-          tableAlias: 'n',
-          fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
-        })} FROM notification n ${search} and n.status='${options.status}' ${order} OFFSET $1 LIMIT $2;`,
+        query: `SELECT * FROM notification n ${search} and n.status='${options.status}' ${order} OFFSET $1 LIMIT $2;`,
         count: `SELECT COUNT(*) as total_results FROM notification n ${search} and n.status='${options.status}';`,
       },
     };
@@ -193,11 +186,7 @@ export const getNotificationById = async (
     try {
       const result = await db.instance.query(
         `SELECT 
-        * 
-        ${populator({
-          tableAlias: 'm',
-          fields: options ? (typeof options.populate === 'string' ? [options.populate] : options.populate) : [],
-        })} 
+        *
         FROM 
         notification n 
         WHERE 
