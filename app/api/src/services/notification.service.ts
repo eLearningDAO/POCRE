@@ -145,8 +145,9 @@ export const queryNotifications = async (options: INotificationQuery): Promise<I
         count: `SELECT COUNT(*) as total_results FROM notification n ${search} and n.status='${options.status}';`,
       },
     };
+    const optionHasStatus = typeof options.status === 'string';
     const result = await db.instance.query(
-      typeof options.status === 'string' ?
+      optionHasStatus ?
       queryModes.notificationsByStatus.query
         : queryModes.default.query,
       [options.page === 1 ? '0' : (options.page - 1) * options.limit, options.limit]
@@ -155,7 +156,7 @@ export const queryNotifications = async (options: INotificationQuery): Promise<I
 
     const count = await (
       await db.instance.query(
-        typeof options.status === 'string' ?
+        optionHasStatus ?
         queryModes.notificationsByStatus.count
           : queryModes.default.count,
         []
