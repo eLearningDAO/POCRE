@@ -129,17 +129,19 @@ export const queryNotifications = async (options: INotificationQuery): Promise<I
           : '';
 
     // list of queries
-    const populatorValues = populator({
-      tableAlias: 'n',
-      fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
-    })
     const queryModes = {
       default: {
-        query: `SELECT * ${populatorValues} FROM notification n ${search} ${order} OFFSET $1 LIMIT $2;`,
+        query: `SELECT * ${populator({
+          tableAlias: 'n',
+          fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+        })} FROM notification n ${search} ${order} OFFSET $1 LIMIT $2;`,
         count: `SELECT COUNT(*) as total_results FROM notification ${search};`,
       },
       notificationsByStatus: {
-        query: `SELECT * ${populatorValues} FROM notification n ${search} and n.status='${options.status}' ${order} OFFSET $1 LIMIT $2;`,
+        query: `SELECT * ${populator({
+          tableAlias: 'n',
+          fields: typeof options.populate === 'string' ? [options.populate] : options.populate,
+        })} FROM notification n ${search} and n.status='${options.status}' ${order} OFFSET $1 LIMIT $2;`,
         count: `SELECT COUNT(*) as total_results FROM notification n ${search} and n.status='${options.status}';`,
       },
     };
