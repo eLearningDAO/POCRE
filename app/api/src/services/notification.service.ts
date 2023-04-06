@@ -146,7 +146,7 @@ export const queryNotifications = async (options: INotificationQuery): Promise<I
       },
     };
     const result = await db.instance.query(
-      options.status in [notificationStatusTypes.READ,notificationStatusTypes.UNREAD] ?
+      typeof options.status === 'string' ?
       queryModes.notificationsByStatus.query
         : queryModes.default.query,
       [options.page === 1 ? '0' : (options.page - 1) * options.limit, options.limit]
@@ -155,7 +155,7 @@ export const queryNotifications = async (options: INotificationQuery): Promise<I
 
     const count = await (
       await db.instance.query(
-        options.status in [notificationStatusTypes.READ,notificationStatusTypes.UNREAD] ?
+        typeof options.status === 'string' ?
         queryModes.notificationsByStatus.count
           : queryModes.default.count,
         []
