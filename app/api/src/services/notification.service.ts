@@ -155,7 +155,7 @@ export const queryNotifications = async (options: INotificationQuery): Promise<I
 
     const count = await (
       await db.instance.query(
-        typeof options.status === 'string' ?
+        options.status in [notificationStatusTypes.READ,notificationStatusTypes.UNREAD] ?
         queryModes.notificationsByStatus.count
           : queryModes.default.count,
         []
