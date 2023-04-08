@@ -108,10 +108,10 @@ export const queryNotifications = async (options: INotificationQuery): Promise<I
     // search
     const search =
       options.search_fields && options.search_fields.length > 0
-        ? `WHERE ${options.search_fields
+        ? `WHERE ${options.search_fields!= undefined && options.search_fields
             .map(
               (field) =>
-                `${field} ${['notification_for'].includes(field) ? `= '${options.query}'` : `LIKE '%${options.query}%'`}`
+                `${field} ${['notification_for'].includes(field) ? `= '${options.query!= undefined && options.query}'` : `LIKE '%${options.query!= undefined && options.query}%'`}`
             )
             .join(' OR ')}`
         : '';
