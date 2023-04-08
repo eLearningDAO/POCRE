@@ -106,12 +106,13 @@ export const createNotification = async (notificationBody: INotification): Promi
 export const queryNotifications = async (options: INotificationQuery): Promise<INotificationQueryResult> => {
   try {
     // search
+    const {search_fields,query} = options
     const search =
-      options.search_fields && options.search_fields.length > 0
-        ? `WHERE ${options.search_fields!= undefined && options.search_fields
+      search_fields && search_fields.length > 0
+        ? `WHERE ${search_fields
             .map(
               (field) =>
-                `${field} ${['notification_for'].includes(field) ? `= '${options.query!= undefined && options.query}'` : `LIKE '%${options.query!= undefined && options.query}%'`}`
+                `${field} ${['notification_for'].includes(field) ? `= '${query}'` : `LIKE '%${query}%'`}`
             )
             .join(' OR ')}`
         : '';
