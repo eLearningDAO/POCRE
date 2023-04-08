@@ -106,7 +106,7 @@ export const createNotification = async (notificationBody: INotification): Promi
 export const queryNotifications = async (options: INotificationQuery): Promise<INotificationQueryResult> => {
   try {
     // search
-    const {search_fields,query} = options
+    const {search_fields,query,ascend_fields,descend_fields,status,limit,page} = options
     const search =
       search_fields && search_fields.length > 0
         ? `WHERE ${search_fields
@@ -118,13 +118,13 @@ export const queryNotifications = async (options: INotificationQuery): Promise<I
         : '';
 
       const ascendOrder =
-        (options.ascend_fields || []).length > 0 ? `${options.ascend_fields.map((x) => `${x} ASC`).join(', ')}` : '';
+        (ascend_fields || []).length > 0 ? `${ascend_fields.map((x) => `${x} ASC`).join(', ')}` : '';
       const descendOrder =
-        (options.descend_fields || []).length > 0 ? `${options.descend_fields.map((x) => `${x} DESC`).join(', ')}` : '';
+        (descend_fields || []).length > 0 ? `${descend_fields.map((x) => `${x} DESC`).join(', ')}` : '';
       const order =
-        (options.ascend_fields || options.descend_fields || []).length > 0
+        (ascend_fields || descend_fields || []).length > 0
           ? `ORDER BY ${ascendOrder} ${
-              (options.ascend_fields || []).length > 0 && (options.descend_fields || []).length > 0 ? ', ' : ''
+              (ascend_fields || []).length > 0 && (descend_fields || []).length > 0 ? ', ' : ''
             } ${descendOrder}`
           : '';
 
@@ -135,21 +135,21 @@ export const queryNotifications = async (options: INotificationQuery): Promise<I
         count: `SELECT COUNT(*) as total_results FROM notification ${search};`,
       },
       notificationsByStatus: {
-        query: `SELECT * FROM notification n ${search} and n.status='${options.status}' ${order} OFFSET $1 LIMIT $2;`,
-        count: `SELECT COUNT(*) as total_results FROM notification n ${search} and n.status='${options.status}';`,
+        query: `SELECT * FROM notification n ${search} and n.status='${status}' ${order} OFFSET $1 LIMIT $2;`,
+        count: `SELECT COUNT(*) as total_results FROM notification n ${search} and n.status='${status}';`,
       },
     };
     const result = await db.instance.query(
-      typeof options.status === 'string' ?
+      typeof status === 'string' ?
       queryModes.notificationsByStatus.query
         : queryModes.default.query,
-      [options.page === 1 ? '0' : (options.page - 1) * options.limit, options.limit]
+      [page === 1 ? '0' : (page - 1) * limit, limit]
     );
     const notifications = result.rows;
 
     const count = await (
       await db.instance.query(
-        typeof options.status === 'string' ?
+        typeof status === 'string' ?
         queryModes.notificationsByStatus.count
           : queryModes.default.count,
         []
