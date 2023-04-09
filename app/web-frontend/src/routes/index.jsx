@@ -19,6 +19,7 @@ import WalletPublic from 'pages/Wallet/Public';
 // other pages
 import CreditsHome from 'pages/Credits/Home';
 import Home from 'pages/Home';
+import Notifications from 'pages/Notifications';
 import Signup from 'pages/Signup';
 import VerifyEmail from 'pages/VerifyEmail';
 import Page404 from 'pages/404';
@@ -33,6 +34,14 @@ function AppRoutes() {
           element={(
             <Layout displayNav>
               <Home />
+            </Layout>
+          )}
+        />
+        <Route
+          path="/notifications"
+          element={(
+            <Layout displaySidebar>
+              <Notifications />
             </Layout>
           )}
         />

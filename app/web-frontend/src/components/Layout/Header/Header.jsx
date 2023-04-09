@@ -1,8 +1,12 @@
+import React from 'react';
 import { Logout } from '@mui/icons-material';
 import ClearIcon from '@mui/icons-material/Clear';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Box, Button, Grid } from '@mui/material';
+import {
+  Box, Button, Grid, Badge,
+} from '@mui/material';
 import logo from 'assets/images/logo-beta.png';
+import BellIcon from 'assets/images/bell.png';
 import { FaUser } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import LoginModal from '../../LoginModal';
@@ -21,8 +25,8 @@ function HomeHeader({ displayNav = false }) {
     showLoginForm,
     setShowLoginForm,
     loggedInUser,
+    notificationCount,
   } = useHeader();
-
   return (
     <Grid container className="header" alignItems="center">
       {/* {!location && <LoginModal />} */}
@@ -63,11 +67,11 @@ function HomeHeader({ displayNav = false }) {
               </li>
               {
                 loggedInUser && (
-                <li className={location.pathname === '/litigations' ? 'activeSidebarMenu' : ''}>
-                  <Link to="/litigations">Litigations</Link>
-                </li>
+                  <li className={location.pathname === '/litigations' ? 'activeSidebarMenu' : ''}>
+                    <Link to="/litigations">Litigations</Link>
+                  </li>
                 )
-                }
+              }
               <li className={location.pathname === '/wallet' ? 'activeSidebarMenu' : ''}>
                 <Link to="/wallet">Wallet</Link>
               </li>
@@ -122,6 +126,16 @@ function HomeHeader({ displayNav = false }) {
               <h4>{loggedInUser.user_name}</h4>
             </Link>
           </div>
+        )}
+        {loggedInUser && (
+          <Link to="/notifications">
+            <Badge badgeContent={notificationCount} color="primary">
+              <img
+                alt="bell home"
+                src={BellIcon}
+              />
+            </Badge>
+          </Link>
         )}
         <Button
           variant="contained"

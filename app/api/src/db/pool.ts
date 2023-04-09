@@ -35,6 +35,12 @@ const init = async (): Promise<QueryResult<any>> => {
     END $$;
 
     DO $$ BEGIN
+      CREATE TYPE notification_status_enums AS ENUM ('read', 'unread');
+    EXCEPTION
+        WHEN duplicate_object THEN null;
+    END $$;
+
+    DO $$ BEGIN
       CREATE TYPE assumed_author_response_enums AS ENUM ('pending_response', 'start_litigation', 'withdraw_claim');
     EXCEPTION
         WHEN duplicate_object THEN null;
@@ -89,6 +95,24 @@ const init = async (): Promise<QueryResult<any>> => {
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
       CONSTRAINT maker_id
           FOREIGN KEY(maker_id) 
+          REFERENCES users(user_id)
+          ON DELETE CASCADE
+    );
+    
+    CREATE TABLE IF NOT EXISTS notification (
+      notification_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      notification_for UUID NOT NULL,
+      notification_title text,
+      notification_description text,
+      notification_link text,
+      creation_link text,
+      creation_type media_type_enums NOT NULL,
+      notification_issued TIMESTAMP NOT NULL DEFAULT NOW(),
+      status notification_status_enums NOT NULL,
+      status_updated TIMESTAMP NOT NULL DEFAULT NOW(),
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+      CONSTRAINT notification_for
+          FOREIGN KEY(notification_for) 
           REFERENCES users(user_id)
           ON DELETE CASCADE
     );

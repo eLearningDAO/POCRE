@@ -5,6 +5,7 @@ import litigationStatusTypes from '../constants/litigationStatusTypes';
 import statusTypes from '../constants/statusTypes';
 import transactionPurposes from '../constants/transactionPurposes';
 import { getCreationById, updateCreationById } from '../services/creation.service';
+import { createNotification } from '../services/notification.service';
 import { getDecisionById } from '../services/decision.service';
 import * as litigationService from '../services/litigation.service';
 import { getMaterialById, updateMaterialById } from '../services/material.service';
@@ -85,11 +86,22 @@ export const createLitigation = catchAsync(async (req, res): Promise<void | any>
     if(foundAuthor) {
       await sendMail({
         to: foundAuthor?.email_address as string,
-        subject: `A ligitation has been filed against your material "${material?.material_title}"`,
-        message: `You were recognized as author of "${material?.material_title}" by ${
+        subject: `A litigation has been filed against your material "${material?.material_title}"`,
+        message: `New litigation has been filed "${material?.material_title}" by ${
           (req.user as IUserDoc)?.user_name
-        }. Please find ligitation here ${config.web_client_base_url}/litigations to be recognized as the author.`,
+        }. Please find litigation here ${config.web_client_base_url}/litigations to be recognized as the author.`,
       }).catch(() => null);
+      await createNotification({
+        "notification_title": `New litigation for "${material?.material_title}`,
+        "notification_description": `New litigation has been filed "${material?.material_title}" by ${
+          (req.user as IUserDoc)?.user_name
+        }.`,
+        "notification_for": foundAuthor?.user_id,
+        "creation_type":"image",
+        "creation_link":creation.creation_link,
+        "notification_link":"/litigations",
+        "status": "unread"
+      })
     }
     // make creation not claimable
     if (!material && creation) {
@@ -157,11 +169,22 @@ export const updateLitigationById = catchAsync(async (req, res): Promise<void> =
     if(foundAuthor) {
       await sendMail({
         to: foundAuthor?.email_address as string,
-        subject: `A ligitation has been filed against your material "${material?.material_title}"`,
+        subject: `A litigation has been filed against your material "${material?.material_title}"`,
         message: `You were recognized as author of "${material?.material_title}" by ${
           (req.user as IUserDoc)?.user_name
-        }. Please find ligitation here ${config.web_client_base_url}/litigations/${req.params.litigation_id} to be recognized as the author.`,
+        }. Please find litigation here ${config.web_client_base_url}/litigations/${req.params.litigation_id} to be recognized as the author.`,
       }).catch(() => null);
+      await createNotification({
+        "notification_title": `New litigation for "${material?.material_title}`,
+        "notification_description": `New litigation has been filed "${material?.material_title}" by ${
+          (req.user as IUserDoc)?.user_name
+        }.`,
+        "notification_for": foundAuthor?.user_id,
+        "creation_type":creation.creation_type,
+        "creation_link":creation.creation_link,
+        "notification_link":`/litigations/${req.params.litigation_id}`,
+        "status": "unread"
+      })
     }
     // update litigation
     const updatedLitigation = await litigationService.updateLitigationById(
@@ -321,7 +344,6 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
     res.send(updatedLitigation);
     return;
   }
-
   // select jury if required
   const recognitionIds = await (async () => {
     // if litigation is not required then dont make jury recognitions
@@ -385,6 +407,7 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
         return litigatorIds;
       })();
       // create recognitions for valid litigators
+      
       return Promise.all(
         validLitigatorIds.map(async (id) => {
           const foundAuthor = await getUserByCriteria('user_id',id, true);
@@ -392,8 +415,18 @@ export const respondToLitigationById = catchAsync(async (req, res): Promise<void
             await sendMail({
               to: foundAuthor?.email_address as string,
               subject: `Invitation for litigation!`,
-              message: `You have been recognized as a jury member for a litigations. Please find ligitation here ${config.web_client_base_url}/litigations/${req.params.litigation_id} to cast your vote.`,
+              message: `You have been recognized as a jury member for a litigations. Please find litigation here ${config.web_client_base_url}/litigations/${req.params.litigation_id} to cast your vote.`,
             }).catch(() => null);
+            const creationType = creation?.creation_type
+            creationType && await createNotification({
+              "notification_title": `Invitation for litigation!`,
+              "notification_description": `You have been recognized as a jury member for a litigations.`,
+              "notification_for": id,
+              "creation_type":creationType,
+              "creation_link":creation.creation_link,
+              "notification_link":`/litigations/${req.params.litigation_id}`,
+              "status": "unread"
+            })
           }
           // create new recognition
           return createRecognition({
