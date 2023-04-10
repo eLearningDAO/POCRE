@@ -22,8 +22,8 @@ function Home() {
         <Grid item md={12} xs={12} sm={12} className="trending-container">
           <h4 className="home-title">Notifications</h4>
           <div>
-            {isNotificationListFetched ? <Loader /> : notificationList
-              && notificationList.map((notification, index) => (
+            {isNotificationListFetched ? <Loader /> : (notificationList.length > 0
+              ? (notificationList.map((notification, index) => (
                 <NotificationsCard
                   key={index}
                   creationType={notification?.creation_type}
@@ -32,7 +32,7 @@ function Home() {
                   handleCreationCardClick={handleCreationCardClick}
                   markRead={() => { updateNotification(notification?.notification_id); }}
                 />
-              ))}
+              ))) : (<h3 className="m-auto p-64">You have not notification!</h3>))}
           </div>
         </Grid>
       </Grid>
