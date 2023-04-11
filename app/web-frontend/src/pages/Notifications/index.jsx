@@ -32,7 +32,7 @@ function Home() {
                   handleCreationCardClick={handleCreationCardClick}
                   markRead={() => { updateNotification(notification?.notification_id); }}
                 />
-              ))) : (<h3 className="m-auto p-64">You have not notification!</h3>))}
+              ))) : (<h3 className="m-auto p-64">You have no notification!</h3>))}
           </div>
         </Grid>
       </Grid>
