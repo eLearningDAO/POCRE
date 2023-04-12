@@ -6,6 +6,8 @@ import MenuIcon6Active from 'assets/images/credit-icon-2.png';
 import MenuIcon6 from 'assets/images/credit.png';
 import MenuIcon3Active from 'assets/images/envelope-icon-2.png';
 import MenuIcon3 from 'assets/images/envelope-icon.png';
+import NotificationIcon from 'assets/images/bell-outline.png';
+import NotificationIconActive from 'assets/images/bell-active.png';
 import HomeIcon from 'assets/images/homeicon.png';
 import MenuIcon5Active from 'assets/images/wallet-icon-2.png';
 import MenuIcon5 from 'assets/images/wallet-icon.png';
@@ -51,7 +53,7 @@ function SideBar() {
           <Link to="/notifications">
             <img
               alt="menu recognitions"
-              src={location.pathname.includes('/notifications') ? MenuIcon3Active : MenuIcon3}
+              src={location.pathname.includes('/notifications') ? NotificationIconActive : NotificationIcon}
             />
             <span>Notifications</span>
           </Link>
