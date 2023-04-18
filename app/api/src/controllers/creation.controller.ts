@@ -227,19 +227,19 @@ export const publishCreation = catchAsync(async (req, res): Promise<void> => {
                   foundAuthor.user_id
                 )} to be recognized as the author.`,
               }).catch(() => null);
-              await createNotification({
-                "notification_title": `New Invitation for "${m.material_title}`,
-                "notification_description": `You were recognized as author of "${m.material_title}" by ${
-                  (req.user as IUserDoc)?.user_name
-                }.`,
-                "notification_for": foundAuthor?.user_id,
-                "creation_type":foundCreation.creation_type,
-                "creation_link":foundCreation.creation_link,
-                "notification_link":"/creations/"+foundCreation.creation_id,
-                "status": "unread"
-              })
             }
-
+            // send notification to old authors
+            await createNotification({
+              "notification_title": `New Invitation for "${m.material_title}`,
+              "notification_description": `You were recognized as author of "${m.material_title}" by ${
+                (req.user as IUserDoc)?.user_name
+              }.`,
+              "notification_for":  m.author_id,
+              "creation_type":foundCreation.creation_type,
+              "creation_link":foundCreation.creation_link,
+              "notification_link":"/creations/"+foundCreation.creation_id,
+              "status": "unread"
+            })
             // send recognition
             const recognition = await createRecognition({
               recognition_for: m.author_id,
