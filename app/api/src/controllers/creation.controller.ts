@@ -233,6 +233,15 @@ export const publishCreation = catchAsync(async (req, res): Promise<void> => {
               status: 'pending',
               status_updated: new Date().toISOString(),
             });
+            await createNotification({
+              "notification_title": `New Invitation for "${m.material_title}`,
+              "notification_description": `You were recognized as author of "${m.material_title}".`,
+              "notification_for": m.author_id,
+              "creation_type": foundCreation.creation_type,
+              "creation_link": foundCreation.creation_link,
+              "notification_link": "/creations/" + foundCreation.creation_id,
+              "status": "unread"
+            })
 
             // update material with recognition
             await updateMaterialById(m.material_id, {
