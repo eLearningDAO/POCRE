@@ -61,11 +61,10 @@ export const getCreationProofById = catchAsync(async (req, res): Promise<void | 
   // proof object
   const creationProof = {
     ...creation,
-    published_at: `${
-      (config.creation_details_web_base_url as string).endsWith('/')
+    published_at: `${(config.creation_details_web_base_url as string).endsWith('/')
         ? config.creation_details_web_base_url.slice(0, -1)
         : config.creation_details_web_base_url
-    }/${creation?.creation_id}`,
+      }/${creation?.creation_id}`,
   };
 
   // when json is required
@@ -221,25 +220,12 @@ export const publishCreation = catchAsync(async (req, res): Promise<void> => {
               await sendMail({
                 to: foundAuthor?.email_address as string,
                 subject: `Invitation to recognize authorship of "${m.material_title}"`,
-                message: `You were recognized as author of "${m.material_title}" by ${
-                  (req.user as IUserDoc)?.user_name
-                }. Please signup on ${config.web_client_base_url}/signup?token=${encode(
-                  foundAuthor.user_id
-                )} to be recognized as the author.`,
+                message: `You were recognized as author of "${m.material_title}" by ${(req.user as IUserDoc)?.user_name
+                  }. Please signup on ${config.web_client_base_url}/signup?token=${encode(
+                    foundAuthor.user_id
+                  )} to be recognized as the author.`,
               }).catch(() => null);
             }
-            // send notification to old authors
-            await createNotification({
-              "notification_title": `New Invitation for "${m.material_title}`,
-              "notification_description": `You were recognized as author of "${m.material_title}" by ${
-                (req.user as IUserDoc)?.user_name
-              }.`,
-              "notification_for":  m.author_id,
-              "creation_type":foundCreation.creation_type,
-              "creation_link":foundCreation.creation_link,
-              "notification_link":"/creations/"+foundCreation.creation_id,
-              "status": "unread"
-            })
             // send recognition
             const recognition = await createRecognition({
               recognition_for: m.author_id,
@@ -247,6 +233,15 @@ export const publishCreation = catchAsync(async (req, res): Promise<void> => {
               status: 'pending',
               status_updated: new Date().toISOString(),
             });
+            await createNotification({
+              "notification_title": `New Invitation for "${m.material_title}`,
+              "notification_description": `You were recognized as author of "${m.material_title}".`,
+              "notification_for": m.author_id,
+              "creation_type": foundCreation.creation_type,
+              "creation_link": foundCreation.creation_link,
+              "notification_link": "/creations/" + foundCreation.creation_id,
+              "status": "unread"
+            })
 
             // update material with recognition
             await updateMaterialById(m.material_id, {
@@ -290,7 +285,7 @@ export const registerCreationTransaction = catchAsync(async (req, res): Promise<
     populate: ['transactions'],
     owner_id: reqUser.user_id,
   });
-
+  
   // check if transaction has correct purposes
   if (
     foundTransaction &&
