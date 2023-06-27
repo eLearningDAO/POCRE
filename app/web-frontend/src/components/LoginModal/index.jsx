@@ -10,7 +10,7 @@ function LoginModal({
     <Modal
       onClose={onClose}
       className="login-modal"
-      title="Login - Select your wallet"
+      title="Select the wallet in PREVIEW network"
     >
       <LoginForm onLoggedIn={onLoggedIn} />
     </Modal>

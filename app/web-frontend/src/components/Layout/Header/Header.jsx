@@ -5,7 +5,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import {
   Box, Button, Grid, Badge,
 } from '@mui/material';
-import logo from 'assets/images/logo-beta.png';
+import logo from 'assets/images/logo-preview.png';
 import BellIcon from 'assets/images/bell.png';
 import { FaUser } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
