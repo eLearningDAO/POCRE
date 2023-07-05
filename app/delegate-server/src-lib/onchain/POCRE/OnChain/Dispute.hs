@@ -18,9 +18,10 @@ import PlutusLedgerApi.V1.Value (
   AssetClass (..),
   CurrencySymbol,
   TokenName (..),
+  Value,
   singleton,
  )
-import PlutusLedgerApi.V2 (PubKeyHash (..), txInInfoResolved)
+import PlutusLedgerApi.V2 (txInInfoResolved)
 import PlutusLedgerApi.V2.Contexts (
   ScriptContext (..),
   TxInfo (..),
@@ -118,7 +119,7 @@ areAllVotesCasted datum =
     == length (allCastedVotes datum)
 
 {-# INLINEABLE countDecision #-}
-countDecision :: TotalMap Decision [PubKeyHash] -> Decision
+countDecision :: TotalMap Decision [UserID] -> Decision
 countDecision votesMap = maxDecision
   where
     votes = fmap length votesMap
@@ -145,13 +146,14 @@ mkDisputeValidator datum redeemer context =
       checkIsMoveToHydra context (hydraHeadId $ terms datum)
     NonHydra nonHydra ->
       case nonHydra of
-        Vote decision ->
+        Vote voter signature decision ->
           let (inDatum, outDatum) = checkTxIsScriptTransition
            in case (state inDatum, state outDatum) of
                 (InProgress, InProgress) ->
-                  checkHasRightToVote
+                  checkHasRightToVote voter
+                    && checkUserSign (terms datum) voter signature
                     && checkItIsVotingTime
-                    && checkVoteCastedCorrectly outDatum decision
+                    && checkVoteCastedCorrectly outDatum voter decision
                 (_, _) -> traceError "Wrong state transition"
         Settle reason ->
           let (inDatum, outDatum) = checkTxIsScriptTransition
@@ -169,9 +171,6 @@ mkDisputeValidator datum redeemer context =
               AllVotesCasted -> createTotalMap []
   where
     info = scriptContextTxInfo context
-    voter = case txInfoSignatories info of
-      [signer] -> signer
-      _ -> traceError "Non-single signer present"
     selfAddress = scriptSelfAddress context
     checkItIsVotingTime =
       let (from, to) = voteInterval $ terms datum
@@ -193,12 +192,12 @@ mkDisputeValidator datum redeemer context =
               then (inDatum, outDatum)
               else traceError "Output does not have state token"
           _ -> traceError "Wrong state transition"
-    checkHasRightToVote =
+    checkHasRightToVote voter =
       traceIfFalse "Not a voter" (voter `elem` jury (terms datum))
         && traceIfFalse
           "Already casted a vote"
           (voter `notElem` allCastedVotes datum)
-    checkVoteCastedCorrectly datum' decision =
+    checkVoteCastedCorrectly datum' voter decision =
       checkVotesAddedCorrectly datum' $
         insert decision [voter] $
           createTotalMap []
