@@ -18,6 +18,11 @@ where
 
 -- Prelude imports
 import PlutusTx.Prelude
+import Prelude qualified
+
+-- Haskell imports
+import Data.Aeson (FromJSON, ToJSON)
+import GHC.Generics (Generic)
 
 -- Plutus imports
 
@@ -25,6 +30,9 @@ import PlutusLedgerApi.V1.Time (POSIXTime)
 import PlutusLedgerApi.V1.Value (CurrencySymbol (..))
 import PlutusTx qualified
 import PlutusTx.Deriving qualified as PlutusTx
+
+-- HydraAuctionUtils imports
+import HydraAuctionUtils.Extras.PlutusOrphans ()
 
 -- POCRE imports
 import POCRE.OnChain.TotalMap
@@ -39,6 +47,8 @@ data StateTokenRedeemer = MintToken
 PlutusTx.makeIsDataIndexed ''StateTokenRedeemer [('MintToken, 0)]
 
 data Decision = Yes | No | Abstain
+  deriving stock (Prelude.Eq, Prelude.Show, Generic)
+  deriving anyclass (FromJSON, ToJSON)
 
 PlutusTx.unstableMakeIsData ''Decision
 PlutusTx.deriveEq ''Decision
@@ -52,16 +62,28 @@ otherDecisions No = [Yes, Abstain]
 otherDecisions Abstain = [Yes, No]
 
 data DisputeRedeemer = MoveToHydra | NonHydra DisputeNonHydraRedeemer
+  deriving stock (Prelude.Eq, Prelude.Show, Generic)
+  deriving anyclass (FromJSON, ToJSON)
+
 data DisputeNonHydraRedeemer
   = Vote UserID Signature Decision
+  | Withdraw Signature
   | Settle SettleReason
+  deriving stock (Prelude.Eq, Prelude.Show, Generic)
+  deriving anyclass (FromJSON, ToJSON)
+
 data SettleReason = AllVotesCasted | Timeout
+  deriving stock (Prelude.Eq, Prelude.Show, Generic)
+  deriving anyclass (FromJSON, ToJSON)
 
 PlutusTx.unstableMakeIsData ''SettleReason
 PlutusTx.unstableMakeIsData ''DisputeNonHydraRedeemer
 PlutusTx.unstableMakeIsData ''DisputeRedeemer
 
-data DisputeState = InProgress | Settled Decision
+data DisputeState = InProgress | Settled Decision | Withdrawed
+  deriving stock (Prelude.Eq, Prelude.Show, Generic)
+  deriving anyclass (FromJSON, ToJSON)
+
 PlutusTx.unstableMakeIsData ''DisputeState
 PlutusTx.deriveEq ''DisputeState
 
@@ -69,10 +91,13 @@ PlutusTx.deriveEq ''DisputeState
 data DisputeTerms = MkDisputeTerms
   { debugCheckSignatures :: Bool
   , hydraHeadId :: CurrencySymbol
-  , claim :: (ClaimID, UserID)
+  , claimFor :: ClaimID
+  , claimer :: UserID
   , voteInterval :: (POSIXTime, POSIXTime)
   , jury :: [UserID]
   }
+  deriving stock (Prelude.Eq, Prelude.Show, Generic)
+  deriving anyclass (FromJSON, ToJSON)
 
 PlutusTx.unstableMakeIsData ''DisputeTerms
 PlutusTx.deriveEq ''DisputeTerms
@@ -82,6 +107,8 @@ data DisputeDatum = MkDisputeDatum
   , votesCastedFor :: TotalMap Decision [UserID]
   , state :: DisputeState
   }
+  deriving stock (Prelude.Eq, Prelude.Show, Generic)
+  deriving anyclass (FromJSON, ToJSON)
 
 PlutusTx.unstableMakeIsData ''DisputeDatum
 PlutusTx.deriveEq ''DisputeDatum

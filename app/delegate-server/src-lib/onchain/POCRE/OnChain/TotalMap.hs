@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-orphans #-}
+
 module POCRE.OnChain.TotalMap (
   TotalMap,
   createTotalMap,
@@ -9,6 +11,11 @@ module POCRE.OnChain.TotalMap (
 
 -- Prelude imports
 import PlutusTx.Prelude
+import Prelude qualified
+
+-- Haskell imports
+import Data.Aeson (FromJSON, ToJSON)
+import GHC.Generics (Generic)
 
 -- Plutus imports
 
@@ -22,7 +29,12 @@ import PlutusTx.Deriving qualified as PlutusTx
 class Eq x => BoundedEnum x where
   enumerateValues :: [x]
 
+deriving anyclass instance (FromJSON k, FromJSON v) => (FromJSON (Map.Map k v))
+deriving anyclass instance (ToJSON k, ToJSON v) => (ToJSON (Map.Map k v))
+
 newtype TotalMap from to = UnsafeMkTotalMap (Map.Map from to)
+  deriving newtype (Prelude.Eq, Prelude.Show, Generic, FromJSON, ToJSON)
+
 PlutusTx.unstableMakeIsData ''TotalMap
 PlutusTx.deriveEq ''TotalMap
 

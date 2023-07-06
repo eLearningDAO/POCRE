@@ -155,6 +155,15 @@ mkDisputeValidator datum redeemer context =
                     && checkItIsVotingTime
                     && checkVoteCastedCorrectly outDatum voter decision
                 (_, _) -> traceError "Wrong state transition"
+        Withdraw signature ->
+          let
+            (inDatum, outDatum) = checkTxIsScriptTransition
+            inTerms = terms datum
+           in
+            case (state inDatum, state outDatum) of
+              (InProgress, Withdrawed) ->
+                checkUserSign inTerms (claimer inTerms) signature
+              (_, _) -> traceError "Wrong state transition"
         Settle reason ->
           let (inDatum, outDatum) = checkTxIsScriptTransition
            in case (state inDatum, state outDatum) of
