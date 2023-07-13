@@ -1,10 +1,14 @@
 const API_BASE_URL = 'https://pocre-api.herokuapp.com/v1/';
 
 const POCRE_WALLET_ADDRESS = {
-  MAINNET: 'addr_test1qr0nvz3xurstmkj3h3a32knxsgpzvz4g8z3lvhhya9ffzh74uhu2hd3kjx8v9p906g4sejyj3w7q76zqwsgt4w9drfnsp8jhz7',
-  PREPROD: 'addr_test1qr0nvz3xurstmkj3h3a32knxsgpzvz4g8z3lvhhya9ffzh74uhu2hd3kjx8v9p906g4sejyj3w7q76zqwsgt4w9drfnsp8jhz7',
-  PREVIEW: 'addr_test1qr0nvz3xurstmkj3h3a32knxsgpzvz4g8z3lvhhya9ffzh74uhu2hd3kjx8v9p906g4sejyj3w7q76zqwsgt4w9drfnsp8jhz7',
-  TESTNET: 'addr_test1qr0nvz3xurstmkj3h3a32knxsgpzvz4g8z3lvhhya9ffzh74uhu2hd3kjx8v9p906g4sejyj3w7q76zqwsgt4w9drfnsp8jhz7',
+  MAINNET:
+    'addr_test1qr0nvz3xurstmkj3h3a32knxsgpzvz4g8z3lvhhya9ffzh74uhu2hd3kjx8v9p906g4sejyj3w7q76zqwsgt4w9drfnsp8jhz7',
+  PREPROD:
+    'addr_test1qr0nvz3xurstmkj3h3a32knxsgpzvz4g8z3lvhhya9ffzh74uhu2hd3kjx8v9p906g4sejyj3w7q76zqwsgt4w9drfnsp8jhz7',
+  PREVIEW:
+    'addr_test1qr0nvz3xurstmkj3h3a32knxsgpzvz4g8z3lvhhya9ffzh74uhu2hd3kjx8v9p906g4sejyj3w7q76zqwsgt4w9drfnsp8jhz7',
+  TESTNET:
+    'addr_test1qr0nvz3xurstmkj3h3a32knxsgpzvz4g8z3lvhhya9ffzh74uhu2hd3kjx8v9p906g4sejyj3w7q76zqwsgt4w9drfnsp8jhz7',
 };
 
 const POCRE_NETWORKS = {
@@ -39,6 +43,8 @@ const TRANSACTION_PURPOSES = {
 
 const IPFS_BASE_URL = 'https://gateway.pinata.cloud/ipfs/';
 
+const DELEGATE_SERVER_URL = 'ws://46.101.69.128:8001';
+
 export {
   API_BASE_URL,
   POCRE_WALLET_ADDRESS,
@@ -46,4 +52,5 @@ export {
   CHARGES,
   IPFS_BASE_URL,
   TRANSACTION_PURPOSES,
+  DELEGATE_SERVER_URL,
 };
