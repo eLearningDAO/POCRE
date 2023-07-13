@@ -55,7 +55,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "set CI=true&& craco --passWithNoTests test",
+    "test": "set CI=true&& craco test --passWithNoTests",
     "eject": "craco eject",
     "lint": "eslint ./src --ext .js",
     "lint:fix": "eslint ./src --ext .js --fix",
