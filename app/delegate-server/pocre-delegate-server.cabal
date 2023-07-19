@@ -122,7 +122,7 @@ common common-onchain
 
 common common-executable
   import:      common-offchain
-  ghc-options: -threaded -rtsopts
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
 
 library pocre-onchain
   import:          common-onchain
@@ -137,3 +137,48 @@ library pocre-onchain
     , hydra-auction:{hydra-auction-utils, hydra-auction-utils-onchain}
     , plutus-tx
     , plutus-tx-plugin
+
+library pocre-offchain
+  import:          common-offchain
+  hs-source-dirs:  src-lib/lib
+  exposed-modules:
+    POCRE.Delegate
+    POCRE.Tx.Dispute
+
+  build-depends:
+    , containers
+    , hydra-auction:{hydra-auction-utils, hydra-auction-utils-onchain}
+    , hydra-cardano-api
+    , plutus-tx
+    , pocre-onchain
+
+test-suite pocre
+  import:             common-executable
+  hs-source-dirs:     test/
+  type:               exitcode-stdio-1.0
+  main-is:            Spec.hs
+  other-modules:      L1.L1Spec
+  build-depends:
+    , containers
+    , hydra-auction:{hydra-auction-utils, hydra-auction-utils-onchain}
+    , plutus-tx
+    , pocre-offchain
+    , pocre-onchain
+    , sydtest
+
+  build-tool-depends: sydtest-discover:sydtest-discover
+
+executable pocre-delegate
+  import:         common-executable
+  hs-source-dirs: app/
+  type:           exitcode-stdio-1.0
+  main-is:        Main.hs
+  other-modules:  Config
+  build-depends:
+    , aeson-pretty
+    , containers
+    , hydra-auction:{hydra-auction-utils, hydra-auction-utils-onchain}
+    , optparse-applicative
+    , plutus-tx
+    , pocre-offchain
+    , pocre-onchain

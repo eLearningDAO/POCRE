@@ -3,17 +3,28 @@ module POCRE.OnChain.Dispute (
   tokenOnlyValue,
   tokenAssetClass,
   policy,
+  disputeTransitionResultingDatum,
+  transitionValidityInterval,
   disputeValidator,
 ) where
 
 -- Prelude imports
 import PlutusTx.Prelude
 
+-- Haskell imports
+import Control.Monad (guard)
+
 -- Plutus imports
 
 import PlutusLedgerApi.Common (SerialisedScript, serialiseCompiledCode)
 import PlutusLedgerApi.V1.Address (Address)
-import PlutusLedgerApi.V1.Interval (contains)
+import PlutusLedgerApi.V1.Interval (
+  Interval,
+  always,
+  contains,
+  interval,
+ )
+import PlutusLedgerApi.V1.Time (POSIXTime)
 import PlutusLedgerApi.V1.Value (
   AssetClass (..),
   CurrencySymbol,
@@ -71,6 +82,27 @@ checkHasSingleTxOutTo address txOuts =
         then out
         else traceError "TxOut is not to expected address"
     _ -> traceError "Not exactly one non-ADA TxOut"
+
+{-# INLINEABLE checkTxIsScriptTransition #-}
+checkTxIsScriptTransition :: ScriptContext -> (DisputeDatum, DisputeDatum)
+checkTxIsScriptTransition context =
+  let
+    inTxOut =
+      checkHasSingleTxOutTo selfAddress $
+        map txInInfoResolved $
+          txInfoInputs info
+    outTxOut = checkHasSingleTxOutTo selfAddress $ txInfoOutputs info
+    decodeDatum = decodeOutputDatum info
+   in
+    case (decodeDatum inTxOut, decodeDatum outTxOut) of
+      (Just inDatum, Just outDatum) ->
+        if nothingForged info
+          then (inDatum, outDatum)
+          else traceError "Output does not have state token"
+      _ -> traceError "Wrong state transition"
+  where
+    info = scriptContextTxInfo context
+    selfAddress = scriptSelfAddress context
 
 -- State Token
 
@@ -138,6 +170,39 @@ disputeValidator =
 disputeAddress :: Address
 disputeAddress = validatorAddress disputeValidator
 
+{-# INLINEABLE disputeTransitionResultingDatum #-}
+disputeTransitionResultingDatum :: DisputeDatum -> DisputeNonHydraRedeemer -> Maybe DisputeDatum
+disputeTransitionResultingDatum datum redeemer = do
+  guard $ state datum == InProgress
+  Just $ case redeemer of
+    Vote voter _ decision ->
+      let updatedVotes = voter : lookup decision (votesCastedFor datum)
+       in datum
+            { votesCastedFor = insert decision updatedVotes $ votesCastedFor datum
+            }
+    Withdraw _ -> datum {state = Withdrawed}
+    Settle reason ->
+      let
+        votesCastedFinal = case reason of
+          AllVotesCasted -> votesCastedFor datum
+          Timeout ->
+            insert Abstain (juryLeft datum) $ votesCastedFor datum
+       in
+        datum
+          { votesCastedFor = votesCastedFinal
+          , state = Settled $ countDecision votesCastedFinal
+          }
+
+transitionValidityInterval ::
+  DisputeTerms -> DisputeNonHydraRedeemer -> Interval POSIXTime
+transitionValidityInterval terms redeemer = case redeemer of
+  Vote {} ->
+    let
+      (from, to) = voteInterval terms
+     in
+      interval from to
+  _ -> always
+
 {-# INLINEABLE mkDisputeValidator #-}
 mkDisputeValidator :: DisputeDatum -> DisputeRedeemer -> ScriptContext -> Bool
 mkDisputeValidator datum redeemer context =
@@ -145,79 +210,30 @@ mkDisputeValidator datum redeemer context =
     MoveToHydra ->
       checkIsMoveToHydra context (hydraHeadId $ terms datum)
     NonHydra nonHydra ->
-      case nonHydra of
-        Vote voter signature decision ->
-          let (inDatum, outDatum) = checkTxIsScriptTransition
-           in case (state inDatum, state outDatum) of
-                (InProgress, InProgress) ->
-                  checkHasRightToVote voter
-                    && checkUserSign (terms datum) voter signature
-                    && checkItIsVotingTime
-                    && checkVoteCastedCorrectly outDatum voter decision
-                (_, _) -> traceError "Wrong state transition"
-        Withdraw signature ->
-          let
-            (inDatum, outDatum) = checkTxIsScriptTransition
-            inTerms = terms datum
-           in
-            case (state inDatum, state outDatum) of
-              (InProgress, Withdrawed) ->
-                checkUserSign inTerms (claimer inTerms) signature
-              (_, _) -> traceError "Wrong state transition"
-        Settle reason ->
-          let (inDatum, outDatum) = checkTxIsScriptTransition
-           in case (state inDatum, state outDatum) of
-                (InProgress, Settled decision) ->
-                  checkVotesAddedCorrectly outDatum abstainedVotesAdded
-                    && traceIfFalse
-                      "Wrong decision"
-                      ( countDecision (votesCastedFor outDatum) == decision
-                      )
-                (_, _) -> traceError "Wrong state transition"
-          where
-            abstainedVotesAdded = case reason of
-              Timeout -> insert Abstain (juryLeft datum) $ createTotalMap []
-              AllVotesCasted -> createTotalMap []
+      let (inDatum, outDatum) = checkTxIsScriptTransition context
+       in case disputeTransitionResultingDatum inDatum nonHydra of
+            Just expectedDatum ->
+              traceIfFalse "Wrong output datum" (expectedDatum == outDatum)
+                && checkHasRightForTransition nonHydra
+            Nothing -> traceError "Incorrect input state"
   where
-    info = scriptContextTxInfo context
-    selfAddress = scriptSelfAddress context
+    checkHasRightForTransition nonHydra = case nonHydra of
+      Vote voter signature _ ->
+        checkHasRightToVote voter
+          && checkUserSign (terms datum) voter signature
+          && checkItIsVotingTime
+      Withdraw signature ->
+        let inTerms = terms datum
+         in checkUserSign inTerms (claimer inTerms) signature
+      Settle _ -> True
     checkItIsVotingTime =
       let (from, to) = voteInterval $ terms datum
        in traceIfFalse "Wrong interval for voting" $
-            contains (rightExclusiveInterval from to) (txInfoValidRange info)
-    -- FIXME: naming and move
-    checkTxIsScriptTransition =
-      let
-        inTxOut =
-          checkHasSingleTxOutTo selfAddress $
-            map txInInfoResolved $
-              txInfoInputs info
-        outTxOut = checkHasSingleTxOutTo selfAddress $ txInfoOutputs info
-        decodeDatum = decodeOutputDatum info
-       in
-        case (decodeDatum inTxOut, decodeDatum outTxOut) of
-          (Just inDatum, Just outDatum) ->
-            if nothingForged info
-              then (inDatum, outDatum)
-              else traceError "Output does not have state token"
-          _ -> traceError "Wrong state transition"
+            contains
+              (rightExclusiveInterval from to)
+              (txInfoValidRange $ scriptContextTxInfo context)
     checkHasRightToVote voter =
       traceIfFalse "Not a voter" (voter `elem` jury (terms datum))
         && traceIfFalse
           "Already casted a vote"
           (voter `notElem` allCastedVotes datum)
-    checkVoteCastedCorrectly datum' voter decision =
-      checkVotesAddedCorrectly datum' $
-        insert decision [voter] $
-          createTotalMap []
-    checkVotesAddedCorrectly txOutDatum addedMap =
-      all checkVoteAdded enumerateValues
-      where
-        checkVoteAdded decision' =
-          traceError
-            "Wrong votes change"
-            ( castedForDecision datum <> lookup decision' addedMap
-                == castedForDecision txOutDatum
-            )
-          where
-            castedForDecision = lookup decision' . votesCastedFor

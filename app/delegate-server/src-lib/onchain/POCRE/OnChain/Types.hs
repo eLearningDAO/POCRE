@@ -2,6 +2,7 @@ module POCRE.OnChain.Types (
   checkUserSign,
   UserID,
   Signature,
+  isFinal,
   Decision (..),
   DisputeDatum (..),
   DisputeRedeemer (..),
@@ -66,8 +67,11 @@ data DisputeRedeemer = MoveToHydra | NonHydra DisputeNonHydraRedeemer
   deriving anyclass (FromJSON, ToJSON)
 
 data DisputeNonHydraRedeemer
-  = Vote UserID Signature Decision
-  | Withdraw Signature
+  = -- | Can be called by jury, once
+    Vote UserID Signature Decision
+  | -- | Can be called by claimer, if they change mind about Dispute
+    -- TODO: Cancel?
+    Withdraw Signature
   | Settle SettleReason
   deriving stock (Prelude.Eq, Prelude.Show, Generic)
   deriving anyclass (FromJSON, ToJSON)
@@ -83,6 +87,12 @@ PlutusTx.unstableMakeIsData ''DisputeRedeemer
 data DisputeState = InProgress | Settled Decision | Withdrawed
   deriving stock (Prelude.Eq, Prelude.Show, Generic)
   deriving anyclass (FromJSON, ToJSON)
+
+isFinal :: DisputeState -> Bool
+isFinal state = case state of
+  InProgress -> False
+  Settled {} -> True
+  Withdrawed -> True
 
 PlutusTx.unstableMakeIsData ''DisputeState
 PlutusTx.deriveEq ''DisputeState

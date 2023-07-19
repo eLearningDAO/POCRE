@@ -8,3 +8,5 @@
 - ignore: {name: Use notElem}
 - ignore: {name: Use unless}
 - ignore: {name: Use fmap}
+# !! 0 is good in tests for uniformity with other !! n
+- ignore: {name: Use head}
