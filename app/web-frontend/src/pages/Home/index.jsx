@@ -6,6 +6,8 @@ import Slider from 'components/slider';
 import Loader from 'components/uicore/Loader';
 import { useNavigate } from 'react-router-dom';
 import './index.css';
+import { UseDelegateServer } from 'contexts/DelegateServerContext';
+import { useEffect } from 'react';
 import useHome from './useHome';
 
 const getSliderImages = (imageCreations) => {
@@ -30,6 +32,14 @@ const getSliderImages = (imageCreations) => {
 
 function Home() {
   const navigate = useNavigate();
+
+  const delegateServer = UseDelegateServer();
+
+  useEffect(() => {
+    if (delegateServer.isConnected) {
+      delegateServer.queryState();
+    }
+  }, [delegateServer.isConnected]);
 
   const {
     trendingList,
