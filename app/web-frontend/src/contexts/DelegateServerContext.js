@@ -9,25 +9,27 @@ import { DELEGATE_SERVER_URL } from 'config';
 
 const WebSocketContext = createContext();
 
-// const juryKeys = [
-//   'd480224a7fa30131804dacffa0322d9256092800bd2f3828fb9a77cf',
-//   'f19e75abc98140c647ae962b7a903c6a2c65520a87467841d435819a',
-//   '8be4e12dd88a085bcdfbb07763d1dcf8a2a4aaa6646edafe6476e6ac',
-// ];
-
-// const makeTestTerms = (hydraHeadId) => ({
-//   claimFor: 'test',
-//   claimer: juryKeys[0],
-//   hydraHeadId,
-//   jury: juryKeys,
-//   voteDurationMinutes: 1,
-//   debugCheckSignatures: false,
-// });
+export const serverStates = {
+  disconnected: 'Disconnected',
+  connected: 'Connected',
+  awaitingCommits: 'AwaitingCommits',
+  awaitingVotes: 'AwaitingVotes',
+};
 
 function DelegateServerProvider({ children }) {
-  const [data, setData] = useState(null);
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [serverState, setServerState] = useState(serverStates.disconnected);
+  const [headId, setHeadId] = useState(null);
+  const [data, setData] = useState(null);
+
+  const queryState = () => {
+    const query = {
+      tag: 'QueryCurrentDelegateState',
+    };
+
+    socket?.send(JSON.stringify(query));
+  };
 
   useEffect(() => {
     const ws = new WebSocket(DELEGATE_SERVER_URL);
@@ -35,15 +37,31 @@ function DelegateServerProvider({ children }) {
     console.log('Connecting to websocket server');
 
     ws.addEventListener('open', () => {
-      setIsConnected(true);
+      setServerState(serverStates.connected);
       console.log('Connected to websocket server');
     });
 
     ws.addEventListener('message', (event) => {
-      setData(event.data);
-      console.log('Received:', event.data);
+      console.log('Received message', event.data);
 
-      // const response = JSON.parse(event.data);
+      if (typeof event.data !== 'string') return;
+
+      const message = JSON.parse(event.data);
+
+      console.log('Parsed Message:', message);
+
+      if (message.tag === 'CurrentDelegateState') {
+        const [contentType, contents] = message.contents;
+
+        if ((contentType === 'WasQueried' || contentType === 'Updated') && contents.tag === 'Initialized') {
+          const newHeadId = contents.contents[0];
+          const newState = contents.contents[1].tag;
+
+          console.log('Setting new headId and state', newHeadId, newState);
+          setHeadId(newHeadId);
+          setServerState(newState);
+        }
+      }
     });
 
     ws.addEventListener('error', (error) => {
@@ -62,13 +80,9 @@ function DelegateServerProvider({ children }) {
     // };
   }, []);
 
-  const queryState = () => {
-    const query = {
-      tag: 'QueryCurrentDelegateState',
-    };
-
-    socket.send(JSON.stringify(query));
-  };
+  useEffect(() => {
+    if (socket && serverState === serverStates.connected) queryState();
+  }, [socket, serverState]);
 
   const createDispute = ({
     claimFor,
@@ -97,7 +111,7 @@ function DelegateServerProvider({ children }) {
       tag: 'SubmitCommit',
     };
 
-    socket.send(JSON.stringify(commit));
+    socket?.send(JSON.stringify(commit));
   };
 
   const castVote = ({ juryMember, vote }) => {
@@ -109,7 +123,7 @@ function DelegateServerProvider({ children }) {
       tag: 'SubmitTx',
     };
 
-    socket.send(JSON.stringify(voting));
+    socket?.send(JSON.stringify(voting));
   };
 
   const settle = () => {
@@ -126,14 +140,13 @@ function DelegateServerProvider({ children }) {
 
   const context = useMemo(
     () => ({
-      isConnected,
-      data,
-      queryState,
+      state: serverState,
+      headId,
       createDispute,
       castVote,
       settle,
     }),
-    [isConnected, data],
+    [serverState, headId],
   );
 
   return <WebSocketContext.Provider value={context}>{children}</WebSocketContext.Provider>;
