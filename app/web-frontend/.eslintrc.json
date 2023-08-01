@@ -29,10 +29,12 @@
     }
   },
   "rules": {
+    "no-debugger": "warn",
+    "no-unused-vars": "warn",
     "linebreak-style": 0,
     "global-require": 0,
     "eslint linebreak-style": [0, "error", "windows"],
-    "no-console": "error",
+    "no-console": "warn",
     "sonarjs/no-identical-expressions": "error",
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",

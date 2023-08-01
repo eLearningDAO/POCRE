@@ -1,9 +1,5 @@
 import React, {
-  createContext,
-  useState,
-  useEffect,
-  useContext,
-  useMemo,
+  createContext, useState, useEffect, useContext, useMemo,
 } from 'react';
 import { DELEGATE_SERVER_URL } from 'config';
 
@@ -13,15 +9,32 @@ export const serverStates = {
   disconnected: 'Disconnected',
   connected: 'Connected',
   awaitingCommits: 'AwaitingCommits',
-  awaitingVotes: 'AwaitingVotes',
+  bidCommitted: 'BidCommitted',
+  votingOpen: 'VotingOpen',
+  votingClosed: 'VotingClosed',
+  unknown: 'Unknown',
 };
+
+// TODO: make keys configurable
+const juryKeys = [
+  'd480224a7fa30131804dacffa0322d9256092800bd2f3828fb9a77cf',
+  'f19e75abc98140c647ae962b7a903c6a2c65520a87467841d435819a',
+  '8be4e12dd88a085bcdfbb07763d1dcf8a2a4aaa6646edafe6476e6ac',
+];
+
+export const makeTestTerms = (hydraHeadId) => ({
+  claimFor: '54657374',
+  claimer: juryKeys[0],
+  hydraHeadId,
+  jury: juryKeys,
+  voteDurationMinutes: 1,
+  debugCheckSignatures: false,
+});
 
 function DelegateServerProvider({ children }) {
   const [socket, setSocket] = useState(null);
-  const [isConnected, setIsConnected] = useState(false);
   const [serverState, setServerState] = useState(serverStates.disconnected);
   const [headId, setHeadId] = useState(null);
-  const [data, setData] = useState(null);
 
   const queryState = () => {
     const query = {
@@ -53,13 +66,30 @@ function DelegateServerProvider({ children }) {
       if (message.tag === 'CurrentDelegateState') {
         const [contentType, contents] = message.contents;
 
-        if ((contentType === 'WasQueried' || contentType === 'Updated') && contents.tag === 'Initialized') {
+        if (
+          (contentType === 'WasQueried' || contentType === 'Updated')
+            && contents.tag === 'Initialized'
+        ) {
           const newHeadId = contents.contents[0];
-          const newState = contents.contents[1].tag;
+          const { stangingBidWasCommited, tag } = contents.contents[1];
 
-          console.log('Setting new headId and state', newHeadId, newState);
           setHeadId(newHeadId);
-          setServerState(newState);
+
+          switch (tag) {
+            case 'AwaitingCommits':
+              setServerState(stangingBidWasCommited
+                ? serverStates.bidCommitted
+                : serverStates.awaitingCommits);
+              break;
+            case 'Open':
+              setServerState(serverStates.votingOpen);
+              break;
+            case 'Closed':
+              setServerState(serverStates.votingClosed);
+              break;
+            default:
+              setServerState(serverStates.unknown);
+          }
         }
       }
     });
@@ -70,7 +100,7 @@ function DelegateServerProvider({ children }) {
 
     ws.addEventListener('close', () => {
       console.log('Disconnected from the WebSocket server');
-      setIsConnected(false);
+      setServerState(serverStates.disconnected);
     });
 
     setSocket(ws);

@@ -6,8 +6,6 @@ import Slider from 'components/slider';
 import Loader from 'components/uicore/Loader';
 import { useNavigate } from 'react-router-dom';
 import './index.css';
-import { UseDelegateServer, serverStates } from 'contexts/DelegateServerContext';
-import { useEffect } from 'react';
 import useHome from './useHome';
 
 const getSliderImages = (imageCreations) => {
@@ -30,37 +28,8 @@ const getSliderImages = (imageCreations) => {
   return sliderImages;
 };
 
-const juryKeys = [
-  'd480224a7fa30131804dacffa0322d9256092800bd2f3828fb9a77cf',
-  'f19e75abc98140c647ae962b7a903c6a2c65520a87467841d435819a',
-  '8be4e12dd88a085bcdfbb07763d1dcf8a2a4aaa6646edafe6476e6ac',
-];
-
-const makeTestTerms = (hydraHeadId) => ({
-  claimFor: '54657374',
-  claimer: juryKeys[0],
-  hydraHeadId,
-  jury: juryKeys,
-  voteDurationMinutes: 1,
-  debugCheckSignatures: false,
-});
-
 function Home() {
   const navigate = useNavigate();
-
-  const delegateServer = UseDelegateServer();
-
-  useEffect(() => {
-    console.log({ serverState: delegateServer.state, headId: delegateServer.headId });
-
-    if (delegateServer.headId && delegateServer.state === serverStates.awaitingCommits) {
-      console.log('Creating dispute');
-      const testTerms = makeTestTerms(delegateServer.headId);
-      delegateServer.createDispute(testTerms);
-    } else {
-      console.log('Not ready to create dispute');
-    }
-  }, [delegateServer.state, delegateServer.headId]);
 
   const {
     trendingList,
