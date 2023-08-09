@@ -114,7 +114,6 @@ common common-onchain
     ghc-options: -fplugin-opt PlutusTx.Plugin:defer-errors
 
   -- Options for Plutus Tx compilations
-  -- (some are enabled additionaly in individual modules)
 
   ghc-options:
     -fobject-code -fno-ignore-interface-pragmas
@@ -124,3 +123,17 @@ common common-onchain
 common common-executable
   import:      common-offchain
   ghc-options: -threaded -rtsopts
+
+library pocre-onchain
+  import:          common-onchain
+  hs-source-dirs:  src-lib/onchain
+  exposed-modules:
+    POCRE.OnChain.Dispute
+    POCRE.OnChain.TotalMap
+    POCRE.OnChain.Types
+
+  build-depends:
+    , containers
+    , hydra-auction:{hydra-auction-utils, hydra-auction-utils-onchain}
+    , plutus-tx
+    , plutus-tx-plugin
