@@ -9,7 +9,7 @@ import statusTypes from 'utils/constants/statusTypes';
 import transactionPurposes from 'utils/constants/transactionPurposes';
 import authUser from 'utils/helpers/authUser';
 import './index.css';
-import useHome from './useHome';
+import useHome from '../../../hydraDemo/hooks/useHome';
 
 const litigationToTransactionPurpose = {
   inReconcilation: transactionPurposes.START_LITIGATION,

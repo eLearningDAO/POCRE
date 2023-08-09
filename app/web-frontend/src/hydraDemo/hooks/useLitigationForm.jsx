@@ -4,17 +4,19 @@ import useMockSuggestions from 'hooks/useMockSuggestions';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
-import { UseDelegateServer, serverStates, makeTestTerms } from 'contexts/DelegateServerContext';
+import { useLitigationsContext } from 'hydraDemo/contexts/LitigationsContext';
+import { useDelegateServer, serverStates, makeTestTerms } from '../contexts/DelegateServerContext';
 
 // get auth user
 const user = authUser.getUser();
 
-const useHydraDemoLitigationForm = ({ onLitigationFetch }) => {
+const useLitigationForm = ({ onLitigationFetch }) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [newLitigation, setNewLitigation] = useState(null);
   const [litigationId, setLitigationId] = useState(null);
-  const delegateServer = UseDelegateServer();
+  const delegateServer = useDelegateServer();
+  const { addLitigation } = useLitigationsContext();
 
   const {
     suggestions: authorSuggestions,
@@ -104,16 +106,31 @@ const useHydraDemoLitigationForm = ({ onLitigationFetch }) => {
   //   },
   // });
 
-  const makeNewLitigation = () => {
+  const makeNewLitigation = (litigationBody = {}) => {
+    console.log({ litigationBody });
     console.log({ serverState: delegateServer.state, headId: delegateServer.headId });
 
-    if (delegateServer.headId && delegateServer.state === serverStates.awaitingCommits) {
-      console.log('Creating dispute');
-      const testTerms = makeTestTerms(delegateServer.headId);
-      delegateServer.createDispute(testTerms);
-    } else {
+    if (!delegateServer.headId || delegateServer.state !== serverStates.awaitingCommits) {
       console.log('Not ready to create dispute');
+      return;
     }
+
+    console.log('Creating dispute');
+    const testTerms = makeTestTerms(delegateServer.headId);
+    delegateServer.createDispute(testTerms);
+
+    setNewLitigation({
+      litigation_title: litigationBody.title.trim(),
+      litigation_description: litigationBody?.description?.trim(),
+      creation_id: litigationBody.creation,
+      ...(litigationBody.material && { material_id: litigationBody.material }),
+      is_draft: litigationBody.is_draft,
+    });
+
+    // TODO: pass in actual litigation
+    addLitigation();
+
+    setTimeout(() => navigate('/litigations'), 2000);
   };
 
   // trigger the callback when a litigation is fetched
@@ -153,4 +170,4 @@ const useHydraDemoLitigationForm = ({ onLitigationFetch }) => {
   };
 };
 
-export default useHydraDemoLitigationForm;
+export default useLitigationForm;

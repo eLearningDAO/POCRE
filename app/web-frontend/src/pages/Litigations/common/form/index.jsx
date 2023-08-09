@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './index.css';
 import Loader from 'components/uicore/Loader';
 import StepOne from './Steps/One';
-import useHydraDemoLitigationForm from './useHydraDemoLitigationForm';
+import useLitigationForm from '../../../../hydraDemo/hooks/useLitigationForm';
 
 function LitigationForm(
   {
@@ -30,7 +30,7 @@ function LitigationForm(
     isDeletingLitigation,
     deleteLitigation,
     resetDeletionErrors,
-  } = useHydraDemoLitigationForm({ onLitigationFetch });
+  } = useLitigationForm({ onLitigationFetch });
 
   useEffect(() => {
     if (id) getLitigationDetails(id);
