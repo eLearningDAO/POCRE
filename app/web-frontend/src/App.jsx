@@ -1,7 +1,6 @@
 import useAppKeys from 'hooks/useAppKeys';
 import React from 'react';
 import { DelegateServerProvider } from 'hydraDemo/contexts/DelegateServerContext';
-import { LitigationsProvider } from 'hydraDemo/contexts/LitigationsContext';
 import Routes from './routes';
 
 function App() {
@@ -10,9 +9,7 @@ function App() {
   return (
     <React.Fragment key={appKey}>
       <DelegateServerProvider>
-        <LitigationsProvider>
-          <Routes />
-        </LitigationsProvider>
+        <Routes />
       </DelegateServerProvider>
     </React.Fragment>
   );

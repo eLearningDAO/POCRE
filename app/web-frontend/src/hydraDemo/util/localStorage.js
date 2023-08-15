@@ -22,10 +22,12 @@ export const makeLocalStorageManager = ({ storageKey, idField }) => {
     window.localStorage.setItem(storageKey, JSON.stringify(entities));
   };
 
-  const fetchAll = () => {
+  const fetchAll = ({ asList = false } = {}) => {
     try {
-      const entities = window.localStorage.getItem(storageKey);
-      return entities ? JSON.parse(entities) : {};
+      const rawEntities = window.localStorage.getItem(storageKey);
+      const parsedEntities = rawEntities ? JSON.parse(rawEntities) : {};
+
+      return asList ? Object.values(parsedEntities) : parsedEntities;
     } catch (error) {
       throw new Error(`Error fetching from local storage key '${storageKey}'`, error);
     }

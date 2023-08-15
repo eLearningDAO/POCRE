@@ -2,14 +2,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Decision, Litigation, Transaction } from 'api/requests';
 import { CHARGES } from 'config';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import statusTypes from 'utils/constants/statusTypes';
 import transactionPurposes from 'utils/constants/transactionPurposes';
 import authUser from 'utils/helpers/authUser';
 import { transactADAToPOCRE } from 'utils/helpers/wallet';
-
-const user = authUser.getUser();
 
 const voteStatusTypes = {
   AGREED: 'agreed',
@@ -23,6 +21,11 @@ const useDetails = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [litigationId, setLitigationId] = useState(null);
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    setUser(authUser.getUser());
+  }, []);
 
   // fetch the litigation
   const {
