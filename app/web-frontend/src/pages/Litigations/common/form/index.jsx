@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './index.css';
 import Loader from 'components/uicore/Loader';
 import StepOne from './Steps/One';
-import useLitigationForm from '../../../../hydraDemo/hooks/useLitigationForm';
+import useLitigationForm from './useLitigationForm';
 
 function LitigationForm(
   {

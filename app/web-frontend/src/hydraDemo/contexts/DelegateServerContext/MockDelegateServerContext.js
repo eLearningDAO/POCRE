@@ -10,6 +10,7 @@ const mockHeadId = 'MOCK_HYDRA_HEAD_ID';
 function MockDelegateServerProvider({ children }) {
   const [serverState, setServerState] = useState(serverStates.disconnected);
   const [headId, setHeadId] = useState(null);
+  const [terms, setTerms] = useState(null);
 
   const queryState = () => {
     if (serverState === serverStates.connected) {
@@ -37,11 +38,21 @@ function MockDelegateServerProvider({ children }) {
     claimer,
     hydraHeadId,
     jury,
-    voteDurationMinutes,
+    voteInterval,
     debugCheckSignatures = false,
   }) => {
     setTimeout(() => setServerState(serverStates.bidCommitted), 1000);
-    setTimeout(() => setServerState(serverStates.votingOpen), 2000);
+    setTimeout(() => {
+      setTerms({
+        claimFor,
+        claimer,
+        hydraHeadId,
+        jury,
+        voteInterval,
+        debugCheckSignatures,
+      });
+      setServerState(serverStates.votingOpen);
+    }, 2000);
   };
 
   const castVote = ({ juryMember, vote }) => {
@@ -56,6 +67,7 @@ function MockDelegateServerProvider({ children }) {
     () => ({
       state: serverState,
       headId,
+      terms,
       createDispute,
       castVote,
       settle,

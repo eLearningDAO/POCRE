@@ -1,14 +1,19 @@
 import { Creation, Tag, User } from 'api/requests';
 import { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 
-const searchMap = {
-  users: { method: User.getAll, searchField: 'user_name' },
-  creations: { method: Creation.getAll, searchField: 'creation_title' },
-  tags: { method: Tag.getAll, searchField: 'tag_name' },
-};
+const mockCreations = [
+  {
+    creation_id: 1,
+    creation_title: 'Example creation',
+    is_claimable: true,
+    materials: [],
+  },
+];
 
-const useMockSuggestions = ({
+/**
+ * Copied from 'hooks/useSuggestions.jsx' and modified for hydra demo.
+ */
+const useSuggestions = ({
   // allowed values are users, creations and tags (TODO: add typescript)
   search = 'creations',
   filterSuggestion = null,
@@ -18,15 +23,6 @@ const useMockSuggestions = ({
   },
 }) => {
   const [searchText, setSearchText] = useState(null);
-
-  const mockCreations = [
-    {
-      creation_id: 1,
-      creation_title: 'Example creation',
-      is_claimable: true,
-      materials: [],
-    },
-  ];
 
   const suggestions = useMemo(
     () => mockCreations.filter(
@@ -48,4 +44,4 @@ const useMockSuggestions = ({
   };
 };
 
-export default useMockSuggestions;
+export default useSuggestions;

@@ -94,14 +94,9 @@ function RealDelegateServerProvider({ children }) {
     claimer,
     hydraHeadId,
     jury,
-    voteDurationMinutes,
+    voteInterval,
     debugCheckSignatures = false,
   }) => {
-    const dateNow = new Date();
-    const voteStart = dateNow.getTime();
-    const voteEnd = voteStart + voteDurationMinutes * 60_000;
-    const voteInterval = [voteStart, voteEnd];
-
     const terms = {
       claimFor,
       claimer,

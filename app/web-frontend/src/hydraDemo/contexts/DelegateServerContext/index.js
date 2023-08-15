@@ -1,7 +1,7 @@
 import { RealDelegateServerProvider, useRealDelegateServer } from './RealDelegateServerContext';
 import { MockDelegateServerProvider, useMockDelegateServer } from './MockDelegateServerContext';
 
-export { serverStates, makeTestTerms } from './common';
+export { serverStates, makeVoteInterval, voteIntervalToISO } from './common';
 
 // TODO: Move to config
 const useMock = true;

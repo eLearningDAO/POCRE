@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Auth } from 'api/requests';
 import { useState } from 'react';
 import authUser from 'utils/helpers/authUser';
-import { getAvailableWallets, getWalletAddress } from 'utils/helpers/wallet';
+import { addressBech32ToPkh, getAvailableWallets, getWalletAddress } from 'utils/helpers/wallet';
 
 const useLogin = ({ inviteToken = null }) => {
   const [walletAddressError, setWalletAddressError] = useState(null);
@@ -51,12 +51,16 @@ const useLogin = ({ inviteToken = null }) => {
         })
         : await Auth.login({ wallet_address: selectedWalletAddressOriginal });
 
+      const walletPkh = await addressBech32ToPkh(selectedWalletAddressOriginal);
       // store cookies
-      authUser.setUser({
+      const user = {
         ...response.user,
         selectedWallet: selectedWallet.wallet,
         hashedWalletAddress: selectedWalletAddressHashed,
-      });
+        walletAddress: selectedWalletAddressOriginal,
+        walletPkh,
+      };
+      authUser.setUser(user);
       authUser.setJWTToken(response.token);
     },
   });
