@@ -48,6 +48,24 @@ function LitigationCard({
   // mode = drafted
   onUpdate = () => {},
 }) {
+  const renderAuthor = (author, heading) => (
+    <div className="litigation-card-author">
+      <h3>{heading}</h3>
+      <Link to={`/wallet/${author?.profileId}`}>
+        <img
+          alt=""
+          src={author?.image}
+          className="profile-pic profile-pic-small profile-pic-rounded"
+        />
+      </Link>
+      <Link to={`/wallet/${author?.profileId}`}>
+        <h4>{author?.name}</h4>
+      </Link>
+      {mode === 'closed' && winner?.name === author?.name
+    && <span className="litigation-winner-label">Winner</span>}
+    </div>
+  );
+
   return (
     <div className="litigation-card1">
       <h2>{title}</h2>
@@ -60,37 +78,9 @@ function LitigationCard({
       )}
       {/* authors */}
       <div className="litigation-card-authors">
-        <div className="litigation-card-author">
-          <h3>Assumed Author</h3>
-          <Link to={`/wallet/${assumedAuthor?.profileId}`}>
-            <img
-              alt=""
-              src={assumedAuthor?.image}
-              className="profile-pic profile-pic-small profile-pic-rounded"
-            />
-          </Link>
-          <Link to={`/wallet/${assumedAuthor?.profileId}`}>
-            <h4>{assumedAuthor?.name}</h4>
-          </Link>
-          {mode === 'closed' && winner?.name === assumedAuthor?.name
-            && <span className="litigation-winner-label">Winner</span>}
-        </div>
+        {renderAuthor(assumedAuthor, 'Assumed Author')}
         <h1>vs</h1>
-        <div className="litigation-card-author">
-          <h3>Claimer</h3>
-          <Link to={`/wallet/${assumedAuthor?.profileId}`}>
-            <img
-              alt=""
-              src={claimer?.image}
-              className="profile-pic profile-pic-small profile-pic-rounded"
-            />
-          </Link>
-          <Link to={`/wallet/${assumedAuthor?.profileId}`}>
-            <h4>{claimer?.name}</h4>
-          </Link>
-          {mode === 'closed' && winner?.name === claimer?.name
-            && <span className="litigation-winner-label">Winner</span>}
-        </div>
+        {renderAuthor(claimer, 'Assumed Author')}
       </div>
       {mode === 'litigate'
         && (

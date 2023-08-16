@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Litigation, Material } from 'api/requests';
-import useSuggestions from 'hydraDemo/hooks/useSuggestions';
+import useSuggestions from 'hooks/useSuggestions';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
@@ -115,7 +115,7 @@ const useLitigationForm = ({ onLitigationFetch }) => {
         return;
       }
 
-      const voteInterval = makeVoteInterval(1);
+      const voteInterval = makeVoteInterval(5);
       const [votingStart, votingEnd] = voteIntervalToISO(voteInterval);
       const jury = getJury();
 
@@ -136,13 +136,14 @@ const useLitigationForm = ({ onLitigationFetch }) => {
       const payload = {
         litigation_title: litigationBody.title.trim(),
         litigation_description: litigationBody?.description?.trim(),
-        creation_id: '',
-        material_id: 'd91f005d-2037-41b9-b706-0e70c651e4e2',
-        assumed_author: 'dd7a824b-b0a9-4868-bdbf-cfa6bdd36621',
+        creation_id: litigationBody.creation,
+        material_id: null,
+        assumed_author: user, // TODO: set actual assumed author
         assumed_author_response: statusTypes.START_LITIGATION,
-        issuer_id: 'dd7a824b-b0a9-4868-bdbf-cfa6bdd36629',
+        issuer_id: user.user_id,
+        issuer: user,
         winner: 'dd7a824b-b0a9-4868-bdbf-cfa6bdd36629',
-        recognitions: jury.userIds,
+        recognitions: jury.userIds.map((x) => ({ recognition_for: { user_id: x } })),
         decisions: [],
         voting_start: votingStart,
         voting_end: votingEnd,

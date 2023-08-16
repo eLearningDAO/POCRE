@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 /**
  * Makes a local storage util for saving/fetching a particular entity type.
  * Entities are stored in a simple key/value object by their ID.
@@ -34,19 +36,16 @@ export const makeLocalStorageManager = ({ storageKey, idField }) => {
   };
 
   const save = (entity) => {
-    const id = entity[idField];
-
-    if (!id) {
-      throw new Error('Could not save entity: ID is missing', entity);
-    }
+    const id = entity[idField] ?? uuidv4();
+    const newEntity = { ...entity, [idField]: id };
 
     try {
       const entities = fetchAll();
 
-      entities[id] = entity;
+      entities[id] = newEntity;
       replaceAll(entities);
 
-      return entities;
+      return newEntity;
     } catch (error) {
       throw new Error(`Error saving to local storage key '${storageKey}'`, error);
     }

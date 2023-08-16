@@ -1,11 +1,13 @@
-import { v4 as uuidv4 } from 'uuid';
 import { API_BASE_URL } from 'config';
 import authUser from 'utils/helpers/authUser';
 import { makeLocalStorageManager } from 'hydraDemo/util/localStorage';
 import errorMap from './errorMap';
 
-const idField = 'litigation_id';
-const storageManager = makeLocalStorageManager({ storageKey: 'litigations', idField });
+const localData = {
+  litigations: makeLocalStorageManager({ storageKey: 'litigations', idField: 'litigation_id' }),
+  creations: makeLocalStorageManager({ storageKey: 'creations', idField: 'creation_id' }),
+  notifications: makeLocalStorageManager({ storageKey: 'notifications', idField: 'notification_id' }),
+};
 
 const mockGetAllResponse = async (results) => ({
   results,
@@ -48,45 +50,73 @@ const REQUEST_TEMPLATE = (endpoint) => ({
   getById: async (id, queryParameters = '') => await request(`${API_BASE_URL}/${endpoint}/${id}?${queryParameters}`, {}, 'GET'),
 });
 
+const LOCAL_STORAGE_REQUEST_TEMPLATE = (endpoint) => ({
+  create: async (entity) => localData[endpoint].save(entity),
+  update: async (_, entity) => localData[endpoint].save(entity),
+  delete: async (id) => localData[endpoint].deleteById(id),
+  getAll: async () => {
+    const entities = localData[endpoint].fetchAll({ asList: true });
+    return mockGetAllResponse(entities);
+  },
+  getById: async (id) => localData[endpoint].getById(id),
+});
+
 const User = {
   ...REQUEST_TEMPLATE('users'), invite: REQUEST_TEMPLATE('users/invite').create, verifyEmail: REQUEST_TEMPLATE('users/verifyUserEmail').create, confirmEmail: REQUEST_TEMPLATE('users/verifyUserEmail').getById,
 };
 const Material = REQUEST_TEMPLATE('materials');
 const Notifications = {
-  ...REQUEST_TEMPLATE('notifications'),
-
-  // Overrides for hydra demo (requests were failing)
-  getAll: async () => mockGetAllResponse([]),
+  ...LOCAL_STORAGE_REQUEST_TEMPLATE('notifications'),
 };
 const Creation = {
-  ...REQUEST_TEMPLATE('creations'),
+  ...LOCAL_STORAGE_REQUEST_TEMPLATE('creations'),
+  getAll: async (queryParameters) => {
+    const allCreations = localData.creations.fetchAll({ asList: true });
+
+    const parameters = new URLSearchParams(queryParameters);
+    const query = parameters.get('query');
+    const searchFields = parameters.get('search_fields[]');
+
+    // Overridden for handling suggestion searches when creating litigations
+    if (searchFields === 'creation_title') {
+      const matchingCreations = allCreations.filter(
+        (x) => x.creation_title.toLowerCase().includes(query.toLowerCase()),
+      );
+
+      return mockGetAllResponse(matchingCreations);
+    }
+
+    return mockGetAllResponse(allCreations);
+  },
+  create: async (creation) => {
+    // TODO: Handle other media types
+    const creationType = creation.creation_link.includes('youtube') ? 'youtube_video' : 'image';
+    return LOCAL_STORAGE_REQUEST_TEMPLATE('creations').create({ ...creation, creation_type: creationType, is_claimable: true });
+  },
   registerTransaction: async (id, requestBody) => await REQUEST_TEMPLATE(`creations/${id}/transaction`).create(requestBody),
 };
 const Decision = REQUEST_TEMPLATE('decision');
 const Recognition = { ...REQUEST_TEMPLATE('recognitions'), respond: async (id, requestBody) => await REQUEST_TEMPLATE(`recognitions/${id}/respond`).create(requestBody) };
 const Litigation = {
-  ...REQUEST_TEMPLATE('litigations'),
+  ...LOCAL_STORAGE_REQUEST_TEMPLATE('litigations'),
   respond: async (id, requestBody) => await REQUEST_TEMPLATE(`litigations/${id}/respond`).create(requestBody),
   vote: async (id, requestBody) => await REQUEST_TEMPLATE(`litigations/${id}/vote`).create(requestBody),
   claimOwnership: async (id, requestBody) => await REQUEST_TEMPLATE(`litigations/${id}/claim-ownership`).create(requestBody),
-
-  // Overrides for hydra demo
   getAll: async (queryParameters) => {
-    const litigations = storageManager.fetchAll({ asList: true });
-    console.log('fetched litigations', litigations);
+    const litigations = localData.litigations.fetchAll({ asList: true });
 
+    // Move handling of query params into local storage manager so this can be generalized
     if (queryParameters?.includes('judged_by')) {
       const user = authUser.getUser();
-      const litigationsToJudge = litigations.filter((x) => x.recognitions.includes(user.user_id));
+      const litigationsToJudge = litigations.filter(
+        (litigation) => litigation.recognitions.some(
+          (x) => x.recognition_for.user_id === user.user_id,
+        ),
+      );
       return mockGetAllResponse(litigationsToJudge);
     }
 
     return mockGetAllResponse(litigations);
-  },
-  getById: async (id) => storageManager.getById(id),
-  update: async (id, litigation) => storageManager.save(litigation),
-  create: async (litigation) => {
-    storageManager.save({ ...litigation, litigation_id: uuidv4() });
   },
 };
 const Tag = REQUEST_TEMPLATE('tags');
