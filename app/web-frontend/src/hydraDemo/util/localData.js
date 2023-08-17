@@ -1,15 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-/**
- * Makes a local storage util for saving/fetching a particular entity type.
- * Entities are stored in a simple key/value object by their ID.
- * This won't scale well, but that is not a concern for demo purposes.
- *
- * @param {Object} options - Config options.
- * @param {string} options.storageKey - Local storage key that items will be stored under.
- * @param {string} options.idField - Name of the ID field for the entities.
- */
-export const makeLocalStorageManager = ({ storageKey, idField }) => {
+export const makeRepo = ({ storageKey, idField }) => {
   const errorPrefix = 'Could not make local storage manager: ';
 
   if (!storageKey) {
@@ -66,4 +57,27 @@ export const makeLocalStorageManager = ({ storageKey, idField }) => {
     getById,
     deleteById,
   };
+};
+
+const makeUsersRepo = () => {
+  const usersRepo = makeRepo({ storageKey: 'users', idField: 'user_id' });
+  const getByWalletAddress = (walletAddress) => {
+    const allUsers = usersRepo.fetchAll({ asList: true });
+    return allUsers.find((x) => x.walletAddress === walletAddress);
+  };
+
+  return {
+    ...usersRepo,
+    getByWalletAddress,
+  };
+};
+
+/**
+ * Local storage repositories (used to bypass backend for hydra demo purposes)
+ */
+export default {
+  litigations: makeRepo({ storageKey: 'litigations', idField: 'litigation_id' }),
+  creations: makeRepo({ storageKey: 'creations', idField: 'creation_id' }),
+  notifications: makeRepo({ storageKey: 'notifications', idField: 'notification_id' }),
+  users: makeUsersRepo(),
 };

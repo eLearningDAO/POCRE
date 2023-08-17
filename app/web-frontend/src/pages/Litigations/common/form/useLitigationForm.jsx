@@ -9,6 +9,7 @@ import {
 } from 'hydraDemo/contexts/DelegateServerContext';
 import { addressBech32ToPkh } from 'utils/helpers/wallet';
 import statusTypes from 'utils/constants/statusTypes';
+import localData from 'hydraDemo/util/localData';
 
 const useLitigationForm = ({ onLitigationFetch }) => {
   const navigate = useNavigate();
@@ -86,7 +87,7 @@ const useLitigationForm = ({ onLitigationFetch }) => {
     const users = authUser.getAllUsers();
 
     // Remove self from jury pool
-    delete users[user.walletAddress];
+    delete users[user.user_id];
 
     return {
       userIds: Object.values(users).map((x) => x.user_id),
@@ -115,7 +116,7 @@ const useLitigationForm = ({ onLitigationFetch }) => {
         return;
       }
 
-      const voteInterval = makeVoteInterval(5);
+      const voteInterval = makeVoteInterval(2);
       const [votingStart, votingEnd] = voteIntervalToISO(voteInterval);
       const jury = getJury();
 
@@ -132,13 +133,16 @@ const useLitigationForm = ({ onLitigationFetch }) => {
 
       delegateServer.createDispute(disputeTerms);
 
+      const creationAuthorId = localData.creations.getById(litigationBody.creation).author_id;
+      const creationAuthor = localData.users.getById(creationAuthorId);
+
       // TODO: Use actual creation_id, material_id, auther, etc.
       const payload = {
         litigation_title: litigationBody.title.trim(),
         litigation_description: litigationBody?.description?.trim(),
         creation_id: litigationBody.creation,
         material_id: null,
-        assumed_author: user, // TODO: set actual assumed author
+        assumed_author: creationAuthor,
         assumed_author_response: statusTypes.START_LITIGATION,
         issuer_id: user.user_id,
         issuer: user,

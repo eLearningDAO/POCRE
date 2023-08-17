@@ -1,13 +1,7 @@
 import { API_BASE_URL } from 'config';
 import authUser from 'utils/helpers/authUser';
-import { makeLocalStorageManager } from 'hydraDemo/util/localStorage';
+import localData from 'hydraDemo/util/localData';
 import errorMap from './errorMap';
-
-const localData = {
-  litigations: makeLocalStorageManager({ storageKey: 'litigations', idField: 'litigation_id' }),
-  creations: makeLocalStorageManager({ storageKey: 'creations', idField: 'creation_id' }),
-  notifications: makeLocalStorageManager({ storageKey: 'notifications', idField: 'notification_id' }),
-};
 
 const mockGetAllResponse = async (results) => ({
   results,
@@ -91,7 +85,13 @@ const Creation = {
   create: async (creation) => {
     // TODO: Handle other media types
     const creationType = creation.creation_link.includes('youtube') ? 'youtube_video' : 'image';
-    return LOCAL_STORAGE_REQUEST_TEMPLATE('creations').create({ ...creation, creation_type: creationType, is_claimable: true });
+
+    return LOCAL_STORAGE_REQUEST_TEMPLATE('creations').create({
+      ...creation,
+      author_id: authUser.getUser().user_id,
+      creation_type: creationType,
+      is_claimable: true,
+    });
   },
   registerTransaction: async (id, requestBody) => await REQUEST_TEMPLATE(`creations/${id}/transaction`).create(requestBody),
 };
@@ -105,7 +105,7 @@ const Litigation = {
   getAll: async (queryParameters) => {
     const litigations = localData.litigations.fetchAll({ asList: true });
 
-    // Move handling of query params into local storage manager so this can be generalized
+    // TODO: Handle 'assumed_author' query
     if (queryParameters?.includes('judged_by')) {
       const user = authUser.getUser();
       const litigationsToJudge = litigations.filter(

@@ -1,7 +1,5 @@
 import Cookies from 'js-cookie';
-import { makeLocalStorageManager } from 'hydraDemo/util/localStorage';
-
-const storageManager = makeLocalStorageManager({ storageKey: 'users', idField: 'walletAddress' });
+import localData from 'hydraDemo/util/localData';
 
 const walletAddressKey = 'walletAddress';
 const sessionWalletAddress = {
@@ -9,19 +7,19 @@ const sessionWalletAddress = {
   set: (address) => window.sessionStorage.setItem(walletAddressKey, JSON.stringify(address)),
 };
 
-const getUser = () => storageManager.getById(sessionWalletAddress.get());
+const getUser = () => localData.users.getByWalletAddress(sessionWalletAddress.get());
 
-const getAllUsers = () => storageManager.fetchAll();
+const getAllUsers = () => localData.users.fetchAll();
 
 const setUser = (user) => {
   sessionWalletAddress.set(user.walletAddress);
 
   // All users that sign in will be tracked locally for the purpose of the hydra demo.
   // These users will be used for assigning jury keys.
-  storageManager.save(user);
+  localData.users.save(user);
 };
 
-const removeUser = () => storageManager.deleteById(sessionWalletAddress.get());
+const removeUser = () => localData.users.deleteById(sessionWalletAddress.get());
 
 const getJWTToken = () => Cookies.get('jwttoken');
 
