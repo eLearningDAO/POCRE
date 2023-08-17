@@ -80,7 +80,7 @@ function LitigationCard({
       <div className="litigation-card-authors">
         {renderAuthor(assumedAuthor, 'Assumed Author')}
         <h1>vs</h1>
-        {renderAuthor(claimer, 'Assumed Author')}
+        {renderAuthor(claimer, 'Claimer')}
       </div>
       {mode === 'litigate'
         && (
