@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Decision, Litigation, Transaction } from 'api/requests';
 import { CHARGES } from 'config';
+import { useDelegateServer } from 'hydraDemo/contexts/DelegateServerContext';
+import { voteDecisions } from 'hydraDemo/contexts/DelegateServerContext/common';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -15,11 +17,23 @@ const voteStatusTypes = {
   IMPARTIAL: 'impartial',
 };
 
+const voteStatusToVoteDecision = (voteStatus) => {
+  switch (voteStatus) {
+    case voteStatusTypes.AGREED:
+      return voteDecisions.yes;
+    case voteStatusTypes.DISAGREED:
+      return voteDecisions.no;
+    default:
+      return voteDecisions.abstain;
+  }
+};
+
 const toDate = (dateString) => new Date(dateString);
 
 const useDetails = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const delegateServer = useDelegateServer();
   const [litigationId, setLitigationId] = useState(null);
   const [user, setUser] = useState();
 
@@ -156,43 +170,47 @@ const useDetails = () => {
       // check if vote is to be updated
       if (voteStatus === litigation.voteStatus) return;
 
-      // make transaction
-      const txHash = await transactADAToPOCRE({
-        amountADA: CHARGES.LITIGATION.VOTE,
-        walletName: authUser.getUser()?.selectedWallet,
-        metaData: {
-          pocre_id: litigationId,
-          pocre_entity: 'litigation',
-          purpose: transactionPurposes.CAST_LITIGATION_VOTE,
-        },
-      });
-      if (!txHash) throw new Error('Failed to make transaction');
+      const userPkh = authUser.getUser().walletPkh;
 
-      // make pocre transaction to store this info
-      const transaction = await Transaction.create({
-        transaction_hash: txHash,
-        transaction_purpose: transactionPurposes.REDEEM_LITIGATED_ITEM,
-      });
+      delegateServer.castVote({ juryMember: userPkh, vote: voteStatusToVoteDecision(voteStatus) });
 
-      // cast a vote
-      const decision = await Decision.create({
-        decision_status: voteStatus === voteStatusTypes.AGREED,
-      });
+      // // make transaction
+      // const txHash = await transactADAToPOCRE({
+      //   amountADA: CHARGES.LITIGATION.VOTE,
+      //   walletName: authUser.getUser()?.selectedWallet,
+      //   metaData: {
+      //     pocre_id: litigationId,
+      //     pocre_entity: 'litigation',
+      //     purpose: transactionPurposes.CAST_LITIGATION_VOTE,
+      //   },
+      // });
+      // if (!txHash) throw new Error('Failed to make transaction');
 
-      // update decision of litigation
-      await Litigation.vote(litigation.litigation_id, {
-        decision_id: decision.decision_id,
-        transaction_id: transaction.transaction_id,
-      });
+      // // make pocre transaction to store this info
+      // const transaction = await Transaction.create({
+      //   transaction_hash: txHash,
+      //   transaction_purpose: transactionPurposes.REDEEM_LITIGATED_ITEM,
+      // });
 
-      // update queries
-      const key = `litigation-${litigationId}`;
-      queryClient.cancelQueries({ queryKey: [key] });
-      queryClient.setQueryData([key], () => ({
-        ...litigation,
-        voteStatus,
-        decisions: [...litigation.decisions, decision],
-      }));
+      // // cast a vote
+      // const decision = await Decision.create({
+      //   decision_status: voteStatus === voteStatusTypes.AGREED,
+      // });
+
+      // // update decision of litigation
+      // await Litigation.vote(litigation.litigation_id, {
+      //   decision_id: decision.decision_id,
+      //   transaction_id: transaction.transaction_id,
+      // });
+
+      // // update queries
+      // const key = `litigation-${litigationId}`;
+      // queryClient.cancelQueries({ queryKey: [key] });
+      // queryClient.setQueryData([key], () => ({
+      //   ...litigation,
+      //   voteStatus,
+      //   decisions: [...litigation.decisions, decision],
+      // }));
     },
   });
 

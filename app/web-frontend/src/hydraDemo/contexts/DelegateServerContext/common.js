@@ -8,6 +8,12 @@ export const serverStates = {
   unknown: 'Unknown',
 };
 
+export const voteDecisions = {
+  yes: 'Yes',
+  no: 'No',
+  abstain: 'Abstain',
+};
+
 export const makeVoteInterval = (voteDurationMinutes) => {
   const startDate = new Date();
   const voteStart = startDate.getTime();
