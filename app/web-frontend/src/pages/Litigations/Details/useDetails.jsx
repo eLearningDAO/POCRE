@@ -192,25 +192,25 @@ const useDetails = () => {
       //   transaction_purpose: transactionPurposes.REDEEM_LITIGATED_ITEM,
       // });
 
-      // // cast a vote
-      // const decision = await Decision.create({
-      //   decision_status: voteStatus === voteStatusTypes.AGREED,
-      // });
+      // cast a vote
+      const decision = await Decision.create({
+        decision_status: voteStatus === voteStatusTypes.AGREED,
+      });
 
-      // // update decision of litigation
-      // await Litigation.vote(litigation.litigation_id, {
-      //   decision_id: decision.decision_id,
-      //   transaction_id: transaction.transaction_id,
-      // });
+      // update decision of litigation
+      await Litigation.vote(litigation.litigation_id, {
+        decision_id: decision.decision_id,
+        transaction_id: '',
+      });
 
-      // // update queries
-      // const key = `litigation-${litigationId}`;
-      // queryClient.cancelQueries({ queryKey: [key] });
-      // queryClient.setQueryData([key], () => ({
-      //   ...litigation,
-      //   voteStatus,
-      //   decisions: [...litigation.decisions, decision],
-      // }));
+      // update queries
+      const key = `litigation-${litigationId}`;
+      queryClient.cancelQueries({ queryKey: [key] });
+      queryClient.setQueryData([key], () => ({
+        ...litigation,
+        voteStatus,
+        decisions: [...litigation.decisions, decision],
+      }));
     },
   });
 

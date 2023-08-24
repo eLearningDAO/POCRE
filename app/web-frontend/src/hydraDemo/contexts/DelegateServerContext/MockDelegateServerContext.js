@@ -5,7 +5,7 @@ import { serverStates } from './common';
 
 const MockDelegateServerContext = createContext();
 
-const mockHeadId = 'MOCK_HYDRA_HEAD_ID';
+const mockHeadId = '5aa21c47a57d105d4eed6dc9c136ec5a8fdf71688ef36ba5762e8bc2';
 
 function MockDelegateServerProvider({ children }) {
   const [serverState, setServerState] = useState(serverStates.disconnected);
@@ -26,12 +26,16 @@ function MockDelegateServerProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    console.log('New delegate server state', serverState);
-
     if (serverState === serverStates.connected) {
+      console.log('Connected to websocket server');
       queryState();
     }
+    console.log(`Delegate server state: ${serverState}`);
   }, [serverState]);
+
+  useEffect(() => {
+    if (headId) console.log('Hydra head ID:', headId);
+  }, [headId]);
 
   const createDispute = ({
     claimFor,
@@ -52,11 +56,7 @@ function MockDelegateServerProvider({ children }) {
         debugCheckSignatures,
       });
       setServerState(serverStates.votingOpen);
-    }, 2000);
-  };
-
-  const castVote = ({ juryMember, vote }) => {
-    setTimeout(() => setServerState(serverStates.votingClosed), 5000);
+    }, 5000);
   };
 
   const settle = () => {
@@ -69,7 +69,9 @@ function MockDelegateServerProvider({ children }) {
       headId,
       terms,
       createDispute,
-      castVote,
+      castVote: ({ juryMember, vote }) => {
+        console.log('vote casted', { juryMember, vote });
+      },
       settle,
     }),
     [serverState, headId],

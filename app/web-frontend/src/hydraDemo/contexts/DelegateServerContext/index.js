@@ -4,7 +4,7 @@ import { MockDelegateServerProvider, useMockDelegateServer } from './MockDelegat
 export { serverStates, makeVoteInterval, voteIntervalToISO } from './common';
 
 // TODO: Move to config
-const useMock = true;
+const useMock = false;
 
 export function DelegateServerProvider({ children }) {
   return useMock ? (

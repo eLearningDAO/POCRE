@@ -46,10 +46,19 @@ const useHome = () => {
         `judged_by=${user?.user_id}&limit=1000&${toPopulate.map((x) => `populate=${x}`).join('&')}`,
       );
 
+      const litigationsToJudge = litigationToJudgeResponse.results.map(
+        (x) => ({ ...x, toJudge: true }),
+      );
+      const litigationsToJudgeKV = litigationsToJudge.map((x) => [x.litigation_id, x]);
+      const litigationsToJudgeById = Object.fromEntries(litigationsToJudgeKV);
+      const otherLitigations = litigationResponse.results.filter(
+        (x) => !litigationsToJudgeById[x.litigation_id],
+      );
+
       // merge results
       litigationResponse.results = [
-        ...litigationResponse.results,
-        ...(litigationToJudgeResponse?.results?.map((x) => ({ ...x, toJudge: true })) || []),
+        ...otherLitigations,
+        ...litigationsToJudge,
       ];
 
       const now = moment();

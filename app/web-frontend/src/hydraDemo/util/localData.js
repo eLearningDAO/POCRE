@@ -28,7 +28,8 @@ export const makeRepo = ({ storageKey, idField }) => {
 
   const save = (entity) => {
     const id = entity[idField] ?? uuidv4();
-    const newEntity = { ...entity, [idField]: id };
+    const createdAt = entity.created_at ?? new Date().toISOString();
+    const newEntity = { ...entity, [idField]: id, created_at: createdAt };
 
     try {
       const entities = fetchAll();
@@ -73,11 +74,15 @@ const makeUsersRepo = () => {
 };
 
 /**
- * Local storage repositories (used to bypass backend for hydra demo purposes)
+ * Local data repositories (useful for bypassing backend for demo/testing purposes)
  */
 export default {
   litigations: makeRepo({ storageKey: 'litigations', idField: 'litigation_id' }),
   creations: makeRepo({ storageKey: 'creations', idField: 'creation_id' }),
+  materials: makeRepo({ storageKey: 'materials', idField: 'material_id' }),
   notifications: makeRepo({ storageKey: 'notifications', idField: 'notification_id' }),
+  decision: makeRepo({ storageKey: 'decision', idField: 'decision_id' }),
   users: makeUsersRepo(),
+  tags: makeRepo({ storageKey: 'tags', idField: 'tag_id' }),
+  recognitions: makeRepo({ storageKey: 'recognitions', idField: 'recognition_id' }),
 };

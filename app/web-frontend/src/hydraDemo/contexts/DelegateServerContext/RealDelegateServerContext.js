@@ -45,15 +45,17 @@ function RealDelegateServerProvider({ children }) {
           (contentType === 'WasQueried' || contentType === 'Updated')
           && contents.tag === 'Initialized'
         ) {
-          const newHeadId = contents.contents[0];
-          const { stangingBidWasCommited, tag } = contents.contents[1];
+          const newHeadId = contents.headId;
+          const { primaryCommitWasSubmitted, tag } = contents.initializedState;
 
           setHeadId(newHeadId);
 
           switch (tag) {
             case 'AwaitingCommits':
               setServerState(
-                stangingBidWasCommited ? serverStates.bidCommitted : serverStates.awaitingCommits,
+                primaryCommitWasSubmitted
+                  ? serverStates.bidCommitted
+                  : serverStates.awaitingCommits,
               );
               break;
             case 'Open':
@@ -85,9 +87,47 @@ function RealDelegateServerProvider({ children }) {
     // };
   }, []);
 
+  const settle = () => {
+    const message = {
+      contents: {
+        contents: {
+          contents: 'AllVotesCasted',
+          tag: 'Settle',
+        },
+        tag: 'MkTxAction',
+      },
+      tag: 'SubmitTx',
+    };
+
+    socket.send(JSON.stringify(message));
+  };
+
+  const timeout = () => {
+    const message = {
+      contents: {
+        contents: {
+          contents: 'Timeout',
+          tag: 'Settle',
+        },
+        tag: 'MkTxAction',
+      },
+      tag: 'SubmitTx',
+    };
+
+    socket.send(JSON.stringify(message));
+  };
+
   useEffect(() => {
     if (socket && serverState === serverStates.connected) queryState();
   }, [socket, serverState]);
+
+  useEffect(() => {
+    if (headId) console.log('Hydra head ID', headId);
+  }, [headId]);
+
+  useEffect(() => {
+    if (serverState) console.log('Server state', serverState);
+  }, [serverState]);
 
   const createDispute = ({
     claimFor,
@@ -117,25 +157,20 @@ function RealDelegateServerProvider({ children }) {
   const castVote = ({ juryMember, vote }) => {
     const voting = {
       contents: {
-        contents: [juryMember, '', vote],
-        tag: 'Vote',
+        contents: {
+          contents: [
+            juryMember,
+            '',
+            vote,
+          ],
+          tag: 'Vote',
+        },
+        tag: 'MkTxAction',
       },
       tag: 'SubmitTx',
     };
 
     socket?.send(JSON.stringify(voting));
-  };
-
-  const settle = () => {
-    const settling = {
-      contents: {
-        contents: 'AllVotesCasted',
-        tag: 'Settle',
-      },
-      tag: 'SubmitTx',
-    };
-
-    socket.send(JSON.stringify(settling));
   };
 
   const context = useMemo(
@@ -145,6 +180,7 @@ function RealDelegateServerProvider({ children }) {
       createDispute,
       castVote,
       settle,
+      timeout,
     }),
     [serverState, headId],
   );

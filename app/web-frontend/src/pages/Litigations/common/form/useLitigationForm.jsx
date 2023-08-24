@@ -116,13 +116,40 @@ const useLitigationForm = ({ onLitigationFetch }) => {
         return;
       }
 
-      const voteInterval = makeVoteInterval(2);
+      const voteInterval = makeVoteInterval(5);
       const [votingStart, votingEnd] = voteIntervalToISO(voteInterval);
       const jury = getJury();
+      const creationAuthorId = localData.creations.getById(litigationBody.creation).author_id;
+      const creationAuthor = localData.users.getById(creationAuthorId);
+
+      // TODO: Use actual creation_id, material_id, auther, etc.
+      const payload = {
+        litigation_title: litigationBody.title.trim(),
+        litigation_description: litigationBody?.description?.trim(),
+        creation_id: litigationBody.creation,
+        material_id: litigationBody.material,
+        assumed_author: creationAuthor,
+        assumed_author_response: statusTypes.START_LITIGATION,
+        issuer_id: user.user_id,
+        issuer: user,
+        recognitions: jury.userIds.map((x) => ({ recognition_for: { user_id: x } })),
+        decisions: [],
+        voting_start: votingStart,
+        voting_end: votingEnd,
+        reconcilate: false,
+        ownership_transferred: false,
+        is_draft: false,
+      };
+
+      const newLitigation = litigation?.litigation_id
+        ? await Litigation.update(litigation?.litigation_id, payload)
+        : await Litigation.create(payload);
+
+      const walletPkh = await addressBech32ToPkh(user.walletAddress);
 
       const disputeTerms = {
-        claimFor: 'DEMO_LITIGATION',
-        claimer: addressBech32ToPkh(user.walletAddress),
+        claimFor: '54657374', // TODO: Base16 encode the litigation_id
+        claimer: walletPkh,
         hydraHeadId: delegateServer.headId,
         jury: jury.pubKeyHashes,
         voteInterval,
@@ -132,34 +159,6 @@ const useLitigationForm = ({ onLitigationFetch }) => {
       console.log('Creating dispute', disputeTerms);
 
       delegateServer.createDispute(disputeTerms);
-
-      const creationAuthorId = localData.creations.getById(litigationBody.creation).author_id;
-      const creationAuthor = localData.users.getById(creationAuthorId);
-
-      // TODO: Use actual creation_id, material_id, auther, etc.
-      const payload = {
-        litigation_title: litigationBody.title.trim(),
-        litigation_description: litigationBody?.description?.trim(),
-        creation_id: litigationBody.creation,
-        material_id: null,
-        assumed_author: creationAuthor,
-        assumed_author_response: statusTypes.START_LITIGATION,
-        issuer_id: user.user_id,
-        issuer: user,
-        winner: 'dd7a824b-b0a9-4868-bdbf-cfa6bdd36629',
-        recognitions: jury.userIds.map((x) => ({ recognition_for: { user_id: x } })),
-        decisions: [],
-        voting_start: votingStart,
-        voting_end: votingEnd,
-        reconcilate: false,
-        created_at: '2022-09-05T19:00:00.000Z',
-        ownership_transferred: false,
-        is_draft: false,
-      };
-
-      const response = litigation?.litigation_id
-        ? await Litigation.update(litigation?.litigation_id, payload)
-        : await Litigation.create(payload);
 
       // update queries
       queryClient.invalidateQueries({ queryKey: ['litigations'] });
