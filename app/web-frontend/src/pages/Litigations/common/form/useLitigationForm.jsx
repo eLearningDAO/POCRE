@@ -147,8 +147,8 @@ const useLitigationForm = ({ onLitigationFetch }) => {
 
       const walletPkh = await addressBech32ToPkh(user.walletAddress);
 
-      const disputeTerms = {
-        claimFor: '54657374', // TODO: Base16 encode the litigation_id
+      const disputeDetails = {
+        litigationId: newLitigation.litigation_id,
         claimer: walletPkh,
         hydraHeadId: delegateServer.headId,
         jury: jury.pubKeyHashes,
@@ -156,9 +156,7 @@ const useLitigationForm = ({ onLitigationFetch }) => {
         debugCheckSignatures: false,
       };
 
-      console.log('Creating dispute', disputeTerms);
-
-      delegateServer.createDispute(disputeTerms);
+      delegateServer.createDispute(disputeDetails);
 
       // update queries
       queryClient.invalidateQueries({ queryKey: ['litigations'] });

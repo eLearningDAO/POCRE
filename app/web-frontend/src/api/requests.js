@@ -1,5 +1,6 @@
 import { API_BASE_URL } from 'config';
 import authUser from 'utils/helpers/authUser';
+import statusTypes from 'utils/constants/statusTypes';
 import localData from 'hydraDemo/util/localData';
 import errorMap from './errorMap';
 
@@ -154,7 +155,13 @@ const Litigation = {
       : (areAllVotesCast ? litigation.assumed_author.user_id : null);
     const winner = localData.users.getById(winnerUserId);
 
-    localData.litigations.save({ ...litigation, decisions, winner });
+    const assumedAuthorResponse = areAllVotesCast
+      ? statusTypes.WITHDRAW_CLAIM
+      : litigation.assumed_author_response;
+
+    localData.litigations.save({
+      ...litigation, decisions, winner, assumed_author_response: assumedAuthorResponse,
+    });
   },
   claimOwnership: async (id, requestBody) => await REQUEST_TEMPLATE(`litigations/${id}/claim-ownership`).create(requestBody),
   getAll: async (queryParameters) => {

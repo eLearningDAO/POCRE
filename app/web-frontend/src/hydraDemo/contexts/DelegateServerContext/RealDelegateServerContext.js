@@ -2,14 +2,32 @@ import React, {
   createContext, useState, useEffect, useContext, useMemo,
 } from 'react';
 import { DELEGATE_SERVER_URL } from 'config';
+import { toHex } from 'hydraDemo/util/hex';
 import { serverStates } from './common';
 
 const RealDelegateServerContext = createContext();
+
+const initialVoteInfo = {
+  terms: {},
+  votes: { Yes: [], No: [], Abstain: [] },
+};
+
+const makeSettleMessage = (settleType) => ({
+  contents: {
+    contents: {
+      contents: settleType,
+      tag: 'Settle',
+    },
+    tag: 'MkTxAction',
+  },
+  tag: 'SubmitTx',
+});
 
 function RealDelegateServerProvider({ children }) {
   const [socket, setSocket] = useState(null);
   const [serverState, setServerState] = useState(serverStates.disconnected);
   const [headId, setHeadId] = useState(null);
+  const [voteInfo, setVoteInfo] = useState(initialVoteInfo);
 
   const queryState = () => {
     const query = {
@@ -46,21 +64,36 @@ function RealDelegateServerProvider({ children }) {
           && contents.tag === 'Initialized'
         ) {
           const newHeadId = contents.headId;
-          const { primaryCommitWasSubmitted, tag } = contents.initializedState;
+          const { tag: initializedStateType } = contents.initializedState;
 
           setHeadId(newHeadId);
 
-          switch (tag) {
+          switch (initializedStateType) {
             case 'AwaitingCommits':
-              setServerState(
-                primaryCommitWasSubmitted
-                  ? serverStates.bidCommitted
-                  : serverStates.awaitingCommits,
-              );
+            case 'Aborted': {
+              const { primaryCommitWasSubmitted } = contents.initializedState;
+              if (primaryCommitWasSubmitted) {
+                setServerState(serverStates.bidCommitted);
+              } else {
+                setServerState(serverStates.awaitingCommits);
+                setVoteInfo(initialVoteInfo);
+              }
               break;
-            case 'Open':
+            }
+            case 'Open': {
+              const { terms, votesCastedFor } = contents?.initializedState.contents.disputeDatum;
+              const votesObject = {};
+              for (const [voteType, voteList] of votesCastedFor.unMap) {
+                votesObject[voteType] = voteList;
+              }
+              setVoteInfo({
+                ...voteInfo,
+                terms,
+                votes: votesObject,
+              });
               setServerState(serverStates.votingOpen);
               break;
+            }
             case 'Closed':
               setServerState(serverStates.votingClosed);
               break;
@@ -87,33 +120,13 @@ function RealDelegateServerProvider({ children }) {
     // };
   }, []);
 
-  const settle = () => {
-    const message = {
-      contents: {
-        contents: {
-          contents: 'AllVotesCasted',
-          tag: 'Settle',
-        },
-        tag: 'MkTxAction',
-      },
-      tag: 'SubmitTx',
-    };
-
+  const settleAllVotesCasted = () => {
+    const message = makeSettleMessage('AllVotesCasted');
     socket.send(JSON.stringify(message));
   };
 
-  const timeout = () => {
-    const message = {
-      contents: {
-        contents: {
-          contents: 'Timeout',
-          tag: 'Settle',
-        },
-        tag: 'MkTxAction',
-      },
-      tag: 'SubmitTx',
-    };
-
+  const settleTimeout = () => {
+    const message = makeSettleMessage('Timeout');
     socket.send(JSON.stringify(message));
   };
 
@@ -129,8 +142,27 @@ function RealDelegateServerProvider({ children }) {
     if (serverState) console.log('Server state', serverState);
   }, [serverState]);
 
+  // Handle settling automatically once all votes casted or interval has elapsted
+  useEffect(() => {
+    console.log('new voteInfo', voteInfo);
+
+    if (voteInfo.terms.voteInterval && Date.now() > voteInfo.terms.voteInterval[1]) {
+      settleTimeout();
+      return;
+    }
+
+    let totalVotes = 0;
+    for (const votes of Object.values(voteInfo.votes)) totalVotes += votes.length;
+
+    if (!totalVotes || !voteInfo.terms.jury) return;
+
+    if (totalVotes >= voteInfo.terms.jury.length) {
+      settleAllVotesCasted();
+    }
+  }, [voteInfo]);
+
   const createDispute = ({
-    claimFor,
+    litigationId,
     claimer,
     hydraHeadId,
     jury,
@@ -138,7 +170,7 @@ function RealDelegateServerProvider({ children }) {
     debugCheckSignatures = false,
   }) => {
     const terms = {
-      claimFor,
+      claimFor: toHex(litigationId),
       claimer,
       hydraHeadId,
       jury,
@@ -158,11 +190,7 @@ function RealDelegateServerProvider({ children }) {
     const voting = {
       contents: {
         contents: {
-          contents: [
-            juryMember,
-            '',
-            vote,
-          ],
+          contents: [juryMember, '', vote],
           tag: 'Vote',
         },
         tag: 'MkTxAction',
@@ -177,12 +205,13 @@ function RealDelegateServerProvider({ children }) {
     () => ({
       state: serverState,
       headId,
+      voteInfo,
       createDispute,
       castVote,
-      settle,
-      timeout,
+      settleAllVotesCasted,
+      settleTimeout,
     }),
-    [serverState, headId],
+    [serverState, headId, voteInfo],
   );
 
   return (

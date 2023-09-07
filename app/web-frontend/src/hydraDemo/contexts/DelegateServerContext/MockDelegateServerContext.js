@@ -72,7 +72,8 @@ function MockDelegateServerProvider({ children }) {
       castVote: ({ juryMember, vote }) => {
         console.log('vote casted', { juryMember, vote });
       },
-      settle,
+      settleTimeout: settle,
+      settleAllVotesCasted: settle,
     }),
     [serverState, headId],
   );
