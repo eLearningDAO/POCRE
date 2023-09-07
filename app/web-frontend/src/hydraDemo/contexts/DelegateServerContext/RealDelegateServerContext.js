@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import { DELEGATE_SERVER_URL } from 'config';
 import { toHex } from 'hydraDemo/util/hex';
+import { signData } from 'utils/helpers/wallet';
 import { serverStates } from './common';
 
 const RealDelegateServerContext = createContext();
@@ -186,11 +187,13 @@ function RealDelegateServerProvider({ children }) {
     socket?.send(JSON.stringify(commit));
   };
 
-  const castVote = ({ juryMember, vote }) => {
+  const castVote = async ({ walletName, juryMember, vote }) => {
+    const { signature } = await signData({ walletName, data: headId });
+
     const voting = {
       contents: {
         contents: {
-          contents: [juryMember, '', vote],
+          contents: [juryMember, signature, vote],
           tag: 'Vote',
         },
         tag: 'MkTxAction',

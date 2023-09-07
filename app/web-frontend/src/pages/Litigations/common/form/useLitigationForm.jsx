@@ -83,18 +83,6 @@ const useLitigationForm = ({ onLitigationFetch }) => {
     },
   });
 
-  const getJury = () => {
-    const users = authUser.getAllUsers();
-
-    // Remove self from jury pool
-    delete users[user.user_id];
-
-    return {
-      userIds: Object.values(users).map((x) => x.user_id),
-      pubKeyHashes: Object.values(users).map((x) => x.walletPkh),
-    };
-  };
-
   // create new litigation
   const {
     mutate: makeNewLitigation,
@@ -118,9 +106,18 @@ const useLitigationForm = ({ onLitigationFetch }) => {
 
       const voteInterval = makeVoteInterval(5);
       const [votingStart, votingEnd] = voteIntervalToISO(voteInterval);
-      const jury = getJury();
+
       const creationAuthorId = localData.creations.getById(litigationBody.creation).author_id;
       const creationAuthor = localData.users.getById(creationAuthorId);
+
+      // Get users eligible as jury members (for demo purposes, we just use all users that are not
+      // the litigation or creation author)
+      const juryUsers = authUser
+        .getAllUsers()
+        .filter((x) => ![user.user_id, creationAuthorId].includes(x.user_id));
+
+      const juryUserIds = juryUsers.map((x) => x.user_id);
+      const juryPubKeyHashes = juryUsers.map((x) => x.walletPkh);
 
       // TODO: Use actual creation_id, material_id, auther, etc.
       const payload = {
@@ -132,7 +129,7 @@ const useLitigationForm = ({ onLitigationFetch }) => {
         assumed_author_response: statusTypes.START_LITIGATION,
         issuer_id: user.user_id,
         issuer: user,
-        recognitions: jury.userIds.map((x) => ({ recognition_for: { user_id: x } })),
+        recognitions: juryUserIds.map((x) => ({ recognition_for: { user_id: x } })),
         decisions: [],
         voting_start: votingStart,
         voting_end: votingEnd,
@@ -151,7 +148,7 @@ const useLitigationForm = ({ onLitigationFetch }) => {
         litigationId: newLitigation.litigation_id,
         claimer: walletPkh,
         hydraHeadId: delegateServer.headId,
-        jury: jury.pubKeyHashes,
+        jury: juryPubKeyHashes,
         voteInterval,
         debugCheckSignatures: false,
       };

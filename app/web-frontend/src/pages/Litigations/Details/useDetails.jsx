@@ -172,27 +172,14 @@ const useDetails = () => {
 
       const userPkh = authUser.getUser().walletPkh;
 
-      delegateServer.castVote({ juryMember: userPkh, vote: voteStatusToVoteDecision(voteStatus) });
+      await delegateServer.castVote({
+        walletName: authUser.getUser()?.selectedWallet,
+        juryMember: userPkh,
+        vote: voteStatusToVoteDecision(voteStatus),
+      });
 
-      // // make transaction
-      // const txHash = await transactADAToPOCRE({
-      //   amountADA: CHARGES.LITIGATION.VOTE,
-      //   walletName: authUser.getUser()?.selectedWallet,
-      //   metaData: {
-      //     pocre_id: litigationId,
-      //     pocre_entity: 'litigation',
-      //     purpose: transactionPurposes.CAST_LITIGATION_VOTE,
-      //   },
-      // });
-      // if (!txHash) throw new Error('Failed to make transaction');
-
-      // // make pocre transaction to store this info
-      // const transaction = await Transaction.create({
-      //   transaction_hash: txHash,
-      //   transaction_purpose: transactionPurposes.REDEEM_LITIGATED_ITEM,
-      // });
-
-      // cast a vote
+      // update backend with decision (this should really happen automatically on the backend
+      // to ensure consistency with hydra)
       const decision = await Decision.create({
         decision_status: voteStatus === voteStatusTypes.AGREED,
       });

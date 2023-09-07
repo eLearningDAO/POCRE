@@ -102,3 +102,10 @@ const addressBech32ToPkh = async (address) => BaseAddress.from_address(
 export {
   getAvailableWallets, getWalletAddress, transactADAToPOCRE, addressHexToPkh, addressBech32ToPkh,
 };
+
+export const signData = async ({ walletName, data }) => {
+  const wallet = await BrowserWallet.enable(walletName);
+  const addresses = await wallet.getUsedAddresses();
+
+  return wallet.signData(addresses[0], data);
+};

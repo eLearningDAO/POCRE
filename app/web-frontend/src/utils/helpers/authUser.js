@@ -9,7 +9,7 @@ const sessionWalletAddress = {
 
 const getUser = () => localData.users.getByWalletAddress(sessionWalletAddress.get());
 
-const getAllUsers = () => localData.users.fetchAll();
+const getAllUsers = () => localData.users.fetchAll({ asList: true });
 
 const setUser = (user) => {
   sessionWalletAddress.set(user.walletAddress);
