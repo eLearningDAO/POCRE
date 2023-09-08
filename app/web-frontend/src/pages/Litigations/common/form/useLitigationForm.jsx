@@ -4,15 +4,24 @@ import useSuggestions from 'hooks/useSuggestions';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authUser from 'utils/helpers/authUser';
-
-// get auth user
-const user = authUser.getUser();
+import {
+  useDelegateServer, serverStates, makeVoteInterval, voteIntervalToISO,
+} from 'hydraDemo/contexts/DelegateServerContext';
+import { addressBech32ToPkh } from 'utils/helpers/wallet';
+import statusTypes from 'utils/constants/statusTypes';
+import localData from 'hydraDemo/util/localData';
 
 const useLitigationForm = ({ onLitigationFetch }) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [newLitigation, setNewLitigation] = useState(null);
   const [litigationId, setLitigationId] = useState(null);
+  const delegateServer = useDelegateServer();
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    const newUser = authUser.getUser();
+    if (newUser) setUser(newUser);
+  }, []);
 
   const {
     suggestions: authorSuggestions,
@@ -82,18 +91,69 @@ const useLitigationForm = ({ onLitigationFetch }) => {
     isLoading: isCreatingLitigation,
   } = useMutation({
     mutationFn: async (litigationBody = {}) => {
-      // make a new litigation
+      console.log({ litigationBody });
+      console.log({ serverState: delegateServer.state, headId: delegateServer.headId });
+
+      if (!delegateServer.headId || delegateServer.state !== serverStates.awaitingCommits) {
+        console.error('Not ready to create dispute');
+        return;
+      }
+
+      if (!user.walletAddress) {
+        console.error('Property `walletAddress` is missing from user');
+        return;
+      }
+
+      const voteInterval = makeVoteInterval(5);
+      const [votingStart, votingEnd] = voteIntervalToISO(voteInterval);
+
+      const creationAuthorId = localData.creations.getById(litigationBody.creation).author_id;
+      const creationAuthor = localData.users.getById(creationAuthorId);
+
+      // Get users eligible as jury members (for demo purposes, we just use all users that are not
+      // the litigation or creation author)
+      const juryUsers = authUser
+        .getAllUsers()
+        .filter((x) => ![user.user_id, creationAuthorId].includes(x.user_id));
+
+      const juryUserIds = juryUsers.map((x) => x.user_id);
+      const juryPubKeyHashes = juryUsers.map((x) => x.walletPkh);
+
+      // TODO: Use actual creation_id, material_id, auther, etc.
       const payload = {
         litigation_title: litigationBody.title.trim(),
         litigation_description: litigationBody?.description?.trim(),
         creation_id: litigationBody.creation,
-        ...(litigationBody.material && { material_id: litigationBody.material }),
-        is_draft: litigationBody.is_draft,
+        material_id: litigationBody.material,
+        assumed_author: creationAuthor,
+        assumed_author_response: statusTypes.START_LITIGATION,
+        issuer_id: user.user_id,
+        issuer: user,
+        recognitions: juryUserIds.map((x) => ({ recognition_for: { user_id: x } })),
+        decisions: [],
+        voting_start: votingStart,
+        voting_end: votingEnd,
+        reconcilate: false,
+        ownership_transferred: false,
+        is_draft: false,
       };
-      const response = litigation?.litigation_id
+
+      const newLitigation = litigation?.litigation_id
         ? await Litigation.update(litigation?.litigation_id, payload)
         : await Litigation.create(payload);
-      setNewLitigation(response);
+
+      const walletPkh = await addressBech32ToPkh(user.walletAddress);
+
+      const disputeDetails = {
+        litigationId: newLitigation.litigation_id,
+        claimer: walletPkh,
+        hydraHeadId: delegateServer.headId,
+        jury: juryPubKeyHashes,
+        voteInterval,
+        debugCheckSignatures: false,
+      };
+
+      delegateServer.createDispute(disputeDetails);
 
       // update queries
       queryClient.invalidateQueries({ queryKey: ['litigations'] });
@@ -108,11 +168,10 @@ const useLitigationForm = ({ onLitigationFetch }) => {
   }, [litigation]);
 
   return {
-    isCreatingLitigation,
-    newLitigation,
+    isCreatingLitigation: delegateServer.state === serverStates.bidCommitted,
     newLitigationStatus: {
-      success: isCreateLitigationSuccess,
-      error: createLitigationError?.message || null,
+      success: delegateServer.state === serverStates.votingOpen,
+      error: null, // TODO: Handle error case
     },
     makeNewLitigation,
     creationSuggestions,

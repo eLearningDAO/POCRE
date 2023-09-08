@@ -1,4 +1,5 @@
 import { BrowserWallet, Transaction } from '@meshsdk/core';
+import { Address, BaseAddress } from '@emurgo/cardano-serialization-lib-browser';
 import { POCRE_WALLET_ADDRESS, POCRE_NETWORKS } from 'config';
 
 const getAvailableWallets = async () => {
@@ -76,4 +77,35 @@ const transactADAToPOCRE = async ({
   }
 };
 
-export { getAvailableWallets, getWalletAddress, transactADAToPOCRE };
+/**
+ * @param {*} address Hex encoded CIP-30 Address
+ * @returns Hex-encoded public key hash
+ */
+const addressHexToPkh = async (address) => BaseAddress.from_address(
+  Address.from_bytes(Buffer.from(address, 'hex')),
+)
+  .payment_cred()
+  .to_keyhash()
+  .to_hex();
+
+/**
+ * @param {*} address Bech32 encoded CIP-30 Address
+ * @returns Hex-encoded public key hash
+ */
+const addressBech32ToPkh = async (address) => BaseAddress.from_address(
+  Address.from_bech32(address),
+)
+  .payment_cred()
+  .to_keyhash()
+  .to_hex();
+
+export {
+  getAvailableWallets, getWalletAddress, transactADAToPOCRE, addressHexToPkh, addressBech32ToPkh,
+};
+
+export const signData = async ({ walletName, data }) => {
+  const wallet = await BrowserWallet.enable(walletName);
+  const addresses = await wallet.getUsedAddresses();
+
+  return wallet.signData(addresses[0], data);
+};

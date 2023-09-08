@@ -1,21 +1,25 @@
 import Cookies from 'js-cookie';
+import localData from 'hydraDemo/util/localData';
 
-const getUser = () => {
-  const user = Cookies.get('authUser');
-  return typeof user === 'string' ? JSON.parse(user) : user;
+const walletAddressKey = 'walletAddress';
+const sessionWalletAddress = {
+  get: () => JSON.parse(window.sessionStorage.getItem(walletAddressKey)),
+  set: (address) => window.sessionStorage.setItem(walletAddressKey, JSON.stringify(address)),
 };
 
-const setUser = (user, options = {}) => Cookies.set(
-  'authUser',
-  JSON.stringify({
-    ...user,
-    // eslint-disable-next-line unicorn/prefer-module
-    image_url: user?.image_url || require('assets/images/profile-placeholder.png'), // set the default profile picture if not set
-  }),
-  options,
-);
+const getUser = () => localData.users.getByWalletAddress(sessionWalletAddress.get());
 
-const removeUser = () => Cookies.remove('authUser');
+const getAllUsers = () => localData.users.fetchAll({ asList: true });
+
+const setUser = (user) => {
+  sessionWalletAddress.set(user.walletAddress);
+
+  // All users that sign in will be tracked locally for the purpose of the hydra demo.
+  // These users will be used for assigning jury keys.
+  localData.users.save(user);
+};
+
+const removeUser = () => localData.users.deleteById(sessionWalletAddress.get());
 
 const getJWTToken = () => Cookies.get('jwttoken');
 
@@ -29,6 +33,7 @@ const removeJWTToken = () => Cookies.remove('jwttoken');
 
 export default {
   getUser,
+  getAllUsers,
   setUser,
   removeUser,
   setJWTToken,

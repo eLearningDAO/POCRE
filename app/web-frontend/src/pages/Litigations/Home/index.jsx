@@ -193,7 +193,7 @@ function Litigation() {
                   onRedeem: async () => await transferLitigatedItemOwnership(x?.litigation_id),
                   isRedeemed: x?.winner?.user_id === user?.user_id
                     ? x?.ownership_transferred : null,
-                  lostClaim: x?.winner?.user_id !== user?.user_id,
+                  lostClaim: user.user_id === x.issuer_id && x?.winner?.user_id !== user?.user_id,
                 })}
                 {...(activeLitigation === 'toVote' && {
                   mode: 'toJudge',
@@ -215,14 +215,12 @@ function Litigation() {
                 {...(['inVoting', 'toVote', 'closed'].includes(activeLitigation) && {
                   totalJuryMembers: x?.recognitions?.length,
                 })}
-                isPendingPaymentConfirmation={
-                  (x?.transactions || []).find(
-                    (y) => (
-                      y?.transaction_purpose === litigationToTransactionPurpose[activeLitigation]
-                      && !y?.is_validated
-                    ),
-                  )
-                }
+                isPendingPaymentConfirmation={(x?.transactions || []).find(
+                  (y) => (
+                    y?.transaction_purpose === litigationToTransactionPurpose[activeLitigation]
+                    && !y?.is_validated
+                  ),
+                )}
               />
             ))}
           </div>

@@ -260,9 +260,9 @@ const useCreationForm = ({
       await Creation.update(creation.original.creation_id, { ...updatedCreation });
 
       // upload to ipfs if not draft
-      if (!updateBody.is_draft) {
-        await publishIPFSCreationOnChain(creation.original.creation_id);
-      }
+      // if (!updateBody.is_draft) {
+      //   await publishIPFSCreationOnChain(creation.original.creation_id);
+      // }
 
       // remove queries cache
       queryClient.invalidateQueries({ queryKey: ['creations'] });

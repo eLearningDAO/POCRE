@@ -1,15 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Decision, Litigation, Transaction } from 'api/requests';
 import { CHARGES } from 'config';
+import { useDelegateServer } from 'hydraDemo/contexts/DelegateServerContext';
+import { voteDecisions } from 'hydraDemo/contexts/DelegateServerContext/common';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import statusTypes from 'utils/constants/statusTypes';
 import transactionPurposes from 'utils/constants/transactionPurposes';
 import authUser from 'utils/helpers/authUser';
 import { transactADAToPOCRE } from 'utils/helpers/wallet';
-
-const user = authUser.getUser();
 
 const voteStatusTypes = {
   AGREED: 'agreed',
@@ -17,12 +17,29 @@ const voteStatusTypes = {
   IMPARTIAL: 'impartial',
 };
 
+const voteStatusToVoteDecision = (voteStatus) => {
+  switch (voteStatus) {
+    case voteStatusTypes.AGREED:
+      return voteDecisions.yes;
+    case voteStatusTypes.DISAGREED:
+      return voteDecisions.no;
+    default:
+      return voteDecisions.abstain;
+  }
+};
+
 const toDate = (dateString) => new Date(dateString);
 
 const useDetails = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const delegateServer = useDelegateServer();
   const [litigationId, setLitigationId] = useState(null);
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    setUser(authUser.getUser());
+  }, []);
 
   // fetch the litigation
   const {
@@ -153,25 +170,16 @@ const useDetails = () => {
       // check if vote is to be updated
       if (voteStatus === litigation.voteStatus) return;
 
-      // make transaction
-      const txHash = await transactADAToPOCRE({
-        amountADA: CHARGES.LITIGATION.VOTE,
+      const userPkh = authUser.getUser().walletPkh;
+
+      await delegateServer.castVote({
         walletName: authUser.getUser()?.selectedWallet,
-        metaData: {
-          pocre_id: litigationId,
-          pocre_entity: 'litigation',
-          purpose: transactionPurposes.CAST_LITIGATION_VOTE,
-        },
-      });
-      if (!txHash) throw new Error('Failed to make transaction');
-
-      // make pocre transaction to store this info
-      const transaction = await Transaction.create({
-        transaction_hash: txHash,
-        transaction_purpose: transactionPurposes.REDEEM_LITIGATED_ITEM,
+        juryMember: userPkh,
+        vote: voteStatusToVoteDecision(voteStatus),
       });
 
-      // cast a vote
+      // update backend with decision (this should really happen automatically on the backend
+      // to ensure consistency with hydra)
       const decision = await Decision.create({
         decision_status: voteStatus === voteStatusTypes.AGREED,
       });
@@ -179,7 +187,7 @@ const useDetails = () => {
       // update decision of litigation
       await Litigation.vote(litigation.litigation_id, {
         decision_id: decision.decision_id,
-        transaction_id: transaction.transaction_id,
+        transaction_id: '',
       });
 
       // update queries
